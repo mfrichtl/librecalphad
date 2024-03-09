@@ -23,10 +23,17 @@ $ You should have received a copy of the GNU General Public License along with
 $ LibreCalphad. If not, see <https://www.gnu.org/licenses/>.
 $ 
 $ ----------------------------------------------------------------------------
-
+$
+$ NOTES:
+$ CU - INCORPORATED ONE EINSTEIN TEMPERATURE ASSESSMENT FROM KHVAN 2024.
+#
 $
 DATABASE_INFO The following systems are available:'
-  
+  C     Naraghi (2014)'
+  CU    Khvan (2024)'
+  FE    Gustafson (1985), Dinsdale (1991), and Chen (2001)'
+
+  C-FE  Hallstedt (2010) and Naraghi (2014)'
 !
 $ ----------------------------------------------------------------------------
 $ SINGLE-ELEMENT REFERENCES FROM SGTE UNARY DATABASE 5.0
@@ -132,6 +139,14 @@ FUNCTION GDIAC    0
 
 
 $ ----------------------------------------------------------------------------
+$ CU
+
+FUNCTION GHSERCU  0
+  -7822.89422 -2.5000000006212E-9*T**2 -8.49824692E-7*T**3;  1357.77 Y 
+  -3279.032857 +10.35631956*T -2.0566206*T*LN(T) -1.022463333E17*T**(-5)
+  +1.654507576E34*T**(-11);  6000 N                                     24KHA!
+
+$ ----------------------------------------------------------------------------
 $ FE
 
 FUNCTION GMDOBCCFE 0
@@ -156,11 +171,6 @@ FUNCTION GLIQFE 0
 
 FUNCTION GMDOLIQFE 0
   -R*LN(2.70)*T +R*LN(2.70)*0.38438376*200*4*GMDODLIQ#**(-1);  6000 N   01CHE!
-
-FUNCTION GHCPFE   298.15
-  -2480.08 +136.725*T -24.6643*T*LN(T) -3.75752E-3*T**2 -0.058927E-6*T**3
-  +77359*T**(-1);  1811.00 Y
-  -29340.776 +304.561559*T -46*T*LN(T) +2788.54E28*T**(-9);  6000.00 N  91DIN!
 
 $ ----------------------------------------------------------------------------
 $                           TYPE DEFINTIIONS
@@ -278,39 +288,6 @@ PARAMETER L(DIAMOND_A4,C,FE,MN;0) 298.15
 PARAMETER L(DIAMOND_A4,FE,NI,SI;0) 298.15
   +350000;  6000 N                                                      23WIT!
 
-$ ----------------------------------------------------------------------------
-$ EPSILON_D82
-
-PHASE EPSILON_D82 % 2 8 5 !
-CONSTITUENT EPSILON_D82 : AL,FE : AL,FE : ! 
-
-PARAMETER G(EPSILON_D82,AL:AL;0) 298.15
-  +13*GBCCAL#;  6000 N                                                 09SUNA!
-PARAMETER G(EPSILON_D82,AL:FE;0) 298.15
-  -394000 +36*T +8*GBCCAL# +5*GHSERFE#;  6000 N                        09SUNA!
-PARAMETER G(EPSILON_D82,FE:AL;0) 298.15
-  +200000 +36*T +5*GBCCAL# +8*GHSERFE#;  6000 N                        09SUNA!
-PARAMETER G(EPSILON_D82,FE:FE;0) 298.15
-  +13000 +13*GHSERFE#;  6000 N                                         09SUNA!
-
-PARAMETER L(EPSILON_D82,AL:AL,FE;0) 298.15
-  -100000;  6000 N                                                     09SUNA!
-PARAMETER L(EPSILON_D82,AL,FE:FE;0) 298.15
-  -174000;  6000 N                                                     09SUNA!
-
-$ ----------------------------------------------------------------------------
-$ ETA_FE2AL5
-
-PHASE ETA_FE2AL5 % 2 5 2 !
-CONSTITUENT ETA_FE2AL5 : AL : FE,NI : !
-
-PARAMETER G(ETA_FE2AL5,AL:FE;0) 298.15
-  -235600 +54*T +5*GHSERAL# +2*GHSERFE#;  6000 N                       09SUNA!
-PARAMETER G(ETA_FE2AL5,AL:NI;0) 298.15
-  -5214.448 +0.3928*T +0.714286*GHSERAL# +0.285714*GHSERNI#;  6000 N    09ZHA!
-
-PARAMETER L(ETA_FE2AL5,AL:NI;0) 298.15
-  -34240.98;  6000 N                                                    09ZHA!
 
 $ ----------------------------------------------------------------------------
 $ FCC_A1
@@ -319,12 +296,14 @@ $ PEARSON: cF4
 $ SPACE GROUP: Fm-3m
 
 PHASE FCC_A1 %B 2 1 1 !
-CONSTITUENT FCC_A1 : FE
+CONSTITUENT FCC_A1 : CU, FE
                    : C,VA : !
 
 
-FUNCTION GMDODFCC 0
-  +0.33471979 +0.49649686*4 -0.49649686;  6000 N                        01CHE!
+PARAMETER G(FCC_A1,CU:VA;0) 0
+  +GHSERFE#;  6000 N                                                    14KHA!
+PARAMETER THETA(FCC_A1,CU:VA;0) 0
+  +LN(222.155096410218);  6000 N                                        24KHA!
 
 PARAMETER G(FCC_A1,FE:C;0) 0
   +72729 -15.212*T +GFCCFE# +GHSERCC#;  6000 N                          14NAR!
@@ -335,6 +314,8 @@ PARAMETER NT(FCC_A1,FE:C;0) 0
 PARAMETER TC(FCC_A1,FE:C;0) 0
   -201;  6000 N                                                         85GUS!
 
+FUNCTION GMDODFCC 0
+  +0.33471979 +0.49649686*4 -0.49649686;  6000 N                        01CHE!
 PARAMETER G(FCC_A1,FE:VA;0) 0
   +GFCCFE# +GMDOFCCFE#; 6000 N                                          01CHE!
 PARAMETER BMAGN(FCC_A1,FE:VA;0) 0
@@ -365,11 +346,18 @@ $ ----------------------------------------------------------------------------
 $ LIQUID
 
 PHASE LIQUID %B 1 1 !
-CONSTITUENT LIQUID:L : C,FE : ! 
+CONSTITUENT LIQUID:L : C,CU,FE : ! 
 
 
 FUNCTION GMDODLIQ 0
   +0.33471979 +0.49649686*4 -0.49649686;  6000 N                        01CHE!
+
+PARAMETER G(LIQUID,CU;0) 0
+  -1500.55708 -8.41760522E-4*T**2;  6000 N                              24KHA!
+PARAMETER GD(LIQUID,CU;0) 0
+  +2.04096194E4 -13.6045657*T;  6000 N                                  24KHA!
+PARAMETER THETA(LIQUID,CU;0) 0
+  +LN(222.155096410218);  6000 N                                        24KHA!
 
 PARAMETER G(LIQUID,FE;0) 0 
   +GLIQFE# +GMDOLIQFE#; 6000 N                                          01CHE!
@@ -396,345 +384,35 @@ LIST_OF_REFERENCES
 NUMBER  SOURCE
 85GUS   'Gustafson, Per. "A thermodynamic evaluation of the Fe-C system." 
         Scand. J. Metall. 14.5 (1985): 259-267.'
-86JAN   'A. Jansson, Report D 73, Metallography, KTH, (1986).'
-86GUI   'Guillermet, A. Fernández, and L. Östlund. "Experimental and 
-        theoretical study of the phase equilibria in the fe-ni-w system." 
-        Metallurgical and Materials Transactions A 17 (1986): 1809-1823.'
-87GUSA  'Gustafson, Per. "A thermodynamic evaluation of the C-Fe-W system." 
-        Metallurgical and Materials Transactions A 18 (1987): 175-188.'
-87GUSB  'Gabriel, Armand, Per Gustafson, and Ibrahim Ansara. "A thermodynamic 
-        evaluation of the C-Fe-Ni system." Calphad 11.3 (1987): 203-218.'
-87ANDA  'Andersson, Jan-Olof, and Bo Sundman. "Thermodynamic properties of the
-        Cr-Fe system." Calphad 11.1 (1987): 83-92.'
-87ANDB  'Andersson, Jan-Olof. "Thermodynamic properties of Cr-C." Calphad 11.3
-        (1987): 271-276.'
-87GUI   'Fernändez Guillermet, Armando. "Assessment of the thermodynamic 
-        properties of the Ni-Co system." International Journal of Materials 
-        Research 78.9 (1987): 639-647.'
-88ANDA  'Andersson, Jan-Olof. "A thermodynamic evaluation of the Fe-Cr-C 
-        system." Metallurgical Transactions A 19 (1988): 627-636.'
-88ANDB  'Andersson, Jan-Olof, and Nils Lange. "An experimental study and a 
-        thermodynamic evaluation of the Fe-Cr-Mo system." Metallurgical .
-        Transactions A 19 (1988): 1385-1394.'
-88ANDC  'Andersson, Jan-Olof. "Thermodynamic properties of Mo-C." Calphad 12.1
-        (1988): 1-8.'
-88ANDD  'Andersson, Jan-Olof. "A thermodynamic evaluation of the Fe-Mo-C
-        system." Calphad 12.1 (1988): 9-23.'
-88GUS   'Gustafson, Per. "A thermodynamic evaluation of the Cr-Ni-W system." 
-        Calphad 12.3 (1988): 277-292.'
-88GUI   'Guillermet, A. Fernandez. "Thermodynamic Properties of the Fe--Co--C 
-        System." Z. Metallkd. 79.5 (1988): 317-329.'
-89GUI   'Guillermet, Armando Fernández. "Thermodynamic properties of the Co-WC 
-        system." Metallurgical transactions A 20 (1989): 935-956.'
-89HUAA  'Huang, Weiming. "An assessment of the Fe-Mn system." Calphad 13.3 
-        (1989): 243-252.'
-89HUAB  'Huang, Weiming. "An assessment of the Co-Mn system." Calphad 13.3 
-        (1989): 231-242.'
-89KUM   'Hari Kumar, K. C., and V. Raghavan. "Bcc—Fcc equilibrium in ternary 
-        iron alloys—II." J. Alloy Phase Diagrams 5.3 (1989): 201-220.'
-90FRI   'Frisk, Karin. "A thermodynamic evaluation of the Cr-Fe-N system." 
-        Metallurgical Transactions A 21 (1990): 2477-2488.'
-90HIL   'Hillert, Mats, and Caian Qiu. "A reassessment of the Cr-Fe-Ni 
-        system." Metallurgical Transactions A 21 (1990): 1673-1680.'
-90HUAA  'Huang, Weiming. "A Thermodynamic Evaluation of the Fe-Nb-C System/
-        Eine Thermodynamische Auswertung des Systems Fe-Nb-C." International 
-        Journal of Materials Research 81.6 (1990): 397-404.'
 91DIN   'Dinsdale, Alan T. "SGTE data for pure elements." Calphad 15.4 (1991): 
         317-425.'
-91DU    'Du, Hong, and Mats Hillert. "An Assessment of the Fe-CN System/
-        Überarbeitung des Systems Fe-CN." International Journal of Materials 
-        Research 82.4 (1991): 310-316.'
-91FRI   'Frisk, Karin. "A thermodynamic evaluation of the Cr-N, Fe-N, Mo-N and
-        Cr-Mo-N systems." Calphad 15.1 (1991): 79-106.'
-91HIL   'Hillert, Mats, and Caian Qiu. "A thermodynamic assessment of the 
-        Fe-Cr-Ni-C system." Metallurgical transactions A 22 (1991): 
-        2187-2198.'
-91HUA   'Huang, Weiming. "Thermodynamic properties of the Fe-Mn-V-C system." 
-        Metallurgical Transactions A 22 (1991): 1911-1920.'
-91LAC   'Lacaze, Jacques, and Bo Sundman. "An assessment of the Fe-C-Si 
-        system." Metallurgical Transactions A 22 (1991): 2211-2223.'
-91SAU   'N. Saunders, "COST507 Thermochemical Database for Light Metal Alloys 
-        2" (1998)'
-92FRI   'Frisk, Karin. "An experimental and theoretical study of the phase 
-        equilibria in the Fe-Mo-Ni system." Metallurgical Transactions A 23 
-        (1992): 639-649.'
-92HIL   'Hillert, Mats, and C. Qiu. "A reassessment of the Fe-Cr-Mo-C system."
-        Journal of Phase Equilibria 13 (1992): 512-521.'
-92LEE   'Lee, Byeong-Joo. "On the stability of Cr carbides." Calphad 16.2 
-        (1992): 121-149.'
-92LEEB  'Lee, B -J., and Dong Nyung Lee. "A thermodynamic evaluation of the 
-        Fe-Cr-V-C system." Journal of phase equilibria 13 (1992): 349-364.'
-92LEEC  'Lee, Byeong-Joo. "A thermodynamic evaluation of the Fe-Cr-V 
-        system/eine thermodynamische bewertung des systems Fe-Cr-V." 
-        International Journal of Materials Research 83.5 (1992): 292-299.'
-92MEY   'an Mey, Sabine. "Thermodynamic re-evaluation of the Cu-Ni system." 
-        Calphad 16.3 (1992): 255-260.'
-92QIU   'Qiu, Caian. "An analysis of the Cr-Fe-Mo-C system and modification of 
-        thermodynamic parameters." ISIJ international 32.10 (1992): 
-        1117-1127.'
-93DU    'Du, Hong. "A reevaluation of the Fe-N and Fe-CN systems." Journal of 
-        Phase Equilibria 14 (1993): 682-693.'
-93LEEA   'Lee, Byeong-Joo. "Revision of thermodynamic descriptions of the 
-        Fe-Cr & Fe-Ni liquid phases." Calphad 17.3 (1993): 251-268.'
-93LEEB  'Lee, Byeong-Joo. "A thermodynamic evaluation of the Cr-Mn and 
-        Fe-Cr-Mn systems." Metallurgical Transactions A 24 (1993): 1919-1933.'
-93OHT   'Ohtani, H., and M. Hillert. "Calculation of V-C-N and Ti-C-N phase 
-        diagrams." Calphad 17.1 (1993): 93-99.'
-93SUN   'B. Sundman, SSOL the SGTE solution database (1993)'
-94RAG   'Raghavan, V., and Dara P. Antia. "The chromium equivalents of ferrite 
-        stabilizers in commercial stainless steels." Metallurgical and 
-        Materials Transactions A 25 (1994): 2827-2828.'
-95CHE   'Chen, Qing, and Zhanpeng Jin. "The Fe-Cu system: A thermodynamic 
-        evaluation." Metallurgical and Materials Transactions A 26 (1995): 
-        417-426.'
-95SAU   'N. Saunders, "COST507 Thermochemical Database for Light Metal Alloys 
-        2" (1998)'
-96BEL   'Bellen, Peter, KC Hari Kumar, and Patrick Wollants. "Thermodynamic 
-        assessment of the Ni-Ti phase diagram." International Journal of 
-        Materials Research 87.12 (1996): 972-978.'
 96GRO   'Gröbner, Joachim, Hans Leo Lukas, and Fritz Aldinger. "Thermodynamic
         calculation of the ternary system Al-Si-C." Calphad 20.2 (1996): 
         247-254.'
-96HUA   'Huang, Weiming. "Thermodynamic assessment of the Nb-N system." 
-        Metallurgical and Materials Transactions A 27 (1996): 3591-3600.'
-96JONA  'Jonsson, Stefan. "Calculation of the Ti-C-N system." International 
-        Journal of Materials Research 87.9 (1996): 713-720.'
-96JONB  'Jonsson, Stefan. "Assessment of the Ti-N system." International 
-        Journal of Materials Research 87.9 (1996): 691-702.'
-96JONC  'Jonsson, Stefan. "Assessment of the Ti-C system." International
-        Journal of Materials Research 87.9 (1996): 703-712.'
-96KAS   'B. Kasper. "Phase Equilibria in the B-C-N-Si System." PhD Thesis.
-        Universitat Stuttgart (1996).'
-97ANS   'Ansara, Ibrahim, et al. "Thermodynamic assessment of the Al-Ni 
-        system." Journal of Alloys and Compounds 247.1-2 (1997): 20-30.'
-97HUA   'Huang, Weiming, and Malin Selleby. "Thermodynamic assessment of the 
-        Nb-W-C system." International Journal of Materials Research 88.1 
-        (1997): 55-62.'
-97KUS   'Kusoffsky, Alexandra, and Bo Jansson. "A thermodynamic evaluation of 
-        the Co-Cr and the C-Co-Cr systems." Calphad 21.3 (1997): 321-333.'
-97LIN   'Lindholm, M. "A thermodynamic description of the Fe-Cr-Si system with
-        emphasis on the equilibria of the sigma (Σ) phase." Journal of phase
-        equilibria 18.5 (1997): 432-440.'
-98JON   'Jonsson, Stefan. "Assessment of the Fe-Ti-C system, calculation of 
-        the Fe-TiN system, and prediction of the solubility limit of Ti (C, N)
-        in liquid Fe." Metallurgical and Materials Transactions B 29 (1998): 
-        371-384.'
-98KOR   'J. Korb and K. Hack, Ni-V system in COST507 Thermochemical Database
-        for Light Metal Alloys 2 (1998)'
-98MIE   'Miettinen, Jyrki. "Approximate thermodynamic solution phase data for 
-        steels." Calphad 22.2 (1998): 275-300.'
 98ANS   'I. Ansara, A. T. Dinsdale, M. H. Rand, "COST507 Thermochemical 
         Database for Light Metal Alloys 2" (1998)'
-98DUM   'Dumitrescu, L. F. S., M. Hillert, and N. Sounders. "Comparison of 
-        Fe-Ti Assessments." Journal of phase equilibria 19.5 (1998): 441.'
-98MIE   'Miettinen, Jyrki. "Reassessed thermodynamic solution phase data for 
-        ternary Fe-Si-C system." Calphad 22.2 (1998): 231-256.'
-98ZAJ   'Zajac, S., and B. Jansson. "Thermodynamics of the Fe-Nb-CN system and 
-        the solubility of niobium carbonitrides in austenite." Metallurgical 
-        and materials transactions B 29 (1998): 163-176.'
-99DUM   'Dumitrescu, L. FS, Mats Hillert, and B. Sundmann. "A reassessment of 
-        Ti-CN based on a critical review of available assessments of Ti-N and 
-        Ti-C." Zeitschrift fuer Metallkunde 90 (1999).'
-99DUP   'Dupin, N., and I. Ansara. "On the sublattice formalism applied to the
-        B2 phase." International Journal of Materials Research 90.1 (1999): 
-        76-85.'
-99KUM   'Hari Kumar, K. C. "XXVIII CALPHAD meeting." Grenoble, 2e7/5 (1999).'
 01CHE   'Chen, Qing, and Bo Sundman. "Modeling of thermodynamic properties for 
         Bcc, Fcc, liquid, and amorphous iron." Journal of phase equilibria 
         22.6 (2001): 631-644.'
-01DUP   'Dupin, N., I. Ansara, and Bo Sundman. "Thermodynamic re-assessment of
-        the ternary system Al-Cr-Ni." Calphad 25.2 (2001): 279-298.'
-01LEE   'Lee, Byeong-Joo. "Thermodynamic assessment of the Fe-Nb-Ti-CN 
-        system." Metallurgical and Materials Transactions A 32 (2001): 
-        2423-2439.'
-01MIE   'Miettinen, Jyrki. "Thermodynamic solution phase data for binary 
-        Mn-based systems." Calphad 25.1 (2001): 43-58.'
-02BRA   'Bratberg, Johan, and Karin Frisk. "A thermodynamic analysis of the 
-        Mo-V and Mo-VC system." Calphad 26.3 (2002): 459-476.'
-02CAM   'Campbell, Carelyn E., and Ursula R. Kattner. "Assessment of the Cr-B
-        system and extrapolation to the Ni-Al-Cr-B quaternary system." Calphad
-        26.3 (2002): 477-490.'
-02GHOA  'Ghosh, G. "Thermodynamic and kinetic modeling of the Cr-Ti-V system." 
-        Journal of phase equilibria 23.4 (2002): 310.'
-02GHOB  'Ghosh, G., and G. B. Olson. "Precipitation of paraequilibrium 
-        cementite: Experiments, and thermodynamic and kinetic modeling." Acta 
-        materialia 50.8 (2002): 2099-2119.'        
-02OHN   'Ohnuma, Ikuo, et al. "Phase equilibria in the Fe-Co binary system." 
-        Acta Materialia 50.2 (2002): 379-393.'
-02ROM   'Van Rompaey, Tim, KC Hari Kumar, and Patrick Wollants. "Thermodynamic 
-        optimization of the B-Fe system." Journal of Alloys and Compounds 
-        334.1-2 (2002): 173-181.'
-03BRA   'Bratberg, Johan, and Bo Sundman. "A thermodynamic assessment of the 
-        Co-V system." Journal of phase equilibria 24 (2003): 495-503.'
-03FRI   'Frisk, Karin. "A revised thermodynamic description of the Ti-C 
-        system." Calphad 27.4 (2003): 367-373.'                 
-03MIE   'Miettinen, Jyrki. "Thermodynamic description of the Cu-Al-Mn system
-        in the copper-rich corner." Calphad 27.1 (2003): 103-114.'
-04BRA   'Bratberg, Johan, and Karin Frisk. "An experimental and theoretical 
-        analysis of the phase equilibria in the Fe-Cr-VC system." 
-        Metallurgical and materials transactions A 35 (2004): 3649-3663.'
-04FRI   'Frisk, Karin, et al. "Experimental investigation of the equilibrium 
-        composition of titanium carbonitride and analysis using thermodynamic 
-        modelling." International Journal of Materials Research 95.11 (2004): 
-        987-992.'
-05BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
-        systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system." 
-        International Journal of Materials Research 96.4 (2005): 335-344.'
-05MAR   'Markström, Andreas, K. Frisk, and B. Sundman. "A revised 
-        thermodynamic description of the Co-WC system." Journal of phase 
-        equilibria and diffusion 26.2 (2005): 152-160.'
-06HU    'Hu, Jincheng, et al. "Thermodynamic re-assessment of the V-C system."
-        Journal of alloys and compounds 421.1-2 (2006): 120-127.'
-06SU    'Su, Xuping, and Jean-Claude Tedenac. "Thermodynamic modeling of the 
-        ternary Ce-Fe-Sb system: Assessment of the Ce-Sb and Ce-Fe systems." 
-        Calphad 30.4 (2006): 455-460.'
-07DU    'Du, Yong, et al. "Reassessment of the Al-Mn system and a 
-        thermodynamic description of the Al-Mg-Mn system." International 
-        journal of materials research 98.9 (2007): 855-871.'
-07LEE   'Lee, Byeong-Joo, et al. "Thermodynamic calculations on the stability 
-        of Cu2S in low carbon steels." ISIJ international 47.1 (2007): 
-        163-171.'
-07WAN   'Wang, C. P., et al. "Thermodynamic assessments of the Cu-Mn-X (X: Fe,
-        Co) systems." Journal of alloys and compounds 438.1-2 (2007): 
-        129-141.'
-08FRI   'Frisk, Karin. "Thermodynamic modelling of multicomponent cubic Nb, Ti
-        and V carbides/carbonitrides." Calphad 32.2 (2008): 326-337.'
-08HE    'He, Cuiyun, et al. "Thermodynamic modeling of the Cu-Mn system 
-        supported by key experiments." Journal of alloys and compounds 457.1-2 
-        (2008): 233-238.'
-09CHE   'Chen, Hailin, Yong Du, and Julius C. Schuster. "On the melting of 
-        Cr5Si3 and update of the thermodynamic description of Cr-Si." 
-        Calphad 33.1 (2009): 211-214.'
-09KEY   'De Keyzer, Jozefien, et al. "Thermodynamic modeling and optimization 
-        of the Fe-Ni-Ti system." Calphad 33.1 (2009): 109-123.'
 09LIA   'Liang, Yu, et al. "A thermodynamic description of the Al-Cr-Si 
         system." Journal of phase equilibria and diffusion 30 (2009): 
         462-479.'
-09SUNA  'Sundman, Bo, et al. "An assessment of the entire Al-Fe system 
-        including D03 ordering." Acta Materialia 57.10 (2009): 2896-2908.'
-09SUNB  'Sun, Wei-Hua, et al. "Reassessment of the Ni-B system supported by 
-        key experiments and first-principles calculation." International 
-        Journal of Materials Research 100.1 (2009): 59-67.'
 09ZHA   'Zhang, Lijun, et al. "Thermodynamic properties of the Al-Fe-Ni system
         acquired via a hybrid approach combining calorimetry, first-principles
         and CALPHAD." Acta Materialia 57.18 (2009): 5324-5341.'
-10CAC   'Cacciamani, G., et al. "The Fe-Ni system: Thermodynamic modelling 
-        assisted by atomistic calculations." Intermetallics 18.6 (2010): 
-        1148-1162.'
-10DJU   'Dejan Djurovic, Bengt Hallstedt, Jörg von Appen, and Richard 
-        Dronskowski. "Thermodynamic assessment of the Mn-C system." Calphad
-        34 (2010): 279-285'
 10HAL   'Hallstedt, Bengt, et al. "Thermodynamic properties of cementite 
         (Fe3C)." Calphad 34.1 (2010): 129-133.'
-10PAN   'Li-Mei Pan. "Phase Equilibria and Elastic Moduli of Rapidly 
-        Solidified Fe-Cr-Mo-B and Fe-Cr-Ni-B Alloys." PhD Thesis. University 
-        of Surrey. (2010).'
-11DJU   'Djurovic, Dejan, et al. "Thermodynamic assessment of the Fe-Mn-C 
-        system." Calphad 35.4 (2011): 479-491.'
-11WIT   'Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
-        re-assessment of the binary Fe-Ta system." Intermetallics 19.7 (2011): 
-        1059-1075.'
-11ZHO   'Zhou, Z. M., et al. "Experimental determination and thermodynamic 
-        modeling of phase equilibria in the Cu-Cr system." Journal of 
-        materials science 46 (2011): 7039-7045.'
-11XIO   'Xiong, Wei, et al. "Magnetic phase diagram of the Fe-Ni system." 
-        Acta materialia 59.2 (2011): 521-530.'
-12CAO   'CAO, Zhan-Min, et al. "Thermodynamic reoptimization of the Fe-P 
-        system." Acta Physico-Chimica Sinica 28.1 (2012): 37-43.'
-12GUO   'Guo, Cuiping, et al. "Thermodynamic modeling of the Fe-Ti-V system." 
-        Calphad 38 (2012): 155-160.'
-12KHV   'Khvan, A. V., B. Hallstedt, and K. Chang. "Thermodynamic assessment 
-        of Cr-Nb-C and Mn-Nb-C systems." Calphad 39 (2012): 54-61.'
-12LIU   'Liu, Shuhong, et al. "Ab initio calculations and thermodynamic 
-        modeling for the Fe-Mn-Nb system." Calphad 38 (2012): 43-58.'
-13KHV   'Khvan, A. V., and B. Hallstedt. "Thermodynamic assessment of 
-        Fe3Mn3Nb3N and Nb3C3Nsystems." Calphad 40 (2013): 10-15.'
-13POV   'Povoden-Karadeniz, E. Mat-Calc Fe open database, unpublished, 
-        https://www.matcalc.at/index.php/databases/open-databases, 2013.'
-14KHV   'Khvan, Alexandra V., Bengt Hallstedt, and Christoph Broeckmann. "A 
-        thermodynamic evaluation of the Fe-Cr-C system." Calphad 46 (2014): 
-        24-33.'
 14NAR   'Naraghi, Reza, Malin Selleby, and John Ågren. "Thermodynamics of 
         stable and metastable structures in Fe-C system." Calphad 46 (2014): 
         148-158.'
-14ZHA   'Zhao, C. C., et al. "Experimental investigation and thermodynamic 
-        calculation of the phase equilibria in the Fe-Ni-V system." Calphad 46
-        (2014): 80-86.'
-15BIG   'Bigdeli, Sedigheh, Huahai Mao, and Malin Selleby. "On the third-
-        generation Calphad databases: An updated description of Mn." physica 
-        status solidi (b) 252.10 (2015): 2199-2208.'
-15DIL   'Dilner, David, Huahai Mao, and Malin Selleby. "Thermodynamic 
-        assessment of the Mn-S and Fe-Mn-S systems." Calphad 48 (2015): 
-        95-105.'
 15ZHE   'Zheng, Weisen, et al. "Thermodynamic assessment of the Fe-Mn-Si 
         system and atomic mobility of its fcc phase." Journal of Alloys and 
         Compounds 632 (2015): 661-675.'
-15ZHA   'Zhang, Weibin, et al. "A thermodynamic description of the C-Ti-V 
-        system over the whole composition and temperature ranges." 
-        International Journal of Refractory Metals and Hard Materials 48 
-        (2015): 346-354.'
-16GOE   'Göhring, Holger, et al. "Thermodynamics of the Fe-N and Fe-NC 
-        systems: The Fe-N and Fe-NC phase diagrams revisited." Metallurgical 
-        and Materials Transactions A 47 (2016): 6173-6186.'
-16KHA   'Khan, Atta Ullah, et al. "The Ti-Mn system revisited: experimental
-        investigation and thermodynamic modelling." Physical Chemistry 
-        Chemical Physics 18.33 (2016): 23326-23339.'
-16TAN   'Tang, Florian, and Bengt Hallstedt. "Using the PARROT module of 
-        Thermo-Calc with the Cr-Ni system as example." Calphad 55 (2016): 
-        260-269.'
-17CUIA  'Cui, Senlin and In-Ho Jung. "Critical reassessment of the Fe-Si 
-        system." Calphad 56 (2017): 108-125.'
-17CUIB  'Cui, Senlin, and In-Ho Jung. "Thermodynamic modeling of the Cu-Fe-Cr 
-        and Cu-Fe-Mn systems." Calphad 56 (2017): 241-259.'
-17CUIC  'Cui, Senlin, and In-Ho Jung. "Thermodynamic assessments of the Cr-Si 
-        and Al-Cr-Si systems." Journal of Alloys and Compounds 708 (2017): 
-        887-902.'
-17CUID  'Cui, Senlin, and In-Ho Jung. "Thermodynamic Assessments of the 
-        Fe-Si-Cr and Fe-Si-Mg Systems." Metallurgical and Materials 
-        Transactions A 48 (2017): 4342-4355.'
-17ISO   'Isomäki, Iikka, et al. "First principles, thermal stability and 
-        thermodynamic assessment of the binary Ni-W system." International 
-        Journal of Materials Research 108.12 (2017): 1025-1035.'
-17ZHEA  'Zheng, Wei-sen, et al. "Thermodynamic modeling of Fe-C-Mn-Si alloys." 
-        Journal of Iron and Steel Research International 24.2 (2017): 
-        190-197.'
-17ZHEB  'Zheng, Weisen, et al. "Experimental investigation and computer 
-        simulation of diffusion in Fe-Mo and Fe-Mn-Mo alloys with different 
-        optimization methods." Metallurgical and Materials Transactions A 48 
-        (2017): 536-550.'      
-18JAC   'Jacob, Aurélie, Erwin Povoden-Karadeniz, and Ernst Kozeschnik. 
-        "Revised thermodynamic description of the Fe-Cr system based on an 
-        improved sublattice model of the σ phase." Calphad 60 (2018): 16-28.'
-18YAQ   'Yaqoob, Khurram, Jean-Claude Crivello, and Jean-Marc Joubert. 
-        "Thermodynamic modeling of the Mo-Ni system." Calphad 62 (2018): 
-        215-222.'
-18ZHE   'Zheng, Weisen, et al. "Thermodynamic investigation of the Al-Fe-Mn 
-        system over the whole composition and wide temperature ranges." 
-        Journal of Alloys and Compounds 742 (2018): 1046-1057.'
-19CHE   'Chen, Leilei, et al. "Thermodynamic description of the Fe-Cu-C 
-        system." Calphad 64 (2019): 225-235.' 
-19OHN   'Ohnuma, Ikuo, et al. "Experimental determination and thermodynamic 
-        evaluation of low-temperature phase equilibria in the Fe-Ni binary 
-        system." Calphad 67 (2019): 101677.'
-21DU    'Du, Yong, Rainer Schmid-Fetzer, and Hiroshi Ohtani. "Thermodynamic 
-        assessment of the V-N system." International Journal of Materials 
-        Research 88.7 (2021): 545-556.'
-21XIA   'Xia, Cheng-Hui, et al. "Thermodynamic assessment of the Co-Fe-Ni 
-        system and diffusion study of its fcc phase." Journal of Alloys and 
-        Compounds 853 (2021): 157165.'
-22OIK   'Oikawa, Katsunari, and Nobufumi Ueshima. "Experimental Investigation 
-        and Thermodynamic Assessment of Ni-B and Ni-B-C Systems." Journal of 
-        Phase Equilibria and Diffusion 43.6 (2022): 814-826.'
-22PEN  'Pendem, Sri Pragna, et al. "Thermodynamic and atomic mobility 
-        assessment of the Co-Fe-Mn system." Journal of Materials Science 57.33 
-        (2022): 15999-16015.'
-23JAC   'Jacob, Aurélie, et al. "Reassessment of low-temperature Gibbs 
-        energies of BCC and FCC in steel for T0-temperature evaluation." 
-        Calphad 81 (2023): 102531.'
-23FRI   'Frichtl, M., unpublished, 2023.'
 23WIT   'Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
         modelling of the ternary system Fe-Ni-Si with re-modelling of the 
         constituent binary systems." Journal of Alloys and Compounds 935 
         (2023): 168118.'
-24FRI   'Frichtl, M., unpublished, 2024.'
-!
+24KHA   'Khvan, Alexandra V., I. A. Uspenskaya, and Nina M. Aristova. 
+        "Critical assessment of the data for Pure Cu from 0 K, using two-state
+        model for the description of the liquid phase." Calphad 84 (2024): 
+        102637.'
