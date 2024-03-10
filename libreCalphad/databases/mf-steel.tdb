@@ -1462,7 +1462,8 @@ PARAMETER G(BCC_A2,CU:VA;0) 298.15
 PARAMETER G(BCC_A2,FE:B;0) 298.15
   -3000 +12.832*T;  6000 N                                              02ROM!
 PARAMETER G(BCC_A2,FE:C;0) 298.15
-  +162505 +184.465*T;  6000 N                                           14NAR!
+  $ +162505 +184.465*T;  6000 N                                           14NAR!
+  +322050 +75.667*T +GHSERFE# +3*GHSERCC#;  6000 N                      85GUS!
 PARAMETER BMAGN(BCC_A2,FE:C;0) 298.15
   +2.22;  6000 N                                                        85GUS!
 PARAMETER TC(BCC_A2,FE:C;0) 298.15
@@ -1866,8 +1867,9 @@ PARAMETER L(BCC_A2,CU,NI:VA;0) 298.15
 PARAMETER L(BCC_A2,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
 
-PARAMETER L(BCC_A2,FE:C,VA;0) 0.01
-  +150000 -290*T;  6000 N                                               14NAR!
+PARAMETER L(BCC_A2,FE:C,VA;0) 298.15
+  $ +150000 -290*T;  6000 N                                               14NAR!
+  -190*T;  6000 N                                                       85GUS!
 PARAMETER L(BCC_A2,FE:H,VA;0) 298.15
   +0;  6000 N                                                           02ZIN!
 PARAMETER L(BCC_A2,FE:O,VA;0) 298.15
@@ -3547,13 +3549,14 @@ PARAMETER G(FCC_A1,CU:VA;0) 298.15
 
 PARAMETER G(FCC_A1,FE:B;0) 298.15
   +45496 -77.534*T;  6000  N                                            02ROM!
-PARAMETER G(FCC_A1,FE:C;0) 0.01
-  +72729 -15.212*T +GFCCFE# +GHSERCC#;  6000 N                          14NAR!
-PARAMETER BMAGN(FCC_A1,FE:C;0) 0.01
+PARAMETER G(FCC_A1,FE:C;0) 298.15
+  $ +72729 -15.212*T +GFCCFE# +GHSERCC#;  6000 N                          14NAR!
+  +77207 -15.877*T +GFCCFE# +GHSERCC#;  6000 N                          85GUS!
+PARAMETER BMAGN(FCC_A1,FE:C;0) 298.15
   -2.1;  6000 N                                                         85GUS!
-PARAMETER NT(FCC_A1,FE:C;0) 0.01
+PARAMETER NT(FCC_A1,FE:C;0) 298.15
   +67;  6000 N                                                          14NAR!
-PARAMETER TC(FCC_A1,FE:C;0) 0.01
+PARAMETER TC(FCC_A1,FE:C;0) 298.15
   -201;  6000 N                                                         85GUS!
 PARAMETER G(FCC_A1,FE:H;0) 298.15
   +25746.7209 +48.1250165*T +GFCCFE# +0.5*GHSERHH#;  6000 N             02ZIN!
@@ -3567,11 +3570,11 @@ PARAMETER TC(FCC_A1,FE:N;0) 298.15
   -201;  6000 N                                                         85GUS!
 PARAMETER G(FCC_A1,FE:O;0) 298.15
   +65*T +GHSERFE# +GHSEROO#;  6000 N                                    08KJE!
-PARAMETER G(FCC_A1,FE:VA;0) 0.01
+PARAMETER G(FCC_A1,FE:VA;0) 298.15
   +GFCCFE#; 6000 N                                                      91DIN!
-PARAMETER BMAGN(FCC_A1,FE:VA;0) 0.01
+PARAMETER BMAGN(FCC_A1,FE:VA;0) 298.15
   -2.1; 6000 N                                                          85GUS!
-PARAMETER TC(FCC_A1,FE:VA;0) 0.01
+PARAMETER TC(FCC_A1,FE:VA;0) 298.15
   -201; 6000 N                                                          85GUS!
 
 PARAMETER G(FCC_A1,MN:C;0) 298.15
@@ -3937,8 +3940,9 @@ PARAMETER TC(FCC_A1,CU,NI:VA;0) 298.15
 PARAMETER L(FCC_A1,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
 
-PARAMETER L(FCC_A1,FE:C,VA;0) 0.01
-  -30532;  6000 N                                                       14NAR!
+PARAMETER L(FCC_A1,FE:C,VA;0) 298.15
+  $ -30532;  6000 N                                                       14NAR!
+  -34671;  6000 N                                                       85GUS!
 PARAMETER L(FCC_A1,FE:C,N;0) 298.15
   +8218;  6000 N                                                        16GOE!
 PARAMETER L(FCC_A1,FE:N,VA;0) 298.15
@@ -5467,7 +5471,7 @@ PARAMETER L(HCP_A3,FE,P:VA;0) 298.15
   -156000 +6*T;  6000 N                                                 24FRI!
 
 PARAMETER L(HCP_A3,FE,S:VA;0) 298.15
-  -108733 -18*T;  6000 N                                                24FRIs!
+  -108733 -18*T;  6000 N                                                24FRI!
 
 PARAMETER L(HCP_A3,FE,SI:VA;0) 298.15
   -106149 +41.116*T; 6000 N                                             15ZHE!
