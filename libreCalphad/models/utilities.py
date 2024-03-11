@@ -3,12 +3,29 @@ import pandas as pd
 from pycalphad import equilibrium, variables as v
 from pymatgen.core import Composition
 
+
 def DG(db, components, phases, conditions):
-    """Calculate Gibbs free energy difference between two phases under provided conditions."""
+    """
+    Function to calculate the Gibbs free energy difference between two phases.
+
+    Parameters: db, pycalphad Database
+                    The Database to use for calculations
+                components, list
+                    List of components included in the calculation.
+                phases, list
+                    List of the phases used to calculate the difference.
+                conditions, dictionary
+                    Dictionary containing the conditions to use for the calculations.
+
+    Returns: delta_g, float, J/mol
+                Float of the molar Gibbs free energy difference, phases[0] - phases[1].
+                Returns np.nan if there is a calculation error.
+    """
+    
     eq_GM = []
     try:
         for phase in phases:
-            eq_GM.append(equilibrium(db, components, [phase], conditions, output='GM', calc_opts={'pdens': 1}).GM.squeeze().values)
+            eq_GM.append(equilibrium(db, components, [phase], conditions, output='GM').GM.squeeze().values)
         return eq_GM[0] - eq_GM[1]
     except Exception as e:
         print(e)
@@ -32,6 +49,7 @@ def parse_composition(row):
     
     comp_dict = {}
     weight_percent = False
+    interstitials = ['B', 'C', 'H', 'N', 'O']
     material_col = 'material_at%'
     if pd.isnull(row['material_at%']):  # no atomic percent entered
         weight_percent = True
@@ -59,11 +77,15 @@ def parse_composition(row):
                 frac = float(value.split(element)[0]) / 100
                 # if (element != 'C' and element != 'N') and frac > 0.001:
                 #     use_element = True
-                # if (element == 'C' or element == 'N' or element == 'O') and frac > 0.0007:
-                if frac > 0.0005:  # really small phase fractions seem to cause problems. This threshold is semi-arbitrarily chosen
+                
+                conditions.update({v.X(element.upper()): frac})
+                components.append(element.upper())
+                # semi-arbitrary cutoff point for describing the alloy system, higher for substitutional elements
+                if element in interstitials and frac > 0.0005:
                     alloy.append(element)
-                    conditions.update({v.X(element.upper()): frac})
-                    components.append(element.upper())
+                elif frac > 0.005:
+                    alloy.append(element)
+
             except:
                 print("ERROR WITH:")
                 print(row)
