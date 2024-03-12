@@ -3518,7 +3518,7 @@ PARAMETER TC(FCC_A1,CO:VA;0) 298.15
 PARAMETER G(FCC_A1,CR:B;0) 298.15
   +GHSERCR# +GHSERBB#;  6000 N                                          02CAM!
 PARAMETER G(FCC_A1,CR:C;0) 298.15
-  -32690 +248.42*T -41.678*T*LN(T) -3.01955E-3*T**(-1);  6000 N         04BRA!
+  +1200 -1.94*T +GHSERCR# +GHSERCC#;  6000 N                           92LEEA!
 PARAMETER G(FCC_A1,CR:H;0) 298.15
   +GHSERCR# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,CR:N;0) 298.15
@@ -3941,7 +3941,6 @@ PARAMETER L(FCC_A1,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
 
 PARAMETER L(FCC_A1,FE:C,VA;0) 298.15
-  $ -30532;  6000 N                                                       14NAR!
   -34671;  6000 N                                                       85GUS!
 PARAMETER L(FCC_A1,FE:C,N;0) 298.15
   +8218;  6000 N                                                        16GOE!
@@ -7445,6 +7444,9 @@ PARAMETER G(M3C2_D510,V:C;0) 298.15
   -222500 +16.6545*T +3*GHSERV# +2*GHSERCC#;  6000 N                   92LEEB!
 
 
+$ WANT TO RESTRICT FE SOLUBILITY IN CR3C2
+PARAMETER L(M3C2_D510,CR,FE:C;0) 298.15
+  +100*T;  6000 N                                                       24FRI!
 PARAMETER L(M3C2_D510,CR,MO:C;0) 298.15
   +40000;  6000 N                                                       92QIU!
 PARAMETER L(M3C2_D510,CR,V:C;0) 298.15
@@ -7570,7 +7572,7 @@ PARAMETER G(M7C3_D101,CO:C;0) 298.15
 PARAMETER G(M7C3_D101,CR:C;0) 298.15
   -201690 +1103.128*T -190.177*T*LN(T) -0.0578207*T**2;  6000 N        92LEEA!
 PARAMETER G(M7C3_D101,FE:C;0) 298.15
-  +6200 +2.333333*GFE3C# +0.666667*GHSERCC#;  6000 N                    11DJU!
+  +13200 +2.333333*GFE3C# +0.666667*GHSERCC#;  6000 N                   11DJU!
 PARAMETER G(M7C3_D101,MN:C;0) 298.15
   -106695 +9.36*T +7*GHSERMN# +3*GHSERCC#;  6000 N                      10DJU!
 PARAMETER G(M7C3_D101,MO:C;0) 298.15
@@ -7585,7 +7587,12 @@ PARAMETER L(M7C3_D101,CO,CR:C;0) 298.15
   -96092;  6000 N                                                       97KUS!
 
 PARAMETER L(M7C3_D101,CR,FE:C;0) 298.15
-  -4520 -10*T;  6000 N                                                 92LEEA!
+  $ -4520 -10*T;  6000 N                                                 92LEEA!
+  +81940 -61.86*T;  6000 N                                              14KHV!
+PARAMETER L(M7C3_D101,CR,FE:C;1) 298.15
+  -7310;  6000 N                                                        14KHV!
+PARAMETER L(M7C3_D101,CR,FE:C;2) 298.15
+  +27050;  6000 N                                                       14KHV!
 PARAMETER L(M7C3_D101,CR,MO:C;0) 298.15
   +100000;  6000 N                                                      05BRA!
 PARAMETER L(M7C3_D101,CR,NI:C;0) 298.15
@@ -7707,8 +7714,9 @@ PARAMETER G(M23C6_D84,FE:CO:C;0) 298.15
 
 PARAMETER G(M23C6_D84,FE:CR:B;0) 298.15
   +20*GHSERFE# +3*GHSERCR# +6*GHSERBB#;  6000 N                         23FRI!
+$ NEEDED TO ADD +50*T TO PREVENT FE20CR3C6 FROM SHOWING UP IN TERNARY SYSTEM
 PARAMETER G(M23C6_D84,FE:CR:C;0) 298.15
-  +0.8695652*GFE23C6# +0.1304348*GFE23C6#;  6000 N                     92LEEA!
+  +50*T +0.8695652*GFE23C6# +0.1304348*GCR23C6#;  6000 N                24FRI!
 
 PARAMETER G(M23C6_D84,FE:FE:B;0) 298.15
   -300005 -29*T +23*GHSERFE# +6*GHSERBB#;  6000 N                       10PAN!
@@ -7847,11 +7855,19 @@ PARAMETER L(M23C6_D84,CO,CR:CO:C;0) 298.15
   -182237;  6000 N                                                      97KUS!
 PARAMETER L(M23C6_D84,CO,CR:CR:C;0) 298.15
   -182237;  6000 N                                                      97KUS!
+
 PARAMETER L(M23C6_D84,CR:CO,CR:C;0) 298.15
   -182237;  6000 N                                                      97KUS!
+PARAMETER L(M23C6_D84,CR:CR,FE:C;0) 298.15
+  +991;  6000 N                                                         14KHV!
+PARAMETER L(M23C6_D84,CR:CR,FE:C;1) 298.15
+  -6540;  6000 N                                                        14KHV!
 
 PARAMETER L(M23C6_D84,CR,FE:CR:C;0) 298.15
-  -205342 +141.6667*T;  6000 N                                         92LEEA!
+  $ -205342 +141.6667*T;  6000 N                                         92LEEA!
+  +6609;  6000 N                                                        14KHV!
+PARAMETER L(M23C6_D84,CR,FE:CR:C;1) 298.15
+  -43600;  6000 N                                                       14KHV!
 PARAMETER L(M23C6_D84,CR,FE:CR,FE:C;0) 298.15
   +604852 -158.6196*T;  6000 N                                          91HIL!
 PARAMETER L(M23C6_D84,CR,FE:CR,FE:C;1) 298.15
@@ -7859,7 +7875,10 @@ PARAMETER L(M23C6_D84,CR,FE:CR,FE:C;1) 298.15
 PARAMETER L(M23C6_D84,CR,FE:CR,FE:C;2) 298.15
   -1914930;  6000 N                                                     91HIL!
 PARAMETER L(M23C6_D84,CR,FE:FE:C;0) 298.15
-  -205342 +141.6667*T;  6000 N                                         92LEEA!
+  $ -205342 +141.6667*T;  6000 N                                         92LEEA!
+  +6609;  6000 N                                                        14KHV!
+PARAMETER L(M23C6_D84,CR,FE:FE:C;1) 298.15
+  -43600;  6000 N                                                       14KHV!
 PARAMETER L(M23C6_D84,CR,FE:MO:C;0) 298.15
   -177850 +153.9050*T;  6000 N                                          92QIU!
 PARAMETER L(M23C6_D84,CR,FE:V:C;0) 298.15
@@ -7883,6 +7902,11 @@ PARAMETER L(M23C6_D84,CR,FE,V:FE:C;0) 298.15
   -1499585;  6000 N                                                    92LEEB!
 PARAMETER L(M23C6_D84,CR,FE,V:V:C;0) 298.15
   -1499585;  6000 N                                                    92LEEB!
+
+PARAMETER L(M23C6_D84,FE:CR,FE:C;0) 298.15
+  +991;  6000 N                                                         14KHV!
+PARAMETER L(M23C6_D84,FE:CR,FE:C;1) 298.15
+  -6540;  6000 N                                                        14KHV!
 
 PARAMETER L(M23C6_D84,FE,MN:FE,MN:C;0) 298.15
   -95000;  6000 N                                                       11DJU!
@@ -10277,7 +10301,7 @@ NUMBER  SOURCE
         (1992): 639-649.'
 92HIL   'Hillert, Mats, and C. Qiu. "A reassessment of the Fe-Cr-Mo-C system."
         Journal of Phase Equilibria 13 (1992): 512-521.'
-92LEE   'Lee, Byeong-Joo. "On the stability of Cr carbides." Calphad 16.2 
+92LEEA  'Lee, Byeong-Joo. "On the stability of Cr carbides." Calphad 16.2 
         (1992): 121-149.'
 92LEEB  'Lee, B -J., and Dong Nyung Lee. "A thermodynamic evaluation of the 
         Fe-Cr-V-C system." Journal of phase equilibria 13 (1992): 349-364.'
@@ -10396,10 +10420,7 @@ NUMBER  SOURCE
 03FRI   'Frisk, Karin. "A revised thermodynamic description of the Ti-C 
         system." Calphad 27.4 (2003): 367-373.'                 
 03MIE   'Miettinen, Jyrki. "Thermodynamic description of the Cu-Al-Mn system
-        in the copper-rich corner." Calphad 27.1 (2003): 103-114.'
-04BRA   'Bratberg, Johan, and Karin Frisk. "An experimental and theoretical 
-        analysis of the phase equilibria in the Fe-Cr-VC system." 
-        Metallurgical and materials transactions A 35 (2004): 3649-3663.'
+        in the copper-rich corner." Calphad 27.1 (2003): 103-114.''
 04FRI   'Frisk, Karin, et al. "Experimental investigation of the equilibrium 
         composition of titanium carbonitride and analysis using thermodynamic 
         modelling." International Journal of Materials Research 95.11 (2004): 
