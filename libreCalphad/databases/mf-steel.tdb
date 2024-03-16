@@ -1554,11 +1554,11 @@ PARAMETER G(BCC_A2,NI:VA;0) 173
 PARAMETER BMAGN(BCC_A2,NI:C;0) 298.15
   +0.85;  6000 N                                                       92LEEA!
 PARAMETER BMAGN(BCC_A2,NI:VA;0) 298.15 
-  +0.52; 3000 N                                                         11XIO!
+  +0.52; 3000 N                                                        11XIOA!
 PARAMETER TC(BCC_A2,NI:C;0) 298.15
   +575;  6000 N                                                        92LEEA!
 PARAMETER TC(BCC_A2,NI:VA;0) 298.15 
-  +456; 3000 N                                                          11XIO!
+  +456; 3000 N                                                         11XIOA!
 
 PARAMETER G(BCC_A2,P:B;0) 298.15
   +GHSERPP# +3*GHSERBB#;  6000 N                                        23FRI!
@@ -1764,15 +1764,18 @@ PARAMETER BMAGN(BCC_A2,CR,FE:C;0) 298.15
   -0.85;  6000 N                                                       88ANDA!
 PARAMETER L(BCC_A2,CR,FE:N;0) 298.15
   -799379 +293*T;  6000 N                                               90FRI!
-
 PARAMETER L(BCC_A2,CR,FE:VA;0) 298.15
-  +20500 -9.68*T;  6000 N                                              87ANDA!
+  +24212.06 -15.507*T;  6000 N                                        11XIOAB!
+PARAMETER L(BCC_A2,CR,FE:VA;1) 298.15
+  +1664.69 +0.286*T;  6000 N                                          11XIOAB!
+PARAMETER L(BCC_A2,CR,FE:VA;2) 298.15
+  -13250.88 +8.252*T;  6000 N                                         11XIOAB!
 PARAMETER BMAGN(BCC_A2,CR,FE:VA;0) 298.15
-  -0.85;  6000 N                                                       87ANDA!
+  -0.45;  6000 N                                                      11XIOAB!
 PARAMETER TC(BCC_A2,CR,FE:VA;0) 298.15
-  +1650;  6000 N                                                       87ANDA!
+  +865.5;  6000 N                                                     11XIOAB!
 PARAMETER TC(BCC_A2,CR,FE:VA;1) 298.15
-  +550;  6000 N                                                        87ANDA!
+  -567.2;  6000 N                                                     11XIOAB!
 
 PARAMETER L(BCC_A2,CR,MO:VA;0) 298.15
   +28890 -7.962*T;  6000 N                                              91FRI!
@@ -1907,21 +1910,21 @@ PARAMETER L(BCC_A2,FE,NI:C;1) 298.15
   +1789.03 -1.92912*T;  6000 N                                         87GUSB!
 
 PARAMETER L(BCC_A2,FE,NI:VA;0) 173
-  -7909.04;  6000 N                                                     11XIO!
+  -7909.04;  6000 N                                                    11XIOA!
 PARAMETER L(BCC_A2,FE,NI:VA;1) 173
-  +3040.27;  6000 N                                                     11XIO!
+  +3040.27;  6000 N                                                    11XIOA!
 PARAMETER L(BCC_A2,FE,NI:VA;2) 173
-  -1469.08;  6000 N                                                     11XIO!
+  -1469.08;  6000 N                                                    11XIOA!
 PARAMETER BMAGN(BCC_A2,FE,NI:VA;0) 173
-  +1.0177;  6000 N                                                      11XIO!
+  +1.0177;  6000 N                                                     11XIOA!
 PARAMETER BMAGN(BCC_A2,FE,NI:VA;1) 173
-  +0.5144;  6000 N                                                      11XIO!
+  +0.5144;  6000 N                                                     11XIOA!
 PARAMETER BMAGN(BCC_A2,FE,NI:VA;2) 173
-  +1.0733;  6000 N                                                      11XIO!
+  +1.0733;  6000 N                                                     11XIOA!
 PARAMETER BMAGN(BCC_A2,FE,NI:VA;3) 173
-  +1.0314;  6000 N                                                      11XIO!
+  +1.0314;  6000 N                                                     11XIOA!
 PARAMETER TC(BCC_A2,FE,NI:VA;0) 173
-  +385.8;  6000 N                                                       11XIO!
+  +385.8;  6000 N                                                      11XIOA!
 
 PARAMETER L(BCC_A2,FE,P:VA;0) 298.15
   -172000 +4.7*T;  6000 N                                               12CAO!
@@ -3633,11 +3636,11 @@ PARAMETER G(FCC_A1,NI:VA;0) 298.15
 PARAMETER BMAGN(FCC_A1,NI:C;0) 298.15
   +0.52;  6000 N                                                       92LEEA!
 PARAMETER BMAGN(FCC_A1,NI:VA;0) 298.15 
-  +0.62; 3000 N                                                         11XIO!
+  +0.62; 3000 N                                                        11XIOA!
 PARAMETER TC(FCC_A1,NI:C;0) 298.15
   +633;  6000 N                                                        92LEEA!
 PARAMETER TC(FCC_A1,NI:VA;0) 298.15 
-  +633; 3000 N                                                          11XIO!
+  +633; 3000 N                                                         11XIOA!
 
 PARAMETER G(FCC_A1,P:C;0) 298.15
   +GHSERPP# +GHSERCC#;  6000 N                                          24FRI!
@@ -3805,12 +3808,6 @@ PARAMETER L(FCC_A1,CO,MN:VA;0) 298.15
   -23756;  6000 N                                                      89HUAB!
 PARAMETER L(FCC_A1,CO,MN:VA;1) 298.15
   -2343;  6000 N                                                       89HUAB!
-$ PARAMETER BMAGN(FCC_A1,CO,MN:VA;0) 298.15
-$   -1.07;  6000 N                                                       89HUAB!
-$ PARAMETER TC(FCC_A1,CO,MN:VA;0) 298.15
-$   -2685;  6000 N                                                       89HUAB!
-$ PARAMETER TC(FCC-A1,CO,MN:VA;1) 298.15
-$   +3657;  6000 N                                                       89HUAB!
 
 PARAMETER L(FCC_A1,CO,NI:VA;0) 298.15
   -800 +1.2629*T; 6000 N                                                87GUI!
@@ -3866,9 +3863,9 @@ PARAMETER L(FCC_A1,CR,FE:N;0) 298.15
 PARAMETER L(FCC_A1,CR,FE:N;1) 298.15
   +24330;  6000 N                                                       90FRI!
 PARAMETER L(FCC_A1,CR,FE:VA;0) 298.15
-  +10833 -7.477*T;  6000 N                                             87ANDA!
+  +28871.89 -22.318*T;  6000 N                                        11XIOAB!
 PARAMETER L(FCC_A1,CR,FE:VA;1) 298.15
-  +1410;  6000 N                                                       87ANDA!
+  +32711.42 -18.180*T;  6000 N                                        11XIOAB!
 
 PARAMETER L(FCC_A1,CR,MO:C;0) 298.15
   -65469 +51.4*T;  6000 N                                               05BRA!
@@ -3965,19 +3962,6 @@ PARAMETER TC(FCC_A1,FE,MN:VA;0) 298.15
   -2282;  6000 N                                                       89HUAA!
 PARAMETER TC(FCC_A1,FE,MN:VA;1) 298.15
   -2068;  6000 N                                                       89HUAA!
-$ PARAMETER L(FCC_A1,FE,MN:VA;0) 298.15
-$   -8602 +3*T;  6000 N                                                   23JAC!
-$ PARAMETER L(FCC_A1,FE,MN:VA;1) 298.15
-$   +1059 -1.1*T;  6000 N                                                 23JAC!
-
-$ PARAMETER TC(FCC_A1,FE,MN:VA;0) 298.15
-$   -2380;  6000 N                                                        23JAC!
-$ PARAMETER TC(FCC_A1,FE,MN:VA;1) 298.15
-$   -2068;  6000 N                                                        23JAC!
-$ PARAMETER TC(FCC_A1,FE,MN:VA;2) 298.15
-$   +2800;  6000 N                                                        23JAC!
-$ PARAMETER BMAGN(FCC_A1,FE,MN:VA;0) 298.15
-$   +1.8;  6000 N                                                         23JAC!
 
 PARAMETER L(FCC_A1,FE,MO:C;0) 298.15
   +6000;  6000 N                                                       88ANDD!
@@ -4010,33 +3994,33 @@ PARAMETER TC(FCC_A1,FE,NI:C;1) 0.01
   +1000; 6000 N                                                         23JAC!
 
 PARAMETER L(FCC_A1,FE,NI:VA;0) 173
-  -15690.3 +2.36733*T;  6000 N                                          11XIO!
+  -15690.3 +2.36733*T;  6000 N                                         11XIOA!
 PARAMETER L(FCC_A1,FE,NI:VA;1) 173
-  +7781.85; 6000 N                                                      11XIO!
+  +7781.85; 6000 N                                                     11XIOA!
 PARAMETER L(FCC_A1,FE,NI:VA;2) 173
-  -1649.56;  6000 N                                                     11XIO!
+  -1649.56;  6000 N                                                    11XIOA!
 PARAMETER BMAGN(FCC_A1,FE,NI:VA;0) 173
-  +10.186;  6000 N                                                      11XIO!
+  +10.186;  6000 N                                                     11XIOA!
 PARAMETER BMAGN(FCC_A1,FE,NI:VA;1) 173
-  +8.834;  6000 N                                                       11XIO!
+  +8.834;  6000 N                                                      11XIOA!
 PARAMETER BMAGN(FCC_A1,FE,NI:VA;2) 173
-  -4.006;  6000 N                                                       11XIO!
+  -4.006;  6000 N                                                      11XIOA!
 PARAMETER BMAGN(FCC_A1,FE,NI:VA;3) 173
-  -24.828;  6000 N                                                      11XIO!
+  -24.828;  6000 N                                                     11XIOA!
 PARAMETER BMAGN(FCC_A1,FE,NI:VA;4) 173
-  -18.686;  6000 N                                                      11XIO!
+  -18.686;  6000 N                                                     11XIOA!
 PARAMETER TC(FCC_A1,FE,NI:VA;0) 173
-  +2295.6;  6000 N                                                      11XIO!
+  +2295.6;  6000 N                                                     11XIOA!
 PARAMETER TC(FCC_A1,FE,NI:VA;1) 173
-  -448.8;  6000 N                                                       11XIO!
+  -448.8;  6000 N                                                      11XIOA!
 PARAMETER TC(FCC_A1,FE,NI:VA;2) 173
-  -1186;  6000 N                                                        11XIO!
+  -1186;  6000 N                                                       11XIOA!
 PARAMETER TC(FCC_A1,FE,NI:VA;3) 173
-  -4367.6;  6000 N                                                      11XIO!
+  -4367.6;  6000 N                                                     11XIOA!
 PARAMETER TC(FCC_A1,FE,NI:VA;4) 173
-  -8658.1;  6000 N                                                      11XIO!
+  -8658.1;  6000 N                                                     11XIOA!
 PARAMETER TC(FCC_A1,FE,NI:VA;5) 173
-  -5671.0;  6000 N                                                      11XIO!
+  -5671.0;  6000 N                                                     11XIOA!
 
 PARAMETER L(FCC_A1,FE,TA:VA;0) 298.15
   -30521;  6000 N                                                       11WIT!
@@ -4238,10 +4222,15 @@ PARAMETER L(FCC_A1,AL,FE,NI:VA;2) 298.15
 
 PARAMETER L(FCC_A1,CR,FE:N,VA;0) 298.15
   -162516;  6000 N                                                      90FRI!
-PARAMETER L(FCC_A1,CR,FE,NI:VA;0) 298.15
-  +1618;  6000  N                                                       90HIL!
+
+PARAMETER L(FCC_A1,CR,FE,MN:VA;0) 298.15
+  +6715 -10.3933*T;  6000 N                                            93LEEB!
+
 PARAMETER L(FCC_A1,CR,FE,NI:C;0) 298.15
   -8515;  6000 N                                                        91HIL!
+PARAMETER L(FCC_A1,CR,FE,NI:VA;0) 298.15
+  +1618;  6000  N                                                       90HIL!
+
 PARAMETER L(FCC_A1,CR,MO,V:C;0) 298.15
   +297033 -233*T;  6000  N                                              05BRA!
   
@@ -6691,9 +6680,9 @@ PARAMETER L(LIQUID,CR,CU;1) 298.15
   -10674 +17.05*T;  6000 N                                              11ZHO!
   
 PARAMETER L(LIQUID,CR,FE;0) 298.15
-  -17737 +7.996546*T;  6000 N                                          93LEEA!
+  -5.983*T;  6000 N                                                   11XIOAB!
 PARAMETER L(LIQUID,CR,FE;1) 298.15
-  +1331;  6000 N                                                       93LEEA!
+  -384.41;  6000 N                                                    11XIOAB!
 
 PARAMETER L(LIQUID,CR,MO;0) 298.15
   +15810 -6.714*T;  6000 N                                              91FRI!
@@ -6789,11 +6778,11 @@ PARAMETER L(LIQUID,FE,NB;1) 298.15
   +17624 -10.805*T;  6000 N                                             13KHV!
 
 PARAMETER L(LIQUID,FE,NI;0) 173
-  -16098.3 +1.5478*T;  6000 N                                           11XIO!
+  -16098.3 +1.5478*T;  6000 N                                          11XIOA!
 PARAMETER L(LIQUID,FE,NI;1) 173
-  +7802.92;  6000 N                                                     11XIO!
+  +7802.92;  6000 N                                                    11XIOA!
 PARAMETER L(LIQUID,FE,NI;2) 173
-  -1057.57;  6000 N                                                     11XIO!
+  -1057.57;  6000 N                                                    11XIOA!
 
 PARAMETER L(LIQUID,FE,P;0) 298.15
   -240000 +45*T;  6000 N                                                12CAO!
@@ -10487,11 +10476,14 @@ NUMBER  SOURCE
 11WIT   'Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
         re-assessment of the binary Fe-Ta system." Intermetallics 19.7 (2011): 
         1059-1075.'
+11XIOA  'Xiong, Wei, et al. "Magnetic phase diagram of the Fe-Ni system." 
+        Acta materialia 59.2 (2011): 521-530.'
+11XIOB  'Xiong, Wei, et al. "An improved thermodynamic modeling of the Fe-Cr 
+        system down to zero kelvin coupled with key experiments." Calphad 35.3
+        (2011): 355-366.'
 11ZHO   'Zhou, Z. M., et al. "Experimental determination and thermodynamic 
         modeling of phase equilibria in the Cu-Cr system." Journal of 
         materials science 46 (2011): 7039-7045.'
-11XIO   'Xiong, Wei, et al. "Magnetic phase diagram of the Fe-Ni system." 
-        Acta materialia 59.2 (2011): 521-530.'
 12CAO   'CAO, Zhan-Min, et al. "Thermodynamic reoptimization of the Fe-P 
         system." Acta Physico-Chimica Sinica 28.1 (2012): 37-43.'
 12GUO   'Guo, Cuiping, et al. "Thermodynamic modeling of the Fe-Ti-V system." 
