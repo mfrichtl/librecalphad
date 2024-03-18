@@ -5312,6 +5312,13 @@ PARAMETER G(HCP_A3,W:C;0) 298.15
 PARAMETER G(HCP_A3,W:VA;0) 298.15
   +14750 +GHSERW#; 6000 N                                               91DIN!
 
+$ ESTIMATE SAME AL-FE PARAMETERS AS FCC_A1
+PARAMETER L(HCP_A3,AL,FE:VA;0) 298.15
+  -104700 +30.65*T;  6000 N                                            09SUNA!
+PARAMETER L(HCP_A3,AL,FE:VA;1) 298.15
+  +30000 -7*T;  6000 N                                                 09SUNA!
+PARAMETER L(HCP_A3,AL,FE:VA;2) 298.15
+  +32200 -17*T;  6000 N                                                09SUNA!
 
 PARAMETER L(HCP_A3,AL,MN:VA;0) 298.15
   -95264.1 +33.09659*T;  6000 N                                          07DU!
@@ -5425,16 +5432,16 @@ PARAMETER L(HCP_A3,CR:N,VA;0) 298.15
 PARAMETER L(HCP_A3,CR:N,VA;1) 298.15
   -6204;  6000 N                                                        91FRI!
 
-$ ESTIMATE CU-FE INTERACTION SAME AS FCC, FROM CHEN 2019
+$ ESTIMATE CU-FE INTERACTION SAME AS FCC
 PARAMETER L(HCP_A3,CU,FE:VA;0) 298.15
-  +43319.6 -6.94445*T;  6000 N                                          23FRI!
+  +43319.6 -6.94445*T;  6000 N                                          19CHE!
 
 $ ESTIMATE CU-MN INTERACTION SAME AS FCC, REQUIRES TWO TERMS TO ELIMINATE
 $ SPURIOUS HCP PHASE ON CU-MN PHASE DIAGRAM, FROM HE 2008
 PARAMETER L(HCP_A3,CU,MN:VA;0) 298.15
-  +20235.508 -13.2437*T;  6000 N                                        23FRI!
+  +20235.508 -13.2437*T;  6000 N                                         08HE!
 PARAMETER L(HCP_A3,CU,MN:VA;1) 298.15
-  -12154.853 +2.9399*T;  6000 N                                         23FRI!
+  -12154.853 +2.9399*T;  6000 N                                          08HE!
 
 PARAMETER L(HCP_A3,CU,NI:VA;0) 298.15
   +10*T;  6000 N                                                        23FRI!
@@ -5492,6 +5499,12 @@ PARAMETER L(HCP_A3,FE,V:C;0) 298.15
 PARAMETER L(HCP_A3,FE,V:VA;0) 298.15
   -15291 -4.138*T;  6000 N                                              91HUA!
 
+$ ESTIMATE SAME FE-W INTERACTION AS FCC_A1
+PARAMETER L(HCP_A3,FE,W:VA;0) 298.15
+  +25977 -3.36*T;  6000 N                                              87GUSA!
+PARAMETER L(HCP_A3,FE,W:VA;1) 298.15
+  -7258.6;  6000  N                                                    87GUSA!
+
 PARAMETER L(HCP_A3,MN:C,VA;0) 298.15
   -5006;  6000 N                                                        10DJU!
 
@@ -5499,17 +5512,17 @@ PARAMETER L(HCP_A3,MN,MO:C;0) 298.15
   +0;  6000 N                                                           23FRI!
 PARAMETER L(HCP_A3,MN,MO:N;0) 298.15
   +0;  6000 N                                                           23FRI!
-$ ESTIMATE SAME AS MN-MO INTERACTION FROM FCC, FROM MIETTINEN 1998
+$ ESTIMATE SAME AS MN-MO INTERACTION FROM FCC
 PARAMETER L(HCP_A3,MN,MO:VA;0) 298.15
-  -22300;  6000 N                                                       23FRI!
+  -22300;  6000 N                                                       98MIE!
 
-$ ESTIMATE SAME AS MN-NB INTERACTION FROM FCC, FROM LIU 2012.
+$ ESTIMATE SAME AS MN-NB INTERACTION FROM FCC
 PARAMETER L(HCP_A3,MN,NB:VA;0) 298.15
-  +6305.5;  6000 N                                                      23FRI!
+  +6305.5;  6000 N                                                      12LIU!
 
-$ ESTIMATE SAME MN-NI INTERACTION FROM FCC, FROM KUMAR 1989
+$ ESTIMATE SAME MN-NI INTERACTION FROM FCC
 PARAMETER L(HCP_A3,MN,NI:VA;0) 298.15
-  -58173 +10.5*T;  6000 N                                               23FRI!
+  -58173 +10.5*T;  6000 N                                               89KUM!
 
 PARAMETER L(HCP_A3,MN,P:C;0) 298.15
   +0;  6000 N                                                           23FRI!
@@ -5588,27 +5601,47 @@ PARAMETER L(HCP_A3,W:C,VA;0) 298.15
   +4165;  6000 N                                                        89GUI!
 
 
-$ ESTIMATE SAME AL-FE-MN TERNARY INTERACTION AS FCC_A1, FROM ZHENG 2018
+$ ESTIMATE SAME AL-FE-MN TERNARY INTERACTION AS FCC_A1
 PARAMETER L(HCP_A3,AL,FE,MN:VA;0) 298.15
-  -22500;  6000 N                                                       23FRI!
+  -22500;  6000 N                                                       18ZHE!
 PARAMETER L(HCP_A3,AL,FE,MN:VA;1) 298.15
-  +0;  6000 N                                                           23FRI!
+  +0;  6000 N                                                           18ZHE!
 PARAMETER L(HCP_A3,AL,FE,MN:VA;2) 298.15
-  -31800;  6000 N                                                       23FRI!
+  -31800;  6000 N                                                       18ZHE!
+
+$ ESTIMATE SAME CR-FE-MN TERNARY INTERACTION AS FCC_A1
+PARAMETER L(HCP_A3,CR,FE,MN:VA;0) 298.15
+  +6715 -10.3933*T;  6000 N                                            93LEEB!
 
 PARAMETER L(HCP_A3,CR,FE,MO:C;0) 298.15
   -57062;  6000 N                                                       92QIU!
 
-$ ESTIMATE SAME CU-FE-MN INTERACTION AS FCC_A1, FROM CUI 2017
+$ ESTIMATE SAME CU-FE-MN INTERACTION AS FCC_A1
 PARAMETER L(HCP_A3,CU,FE,MN:VA;0) 298.15
-  +27614.40;  6000 N                                                    23FRI!
+  +27614.40;  6000 N                                                    17CUI!
 PARAMETER L(HCP_A3,CU,FE,MN:VA;1) 298.15
-  -117817.26 +98.87*T;  6000 N                                          23FRI!
+  -117817.26 +98.87*T;  6000 N                                          17CUI!
 PARAMETER L(HCP_A3,CU,FE,MN:VA;2) 298.15
-  +20083.20;  6000 N                                                    23FRI!
+  +20083.20;  6000 N                                                    17CUI!
+
+$ ESTIMATE SAME FE-MN-MO INTERACTION AS FCC_A1
+PARAMETER L(HCP_A3,FE,MN,MO:VA;0) 298.15
+  +32000;  6000 N                                                      17ZHEB!
+PARAMETER L(HCP_A3,FE,MN,MO:VA;1) 298.15
+  +0;  6000 N                                                          17ZHEB!
+PARAMETER L(HCP_A3,FE,MN,MO:VA;2) 298.15
+  -180000;  6000 N                                                     17ZHEB!
 
 PARAMETER L(HCP_A3,FE,MN,SI:VA;0) 298.15
   -35333 -152.9*T;  6000 N                                             17ZHEA!
+
+$ ESTIMATE SAME FE-MN-TI INTERACTION AS FCC_A1
+PARAMETER L(HCP_A3,FE,MN,TI:VA;0) 298.15
+  +12000;  6000 N                                                       21ZHA!
+PARAMETER L(HCP_A3,FE,MN,TI:VA;1) 298.15
+  +63700 -50*T;  6000 N                                                 21ZHA!
+PARAMETER L(HCP_A3,FE,MN,TI:VA;2) 298.15
+  +0;  6000 N                                                           21ZHA!
 
 PARAMETER L(HCP_A3,FE,NB:C,VA;0) 298.15
   -20000;  6000 N                                                      90HUAA!
