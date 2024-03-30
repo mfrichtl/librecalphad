@@ -83,7 +83,7 @@ DATABASE_INFO The following systems are available:'
   SER       SGTE Unary 5.0 Dinsdale (1991) and Chen (2001)'
   AL-C      Gröbner (1996)'
   AL-CU     Saunders (1991)'
-  AL-FE     Ansara (1998) and Sundman (2009)'
+  AL-FE     Seierstein (1991) and Sundman (2009)'
   AL-MN     Du (2007)  SOLUTION PHASES W/ FE ONLY'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
   AL-SI     Gröbner (1996)'
@@ -94,12 +94,12 @@ DATABASE_INFO The following systems are available:'
   C-CO      Guillermet (1988) and Kusoffsky (1997)'
   C-CR      Andersson (1987), Lee (1992), Qiu (1992), and Khvan (2012)'
   C-CU      Chen (2019)'
-  C-FE      Gustafson (1985), Du (1993), Hallstedt (2010), Jacob (2023), 
-            Naraghi (2014)'
+  C-FE      Gustafson (1985), Du (1993), Hallstedt (2010), Naraghi (2014),
+            Jacob (2023)'
   C-MN      Huang (1991) and Djurovic (2010)'
   B-MO      Pan (2010)'
   C-NB      Huang (1997), Lee (2001), and Khvan (2013)'
-  C-NI      Gustafson (1987)'
+  C-NI      Gabriel (1987)'
   C-SI      Lacaze (1991) and Gröbner (1996)'
   C-TI      Jonsson (1996), Dumitrescu (1999), and Frisk (2003)'
   C-V       Huang (1991) and Hu (2006) EXCEPT ORDERED V6C5 PHASE'
@@ -124,7 +124,8 @@ DATABASE_INFO The following systems are available:'
   CR-W      Gustafson (1988)'
   CU-FE     Chen (1995) and Cui (2017)'
   CU-MN     Miettinen (2003) and He (2008)'
-  CU-NI     Jan (1986), Gustafson (1988), and an Mey (1992)'
+  CU-NI     Jan (1986) and an Mey (1992)'
+  CU-S      Lee (2007)'
   FE-FES    Lee (2007)'
   FE-H      Zinkevich (2002) and Kim (2012)'
   FE-MN     Huang (1989) and Djurovic (2011)'
@@ -137,11 +138,11 @@ DATABASE_INFO The following systems are available:'
   FE-S      Lee (2007)'
   FE-SI     Cui (2017) and Witusiewicz (2023) EXCEPT ORDERING'
   FE-TA     Witusiewicz (2011)'
-  FE-TI     Dumitrescu (1998), Frisk (1998), Kumar (1999), De Keyzer (2009), 
+  FE-TI     Dumitrescu (1998), Kumar (1999), Frisk (2008), De Keyzer (2009), 
             and Guo (2012)'
   FE-V      Huang (1991)'
   FE-W      Gustafson (1987)'
-  FE-S      Lee (2007)'
+  FES-S     Lee (2007)'
   MN-MO     Zheng (2017)'
   MN-NB     Liu (2012) EXCEPT MU PHASE'
   MN-NI     Kumar (1989) and Miettinen (2001) *' 
@@ -167,7 +168,7 @@ DATABASE_INFO The following systems are available:'
   V-H       Ukita (2008)'
   V-W       Bratberg (2005)'
   '
-  AL-CU-NI  Wang (2010) *'
+  AL-CU-NI  Wang (2019) *'
   AL-FE-MN  Zheng (2018) *'
   AL-FE-NI  Zhang (2009) *'
   B-C-NI    Oikawa (2022)'
@@ -196,16 +197,14 @@ DATABASE_INFO The following systems are available:'
   C-MN-SI   Zheng (2017)'
   C-MN-V    Huang (1991)'
   C-N-NB    Lee (2001) and Frisk (2008)'
-  C-N-V     Frisk (2008)'
   C-N-TI    Jonsson (1996), Lee (2001), and Frisk (2004)'
+  C-N-V     Frisk (2008)'
   C-NB-TI   Lee (2001)'
   C-NB-W    Huang (1997)'
   C-TI-V    Zhang (2015)'
   C-V-W     Bratberg (2005)'
   CO-FE-MN  Pendem (2022)'
-  CO-FE-NI  Guillermet (1988) and Xie (2021)'
-  CU-FE-MN  Cui (2017)'
-  CU-FE-NI  Sundman (1993) *'
+  CO-FE-NI  Guillermet (1988) and Xia (2021)'
   CR-CU-FE  Cui (2017)'
   CR-FE-MN  Lee (1993)'
   CR-FE-MO  Andersson (1988)'
@@ -218,13 +217,14 @@ DATABASE_INFO The following systems are available:'
   CR-NI-W   Gustafson (1988)'
   CR-TI-V   Ghosh (2002)'
   CU-FE-MN  Wang (2007) and Cui (2017)'
+  CU-FE-NI  Sundman (1993) *'
   FE-MN-NB  Liu (2012) and Khvan (2013)'
   FE-MN-SI  Zheng (2015) and Zheng (2017)'
   FE-MN-TI  Zhang (2021)'
   FE-MN-V   Huang (1991)'
   FE-MO-NI  Frisk (1992)'
   FE-N-V    Ohtani (1993)'
-  FE-NB-N   Zajac (199), Lee (2001), and Khvan (2013)'
+  FE-NB-N   Zajac (1998), Lee (2001), and Khvan (2013)'
   FE-NB-TI  Lee (2001)'
   FE-N-TI   Jonsson (1998)'
   FE-NI-O   Kjellqvist (2008)'
@@ -1542,7 +1542,7 @@ PARAMETER G(BCC_A2,NB:VA;0) 298.15
 PARAMETER G(BCC_A2,NI:B;0) 298.15
   +GHSERNI# +3*GHSERBB#;  6000 N                                        23FRI!
 PARAMETER G(BCC_A2,NI:C;0) 298.15
-  +4E5 -100*T +GHSERNI# +3*GHSERCC#;  6000 N                           87GUSB!
+  +4E5 -100*T +GHSERNI# +3*GHSERCC#;  6000 N                            87GAB!
 PARAMETER G(BCC_A2,NI:H;0) 298.15
   +1245550 +733.3*T +GHSERNI# +1.5*GHSERHH#;  6000 N                    12KIM!
 PARAMETER G(BCC_A2,NI:N;0) 298.15
@@ -1646,7 +1646,7 @@ PARAMETER G(BCC_A2,V:VA;0) 298.15
 PARAMETER G(BCC_A2,W:B;0) 298.15
   +GHSERW# +3*GHSERBB#;  6000 N                                         23FRI!
 PARAMETER G(BCC_A2,W:C;0) 298.15
-  +3.751E5 -35.87*T +GHSERW# +3*GHSERCC#;  6000 N                      87GUSA!
+  +3.751E5 -35.87*T +GHSERW# +3*GHSERCC#;  6000 N                       87GUS!
 PARAMETER BMAGN(BCC_A2,W:C;0) 298.15
   +0;  6000 N                                                           89GUI!
 PARAMETER TC(BCC_A2,W:C;0) 298.15
@@ -1674,9 +1674,9 @@ PARAMETER L(BCC_A2,AL,CU:VA;1) 298.15
   +51500 -11.84*T;  6000 N                                              91SAU!
 
 PARAMETER L(BCC_A2,AL,FE:VA;0) 298.15
-  -122960 +31.9888*T;  6000 N                                           98ANS!
+  -122960 +31.9888*T;  6000 N                                           91SEI!
 PARAMETER L(BCC_A2,AL,FE:VA;1) 298.15
-  +2945.2;  6000 N                                                      98ANS!
+  +2945.2;  6000 N                                                      91SEI!
 PARAMETER TC(BCC_A2,AL,FE:VA;0) 298.15
   -438;  6000 N                                                        09SUNA!
 PARAMETER TC(BCC_A2,AL,FE:VA;1) 298.15
@@ -1902,9 +1902,9 @@ PARAMETER L(BCC_A2,FE,NB:VA;1) 298.15
   +4674 -5.776*T;  6000 N                                               13KHV!
 
 PARAMETER L(BCC_A2,FE,NI:C;0) 298.15
-  +956.63 -1.28726*T;  6000 N                                          87GUSB!
+  +956.63 -1.28726*T;  6000 N                                           87GAB!
 PARAMETER L(BCC_A2,FE,NI:C;1) 298.15
-  +1789.03 -1.92912*T;  6000 N                                         87GUSB!
+  +1789.03 -1.92912*T;  6000 N                                          87GAB!
 
 PARAMETER L(BCC_A2,FE,NI:VA;0) 173
   -7909.04;  6000 N                                                     11XIO!
@@ -1981,11 +1981,11 @@ PARAMETER TC(BCC_A2,FE,V:VA;3) 298.15
   -2169;  6000 N                                                        91HUA!
 
 PARAMETER L(BCC_A2,FE,W:C;0) 298.15
-  -140000;  6000 N                                                     87GUSA!
+  -140000;  6000 N                                                      87GUS!
 PARAMETER L(BCC_A2,FE,W:VA;0) 298.15
-  +41544;  6000 N                                                      87GUSA!
+  +41544;  6000 N                                                       87GUS!
 PARAMETER L(BCC_A2,FE,W:VA;1) 298.15
-  -12621;  6000 N                                                      87GUSA!
+  -12621;  6000 N                                                       87GUS!
 
 PARAMETER L(BCC_A2,MN,NI:VA;0) 298.15
   -51785 +3.5*T;  6000 N                                                89KUM!
@@ -2978,7 +2978,7 @@ PARAMETER G(CEMENTITE_D011,MO:C;0) 298.15
 PARAMETER G(CEMENTITE_D011,NI:B;0) 298.15
   -95722.8624 +21.72114516*T +3*GHSERNI# +GHSERBB#;  6000 N            09SUNB!
 PARAMETER G(CEMENTITE_D011,NI:C;0) 298.15
-  +34700 -20*T +3*GHSERNI# +GHSERCC#;  6000 N                          87GUSB!
+  +34700 -20*T +3*GHSERNI# +GHSERCC#;  6000 N                           87GAB!
 
 PARAMETER G(CEMENTITE_D011,SI:C;0) 298.15
   +250000 +3*GHSERSI# +GHSERCC#;  6000 N                               02GHOB!
@@ -2987,7 +2987,7 @@ PARAMETER G(CEMENTITE_D011,V:C;0) 298.15
   -156971 +601.922*T -100.438*T*LN(T) +765557*T**(-1);  6000 N          91HUA!
 
 PARAMETER G(CEMENTITE_D011,W:C;0) 298.15
-  +54150 +3*GHSERW# +GHSERCC#;  6000 N                                 87GUSA!
+  +54150 +3*GHSERW# +GHSERCC#;  6000 N                                  87GUS!
 
 PARAMETER L(CEMENTITE_D011,CR,FE:C;0) 298.15
   +14586 -9.18*T;  6000 N                                               14KHV!
@@ -3009,7 +3009,7 @@ PARAMETER L(CEMENTITE_D011,FE,NI:B;0) 298.15
 PARAMETER L(CEMENTITE_D011,FE,NI:B;1) 298.15
   +10000;  6000 N                                                       10PAN!
 PARAMETER L(CEMENTITE_D011,FE,NI:C;0) 298.15
-  +29400;  6000 N                                                      87GUSB!
+  +29400;  6000 N                                                       87GAB!
 PARAMETER L(CEMENTITE_D011,FE,V:C;0) 298.15
   -45873 -12.414*T; 6000 N                                              91HUA!
 
@@ -3728,7 +3728,7 @@ PARAMETER G(FCC_A1,V:VA;0) 298.15
   +GFCCV#;  6000 N                                                      91DIN!
 
 PARAMETER G(FCC_A1,W:C;0) 298.15
-  -17864 +1.875*T +GHSERW# +GHSERCC#;  6000 N                          87GUSA!
+  -17864 +1.875*T +GHSERW# +GHSERCC#;  6000 N                           87GUS!
 PARAMETER G(FCC_A1,W:H;0) 298.15
   +GHSERW# +GHSERHH#;  6000 N                                           24FRI!
 PARAMETER G(FCC_A1,W:N;0) 298.15
@@ -4060,12 +4060,12 @@ PARAMETER L(FCC_A1,FE,V:VA;0) 298.15
   -15291 -4.138*T;  6000 N                                              91HUA!
 
 PARAMETER L(FCC_A1,FE,W:C;0) 298.15
-  -116756 +100*T;  6000  N                                             87GUSA!
+  -116756 +100*T;  6000  N                                              87GUS!
 
 PARAMETER L(FCC_A1,FE,W:VA;0) 298.15
-  +25977 -3.36*T;  6000 N                                              87GUSA!
+  +25977 -3.36*T;  6000 N                                               87GUS!
 PARAMETER L(FCC_A1,FE,W:VA;1) 298.15
-  -7258.6;  6000  N                                                    87GUSA!
+  -7258.6;  6000  N                                                     87GUS!
 
 PARAMETER L(FCC_A1,MN:C,VA;0) 298.15
   -41333;  6000 N                                                       10DJU!
@@ -4212,7 +4212,7 @@ PARAMETER L(FCC_A1,V,W:C;0) 298.15
   -28973 +13.3*T;  6000 N                                               05BRA!
 
 PARAMETER L(FCC_A1,W:C,VA;0) 298.15
-  -17.98*T;  6000 N                                                    87GUSA!
+  -17.98*T;  6000 N                                                     87GUS!
 
 
 PARAMETER L(FCC_A1,AL,CU,NI:VA;0) 298.15
@@ -5193,6 +5193,8 @@ PHASE HCP_A3 %B 2 1 .5 !
 CONSTITUENT HCP_A3 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W 
                    : B,C,H,N,VA : !
 
+PARAMETER G(HCP_A3,AL:C;0) 298.15
+  +2*GHSERAL# +GHSERCC#;  6000 N                                        24FRI!
 PARAMETER G(HCP_A3,AL:VA;0) 298.15
   +5481-1.8*T +GHSERAL#; 2900 N                                         91DIN!
 
@@ -5501,9 +5503,9 @@ PARAMETER L(HCP_A3,FE,V:VA;0) 298.15
 
 $ ESTIMATE SAME FE-W INTERACTION AS FCC_A1
 PARAMETER L(HCP_A3,FE,W:VA;0) 298.15
-  +25977 -3.36*T;  6000 N                                              87GUSA!
+  +25977 -3.36*T;  6000 N                                               87GUS!
 PARAMETER L(HCP_A3,FE,W:VA;1) 298.15
-  -7258.6;  6000  N                                                    87GUSA!
+  -7258.6;  6000  N                                                     87GUS!
 
 PARAMETER L(HCP_A3,MN:C,VA;0) 298.15
   -5006;  6000 N                                                        10DJU!
@@ -5893,7 +5895,7 @@ PARAMETER G(LAVES_C14,FE:TI;0) 298.15
 PARAMETER G(LAVES_C14,FE:V;0) 298.15
   +5000 +2*GHSERFE# +GHSERV#;  6000 N                                   12GUO!
 PARAMETER G(LAVES_C14,FE:W;0) 298.15
-  -13500 +5*T +2*GFCCFE# +GHSERW#;  6000 N                             87GUSA!
+  -13500 +5*T +2*GFCCFE# +GHSERW#;  6000 N                              87GUS!
 
 PARAMETER G(LAVES_C14,MN:AL;0) 298.15
   +2*GHSERMN# +GHSERAL#;  6000 N                                        24FRI!
@@ -6676,11 +6678,11 @@ PARAMETER L(LIQUID,C,V;2) 298.15
   +164341;  6000 N                                                      06HU !
 
 PARAMETER L(LIQUID,C,W;0) 298.15
-  -107920 +6.38*T;  6000 N                                             87GUSA!
+  -107920 +6.38*T;  6000 N                                              87GUS!
 PARAMETER L(LIQUID,C,W;1) 298.15
-  +173900 -34.25*T;  6000 N                                            87GUSA!
+  +173900 -34.25*T;  6000 N                                             87GUS!
 PARAMETER L(LIQUID,C,W;2) 298.15
-  +83700;  6000 N                                                      87GUSA!
+  +83700;  6000 N                                                       87GUS!
 
 PARAMETER L(LIQUID,CE,FE;0) 298.15
   +5881.8 -8.5586*T;  6000 N                                            06SU !
@@ -6873,9 +6875,9 @@ PARAMETER L(LIQUID,FE,V;1) 298.15
   +10209;  6000 N                                                       91HUA!
 
 PARAMETER L(LIQUID,FE,W;0) 298.15
-  -3607 +5.65*T;  6000 N                                               87GUSA!
+  -3607 +5.65*T;  6000 N                                                87GUS!
 PARAMETER L(LIQUID,FE,W;1) 298.15
-  -5450;  6000 N                                                       87GUSA!
+  -5450;  6000 N                                                        87GUS!
 
 PARAMETER L(LIQUID,FES,MNS;0) 298.15
   +10000;  6000 N                                                       15DIL!
@@ -7080,11 +7082,11 @@ PARAMETER L(LIQUID,C,FE,NB;0) 298.15
   -40000;  6000 N                                                      90HUAA!
 
 PARAMETER L(LIQUID,C,FE,NI;0) 298.15
-  +122200 -58.8*T;  6000 N                                             87GUSB!
+  +122200 -58.8*T;  6000 N                                              87GAB!
 PARAMETER L(LIQUID,C,FE,NI;1) 298.15
-  +92200 -58.8*T;  6000 N                                              87GUSB!
+  +92200 -58.8*T;  6000 N                                               87GAB!
 PARAMETER L(LIQUID,C,FE,NI;2) 298.15
-  +152200 -58.8*T;  6000 N                                             87GUSB!
+  +152200 -58.8*T;  6000 N                                              87GAB!
 
 PARAMETER L(LIQUID,C,FE,SI;0) 298.15
   +285000;  6000 N                                                     17ZHEA!
@@ -7104,11 +7106,11 @@ PARAMETER L(LIQUID,C,FE,V;2) 298.15
   +100000;  6000 N                                                      91HUA!  
 
 PARAMETER L(LIQUID,C,FE,W;0) 298.15
-  -60600 -71*T;  6000 N                                                87GUSA!
+  -60600 -71*T;  6000 N                                                 87GUS!
 PARAMETER L(LIQUID,C,FE,W;1) 298.15
-  +6400 -71*T;  6000 N                                                 87GUSA!
+  +6400 -71*T;  6000 N                                                  87GUS!
 PARAMETER L(LIQUID,C,FE,W;2) 298.15
-  +73400 -71*T;  6000 N                                                87GUSA!
+  +73400 -71*T;  6000 N                                                 87GUS!
 
 PARAMETER L(LIQUID,C,MO,V;0) 298.15
   +120000;  6000 N                                                      02BRA!
@@ -7414,7 +7416,7 @@ PARAMETER G(MC_SHP,MO:C;0) 298.15
   -32983 +2.5*T +GHSERMO# +GHSERCC#;  6000 N                           88ANDC!
 PARAMETER G(MC_SHP,W:C;0) 298.15
   -58192 +287.16*T -46.48*T*LN(T) -0.0021435*T**2 -9.2217E-8*T**3
-  +590500*T**(-1);  6000 N                                             87GUSA!
+  +590500*T**(-1);  6000 N                                              87GUS!
 
 $ ----------------------------------------------------------------------------
 $ M2C -- SECOND HCP COMPOSITION SET FOR OTHER M2C HEXAGONAL CARBONITRIDES
@@ -7423,13 +7425,13 @@ PHASE M2C %B 2 2 1 !
 CONSTITUENT M2C : FE,TI,W : C,N,VA : !
 
 PARAMETER G(M2C,FE:C;0) 298.15
-  +105810 -23.815*T +2*GFCCFE# +GHSERCC#;  6000 N                      87GUSA!
+  +105810 -23.815*T +2*GFCCFE# +GHSERCC#;  6000 N                       87GUS!
 PARAMETER G(M2C,FE:N;0) 298.15
   +10000 +50*T +2*GHSERFE# + GHSERNN#;  6000 N                          23FRI!
 PARAMETER G(M2C,FE:VA;0) 298.15
   -4961.91 +273.451*T -49.3286*T*LN(T) -0.00751504*T**2 
   -1.178538E-7*T**3 +154717*T**(-1); 1811 Y
-  -58683.3 +609.12412*T -92*T*LN(T) +5.57708E31*T**(-9);  6000 N       87GUSA!
+  -58683.3 +609.12412*T -92*T*LN(T) +5.57708E31*T**(-9);  6000 N        87GUS!
 
 PARAMETER G(M2C,TI:C;0) 298.15
   -105319 +179.144*T -30.231*T*LN(T) -3.3778E-3*T**2;  6000 N           03FRI!
@@ -7439,22 +7441,22 @@ PARAMETER G(M2C,TI:VA;0) 298.15
   +5000 +2*GHSERTI#;  6000 N                                            24FRI!
 
 PARAMETER G(M2C,W:C;0) 298.15
-  -13430 -13.3*T +2*GHSERW# +GHSERCC#;  6000 N                         87GUSA!
+  -13430 -13.3*T +2*GHSERW# +GHSERCC#;  6000 N                          87GUS!
 PARAMETER G(M2C,W:N;0) 298.15
   +2*GHSERW# +GHSERNN#;  6000 N                                         23FRI!
 PARAMETER G(M2C,W:VA;0) 298.15
-  +29500 +2*GHSERW#;  6000 N                                           87GUSA!
+  +29500 +2*GHSERW#;  6000 N                                            87GUS!
 
 
 PARAMETER L(M2C,FE:C,VA;0) 298.15
-  -34671;  6000 N                                                      87GUSA!
+  -34671;  6000 N                                                       87GUS!
 
 PARAMETER L(M2C,FE,W:C;0) 298.15
-  -233510 +200*T;  6000 N                                              87GUSA!
+  -233510 +200*T;  6000 N                                               87GUS!
 PARAMETER L(M2C,FE,W:VA;0) 298.15
-  +51954 -6.72*T;  6000 N                                              87GUSA!
+  +51954 -6.72*T;  6000 N                                               87GUS!
 PARAMETER L(M2C,FE,W:VA;1) 298.15
-  -14517.2;  6000 N                                                    87GUSA!
+  -14517.2;  6000 N                                                     87GUS!
 
 PARAMETER L(M2C,TI:C,N;0) 298.15
   -25000;  6000 N                                                       01LEE!
@@ -7462,7 +7464,7 @@ PARAMETER L(M2C,TI:C,VA;0) 298.15
   +16854.6 -15.411*T;  6000 N                                           03FRI!
 
 PARAMETER L(M2C,W:C,VA;0) 298.15
-  +8330;  6000 N                                                       87GUSA!
+  +8330;  6000 N                                                        87GUS!
 
 $ ----------------------------------------------------------------------------
 $ M3C2_D510
@@ -7568,7 +7570,7 @@ PARAMETER G(M6C_E93,FE:FE:FE:C;0) 298.15
 PARAMETER G(M6C_E93,FE:FE:MO:C;0) 298.15
   +2*GHSERFE# +2*GHSERFE# +2*GHSERMO# +GHSERCC#;  6000 N                23FRI!
 PARAMETER G(M6C_E93,FE:FE:W:C;0) 298.15
-  -63120 +20.14*T +4*GHSERFE# +2*GHSERW# +GHSERCC#;  6000 N            87GUSA!
+  -63120 +20.14*T +4*GHSERFE# +2*GHSERW# +GHSERCC#;  6000 N             87GUS!
 
 PARAMETER G(M6C_E93,FE:MO:CO:C;0) 298.15
   +2*GHSERFE# +2*GHSERMO# +2*GHSERCO# +GHSERCC#;  6000 N                23FRI!
@@ -7591,11 +7593,11 @@ PARAMETER G(M6C_E93,FE:W:FE:C;0) 298.15
 PARAMETER G(M6C_E93,FE:W:MO:C;0) 298.15
   +2*GHSERFE# +2*GHSERW# +2*GHSERMO# +GHSERCC#;  6000 N                 23FRI!
 PARAMETER G(M6C_E93,FE:W:W:C;0) 298.15
-  -69540 +20.14*T +2*GHSERFE# +4*GHSERW# +GHSERCC#;  6000 N            87GUSA!
+  -69540 +20.14*T +2*GHSERFE# +4*GHSERW# +GHSERCC#;  6000 N             87GUS!
 
 
 PARAMETER L(M6C_E93,FE:FE,W:W:C;0) 298.15
-  -43700;  6000 N                                                      87GUSA!
+  -43700;  6000 N                                                       87GUS!
 PARAMETER L(M6C_E93,FE:MO:FE,MO:C;0) 298.15
   -37700;  6000 N                                                      88ANDD!
 
@@ -8912,7 +8914,7 @@ PARAMETER G(MU_D85,FE:W:CO;0) 298.15
 PARAMETER G(MU_D85,FE:W:CR;0) 298.15
   +7*GFCCFE# +2*GHSERW# +4*GHSERCR#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,FE:W:FE;0) 298.15
-  +14300 +26.7*T +7*GFCCFE# +4*GHSERFE# +2*GHSERW#;  6000 N            87GUSA!
+  +14300 +26.7*T +7*GFCCFE# +4*GHSERFE# +2*GHSERW#;  6000 N             87GUS!
 PARAMETER G(MU_D85,FE:W:MO;0) 298.15
   +7*GFCCFE# +2*GHSERW# +4*GHSERMO#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,FE:W:NB;0) 298.15
@@ -8922,7 +8924,7 @@ PARAMETER G(MU_D85,FE:W:NI;0) 298.15
 PARAMETER G(MU_D85,FE:W:TA;0) 298.15
   +7*GFCCFE# +2*GHSERW# +4*GHSERTA#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,FE:W:W;0) 298.15
-  -53450 +19*T +7*GFCCFE# +6*GHSERW#;  6000 N                          87GUSA!
+  -53450 +19*T +7*GFCCFE# +6*GHSERW#;  6000 N                           87GUS!
  
 PARAMETER G(MU_D85,NI:MO:CO;0) 298.15
   +7*GHSERNI# +2*GHSERMO# +2*GHSERCO#;  6000 N                          24FRI!
@@ -10273,10 +10275,10 @@ NUMBER  SOURCE
 86GUI   'Guillermet, A. Fernández, and L. Östlund. "Experimental and 
         theoretical study of the phase equilibria in the fe-ni-w system." 
         Metallurgical and Materials Transactions A 17 (1986): 1809-1823.'
-87GUSA  'Gustafson, Per. "A thermodynamic evaluation of the C-Fe-W system." 
-        Metallurgical and Materials Transactions A 18 (1987): 175-188.'
-87GUSB  'Gabriel, Armand, Per Gustafson, and Ibrahim Ansara. "A thermodynamic 
+87GAB  'Gabriel, Armand, Per Gustafson, and Ibrahim Ansara. "A thermodynamic 
         evaluation of the C-Fe-Ni system." Calphad 11.3 (1987): 203-218.'
+87GUS  'Gustafson, Per. "A thermodynamic evaluation of the C-Fe-W system." 
+        Metallurgical and Materials Transactions A 18 (1987): 175-188.'
 87ANDA  'Andersson, Jan-Olof, and Bo Sundman. "Thermodynamic properties of the
         Cr-Fe system." Calphad 11.1 (1987): 83-92.'
 87ANDB  'Andersson, Jan-Olof. "Thermodynamic properties of Cr-C." Calphad 11.3
@@ -10330,8 +10332,10 @@ NUMBER  SOURCE
         Metallurgical Transactions A 22 (1991): 1911-1920.'
 91LAC   'Lacaze, Jacques, and Bo Sundman. "An assessment of the Fe-C-Si 
         system." Metallurgical Transactions A 22 (1991): 2211-2223.'
+91SEI   'M. Seierstein, "COST507 Thermochemical Database for Light Metal
+        Alloys 2" (1991)'
 91SAU   'N. Saunders, "COST507 Thermochemical Database for Light Metal Alloys 
-        2" (1998)'
+        2" (1991)'
 91SUN   'Sundman, B. "An assessment of the Fe-O system." Journal of phase 
         equilibria 12 (1991): 127-140.'
 92FRI   'Frisk, Karin. "An experimental and theoretical study of the phase 
@@ -10530,8 +10534,7 @@ NUMBER  SOURCE
 11ZHO   'Zhou, Z. M., et al. "Experimental determination and thermodynamic 
         modeling of phase equilibria in the Cu-Cr system." Journal of 
         materials science 46 (2011): 7039-7045.'
-
-12CAO   'CAO, Zhan-Min, et al. "Thermodynamic reoptimization of the Fe-P 
+12CAO   'Cao, Zhan-Min, et al. "Thermodynamic reoptimization of the Fe-P 
         system." Acta Physico-Chimica Sinica 28.1 (2012): 37-43.'
 12GUO   'Guo, Cuiping, et al. "Thermodynamic modeling of the Fe-Ti-V system." 
         Calphad 38 (2012): 155-160.'
