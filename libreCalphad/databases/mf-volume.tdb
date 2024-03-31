@@ -1,0 +1,272 @@
+$ Matt Frichtl's molar volume database
+$
+$ TDB-file for molar volume assessments of elements relevant to steel
+$ development. Parameters taken from various locations and papers as
+$ referenced below.
+$
+$ This file is not meant to be used independently, but depends on the phase
+$ definitions and reference states from another database file.
+$
+$-----------------------------------------------------------------------------
+$
+$ COPYRIGHT AND LICENSE INFORMATION
+$
+$ This file is part of LibreCalphad.
+$
+$ LibreCalphad is free software: you can redistribute it and/or modify it 
+$ under the terms of the GNU General Public License as published by the Free 
+$ Software Foundation, either version 3 of the License, or (at your option) 
+$ any later version.
+$
+$ LibreCalphad is distributed in the hope that it will be useful, but WITHOUT 
+$ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+$ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+$ more details.
+$
+$ You should have received a copy of the GNU General Public License along with
+$ LibreCalphad. If not, see <https://www.gnu.org/licenses/>.
+$ 
+$ ----------------------------------------------------------------------------
+$ DATABASE_INFORMATION:
+DATABASE_INFO MOLAR VOLUMES ASSESSED FOR: '
+UNARY   Lu (2005), Hallstedt (2007), and Xiong (2019)
+CR-NI   Xiong (2019)
+FE-NI   Xiong (2019)
+NI-MO   Xiong (2019)
+
+CEMENTITE_D011 Schneider (2007)
+M5C2    Schneider (2007)
+$ ----------------------------------------------------------------------------
+$ ASSUME INTERSTITIALS ARE ZERO VOLUME
+ZEROVOLUME_SPECIES B,C,H,N,O,VA
+
+$ ----------------------------------------------------------------------------
+$ BCC_A2
+$
+PARAMETER V0(BCC_A2,AL:*;0) 298.15
+  +9.77430E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,AL:*;0) 298.15
+  +6.91213E-5*T +1.622673333E-11*T**3 +0.413484*T**(-1);  6000 N         05LU!
+
+PARAMETER V0(BCC_A2,CR:*;0)  298.15
+  +7.04033E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,CR:*;0)  298.15
+  +6.21989E-5*T -3.565205E-8*T**2 +1.45471E-11*T**3 
+  +2.883384*T**(-1);  6000 N                                             05LU!
+
+PARAMETER V0(BCC_A2,FE:*;0)  298.15
+  +7.00790E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,FE:*;0)  298.15
+  +3.42756E-5*T +8.14005E-9*T**2 +0.291672*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(BCC_A2,NI:*;0)  298.15
+  +6.59E-6;  6000 N                                                     19XIO!
+
+PARAMETER V0(BCC_A2,MO:*;0)  298.15
+  +9.34611E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,MO:*;0)  298.15
+  +1.39658E-5*T +5.7715E-10*T**2 +3.525533E-2*T**3;  6000 N              05LU!
+
+PARAMETER V0(BCC_A2,NB:*;0)  298.15
+  +10.7515E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,NB:*;0)  298.15
+  +2.12484E-5*T +2.2228E-9*T**2 +0.106961*T**(-1);  6000 N               05LU!
+
+PARAMETER V0(BCC_A2,SI:*;0)  298.15
+  +9.1E-6;  6000 N                                                      07HAL!
+
+PARAMETER V0(BCC_A2,TA:*;0)  298.15
+  +10.7866E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,TA:*;0)  298.15
+  +1.89542E-5*T +1.5484E-9*T**2 +0.036417*T**(-1);  6000 N               05LU!
+
+PARAMETER V0(BCC_A2,TI:*;0)  298.15
+  +10.5919E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,TI:*;0)  298.15
+  +1.53848E-5*T +9.32835E-9*T**2;  6000 N                                05LU!
+
+PARAMETER V0(BCC_A2,V:*;0)  298.15
+  +8.24808E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,V:*;0)  298.15
+  +2.94224E-5*T +1.9593E-12*T**3 +0.231646*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(BCC_A2,W:*;0)  298.15
+  +9.50328E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,W:*;0)  298.15
+  +1.36240E-5*T +4.932E-13*T**3 +0.055762*T**(-1);  6000 N               05LU!
+
+PARAMETER V0(BCC_A2,ZR:*;0)  298.15
+  +13.8124E-6;  6000 N                                                   05LU!
+PARAMETER VA(BCC_A2,ZR:*;0)  298.15
+  +1.94913E-5*T +3.59195E-9*T**2;  6000 N                                05LU!
+
+
+PARAMETER V0(BCC_A2,FE,NI:*;0)  298.15
+  +0.606E-6;  6000 N                                                    19XIO!
+
+PARAMETER V0(BCC_A2,NI,MO:*;0)  298.15
+  +0.180E-6;  6000 N                                                    19XIO!
+
+$ ----------------------------------------------------------------------------
+$ CEMENTITE_D011
+$ 
+PARAMETER V0(CEMENTITE_D011,*:*;0)  298.15
+  +5.847E-6;  6000 N                                                    07SCH!
+
+$ ----------------------------------------------------------------------------
+$ DIAMOND_A4
+$
+PARAMETER V0(DIAMOND_A4,SI;0)  298.15
+  +12.0588E-6;  6000 N                                                  07HAL!
+
+$ ----------------------------------------------------------------------------
+$ FCC_A1
+$ 
+PARAMETER V0(FCC_A1,AG:*;0)  298.15
+  +10.1092E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,AG:*;0)  298.15
+  +4.87439E-5*T +1.33148E-8*T**2 +0.076014*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(FCC_A1,AU:*;0)  298.15
+  +10.0824E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,AU:*;0)  298.15
+  +4.21579E-5*T +4.7670667E-12*T**3 +0.062982*T**(-1);  6000 N           05LU!
+
+PARAMETER V0(FCC_A1,CO:*;0)  298.15
+  +6.59035E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,CO:*;0)  298.15
+  +3.41220E-5*T +0.190015E-8*T**2;  6000 N                               05LU!
+
+PARAMETER V0(FCC_A1,CR:*;0)  298.15
+  +7.50E-6;  6000 N                                                     19XIO!
+
+PARAMETER V0(FCC_A1,CU:*;0)  298.15
+  +7.01070E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,CU:*;0)  298.15
+  +4.31706E-5*T +1.20047E-8*T**2 +0.109757*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(FCC_A1,FE:*;0)  298.15
+  +6.72092E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,FE:*;0)  298.15
+  +6.97895E-5*T;  6000 N                                                 05LU!
+
+PARAMETER V0(FCC_A1,IR:*;0)  298.15
+  +8.47715E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,IR:*;0)  298.15
+  +1.52021E-5*T +4.7619E-9*T**2;  6000 N                                 05LU!
+
+PARAMETER V0(FCC_A1,MO:*;0)  298.15
+  +9.50E-6;  6000 N                                                     19XIO!
+
+PARAMETER V0(FCC_A1,NI:*;0)  298.15
+  +6.52857E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,NI:*;0)  298.15
+  +3.23156E-5*T +1.08201E-8*T**2 +0.139773*T**(-2);  6000 N              05LU!
+
+PARAMETER V0(FCC_A1,PD:*;0)  298.15
+  +8.77796E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,PD:*;0)  298.15
+  +3.11002E-5*T +7.4407E-9*T**2;  6000 N                                 05LU!
+
+PARAMETER V0(FCC_A1,PT:*;0)  298.15
+  +9.02143E-6;  6000 N                                                   05LU!
+PARAMETER VA(FCC_A1,PT:*;0)  298.15
+  +2.73653E-5*T  +0.1654E-12*T**2 +0.074902*T**(-1);  6000 N             05LU!
+
+PARAMETER V0(FCC_A1,RH:*;0)  298.15
+  +8.22292E-6;  6000  N                                                  05LU!
+PARAMETER VA(FCC_A1,RH:*;0)  298.15
+  +2.05705E-5*T +7.74705E-9*T**2 +0.071015*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(FCC_A1,SI:*;0)  298.15
+  +9.2E-6;  6000 N                                                      07HAL!
+
+
+PARAMETER V0(FCC_A1,CR,NI:*;0)  298.15
+  -0.396E-6;  6000 N                                                    19XIO!
+PARAMETER V0(FCC_A1,FE,NI:*;0)  298.15
+  +0.621E-6;  6000 N                                                    19XIO!
+PARAMETER V0(FCC_A1,MO,NI:*;0)  298.15
+  -0.205;  6000 N                                                       19XIO!
+
+$ ----------------------------------------------------------------------------
+$ HCP_A3
+$
+PARAMETER V0(HCP_A3,CD:*;0)  298.15
+  +12.6828E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,CD:*;0)  298.15
+  +7.38893E-5*T +3.18493E-8*T**2;  6000 N                                05LU!
+
+PARAMETER V0(HCP_A3,CO:*;0)  298.15
+  +12.6828E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,CO:*;0)  298.15
+  +3.56147E-5*T +8.31975E-9*T**2 +0.183866*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(HCP_A3,HF:*;0)  298.15
+  +13.3708E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,HF:*;0)  298.15
+  +1.54634E-5*T +3.6072E-9*T**2;  6000 N                                 05LU!
+
+PARAMETER V0(HCP_A3,MG:*;0)  298.15
+  +13.6883E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,MG:*;0)  298.15
+  +6.33136E-5*T +2.64418E-8*T**2 +0.193125*T**(-1);  6000 N              05LU!
+
+PARAMETER V0(HCP_A3,OS:*;0)  298.15
+  +8.38059E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,OS:*;0)  298.15
+  +1.70798E-5*T;  6000 N                                                 05LU!
+
+PARAMETER V0(HCP_A3,RE:*;0)  298.15
+  +8.81352E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,RE:*;0)  298.15
+  +1.71378E-5*T +2.17055E-9*T**2;  6000 N                                05LU!
+
+PARAMETER V0(HCP_A3,RU:*;0)  298.15
+  +8.13257E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,RU:*;0)  298.15
+  +1.55596E-5*T +4.13795E-9*T**2 +1.08024333E-12*T**3;  6000 N           05LU!
+
+PARAMETER V0(HCP_A3,SC:*;0)  298.15
+  +14.9090E-6;  6000  N                                                  05LU!
+PARAMETER VA(HCP_A3,SC:*;0)  298.15
+  +3.01661E-5*T +4.0596667E-12*T**3;  6000 N                             05LU!
+
+PARAMETER V0(HCP_A3,SI:*;0)  298.15
+  +8.8E-6;  6000 N                                                      07HAL!
+
+PARAMETER V0(HCP_A3,TI:*;0)  298.15
+  +10.5463E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,TI:*;0)  298.15
+  +2.47929E-5*T +5.1783E-9*T**2 +0.144379*T**(-1);  6000 N               05LU!
+
+PARAMETER V0(HCP_A3,ZN:*;0)  298.15
+  +8.92280E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,ZN:*;0)  298.15
+  +8.20010E-5*T +1.558555E-8*T**2 +0.103783*T**(-1);  6000 N             05LU!
+
+PARAMETER V0(HCP_A3,ZR:*;0)  298.15
+  +13.9524E-6;  6000 N                                                   05LU!
+PARAMETER VA(HCP_A3,ZR:*;0)  298.15
+  +1.46607E-5*T +4.8452E-9*T**2 +0.033091*T**(-1);  6000 N               05LU!
+
+$ ----------------------------------------------------------------------------
+$ M5C2 - HAGG CARBIDE
+$
+PARAMETER V0(M5C2,FE:C;0)  298.15
+  +5.70E-6;  6000 N                                                     07SCH!
+
+$ ----------------------------------------------------------------------------
+$ REFERENCES
+
+LIST_OF_REFERENCES
+NUMBER  SOURCE
+05LU  'Lu, Xiao-Gang, Malin Selleby, and Bo Sundman. "Assessments of molar 
+       volume and thermal expansion for selected bcc, fcc and hcp metallic 
+       elements." Calphad 29.1 (2005): 68-89.'
+07HAL 'Hallstedt, Bengt. "Molar volumes of Al, Li, Mg and Si." Calphad 31.2 
+      (2007): 292-302.'
+07SCH 'Schneider, André, and Gerhard Inden. "Carbon diffusion in cementite 
+      (Fe3C) and Hägg carbide (Fe5C2)." Calphad 31.1 (2007): 141-147.'
+19XIO 'Xiong, Wen-Hao, et al. "Assessments of molar volumes of Co-, Ni-and Ti-
+       related bcc and fcc phases." Calphad 66 (2019): 101629.'
