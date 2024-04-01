@@ -71,8 +71,10 @@ DATABASE_INFO BCC Mobility data has been assessed for: '
   FE-MN-SI    Zheng (2015)'
   '
   HCP Mobility data assessed for:'
-  None'
+  FE-N        Du (1995)'
   Other HCP parameters assumed identical to FCC'
+  '
+  FE4N_LP10   Du (1995)
   '
 !
 $
@@ -769,6 +771,17 @@ PARAMETER MQ(FCC_A1&NI,NI,NB:VA;0) 298.15
   +1236140.21;  6000 N                                                  12LIU!
 
 $ ----------------------------------------------------------------------------
+$ FE4N_LP10
+$ GAMMA PRIME
+
+PARAMETER MQ(FE4N&N,FE:C;0)  298.15
+  -88300 +R*T*LN(2.7E-10);  6000 N                                       95DU!
+PARAMETER MQ(FE4N&N,FE:N;0)  298.15
+  -88300 +R*T*LN(2.7E-10);  6000 N                                       95DU!
+PARAMETER MQ(FE4N&N,FE:VA;0)  298.15
+  -88300 +R*T*LN(2.7E-10);  6000 N                                       95DU!
+
+$ ----------------------------------------------------------------------------
 $ HCP_A3
 
 $ MOST PARAMETERS ARE ASSUMED IDENTICAL TO THE FCC_A1 PARAMETERS.
@@ -849,6 +862,17 @@ PARAMETER MQ(HCP_A3&MO,MO:VA;0) 298.15
   -315205.34 +R*T*LN(1.27E-4);  6000 N                                  12LIU!
 PARAMETER MQ(HCP_A3&MO,NI:VA;0)  298.15
   -285254.005 +R*T*LN(1.77E-4);  6000 N                                 15ZHU!
+
+PARAMETER MQ(HCP_A3&N,FE:B;0) 298.15
+  -80700 +R*T*LN(4.6E-13);  6000 N                                       95DU!
+PARAMETER MQ(HCP_A3&N,FE:C;0) 298.15
+  -80700 +R*T*LN(4.6E-13);  6000 N                                       95DU!
+PARAMETER MQ(HCP_A3&N,FE:H;0) 298.15
+  -80700 +R*T*LN(4.6E-13);  6000 N                                       95DU!
+PARAMETER MQ(HCP_A3&N,FE:N;0) 298.15
+  -80700 +R*T*LN(4.6E-13);  6000 N                                       95DU!
+PARAMETER MQ(HCP_A3&N,FE:VA;0) 298.15
+  -80700 +R*T*LN(4.6E-13);  6000 N                                       95DU!
 
 PARAMETER MQ(HCP_A3&NB,NB:VA;0) 298.15
   -217919.25 +R*T*LN(9.78E-5);  6000 N                                  12LIU!
@@ -936,6 +960,9 @@ NUMBER  SOURCE
 94JON   'Jönsson, B. "Mobilities in Fe-Ni alloys: assessment of the mobilities
         of Fe and Ni in fcc Fe-Ni alloys." Scandinavian journal of metallurgy
         23.5-6 (1994): 201-208.'
+95DU    'Du, Hong, and John Ägren. "Gaseous Nitriding Iron-—Evaluation of 
+        Diffusion Data of N In γ' and ε Phases." International Journal of 
+        Materials Research 86.8 (1995): 522-529.'
 95JON   'Jonsson, Bjorn. "Assessment of the mobilities of Cr, Fe and Ni in bcc
         Cr-Fe-Ni alloys." ISIJ international 35.11 (1995): 1415-1421.'
 02GHOA  'Ghosh, G. "Thermodynamic and kinetic modeling of the Cr-Ti-V system."
