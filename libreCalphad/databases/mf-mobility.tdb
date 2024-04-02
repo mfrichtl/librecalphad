@@ -33,13 +33,19 @@ DATABASE_INFO BCC Mobility data has been assessed for: '
   AL-FE       Liu (2009)'
   AS-FE       Liu (2009)'
   AU-FE       Liu (2009)'
+  C-CR        Jonsson (1995)'
   C-FE        Jonsson (1992)'
+  CR-CR       Jonsson (1995)'
+  CR-FE       Jonsson (1992) and Jonsson (1995)'
+  CR-NI       Jonsson (1995)'
   CR-TI       Ghosh (2002)'
   CR-V        Ghosh (2002)'
   CU-FE       Liu (2009) and Wang (2012)'
+  FE-FE       Jonsson (1992)'
   FE-MN       Liu (2009)'
   FE-MO       Lindwall (2012) and Zheng (2017)'
   FE-NB       Liu (2009)'
+  FE-NI       Jonsson (1992) and Jonsson (1995)'
   FE-SB       Liu (2009)'
   FE-SI       Wang (2012)'
   FE-SN       Liu (2009)'
@@ -280,9 +286,9 @@ PARAMETER MF(BCC_A2&FE,CU:VA)  298.15
   -79*T;  6000 N                                                        12WAN!
 
 PARAMETER MQ(BCC_A2&FE,FE:VA) 298.15
-  -218000;  6000 N                                                      95JON!
+  -218000;  6000 N                                                      92JON!
 PARAMETER MF(BCC_A2&FE,FE:VA)  298.15
-  +R*T*LN(4.6E-5);  6000 N                                              95JON!
+  +R*T*LN(4.6E-5);  6000 N                                              92JON!
 
 PARAMETER MQ(BCC_A2&FE,MN:C;0)  298.15
   -218000;  6000 N                                                     09LIUA!
@@ -378,9 +384,9 @@ PARAMETER MF(BCC_A2&NI,CR:VA;0) 298.15
   -17.2*T;  6000 N                                                      95JON!
 
 PARAMETER MQ(BCC_A2&NI,FE:VA;0) 298.15
-  -204000;  6000 N                                                      95JON!
+  -204000;  6000 N                                                      92JON!
 PARAMETER MF(BCC_A2&NI,FE:VA;0) 298.15
-  +LN(1.8E-5)*R*T;  6000 N                                              95JON!
+  +LN(1.8E-5)*R*T;  6000 N                                              92JON!
 
 PARAMETER MQ(BCC_A2&NI,NI:VA;0) 298.15
   -204000;  6000 N                                                      95JON!
@@ -474,13 +480,13 @@ PARAMETER MF(BCC_A2&ZN,ZN:VA;0)  298.15
 
 $ --- BINARY INTERACTIONS ---
 PARAMETER MQ(BCC_A2&CR,CR,FE:VA;0) 298.15
-  +361000;  6000 N                                                      95JON!
+  +361000;  6000 N                                                      92JON!
 PARAMETER MF(BCC_A2&CR,CR,FE:VA;0) 298.15
-  -116*T;  6000 N                                                       95JON!
+  -116*T;  6000 N                                                       92JON!
 PARAMETER MQ(BCC_A2&CR,CR,FE:VA;1) 298.15
-  +2820;  6000 N                                                        95JON!
+  +2820;  6000 N                                                        92JON!
 PARAMETER MF(BCC_A2&CR,CR,FE:VA;1) 298.15
-  +37.5*T;  6000 N                                                      95JON!
+  +37.5*T;  6000 N                                                      92JON!
 
 PARAMETER MQ(BCC_A2&CR,CR,NI:VA;0) 298.15
   +350000;  6000 N                                                      95JON!
@@ -495,13 +501,13 @@ PARAMETER MQ(BCC_A2&CU,FE,CU:VA;0)  298.15
   -191623.11;  6000 N                                                   12WAN!
 
 PARAMETER MQ(BCC_A2&FE,CR,FE:VA;0)  298.15
-  +267000;  6000 N                                                      95JON!
+  +267000;  6000 N                                                      92JON!
 PARAMETER MF(BCC_A2&FE,CR,FE:VA;0)  298.15
-  -117*T;  6000 N                                                       95JON!
+  -117*T;  6000 N                                                       92JON!
 PARAMETER MQ(BCC_A2&FE,CR,FE:VA;1)  298.15
-  -416000;  6000 N                                                      95JON!
+  -416000;  6000 N                                                      92JON!
 PARAMETER MF(BCC_A2&FE,CR,FE:VA;1)  298.15
-  +348*T;  6000 N                                                       95JON!
+  +348*T;  6000 N                                                       92JON!
 
 PARAMETER MQ(BCC_A2&FE,CR,NI:VA;0)  298.15
   +350000;  6000 N                                                      95JON!
@@ -512,7 +518,7 @@ PARAMETER MF(BCC_A2&FE,FE,MO:VA;0)  298.15
   +37.942*T;  6000 N                                                    12LIN!
 
 PARAMETER MQ(BCC_A2&FE,FE,NI:VA;0) 298.15
-  +150000;  6000 N                                                      95JON!
+  +150000;  6000 N                                                      92JON!
 
 PARAMETER MQ(BCC_A2&FE,FE,SI:VA;0)  298.15
   -104880.52;  6000 N                                                   12WAN!
