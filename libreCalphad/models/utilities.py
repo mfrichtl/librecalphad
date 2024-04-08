@@ -32,7 +32,7 @@ def DG(db, components, phases, conditions):
         return np.nan
     
 
-def parse_composition(row):
+def parse_composition(row, dependent_element):
     """
     Function to parse a composition definition from a value in a Pandas Series object.
     Assumes the composition is defined with a label of 'material_at%' or 'material_wt%'.
@@ -41,10 +41,12 @@ def parse_composition(row):
     object, and a pymatgen.core.Composition.chemical_system description.
 
     Parameters: row : Pandas Series
-                  A row from a Pandas DataFrame of materials data.
+                    A row from a Pandas DataFrame of materials data.
+                dependent_element : String
+                    String indicating the dependent element.
     
-    Returns :   row : Pandas Series
-                  The modified row with the composition objects described above.
+    Returns: row : Pandas Series
+                The modified row with the composition objects described above.
     """
     
     comp_dict = {}
@@ -62,9 +64,9 @@ def parse_composition(row):
     conditions = {}
     components = []
     for value in split_mat:
-        if value.lower() == 'fe':
-            matrix = 'Fe'
-            components.append('FE')
+        if value.lower() == dependent_element.lower():
+            matrix = dependent_element.capitalize()
+            components.append(dependent_element.upper())
         elif value == '':
             continue
         else:
@@ -91,9 +93,11 @@ def parse_composition(row):
                 print(row)
             comp_dict[element] = frac
     
-    assert matrix == 'Fe', "Non-iron or no matrix found"
+    assert matrix == dependent_element.capitalize(), "Did not identify the dependent component."
 
     alloy.sort()
+    if 'VA' not in components:
+        components.append('VA')
     row['components'] = components
     row['conditions'] = conditions
     row['alloy_system'] = 'Fe-' + '-'.join(alloy)
@@ -115,3 +119,56 @@ def parse_composition(row):
         print(row)
     
     return row
+
+
+def trim_conditions(components, conditions, max_num_conditions=1000, solute_threshold=1e-12, always_remove_list=[], always_keep_list=[]):
+    """
+    Function to trim conditions for a pycalphad calculation based on a variety of criteria. This is necessary because on certain occasions
+    the equilibrium calculations do not function very well or cause problems if too many conditions are passed or if concentrations of
+    certain elements are very low. This generally takes some trial and error to determine, but this function helps to systematically
+    trim the offending conditions to enable bulk calculations.
+
+    If the number of conditions exceeds to maximum allowed after removing those components in the always_remove_list or with concentrations less than the
+    solute_threshold, the components with the lowest concentration will be removed first, unless they are in the always_keep_list.
+
+    Parameters: components : array_like
+                    The pycalphad component list.
+                conditions, dictionary
+                    The pycalphad conditions dictionary.
+                max_num_conditions, int, defaults to 1000
+                    The maximum number of conditions to be returned.
+                solute_threshold, float, defaults to 1e-12
+                    The minimum concentration threshold for an element to be returned.
+                always_remove_list, array_like
+                    A list of components to always be removed.
+                always_keep_list, array_like
+                    A list of components to always keep.
+
+    Returns :   components, list
+                    The modified components list.
+                conditions, dictionary
+                    The modificed conditions dictionary.
+    """
+
+    n = 0
+    original_conditions = conditions.copy()
+    if type(components) != np.ndarray:  # otherwise np.delete does not seem to work as expected.
+        components = np.array(components)
+    for elem, frac in original_conditions.items():
+        if str(elem).startswith('X_'): 
+            component = str(elem).split('_')[1]
+            if component in always_remove_list or frac < solute_threshold:  # trim very small quantities because they seem to cause problems.
+                components = np.delete(components, np.where(components == component))
+                conditions.pop(elem)
+
+    while len(conditions) > max_num_conditions:  # pycalphad seems to crash with too many conditions, kept getting stack smashing errors
+        if len(conditions) <= max_num_conditions:
+            break
+        min_element = list(conditions.keys())[list(conditions.values()).index(sorted(conditions.values())[n])]
+        component = str(min_element).split('_')[1]
+        if component not in always_keep_list:
+            components = np.delete(components, np.where(components == component))
+            conditions.pop(min_element)
+        n += 1
+    
+    return components, conditions
