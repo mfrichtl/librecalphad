@@ -186,7 +186,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-NI   Lee (1992)'
   C-CR-V    Bratberg (2005)'
   C-CU-FE   Chen (2019)'
-  C-FE-MN   Huang (1991) and Djurovic (2011)'
+  C-FE-MN   Huang (1990), Huang (1991), and Djurovic (2011)'
   C-FE-MO   Andersson (1988) and Hillert (1992)'
   C-FE-NB   Huang (1990)'
   C-FE-NI   Gustafson (1987) and Jacob (2023)'
@@ -1875,10 +1875,12 @@ PARAMETER L(BCC_A2,FE:H,VA;0) 298.15
 PARAMETER L(BCC_A2,FE:O,VA;0) 298.15
   -517549 +71.83*T;  6000 N                                             08KJE!
 
+PARAMETER L(BCC_A2,FE,MN:C;0) 298.15
+  +34052 -23.467*T;  6000  N                                           90HUAB!
 PARAMETER L(BCC_A2,FE,MN:VA;0) 298.15
-  -2759 +1.237*T;  6000 N                                             89HUAAA!
+  -2759 +1.237*T;  6000 N                                              89HUAA!
 PARAMETER TC(BCC_A2,FE,MN:VA;0) 298.15
-  +123;  6000 N                                                       89HUAAA!
+  +123;  6000 N                                                        89HUAA!
 
 PARAMETER L(BCC_A2,FE,MO:C;0) 298.15
   -1226000 +570*T;  6000 N                                              92HIL!
@@ -10314,6 +10316,8 @@ NUMBER  SOURCE
 90HUAA  'Huang, Weiming. "A Thermodynamic Evaluation of the Fe-Nb-C System/
         Eine Thermodynamische Auswertung des Systems Fe-Nb-C." International 
         Journal of Materials Research 81.6 (1990): 397-404.'
+90HUAB  'Huang, Weiming. "A thermodynamic assessment of the Fe-Mn-C system." 
+        Metallurgical Transactions A 21 (1990): 2115-2123.'
 90TAY   'Taylor, Jeffrey R., and Alan T. Dinsdale. "A Thermodynamic Assessment 
         of the Ni-O, Cr-O and Cr-Ni-O Systems Using the lonic Liquid and 
         Compound Energy Models." International Journal of Materials Research 
