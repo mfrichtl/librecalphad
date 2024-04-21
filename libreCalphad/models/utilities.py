@@ -85,7 +85,7 @@ def parse_composition(row, dependent_element):
                 # semi-arbitrary cutoff point for describing the alloy system, higher for substitutional elements
                 if element in interstitials and frac > 0.0005:
                     alloy.append(element)
-                elif frac > 0.005:
+                elif frac > 0.002:
                     alloy.append(element)
 
             except:
@@ -172,3 +172,33 @@ def trim_conditions(components, conditions, max_num_conditions=1000, solute_thre
         n += 1
     
     return components, conditions
+
+
+def convert_conditions(conditions):
+    # Convert a conditions dictionary from strings to pycalphad.variables objects to prepare for calculations.
+
+    converted_conditions = {}
+    for key, value in conditions.items():
+        if key == 'N':
+            converted_conditions[v.N] = value
+        elif key == 'P':
+            converted_conditions[v.P] = value
+        elif key == 'T':
+            converted_conditions[v.T] = value
+        elif key.startswith('X'):
+            converted_conditions[v.X(key.split('_')[1])] = value
+        else:
+            raise NotImplementedError(f"Cannot identify pycalphad variable type for, {key} : {value}.")
+    return converted_conditions
+
+
+def get_components_from_conditions(conditions, dependent_component):
+    # Return a list of components from conditions. Still needs a dependent component. Always adds VA.
+
+    components = [dependent_component, 'VA']
+
+    for key, value in conditions.items():
+        if str(key).startswith('X'):
+            components.append(str(key).split('_')[1])
+    
+    return components
