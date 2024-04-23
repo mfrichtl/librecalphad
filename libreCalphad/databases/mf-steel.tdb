@@ -35,7 +35,7 @@ $            SUBLATTICES THAN ANDERSSON 1988.
 $ 2023-06-11 ORDERED PHASES IN AL-FE SYSTEM NOT INCORPORATED, SEE SUNDMAN 2009
 $ 2023-07-16 FE-TI-V TERMS FOR SIGMA NOT INCORPORATED BECAUSE GUO 2012 USED 
 $            THE 2-SUBLATTICE SIGMA MODEL.
-$ 2023-07-23 ISSUES WITH FE-MN-SI 
+$ 2023-07-23 ISSUES WITH FE-MN-SI TERNARY.
 $ 2023-08-09 THE C-FE-MO ASSESSMENT FROM ANDERSSON CREATED AN INVERSE
 $            MISCIBILITY GAP IN THE LIQUID PHASE OF THE C-MO SYSTEM. THIS IS
 $            NOT REAL.
@@ -1462,7 +1462,6 @@ PARAMETER G(BCC_A2,CU:VA;0) 298.15
 PARAMETER G(BCC_A2,FE:B;0) 298.15
   -3000 +12.832*T;  6000 N                                              02ROM!
 PARAMETER G(BCC_A2,FE:C;0) 298.15
-  $ +162505 +184.465*T;  6000 N                                           14NAR!
   +322050 +75.667*T +GHSERFE# +3*GHSERCC#;  6000 N                      85GUS!
 PARAMETER BMAGN(BCC_A2,FE:C;0) 298.15
   +2.22;  6000 N                                                        85GUS!
@@ -1868,7 +1867,6 @@ PARAMETER L(BCC_A2,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
 
 PARAMETER L(BCC_A2,FE:C,VA;0) 298.15
-  $ +150000 -290*T;  6000 N                                               14NAR!
   -190*T;  6000 N                                                       85GUS!
 PARAMETER L(BCC_A2,FE:H,VA;0) 298.15
   +0;  6000 N                                                           02ZIN!
@@ -1932,9 +1930,9 @@ PARAMETER L(BCC_A2,FE,S:VA;0) 298.15
   -119675 -18.7201*T;  6000 N                                           07LEE!
 
 PARAMETER L(BCC_A2,FE,SI:C;0) 298.15
-  +1E6 -100*T;  6000 N                                                  98MIE!
+  +1000000 -100*T;  6000 N                                              98MIE!
 PARAMETER L(BCC_A2,FE,SI:C;1) 298.15
-  -9E5;  6000 N                                                         98MIE!
+  -900000;  6000 N                                                      98MIE!
 PARAMETER L(BCC_A2,FE,SI:VA;0) 298.15
   -154013.56 +32.29*T;  6000 N                                         17CUIA!
 PARAMETER L(BCC_A2,FE,SI:VA;1) 298.15
@@ -2271,6 +2269,8 @@ PARAMETER G(BCC_B2,MN:FE:VA;0) 298.15
   +0;  6000 N                                                           24FRI!
 PARAMETER G(BCC_B2,MN:MN:VA;0) 298.15
   +0;  6000 N                                                           24FRI!
+PARAMETER G(BCC_B2,MN:SI:VA;0) 298.15
+  +0;  6000 N                                                           24FRI!
 
 PARAMETER G(BCC_B2,NI:AL:VA;0) 298.15
   -49978 +7.5795*T;  6000 N                                             99DUP!
@@ -2287,8 +2287,10 @@ PARAMETER BMAGN(BCC_B2,SI:FE:VA;0) 298.15
   -0.75;  6000 N                                                        23WIT!
 PARAMETER TC(BCC_B2,SI:FE:VA;0) 298.15
   -210;  6000 N                                                         23WIT!
+PARAMETER G(BCC_B2,SI:MN:VA;0) 298.15
+  +0;  6000 N                                                           24FRI!
 PARAMETER G(BCC_B2,SI:SI:VA;0) 298.15
-  +0 +GHSERSI#;  6000 N                                                 24FRI!
+  +0;  6000 N                                                           24FRI!
 
 PARAMETER G(BCC_B2,TI:FE:VA;0) 298.15
   -33946.4 -46.6850*T +8.663*T*LN(T) -0.01853*T**2
@@ -3552,12 +3554,9 @@ PARAMETER G(FCC_A1,CU:VA;0) 298.15
 PARAMETER G(FCC_A1,FE:B;0) 298.15
   +45496 -77.534*T;  6000  N                                            02ROM!
 PARAMETER G(FCC_A1,FE:C;0) 298.15
-  $ +72729 -15.212*T +GFCCFE# +GHSERCC#;  6000 N                          14NAR!
   +77207 -15.877*T +GFCCFE# +GHSERCC#;  6000 N                          85GUS!
 PARAMETER BMAGN(FCC_A1,FE:C;0) 298.15
   -2.1;  6000 N                                                         85GUS!
-PARAMETER NT(FCC_A1,FE:C;0) 298.15
-  +67;  6000 N                                                          14NAR!
 PARAMETER TC(FCC_A1,FE:C;0) 298.15
   -201;  6000 N                                                         85GUS!
 PARAMETER G(FCC_A1,FE:H;0) 298.15
@@ -3967,19 +3966,6 @@ PARAMETER TC(FCC_A1,FE,MN:VA;0) 298.15
   -2282;  6000 N                                                       89HUAA!
 PARAMETER TC(FCC_A1,FE,MN:VA;1) 298.15
   -2068;  6000 N                                                       89HUAA!
-$ PARAMETER L(FCC_A1,FE,MN:VA;0) 298.15
-$   -8602 +3*T;  6000 N                                                   23JAC!
-$ PARAMETER L(FCC_A1,FE,MN:VA;1) 298.15
-$   +1059 -1.1*T;  6000 N                                                 23JAC!
-
-$ PARAMETER TC(FCC_A1,FE,MN:VA;0) 298.15
-$   -2380;  6000 N                                                        23JAC!
-$ PARAMETER TC(FCC_A1,FE,MN:VA;1) 298.15
-$   -2068;  6000 N                                                        23JAC!
-$ PARAMETER TC(FCC_A1,FE,MN:VA;2) 298.15
-$   +2800;  6000 N                                                        23JAC!
-$ PARAMETER BMAGN(FCC_A1,FE,MN:VA;0) 298.15
-$   +1.8;  6000 N                                                         23JAC!
 
 PARAMETER L(FCC_A1,FE,MO:C;0) 298.15
   +6000;  6000 N                                                       88ANDD!
@@ -5488,6 +5474,11 @@ PARAMETER L(HCP_A3,FE,P:VA;0) 298.15
 PARAMETER L(HCP_A3,FE,S:VA;0) 298.15
   -108733 -18*T;  6000 N                                                24FRI!
 
+$ SAME C,FE,SI INTERACTION AS FCC_A1
+PARAMETER L(HCP_A3,FE,SI:C;0) 298.15
+  +226100 -34.25*T;  6000 N                                             98MIE!
+PARAMETER L(HCP_A3,FE,SI:C;1) 298.15
+  -202400;  6000 N                                                      98MIE!
 PARAMETER L(HCP_A3,FE,SI:VA;0) 298.15
   -106149 +41.116*T; 6000 N                                             15ZHE!
 PARAMETER L(HCP_A3,FE,SI:VA;1) 298.15
@@ -7508,11 +7499,7 @@ PHASE M5C2 %B 2 5 2 !
 CONSTITUENT M5C2 : FE,MN,V : C,N : !
 
 PARAMETER G(M5C2,FE:C;0) 0.01
-  +1.666667*GFE3C# +0.3333333*GHSERCC# +2554;  6000 N                   14NAR!
-PARAMETER BMAGN(M5C2,FE:C;0) 0.01
-  +6.839;  6000 N                                                       14NAR!
-PARAMETER TC(M5C2,FE:C;0) 0.01
-  +520;  6000 N                                                         14NAR!
+  +1.666667*GFE3C# +0.3333333*GHSERCC# +6200;  6000 N                   11DJU!
 PARAMETER G(M5C2,FE:N;0) 298.15
   -53838 +952.0774*T -174.5248*T*LN(T) +438672*T**(-1);  6000 N         93DU !
 
@@ -10567,9 +10554,6 @@ NUMBER  SOURCE
 14KHV   'Khvan, Alexandra V., Bengt Hallstedt, and Christoph Broeckmann. "A 
         thermodynamic evaluation of the Fe-Cr-C system." Calphad 46 (2014): 
         24-33.'
-14NAR   'Naraghi, Reza, Malin Selleby, and John Ågren. "Thermodynamics of 
-        stable and metastable structures in Fe-C system." Calphad 46 (2014): 
-        148-158.'
 14ZHA   'Zhao, C. C., et al. "Experimental investigation and thermodynamic 
         calculation of the phase equilibria in the Fe-Ni-V system." Calphad 46
         (2014): 80-86.'
