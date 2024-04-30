@@ -52,6 +52,7 @@ def parse_composition(row, dependent_element):
     comp_dict = {}
     weight_percent = False
     interstitials = ['B', 'C', 'H', 'N', 'O']
+    dependent_element = dependent_element.lower()
     material_col = 'material_at%'
     if pd.isnull(row['material_at%']):  # no atomic percent entered
         weight_percent = True
@@ -59,13 +60,14 @@ def parse_composition(row, dependent_element):
 
     # Parse hyphenated values
     split_mat = row[material_col].split('-')
+    split_mat = [elem.lower() for elem in split_mat]
+    assert dependent_element in split_mat, f"Did not identify the dependent component ({dependent_element}) in {split_mat}."
     alloy = []
     frac = 0
     conditions = {}
     components = []
     for value in split_mat:
-        if value.lower() == dependent_element.lower():
-            matrix = dependent_element.capitalize()
+        if value == dependent_element:
             components.append(dependent_element.upper())
         elif value == '':
             continue
@@ -74,35 +76,33 @@ def parse_composition(row, dependent_element):
             for char in value:
                 if char.isalpha():
                     element += char
-            element = element.capitalize()
             try:
                 frac = float(value.split(element)[0]) / 100
-                # if (element != 'C' and element != 'N') and frac > 0.001:
-                #     use_element = True
                 
                 conditions.update({v.X(element.upper()): frac})
                 components.append(element.upper())
                 # semi-arbitrary cutoff point for describing the alloy system, higher for substitutional elements
                 if element in interstitials and frac > 0.0005:
-                    alloy.append(element)
+                    alloy.append(element.capitalize())
                 elif frac > 0.002:
-                    alloy.append(element)
+                    alloy.append(element.capitalize())
 
-            except:
-                print("ERROR WITH:")
+            except Exception as e:
+                print(str(e))
+                print(f"Identified element: {element}")
                 print(row)
-            comp_dict[element] = frac
+            comp_dict[element.capitalize()] = frac
     
-    assert matrix == dependent_element.capitalize(), "Did not identify the dependent component."
+    
 
     alloy.sort()
     if 'VA' not in components:
         components.append('VA')
     row['components'] = components
     row['conditions'] = conditions
-    row['alloy_system'] = 'Fe-' + '-'.join(alloy)
+    row['alloy_system'] = dependent_element.capitalize() + '-' + '-'.join(alloy)
     solute_fraction = np.sum(list(comp_dict.values()))
-    comp_dict[matrix] = 1 - solute_fraction
+    comp_dict[dependent_element.capitalize()] = 1 - solute_fraction
     comp_set = None
     try:
         if weight_percent:
@@ -114,8 +114,8 @@ def parse_composition(row, dependent_element):
         
         for element, frac in comp_set.items():
             row[str(element)] = frac
-    except:
-        print("ISSUE WITH:")
+    except Exception as e:
+        print(str(e))
         print(row)
     
     return row

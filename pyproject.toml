@@ -2,6 +2,7 @@
 requires = [
     "pycalphad",
     "setuptools",
+    "pymatgen",
 ]
 build-backend = "setuptools.build_meta"
 
