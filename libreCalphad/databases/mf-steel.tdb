@@ -91,14 +91,15 @@ DATABASE_INFO The following systems are available:'
   B-C       Kasper (1996)'
   B-CR      Campbell (2002) and Pan (2010)'
   B-FE      Van Rompaey (2002) and Pan (2010)'
+  B-MO      Pan (2010)'
   B-NI      Sun (2009), Pan (2010), and Oikawa (2022)'
-  C-CO      Guillermet (1988) and Kusoffsky (1997)'
+  C-CO      Guillermet (1988) and Kusoffsky (1997)' 
   C-CR      Andersson (1987), Lee (1992), Qiu (1992), and Khvan (2012)'
   C-CU      Chen (2019)'
   C-FE      Gustafson (1985), Du (1993), Hallstedt (2010), Naraghi (2014),
             Jacob (2023)'
   C-MN      Huang (1991) and Djurovic (2010)'
-  B-MO      Pan (2010)'
+  C-MO      Andersson (1988) and Hiller (1992)'
   C-NB      Huang (1997), Lee (2001), and Khvan (2013)'
   C-NI      Gabriel (1987)'
   C-SI      Lacaze (1991) and Gröbner (1996)'
@@ -150,7 +151,6 @@ DATABASE_INFO The following systems are available:'
   MN-SI     Zheng (2015) and Zheng (2017)'
   MN-TI     Khan (2016)'
   MN-V      Huang (1991)'
-  MO-C      Andersson (1988)'
   MO-N      Frisk (1991)'
   MO-NI     Frisk (1992) and Yaqoob (2018)'
   MN-S      Dilner (2015) W/ ASSOCIATE LIQUID MODEL VICE IONIC
@@ -2017,8 +2017,10 @@ PARAMETER L(BCC_A2,MN,V:C;0) 298.15
 PARAMETER L(BCC_A2,MN,V:VA;0) 298.15
   -10000;  6000 N                                                       91HUA!
 
-PARAMETER L(BCC_A2,MO:C,VA;0) 298.15
-  -50000;  6000 N                                                       02BRA!
+$ I DON'T KNOW WHERE BRATBERG GOT THIS PARAMETER, BUT IT INCREASES THE C
+$ SOLUBILITY IN BCC TOO MUCH.
+$ PARAMETER L(BCC_A2,MO:C,VA;0) 298.15
+$   -50000;  6000 N                                                       02BRA!
 
 PARAMETER L(BCC_A2,MO,NI:VA;0) 298.15
   +42405.6;  6000 N                                                     18YAQ!
@@ -7507,6 +7509,7 @@ PARAMETER G(MC_ETA,MO:C;0) 298.15
   -9100 -5.35*T -750000*T**(-1) +GHSERMO# +GHSERCC#;  6000 N           88ANDC!
 PARAMETER G(MC_ETA,MO:VA;0) 298.15
   +15200 +0.63*T +GHSERMO#;  6000 N                                    88ANDC!
+
 
 PARAMETER L(MC_ETA,MO:C,VA;0) 298.15
   -59500;  6000 N                                                      88ANDC!
