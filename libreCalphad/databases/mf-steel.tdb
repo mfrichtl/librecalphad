@@ -77,6 +77,7 @@ $ 2024-01-15 MN-S SYSTEM NOT EXHIBITING S-RICH LIQUID MISCIBIITY GAP.
 $ 2024-01-27 ISSUES WITH THE SPINEL_H11 PHASE FROM Kjellqvist 2008.
 $ 2024-01-27 ISSUES WITH V-H SYSTEM
 $ 2024-04-28 ISSUES WITH AL-C-MN, LIKELY FROM ORDERING
+$ 2024-05-04 PROBLEM WITH C-TA HCP_A3 PHASE
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -103,6 +104,7 @@ DATABASE_INFO The following systems are available:'
   C-NB      Huang (1997), Lee (2001), and Khvan (2013)'
   C-NI      Gabriel (1987)'
   C-SI      Lacaze (1991) and Gröbner (1996)'
+  C-TA      Frisk (1996)'
   C-TI      Jonsson (1996), Dumitrescu (1999), and Frisk (2003)'
   C-V       Huang (1991) and Hu (2006) EXCEPT ORDERED V6C5 PHASE'
   C-W       Gustafson (1987) and Huang (1997)'
@@ -696,7 +698,7 @@ FUNCTION GHSERTA  298.15
   +229382.886 -722.59722*T +78.5244752*T*LN(T) -17.983376E-3*T**2
   +0.195033E-6*T**3 -93813648*T**(-1);  3290.00 Y
   -1042384.014 +2985.491246*T -362.1591318*T*LN(T) +43.117795E-3*T**2
-  -1.055148E-6*T**3 +554714342*T**(-1);  6000.00 N !
+  -1.055148E-6*T**3 +554714342*T**(-1);  6000.00 N                      91DIN!
  
 $ ----------------------------------------------------------------------------
 $ TI
@@ -1592,7 +1594,7 @@ PARAMETER G(BCC_A2,SI:B;0) 298.15
 PARAMETER G(BCC_A2,SI:C;0) 298.15
   +369050 -98.167*T +GBCCSI# +3*GHSERCC#;  6000 N                       91LAC!
 PARAMETER G(BCC_A2,SI:H;0) 298.15
-  +GHSERSI# +3*GHSERHH#;  6000 N                                        24FRI!
+  +60137 -61.123*T +GHSERTA# +3*GHSERCC#;  6000 N                       96FRI!
 PARAMETER G(BCC_A2,SI:N;0) 298.15
   +GBCCSI# +3*GHSERNN#;  6000 N                                         23FRI!
 PARAMETER G(BCC_A2,SI:O;0) 298.15
@@ -1603,7 +1605,7 @@ PARAMETER G(BCC_A2,SI:VA;0) 298.15
 PARAMETER G(BCC_A2,TA:B;0) 298.15
   +GHSERTA# +3*GHSERBB#;  6000 N                                        23FRI!
 PARAMETER G(BCC_A2,TA:C;0) 298.15
-  +GHSERTA# +3*GHSERCC#;  6000 N                                        23FRI!
+  +601379 -61.123*T +GHSERTA# +3*GHSERCC#;  6000 N                      96FRI!
 PARAMETER G(BCC_A2,TA:H;0) 298.15
   +GHSERTA# +3*GHSERHH#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,TA:N;0) 298.15
@@ -2072,6 +2074,9 @@ PARAMETER L(BCC_A2,NI,W:VA;0) 298.15
 
 PARAMETER L(BCC_A2,SI:C,VA;0) 298.15
   +0;  6000 N                                                           91LAC!
+
+PARAMETER L(BCC_A2,TA:C,VA;0) 298.15
+  -749073;  6000 N                                                      96FRI!
 
 PARAMETER L(BCC_A2,TI:C,N;0) 298.15
   -11540 +20*T;  6000 N                                                 04FRI!
@@ -3688,7 +3693,9 @@ PARAMETER G(FCC_A1,SI:VA;0) 298.15
   +GFCCSI#; 3600 N                                                      91DIN!
 
 PARAMETER G(FCC_A1,TA:C;0) 298.15
-  +GHSERTA# +GHSERCC#;  6000 N                                          24FRI!
+  -163843.55 +266.903*T -44.9575*T*LN(T) -3.6198E-3*T**2
+  +594677*T**(-1) -2.3107E9*T**(-3) +1.1924E13*T**(-5)
+  -3.5156E16*T**(-7); 6000 N                                            96FRI!
 PARAMETER G(FCC_A1,TA:H;0) 298.15
   +GHSERTA# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,TA:N;0) 298.15
@@ -4181,6 +4188,9 @@ PARAMETER L(FCC_A1,NI,W:VA;1) 298.15
 PARAMETER L(FCC_A1,SI:C,VA;0) 298.15 
   +0;  6000 N                                                           91LAC!
   
+PARAMETER L(FCC_A1,TA:C,VA;0) 298.15
+  -60408.46 +4.173*T;  6000 N                                           96FRI!
+
 PARAMETER L(FCC_A1,TI:C,N;0) 298.15
   -72712 +30.95*T;  6000 N                                              04FRI!
 PARAMETER V0(FCC_A1,TI:C,N;0) 298.15
@@ -5301,6 +5311,10 @@ PARAMETER BMAGN(HCP_A3,NI:VA;0) 298.15
 PARAMETER G(HCP_A3,SI:VA;0) 298.15 
   +49200 -20.8*T +GHSERSI#; 3600 N                                      91DIN!
 
+PARAMETER G(HCP_A3,TA:C;0) 298.15
+  -107522.86 +142.266*T -26.880*T*LN(T) -57.3939E-3*T**2; 6000 N        96FRI!
+PARAMETER G(HCP_A3,TA:N;0) 298.15
+  +GHSERTA# +0.5*GHSERNN#;  6000 N                                      24FRI!
 PARAMETER G(HCP_A3,TA:VA;0) 298.15
   +12000 +2.4*T +GHSERTA#; 6000 N                                       91DIN!
 
@@ -5607,6 +5621,9 @@ PARAMETER L(HCP_A3,NI:B,VA;0) 298.15
   +20*T;  6000 N                                                        23FRI!
 PARAMETER L(HCP_A3,NI,TI:VA;0) 298.15
   -20000;  6000 N                                                       96BEL!
+
+PARAMETER L(HCP_A3,TA:C,VA;0) 298.15
+  -6917.554;  6000 N                                                    96FRI!
 
 PARAMETER L(HCP_A3,TI:C,N;0) 298.15
   -32725;  6000 N                                                      96JONA!
@@ -6759,6 +6776,11 @@ PARAMETER L(LIQUID,C,NI;0) 298.15
 
 PARAMETER L(LIQUID,C,SI;0) 298.15
   +25645.0 -6.38115*T; 6000 N                                           96GRO!
+
+PARAMETER L(LIQUID,C,TA;0) 298.15
+  -173413 -7.186*T;  6000 N                                             96FRI!
+PARAMETER L(LIQUID,C,TA;1) 298.15
+  +23643;  6000 N                                                       96FRI!
 
 PARAMETER L(LIQUID,C,TI;0) 298.15
   -135351.7 -41.223*T;  6000 N                                          03FRI!
@@ -8008,7 +8030,6 @@ PARAMETER L(M23C6_D84,CR:CR,FE:C;1) 298.15
   -6540;  6000 N                                                        14KHV!
 
 PARAMETER L(M23C6_D84,CR,FE:CR:C;0) 298.15
-  $ -205342 +141.6667*T;  6000 N                                         92LEEA!
   +6609;  6000 N                                                        14KHV!
 PARAMETER L(M23C6_D84,CR,FE:CR:C;1) 298.15
   -43600;  6000 N                                                       14KHV!
@@ -8019,7 +8040,6 @@ PARAMETER L(M23C6_D84,CR,FE:CR,FE:C;1) 298.15
 PARAMETER L(M23C6_D84,CR,FE:CR,FE:C;2) 298.15
   -1914930;  6000 N                                                     91HIL!
 PARAMETER L(M23C6_D84,CR,FE:FE:C;0) 298.15
-  $ -205342 +141.6667*T;  6000 N                                         92LEEA!
   +6609;  6000 N                                                        14KHV!
 PARAMETER L(M23C6_D84,CR,FE:FE:C;1) 298.15
   -43600;  6000 N                                                       14KHV!
@@ -10539,6 +10559,9 @@ NUMBER  SOURCE
 96BEL   'Bellen, Peter, KC Hari Kumar, and Patrick Wollants. "Thermodynamic 
         assessment of the Ni-Ti phase diagram." International Journal of 
         Materials Research 87.12 (1996): 972-978.'
+96FRI   'Frisk, K., and A. Fernandez Guillermet. "Gibbs energy coupling of the
+        phase diagram and thermochemistry in the tantalum-carbon system." 
+        Journal of alloys and compounds 238.1-2 (1996): 167-179.'
 96GRO   'Gröbner, Joachim, Hans Leo Lukas, and Fritz Aldinger. "Thermodynamic
         calculation of the ternary system Al-Si-C." Calphad 20.2 (1996): 
         247-254.'
