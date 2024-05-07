@@ -75,12 +75,14 @@ $ 2024-01-27 ISSUES WITH V-H SYSTEM
 $ 2024-04-28 ISSUES WITH AL-C-MN, LIKELY FROM ORDERING
 $ 2024-05-04 PROBLEM WITH C-TA HCP_A3 PHASE 
 $ 2024-05-06 MU PHASE IN CO-NB ASSEMENT FROM HE 2015 IS INCOMPATIBLE
+$ 2024-05-06 AL-CO ORDERED B2 INCORRECT.
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
 DATABASE_INFO The following systems are available:'
   SER       SGTE Unary 5.0 Dinsdale (1991) and Chen (2001)'
   AL-C      Gröbner (1996) and Connetable (2008)'
+  AL-CO     Stein (2013)'
   AL-CU     Saunders (1991)'
   AL-FE     Seierstein (1991) and Sundman (2009)'
   AL-MN     Du (2007)  SOLUTION PHASES W/ FE ONLY'
@@ -1030,6 +1032,15 @@ PARAMETER L(AL2FE,AL:FE,MN;0) 298.15
   +9700 -13.9*T;  6000 N                                               18ZHEA!
 
 $ ----------------------------------------------------------------------------
+$ AL3CO
+
+PHASE AL3CO % 2 3 1 !
+CONSTITUENT AL3CO : AL : CO : !
+
+PARAMETER G(AL3CO,AL:CO;0) 298.15
+  -164946 +32.725*T +3*GHSERAL# +GHSERCO#;  6000 N                      13STE!
+
+$ ----------------------------------------------------------------------------
 $ AL3NI
 
 PHASE AL3NI1 % 2 0.75 0.25 !
@@ -1263,6 +1274,15 @@ PARAMETER G(AL8SIC7,AL:SI:C;0) 298.15
   -686400.0 +2212.8000*T -344.4341*T*LN(T) -45.44832E-3*T**2
   +5.68E6*T**(-1) +3.2E-6*T**3;  6000 N                                 96GRO!
 
+$ ----------------------------------------------------------------------------
+$ AL9CO2
+$ SPACE GROUP: P21/c
+
+PHASE AL9CO2 % 2 9 2 !
+CONSTITUENT AL9CO2 : AL : CO : !
+
+PARAMETER G(AL9CO2,AL:CO;0) 298.15
+  -329700 +53.14*T +9*GHSERAL# +2*GHSERCO#;  6000 N                     13STE!
 
 $ ----------------------------------------------------------------------------
 $ AL11MN4_HT
@@ -1316,6 +1336,16 @@ CONSTITUENT AL12MN : AL : MN : !
 
 PARAMETER G(AL12MN, AL:MN;0) 298.15
   -110389.5 +36.7965*T +12*GHSERAL# +GHSERMN#;  6000 N                   07DU!
+
+$ ----------------------------------------------------------------------------
+$ AL13CO4
+$ SPACE GROUP: C 2/m
+
+PHASE AL13CO4 % 2 13 4 !
+CONSTITUENT AL13CO4 : AL : CO : !
+
+PARAMETER G(AL13CO4,AL:CO;0) 298.15
+  -659712 +125*T +13*GHSERAL# +4*GHSERCO#;  6000 N                      13STE!
 
 $ ----------------------------------------------------------------------------
 $ AL13FE4
@@ -1670,6 +1700,9 @@ PARAMETER L(BCC_A2,AL:C,VA;0) 298.15
   +130000 +14*T;  6000 N                                                08CON!
 PARAMETER L(BCC_A2,AL:H,VA;0) 298.15
   -1400000;  6000 N                                                     12KIM!
+
+PARAMETER L(BCC_A2,AL,CO:VA;0) 298.15
+  -95207 +2.52*T;  6000 N                                               13STE!
 
 PARAMETER L(BCC_A2,AL,CU:VA;0) 298.15
   -73554 +4.0*T;  6000 N                                                91SAU!
@@ -2220,9 +2253,19 @@ CONSTITUENT BCC_B2 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W
                    : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W 
                    : B,C,N,VA :  !
 
+PARAMETER G(BCC_B2,AL:CO;0) 298.15
+  -90643.5 +28.66*T;  6000 N                                            13STE!
+PARAMETER TC(BCC_B2,AL:CO;0) 298.15
+  -1400;  6000 N                                                        13STE!
 PARAMETER G(BCC_B2,AL:NI:VA;0) 298.15
   -49978 +7.5795*T;  6000 N                                             99DUP!
+$ PARAMETER G(BCC_B2,AL:VA:VA;0) 298.15
+  $ +0;  6000 N                                                           13STE!
 
+PARAMETER G(BCC_B2,CO:AL;0) 298.15
+  -90643.5 +28.66*T;  6000 N                                            13STE!
+PARAMETER TC(BCC_B2,CO:AL;0) 298.15
+  -1400;  6000 N                                                        13STE!
 PARAMETER G(BCC_B2,CO:CO:VA;0) 298.15
   +0;  6000 N                                                           02OHN!
 PARAMETER G(BCC_B2,CO:FE:VA;0) 298.15
@@ -2231,6 +2274,8 @@ PARAMETER BMAGN(BCC_B2,CO:FE:VA;0) 298.15
   +0.1;  6000 N                                                         02OHN!
 PARAMETER TC(BCC_B2,CO:FE:VA;0) 298.15
   +370;  6000 N                                                         02OHN!
+$ PARAMETER G(BCC_B2,CO:VA:VA;0) 298.15
+$   +0;  6000 N                                                           13STE!
 
 PARAMETER G(BCC_B2,CR:CR:VA;0) 298.15
   +0;  6000 N                                                           24FRI!
@@ -2321,6 +2366,16 @@ PARAMETER G(BCC_B2,V:TI:VA;0) 298.15
 PARAMETER G(BCC_B2,V:V:VA;0) 298.15
   +0;  6000 N                                                           12GUO!
 
+$ PARAMETER G(BCC_B2,VA:AL:VA;0) 298.15
+$   +0;  6000 N                                                           13STE!
+$ PARAMETER G(BCC_B2,VA:CO:VA;0) 298.15
+$   +0;  6000 N                                                           13STE!
+$ PARAMETER G(BCC_B2,VA:VA:VA;0) 298.15
+$   +0;  6000 N                                                           13STE!
+
+
+$ PARAMETER L(BCC_B2,AL:CO,VA:VA;0) 298.15
+$   -56770 -18*T;  6000 N                                                 13STE!
 
 PARAMETER L(BCC_B2,AL:FE,NI:VA;0) 298.15
   -26029.79;  6000 N                                                    09ZHA!
@@ -2359,6 +2414,9 @@ PARAMETER TC(BCC_B2,CO,FE:FE:VA;0) 298.15
 
 PARAMETER L(BCC_B2,CO,FE:CO,FE:VA;0) 298.15
   -2.5290E6*T**(-1);  6000 N                                            02OHN!
+
+$ PARAMETER L(BCC_B2,CO,VA:AL:VA;0) 298.15
+$   -56770 -18*T;  6000 N                                                 13STE!
 
 PARAMETER L(BCC_B2,FE:AL,NI:VA;0) 298.15
   -57636.58;  6000 N                                                    09ZHA!
@@ -3755,6 +3813,19 @@ PARAMETER G(FCC_A1,W:VA;0) 298.15
 
 PARAMETER L(FCC_A1,AL:C,VA;0) 298.15
   -80000 +8*T;  6000 N                                                  08CON!
+
+PARAMETER L(FCC_A1,AL,CO:VA;0) 298.15
+  -124200 +17.24*T;  6000 N                                             13STE!
+PARAMETER L(FCC_A1,AL,CO:VA;1) 298.15
+  +0;  6000 N                                                           13STE!
+PARAMETER L(FCC_A1,AL,CO:VA;2) 298.15
+  +28740;  6000 N                                                       13STE!
+PARAMETER BMAGN(FCC_A1,AL,CO:VA;0) 298.15
+  +10;  6000 N                                                          13STE!
+PARAMETER TC(FCC_A1,AL,CO:VA;0) 298.15
+  -1500;  6000 N                                                        13STE!
+PARAMETER TC(FCC_A1,AL,CO:VA;1) 298.15
+  +650;  6000 N                                                         13STE!
 
 PARAMETER L(FCC_A1,AL,CU:VA;0) 298.15
   -53520 +2*T;  6000 N                                                  91SAU!
@@ -5371,6 +5442,13 @@ PARAMETER L(HCP_A3,AL:C,VA;1) 298.15
 PARAMETER L(HCP_A3,AL:C,VA;2) 298.15
   +14000;  6000 N                                                      17ZHEB!
 
+PARAMETER L(HCP_A3,AL,CO:VA;0) 298.15
+  -124200 +17.24*T;  6000 N                                             13STE!
+PARAMETER L(HCP_A3,AL,CO:VA;1) 298.15
+  +0;  6000 N                                                           13STE!
+PARAMETER L(HCP_A3,AL,CO:VA;2) 298.15
+  +28740;  6000 N                                                       13STE!
+
 $ ESTIMATE SAME AL-FE PARAMETERS AS FCC_A1
 PARAMETER L(HCP_A3,AL,FE:VA;0) 298.15
   -104700 +30.65*T;  6000 N                                            09SUNA!
@@ -6877,6 +6955,13 @@ PARAMETER G(LIQUID,W;0) 298.15
 
 PARAMETER L(LIQUID,AL,C;0) 298.15
   +40861.0 -33.21138*T;  6000 N                                         96GRO!
+
+PARAMETER L(LIQUID,AL,CO;0) 298.15
+  -150510 +33.729*T;  6000 N                                            13STE!
+PARAMETER L(LIQUID,AL,CO;1) 298.15
+  -54090 +26.8*T; 6000 N                                                13STE!
+PARAMETER L(LIQUID,AL,CO;2) 298.15
+  +65430 -22.4*T;  6000 N                                               13STE!
 
 PARAMETER L(LIQUID,AL,CU;0) 298.15
   -66622 +8.1*T;  6000 N                                                91SAU!
@@ -10552,18 +10637,22 @@ PARAMETER G(TAU1,AL:NI;0) 298.15
   -41678.03 +4.3786*T +0.818181*GHSERAL# +0.181818*GHSERNI#;  6000 N    09ZHA!
 
 $ ----------------------------------------------------------------------------
-$ TAU2
+$ TAU2_D811
+$ PROTOTYPE: AL5CO2, AL10FE3NI
+$ SPACE GROUP: mmc
 
-PHASE TAU2 % 2 0.714286 0.285714 !
-CONSTITUENT TAU2 : AL : FE,NI : !
+PHASE TAU2_D811 % 2 5 2 !
+CONSTITUENT TAU2_D811 : AL : CO,FE,NI : !
 
-PARAMETER G(TAU2,AL:FE;0) 298.15
-  -32567.70 +7.1833*T +0.714286*GHSERAL# +0.285714*GHSERFE#;  6000 N    09ZHA!
-PARAMETER G(TAU2,AL:NI;0) 298.15
-  -41678.03 +4.3786*T +0.714286*GHSERAL# +0.285714*GHSERNI#;  6000 N    09ZHA!
+PARAMETER G(TAU2_D811,AL:CO;0) 298.15
+  -329990 +73.45*T +5*GHSERAL# +2*GHSERCO#;  6000 N                     13STE!
+PARAMETER G(TAU2_D811,AL:FE;0) 298.15
+  -227973.9 +50.2831*T +5*GHSERAL# +2*GHSERFE#;  6000 N                 09ZHA!
+PARAMETER G(TAU2_D811,AL:NI;0) 298.15
+  -333746.21 +30.6502*T +5*GHSERAL# +2*GHSERNI#;  6000 N                09ZHA!
 
-PARAMETER L(TAU2,AL:FE,NI;0) 298.15
-  -2727.444;  6000 N                                                    09ZHA!
+PARAMETER L(TAU2_D811,AL:FE,NI;0) 298.15
+  -19092.108;  6000 N                                                   09ZHA!
 
 $ ----------------------------------------------------------------------------
 $ TAU3
@@ -11005,6 +11094,9 @@ NUMBER  SOURCE
         Fe3Mn3Nb3N and Nb3C3Nsystems." Calphad 40 (2013): 10-15.'
 13POV   'Povoden-Karadeniz, E. Mat-Calc Fe open database, unpublished, 
         https://www.matcalc.at/index.php/databases/open-databases, 2013.'
+13STE   'Stein, Frank, Cuiyun He, and Nathalie Dupin. "Melting behaviour and 
+        homogeneity range of B2 CoAl and updated thermodynamic description of
+        the Al-Co system." Intermetallics 39 (2013): 58-68.'
 14KHV   'Khvan, Alexandra V., Bengt Hallstedt, and Christoph Broeckmann. "A 
         thermodynamic evaluation of the Fe-Cr-C system." Calphad 46 (2014): 
         24-33.'
