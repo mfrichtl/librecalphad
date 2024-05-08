@@ -74,7 +74,6 @@ $ 2024-01-27 ISSUES WITH THE SPINEL_H11 PHASE FROM Kjellqvist 2008.
 $ 2024-01-27 ISSUES WITH V-H SYSTEM
 $ 2024-04-28 ISSUES WITH AL-C-MN, LIKELY FROM ORDERING
 $ 2024-05-04 PROBLEM WITH C-TA HCP_A3 PHASE 
-$ 2024-05-06 MU PHASE IN CO-NB ASSEMENT FROM HE 2015 IS INCOMPATIBLE
 $ 2024-05-07 LAVES_C14/LAVES_C15 EQUILIBRIUM IN CO-NB ASSESSMENT FROM HE 2015
 $            IS NOT CORRECT. LAVES_C14 IS NOT SHOWING UP.
 $ 2024-05-06 AL-CO ORDERED B2 INCORRECT.
@@ -85,7 +84,7 @@ $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
 DATABASE_INFO The following systems are available:'
   SER       SGTE Unary 5.0 Dinsdale (1991) and Chen (2001)'
   AL-C      Gröbner (1996) and Connetable (2008)'
-  AL-CO     Stein (2013)'
+  AL-CO     Stein (2013) and He (2015)'
   AL-CU     Saunders (1991)'
   AL-FE     Seierstein (1991) and Sundman (2009)'
   AL-MN     Du (2007)  SOLUTION PHASES W/ FE ONLY'
@@ -176,6 +175,7 @@ DATABASE_INFO The following systems are available:'
   V-W       Bratberg (2005)'
   '
   AL-C-MN   Zheng (2018)'
+  AL-CO-NB  He (2015)'
   AL-CU-NI  Wang (2019) *'
   AL-FE-MN  Zheng (2018) *'
   AL-FE-NI  Zhang (2009) *'
@@ -2157,6 +2157,13 @@ PARAMETER L(BCC_A2,V:N,VA;0) 298.15
 PARAMETER L(BCC_A2,V,W:VA;0) 298.15
   +17828;  6000 N                                                       05BRA!
 
+
+PARAMETER L(BCC_A2,AL,CO,NB:VA;0) 298.15
+  +90000 -18*T;  6000 N                                                  15HE!
+PARAMETER L(BCC_A2,AL,CO,NB:VA;1) 298.15
+  -218000 -18*T;  6000 N                                                 15HE!
+PARAMETER L(BCC_A2,AL,CO,NB:VA;2) 298.15
+  +30000 -18*T;  6000 N                                                  15HE!
 
 PARAMETER L(BCC_A2,AL,CU,NI:VA;0) 298.15
   -518491.506 +213.890*T;  6000 N                                       19WAN!
@@ -4363,6 +4370,13 @@ PARAMETER L(FCC_A1,W:C,VA;0) 298.15
   -17.98*T;  6000 N                                                     87GUS!
 
 
+PARAMETER L(FCC_A1,AL,CO,NB:VA;0) 298.15
+  +0;  6000 N                                                            15HE!
+PARAMETER L(FCC_A1,AL,CO,NB:VA;1) 298.15
+  +255000;  6000 N                                                       15HE!
+PARAMETER L(FCC_A1,AL,CO,NB:VA;2) 298.15
+  +0;  6000 N                                                            15HE!
+
 PARAMETER L(FCC_A1,AL,CU,NI:VA;0) 298.15
   -16650.922 -166.475*T;  6000 N                                        19WAN!
 PARAMETER L(FCC_A1,AL,CU,NI:VA;1) 298.15
@@ -5271,18 +5285,32 @@ PARAMETER L(GRAPHITE_A9,C,CU;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ H_L21
-$ PROTOTYPE: HEUSLER (L21)
+$ PROTOTYPE: HEUSLER (L21) BiF3 or CU2ALMN
 $ PEARSON: cF16
 $ SPACE GROUP: Fm-3m
 
 PHASE H_L21 % 3 0.5 0.5 1 !
-CONSTITUENT H_L21 : NB : CO,NB : CO : !
+CONSTITUENT H_L21 : AL,NB : AL,CO,NB : CO : !
 
+PARAMETER G(H_L21,AL:AL:CO;0) 298.15
+  -113630 +19.25*T +0.5*GHSERAL# +0.5*GHSERAL# +GHSERCO#;  6000 N        15HE!
+PARAMETER G(H_L21,AL:CO:CO;0) 298.15
+  -48575 +0.5*GHSERAL# +0.5*GHSERCO# +GHSERCO#;  6000 N                  15HE!
+PARAMETER G(H_L21,AL:NB:CO;0) 298.15
+  -78355 +5.8*T +0.5*GHSERAL# +0.5*GHSERNB# +GHSERCO#;  6000 N           15HE!
+
+PARAMETER G(H_L21,NB:AL:CO;0) 298.15
+  +0.5*GHSERNB# +0.5*GHSERAL# +GHSERCO#;  6000 N                         15HE!
 PARAMETER G(H_L21,NB:CO:CO;0) 298.15  
-  +73000 +0.5*GHSERNB# +1.5*GHSERCO#;  6000 N                            15HE!
+  +73000 +0.5*GHSERNB# +0.5*GHSERCO# +GHSERCO#;  6000 N                  15HE!
 PARAMETER G(H_L21,NB:NB:CO;0) 298.15
-  +75000 +GHSERNB# +GHSERCO#;  6000 N                                    15HE!
+  +75000 +0.5*GHSERNB# +0.5*GHSERNB# +GHSERCO#;  6000 N                  15HE!
 
+
+PARAMETER L(H_L21,AL:CO,NB:CO;0) 298.15
+  +4500;  6000 N                                                         15HE!
+PARAMETER L(H_L21,AL,NB:NB:CO;0) 298.15
+  -71000 -36.5*T;  6000 N                                                15HE!
 $ ----------------------------------------------------------------------------
 $ HALITE_B1
 $ PROTOTYPE: NACL, ROCK SALT
@@ -5503,6 +5531,14 @@ PARAMETER L(HCP_A3,AL,CO:VA;1) 298.15
   +0;  6000 N                                                           13STE!
 PARAMETER L(HCP_A3,AL,CO:VA;2) 298.15
   +28740;  6000 N                                                       13STE!
+
+$ ESTIMATE SAME AL-CU AS FCC_A1
+PARAMETER L(FCC_A1,AL,CU:VA;0) 298.15
+  -53520 +2*T;  6000 N                                                  91SAU!
+PARAMETER L(FCC_A1,AL,CU:VA;1) 298.15
+  +38590 -2*T;  6000 N                                                  91SAU!
+PARAMETER L(FCC_A1,AL,CU:VA;2) 298.15
+  +1170;  6000 N                                                        91SAU!
 
 $ ESTIMATE SAME AL-FE PARAMETERS AS FCC_A1
 PARAMETER L(HCP_A3,AL,FE:VA;0) 298.15
@@ -5821,6 +5857,21 @@ PARAMETER L(HCP_A3,V:N,VA;1) 298.15
 PARAMETER L(HCP_A3,W:C,VA;0) 298.15
   +4165;  6000 N                                                        89GUI!
 
+$ ESTIMATE SAME AL-CO-NI AS FCC_A1
+PARAMETER L(HCP_A3,AL,CO,NB:VA;0) 298.15
+  +0;  6000 N                                                            15HE!
+PARAMETER L(HCP_A3,AL,CO,NB:VA;1) 298.15
+  +255000;  6000 N                                                       15HE!
+PARAMETER L(HCP_A3,AL,CO,NB:VA;2) 298.15
+  +0;  6000 N                                                            15HE!
+
+$ ESTIMATE SAME AL-CU-NI AS FCC_A1
+PARAMETER L(HCP_A3,AL,CU,NI:VA;0) 298.15
+  -16650.922 -166.475*T;  6000 N                                        19WAN!
+PARAMETER L(HCP_A3,AL,CU,NI:VA;1) 298.15
+  -73851.146 +1.565*T;  6000 N                                          19WAN!
+PARAMETER L(HCP_A3,AL,CU,NI:VA;2) 298.15
+  -101557.846 +110.400*T;  6000 N                                       19WAN!
 
 $ ESTIMATE SAME AL-FE-MN TERNARY INTERACTION AS FCC_A1
 PARAMETER L(HCP_A3,AL,FE,MN:VA;0) 298.15
@@ -6340,6 +6391,11 @@ PARAMETER G(LAVES_C14,V:W;0) 298.15
   +2*GHSERV# +GHSERW#;  6000 N                                          24FRI!
 
 
+PARAMETER L(LAVES_C14,AL,CO:NB;0) 298.15
+  -244280 +50*T;  6000 N                                                 15HE!
+PARAMETER L(LAVES_C14,AL,CO:NB;1) 298.15
+  -124000 +41.5*T;  6000 N                                               15HE!
+
 PARAMETER L(LAVES_C14,AL,CU:AL;0) 298.15
   -24000 +2.44*T;  6000 N                                               91SAU!
 PARAMETER L(LAVES_C14,AL,CU:CU;0) 298.15
@@ -6348,6 +6404,10 @@ PARAMETER L(LAVES_C14,AL,CU:CU;0) 298.15
 PARAMETER L(LAVES_C14,AL,NB:NB;0) 298.15
   -204000 +94.6*T;  6000 N                                               15HE!
 
+PARAMETER L(LAVES_C14,CO,AL:NB;0) 298.15
+  -85810 +8*T;  6000 N                                                   15HE!
+PARAMETER L(LAVES_C14,CO,AL:NB;1) 298.15
+  +7130;  6000 N                                                         15HE!
 PARAMETER L(LAVES_C14,CO,NB:NB;0) 298.15
   +0;  6000 N                                                            15HE!
 PARAMETER L(LAVES_C14,CO,NB:NB;11) 298.15
@@ -6642,11 +6702,15 @@ PARAMETER G(LAVES_C15,V:V;0) 298.15
   +15000 +3*GHSERV#;  6000 N                                           02GHOA!
 
 
+PARAMETER L(LAVES_C15,AL,CO:NB;0) 298.15
+  -115100;  6000 N                                                       15HE!
 PARAMETER L(LAVES_C15,AL,CU:AL;0) 298.15
   -105000 -1.615*T;  6000 N                                             91SAU!
 PARAMETER L(LAVES_C15,AL,CU:CU;0) 298.15
   -105000 -1.615*T;  6000 N                                             91SAU!
 
+PARAMETER L(LAVES_C15,CO:AL,NB;0) 298.15
+  -88700;  6000 N                                                        15HE!
 PARAMETER L(LAVES_C15,CO:CO,NB;0) 298.15
   -6400;  6000 N                                                         15HE!
 PARAMETER L(LAVES_C15,CO:CO,NB;1) 298.15
@@ -6867,11 +6931,15 @@ PARAMETER G(LAVES_C36,V:V:0) 298.15
   +15000 +3*GHSERV#;  6000 N                                           02GHOA!
 
 
+PARAMETER L(LAVES_C36,AL,CO:NB;0) 298.15
+  -29700 -62*T;  6000 N                                                  15HE!
 PARAMETER L(LAVES_C36,AL,CU:AL;0) 298.15
   -126169 +14.61*T;  6000  N                                            91SAU!
 PARAMETER L(LAVES_C36,AL,CU:CU;0) 298.15
   -126169 +14.61*T;  6000 N                                             91SAU!
 
+PARAMETER L(LAVES_C36,CO:AL,NB;0) 298.15
+  -138974 +8*T;  6000 N                                                  15HE!
 PARAMETER L(LAVES_C36,CO:CO,NB;0) 298.15
   -10610;  6000 N                                                        15HE!
 PARAMETER L(LAVES_C36,CO:CO,NB;1) 298.15
@@ -7504,6 +7572,13 @@ PARAMETER L(LIQUID,TI,V;1) 298.15
 PARAMETER L(LIQUID,V,W;0) 298.15
   +3972;  6000 N                                                        05BRA!
 
+
+PARAMETER L(LIQUID,AL,CO,NB;0) 298.15
+  +97700 -58.7*T;  6000 N                                                15HE!
+PARAMETER L(LIQUID,AL,CO,NB;1) 298.15
+  +97700 -58.7*T;  6000 N                                                15HE!
+PARAMETER L(LIQUID,AL,CO,NB;2) 298.15
+  +77700 -58.7*T;  6000 N                                                15HE!
 
 PARAMETER L(LIQUID,AL,CU,NI;0) 298.15
   -327538.782 +68.702*T;  6000 N                                        19WAN!
@@ -9536,6 +9611,41 @@ PARAMETER L(MU_D85,CR,FE:MO:MO;0) 298.15
   -45000;  6000 N                                                      88ANDB!
 
 $ ----------------------------------------------------------------------------
+$ MU2_D85
+$ PROTOTYPE: W6FE7
+$ PEARSON: hR39
+$ SPACE GROUP: R-3m
+$ ALTERNATE MU_D85 SUBLATTICE MODEL
+
+PHASE MU2_D85 % 4 1 2 4 6 !
+CONSTITUENT MU2_D85 : CO : CO,NB : NB : AL,CO,NB : !
+
+PARAMETER G(MU2_D85,CO:CO:NB:AL;0) 298.15
+  +GFCCCO# +2*GBCCCO# +4*GHSERNB# +6*GHSERAL#;  6000 N                   15HE!
+PARAMETER G(MU2_D85,CO:CO:NB:CO;0) 298.15
+  +GFCCCO# +2*GBCCCO# +4*GHSERNB# +6*GFCCCO#;  6000 N                    15HE!
+PARAMETER G(MU2_D85,CO:CO:NB:NB;0) 298.15
+  +121400 +44*T +GFCCCO# +2*GBCCCO# +4*GHSERNB# +6*GFCCNB#;  6000 N      15HE!
+
+PARAMETER G(MU2_D85,CO:NB:NB:AL;0) 298.15
+  -494500 +72.7*T +GFCCCO# +2*GHSERNB# +4*GHSERNB# +6*GHSERAL#;  6000 N  15HE!
+PARAMETER G(MU2_D85,CO:NB:NB:CO;0) 298.15
+  -121400 -44*T +GFCCCO# +2*GHSERNB# +4*GHSERNB# +6*GFCCCO#;  6000 N     15HE!
+PARAMETER G(MU2_D85,CO:NB:NB:NB;0) 298.15
+  +GFCCCO# +2*GHSERNB# +4*GHSERNB# +6*GFCCNB#;  6000 N                   15HE!
+
+
+PARAMETER L(MU2_D85,CO:CO,NB:NB:CO;0) 298.15
+  -150000;  6000 N                                                       15HE!
+
+PARAMETER L(MU2_D85,CO:NB:NB:AL,CO;0) 298.15
+  -299600;  6000 N                                                       15HE!
+PARAMETER L(MU2_D85,CO:NB:NB:AL,CO;1) 298.15
+  -85000;  6000 N                                                        15HE!
+PARAMETER L(MU2_D85,CO:NB:NB:CO,NB;0) 298.15
+  -25400;  6000 N                                                        15HE!
+
+$ ----------------------------------------------------------------------------
 $ NI4B3_M
 $ m-NI4B3 PHASE
 
@@ -10099,14 +10209,14 @@ CONSTITUENT SIGMA2_D8B : AL,CO,NB,V : NB,V : AL,CO,NB,V : !
 PARAMETER G(SIGMA2_D8B,AL:NB:AL;0) 298.15
   -650126 +120*T +10*GHSERAL# +4*GHSERNB# +16*GHSERAL#;  6000 N          15HE!
 PARAMETER G(SIGMA2_D8B,AL:NB:CO;0) 298.15
-  +10*GHSERAL# +4*GHSERNB# +16*GHSERCO#;  6000 N                         15HE!
+  -500000 +10*GHSERAL# +4*GHSERNB# +16*GHSERCO#;  6000 N                 15HE!
 PARAMETER G(SIGMA2_D8B,AL:NB:NB;0) 298.15
   -803110 +86*T +10*GHSERAL# +4*GHSERNB# +16*GHSERNB#;  6000 N           15HE!
 PARAMETER G(SIGMA2_D8B,AL:NB:V;0) 298.15
   +10*GHSERAL# +4*GHSERNB# +16*GHSERV#;  6000 N                         24FRI!
 
 PARAMETER G(SIGMA2_D8B,CO:NB:AL;0) 298.15
-  +10*GHSERCO# +4*GHSERNB# +16*GHSERAL#;  6000 N                        24FRI!
+  +150000 +10*GHSERCO# +4*GHSERNB# +16*GHSERAL#;  6000 N                 15HE!
 PARAMETER G(SIGMA2_D8B,CO:NB:CO;0) 298.15
   +10*GHSERCO# +4*GHSERNB# +16*GHSERCO#;  6000 N                         15HE!
 PARAMETER G(SIGMA2_D8B,CO:NB:NB;0) 298.15
@@ -10162,6 +10272,9 @@ PARAMETER G(SIGMA2_D8B,V:V:V;0) 298.15
 
 PARAMETER L(SIGMA2_D8B,AL:NB:AL,NB;0) 298.15
   +77400;  6000 N                                                        15HE!
+
+PARAMETER L(SIGMA2_D8B,AL,CO:NB:NB;0) 298.15
+  -400000 -90*T;  6000 N                                                 15HE!
 
 PARAMETER L(SIGMA2_D8B,NB:NB:AL,NB;0) 298.15
   +77400;  6000 N                                                        15HE!
