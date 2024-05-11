@@ -179,6 +179,7 @@ DATABASE_INFO The following systems are available:'
   AL-CU-NI  Wang (2019) *'
   AL-FE-MN  Zheng (2018) *'
   AL-FE-NI  Zhang (2009) *'
+  AL-FE-SI  Liu (1999)'
   B-C-NI    Oikawa (2022)'
   B-CR-FE   Pan (2010)'
   B-CR-MO   Pan (2010)'
@@ -3549,7 +3550,7 @@ PARAMETER G(DIAMOND_A4,TI;0) 298.15
 
 
 PARAMETER L(DIAMOND_A4,AL,SI;0) 298.15
-  +80.0000*T;  6000 N                                                   96GRO!
+  +111417.7 -46.1392*T;  6000 N                                         99LIU!
 PARAMETER L(DIAMOND_A4,C,SI;0) 298.15
   +93386.8;  6000 N                                                     96GRO!
 PARAMETER L(DIAMOND_A4,FE,SI;0) 298.15
@@ -4895,20 +4896,20 @@ PARAMETER L(GAMMA_D82,AL,MN:FE,MN;0) 298.15
   -813800;  6000 N                                                     18ZHEA!
 
 $ ----------------------------------------------------------------------------
-$ GAMMA_D82_2
+$ GAMMA2_D82
 $ SECOND MODEL OF GAMMA_D82 PHASE WITH DIFFERENT SUBLATTICES
 
-PHASE GAMMA_D82_2 % 4 2 3 2 6 !
-CONSTITUENT GAMMA_D82_2 : CR,SI : CR : CR : CR,SI : !
+PHASE GAMMA2_D82 % 4 2 3 2 6 !
+CONSTITUENT GAMMA2_D82 : CR,SI : CR : CR : CR,SI : !
 
-PARAMETER G(GAMMA_D82_2,CR:CR:CR:CR;0) 298.15
+PARAMETER G(GAMMA2_D82,CR:CR:CR:CR;0) 298.15
   10000 +13*GHSERCR#;  6000 N                                           23FRI!
-PARAMETER G(GAMMA_D82_2,CR:CR:CR:SI;0) 298.15
+PARAMETER G(GAMMA2_D82,CR:CR:CR:SI;0) 298.15
   +7*GHSERCR# +6*GHSERSI#;  6000 N                                     17CUIC!
 
-PARAMETER G(GAMMA_D82_2,SI:CR:CR:CR;0) 298.15
+PARAMETER G(GAMMA2_D82,SI:CR:CR:CR;0) 298.15
   +2*GHSERSI# +11*GHSERCR#;  6000 N                                    17CUIC!
-PARAMETER G(GAMMA_D82_2,SI:CR:CR:SI;0) 298.15
+PARAMETER G(GAMMA2_D82,SI:CR:CR:SI;0) 298.15
   +5*GHSERCR# +8*GHSERSI#;  6000 N                                     17CUIC!
 
 $ ----------------------------------------------------------------------------
@@ -7943,6 +7944,20 @@ PARAMETER L(LIQUID,AL,FE,MN;1) 298.15
   +0;  6000 N                                                          18ZHEA!
 PARAMETER L(LIQUID,AL,FE,MN;2) 298.15
   +0;  6000 N                                                          18ZHEA!
+  
+PARAMETER L(LIQUID,AL,FE,NI;0) 298.15
+  -62066.21 +11.7632*T;  6000 N                                         09ZHA!
+PARAMETER L(LIQUID,AL,FE,NI;1) 298.15
+  +57195.0;  6000 N                                                     09ZHA!
+PARAMETER L(LIQUID,AL,FE,NI;2) 298.15
+  -8440.930;  6000 N                                                    09ZHA!
+
+PARAMETER G(LIQUID,AL,FE,SI;0) 298.15
+  -96677 +63.727*T;  6000 N                                             99LIU!
+PARAMETER G(LIQUID,AL,FE,SI;1) 298.15
+  -50575 +63.727*T;  6000 N                                             99LIU!
+PARAMETER G(LIQUID,AL,FE,SI;2) 298.15
+  -62178 +63.727*T;  6000 N                                             99LIU!
 
 PARAMETER L(LIQUID,B,CR,NI;0) 298.15
   -5312 -89.2*T;  6000 N                                                02CAM!
@@ -7957,13 +7972,6 @@ PARAMETER L(LIQUID,AL,C,MN;1) 298.15
   -439800;  6000 N                                                     18ZHEB!
 PARAMETER L(LIQUID,AL,C,MN;2) 298.15
   +4600 +26.2*T;  6000 N                                               18ZHEB!
-  
-PARAMETER L(LIQUID,AL,FE,NI;0) 298.15
-  -62066.21 +11.7632*T;  6000 N                                         09ZHA!
-PARAMETER L(LIQUID,AL,FE,NI;1) 298.15
-  +57195.0;  6000 N                                                     09ZHA!
-PARAMETER L(LIQUID,AL,FE,NI;2) 298.15
-  -8440.930;  6000 N                                                    09ZHA!
 
 PARAMETER L(LIQUID,C,CO,CR;0) 298.15
   -302180;  6000 N                                                      97KUS!
@@ -11199,6 +11207,16 @@ PARAMETER BMAGN(SPINEL_H11,FE3+:FE3+,NI2+:VA:O2-;0) 298.15
 
 PARAMETER L(SPINEL_H11,FE3+,NI2+:CR3+:VA:O2-;0) 298.15
   -16000;  6000 N                                                       08KJE!
+
+$ ----------------------------------------------------------------------------
+$ TAU_ALFESI
+
+PHASE TAU_ALFESI % 3 0.4 0.25 0.35 !
+CONSTITUENT TAU_ALFESI : AL : FE : SI : !
+
+PARAMETER G(TAU_ALFESI,AL:FE:SI;0) 298.15
+  -28589 +4.255*T;  6000 N                                              99LIU!
+
 $ ----------------------------------------------------------------------------
 $ TAU1
 
@@ -11209,6 +11227,27 @@ PARAMETER G(TAU1,AL:FE;0) 298.15
   -32567.70 +7.1833*T +0.818181*GHSERAL# +0.181818*GHSERFE#;  6000 N    09ZHA!
 PARAMETER G(TAU1,AL:NI;0) 298.15
   -41678.03 +4.3786*T +0.818181*GHSERAL# +0.181818*GHSERNI#;  6000 N    09ZHA!
+
+$ ----------------------------------------------------------------------------
+$ TAU1_ALFESI
+
+PHASE TAU1_ALFESI % 0.35 0.37 0.28 !
+CONSTITUENT TAU1_ALFESI : AL : FE : SI : !
+
+PARAMETER G(TAU1_ALFESI,AL:FE:SI;0) 298.15
+  -37527 +5.874*T +0.35*GHSERAL# +0.37*GHSERFE# 
+  +0.28*GHSERSI#;  6000 N                                               99LIU!
+
+$ ----------------------------------------------------------------------------
+$ TAU2, ALFESI GAMMA
+$ MONOCLINIC
+
+PHASE TAU2 % 3 0.635 0.205 0.16 !
+CONSTITUENT TAU2 : AL : FE : SI : !
+
+PARAMETER G(TAU2,AL:FE:SI;0) 298.15
+  -28144 +5.992*T +0.635*GHSERAL# +0.205*GHSERFE#
+  +0.16*GHSERSI#;  6000 N                                               99LIU!
 
 $ ----------------------------------------------------------------------------
 $ TAU2_D811
@@ -11237,6 +11276,64 @@ CONSTITUENT TAU3 : AL : FE : NI : !
 PARAMETER G(TAU3,AL:FE:NI;0) 298.15
   -41075.33 +3.0133*T +0.71*GHSERAL# +0.05*GHSERFE# 
   +0.24*GHSERNI#;  6000 N                                               09ZHA!
+
+$ ----------------------------------------------------------------------------
+$ TAU4, DELTA ALFESI
+$ PROTOTYPE: GA5PD
+$ PEARSON: mP64
+$ SPACE GROUP: I4/mcm
+
+PHASE TAU4 % 3 0.49 0.16 0.35 !
+CONSTITUENT TAU4 : AL : FE : SI : !
+
+PARAMETER G(TAU4,AL:FE:SI;0) 298.15
+  -21618 +3.617 +0.49*GHSERAL# +0.16*GHSERFE# +0.35*GHSERSI#;  6000 N   99LIU!
+
+$ ----------------------------------------------------------------------------
+$ TAU5, ALPHA ALFESI
+$ PROTOTYPE: FE3AL7.4SI
+$ PEARSON: hP245
+$ SPACE GROUP: P6_3/mmc
+
+PHASE TAU5 % 4 0.66 0.19 0.05 0.10 !
+CONSTITUENT TAU5 : AL : FE : SI : AL,SI : !
+
+PARAMETER G(TAU5,AL:FE:SI:AL;0) 298.15
+  -27788 +8.856*T +0.66*GHSERAL# +0.19*GHSERFE# 
+  +0.05*GSHERSI# +0.10*GHSERSI#;  6000 N                                99LIU!
+PARAMETER G(TAU5,AL:FE:SI:SI;0) 298.15
+  -26500 +6.135*T +0.66*GHSERAL# +0.19*GHSERFE#
+  +0.05*GHSERSI# +0.10*GHSERSI#;  6000 N                                99LIU!
+
+$ ----------------------------------------------------------------------------
+$ TAU6, BETA ALFESI
+$ PROTOTYPE: FE2AL9SI2
+$ PEARSON: mC22
+$ SPACE GROUP:  C2/c
+
+PHASE TAU6 % 4 0.598 0.152 0.10 0.15 !
+CONSTITUENT TAU6 : AL : FE : SI : AL,SI : !
+
+PARAMETER G(TAU6,AL:FE:SI:AL;0) 298.15
+  -19649 +4.209*T +0.598*GHSERAL# +0.152*GHSERFE# 
+  +0.10*GHSERSI# +0.15*GHSERAL#;  6000 N                                99LIU!
+PARAMETER G(TAU6,AL:FE:SI:SI;0) 298.15
+  -22008 +6.426*T +0.598*GHSERAL# +0.152*GHSERFE#
+  +0.10*GHSERSI# +0.15*GHSERSI#;  6000 N                                99LIU!
+
+
+PARAMETER L(TAU6,AL:FE:SI:AL,SI;0) 298.15
+  -2821;  6000 N                                                        99LIU!
+
+$ ----------------------------------------------------------------------------
+$ TAU23, ALFESI
+
+PHASE TAU23 % 3 0.54 0.26 0.2 !
+CONSTITUENT TAU23 : AL : FE : SI : !
+
+PARAMETER G(TAU23,AL:FE:SI;0) 298.15
+  -31812 +5.965*T +0.54*GHSERAL# +0.26*GHSERFE# 
+  +0.2*GHSERSI#;  6000 N                                                99LIU!
 
 $ ----------------------------------------------------------------------------
 $ TETRA_L10
@@ -11300,14 +11397,21 @@ $ ----------------------------------------------------------------------------
 $ THETA_FE4AL13
 
 PHASE THETA_FE4AL13 % 3 0.6275 0.235 0.1375 !
-CONSTITUENT THETA_FE4AL13 : AL : FE,NI : AL,VA : !
+CONSTITUENT THETA_FE4AL13 : AL : FE,NI : AL,SI,VA : !
 
 PARAMETER G(THETA_FE4AL13,AL:FE:AL;0) 298.15
-  -30680 +7.4*T +0.765*GHSERAL# +0.235*GHSERFE#;  6000 N               09SUNA!
+  -30680 +7.4*T +0.6275*GHSERAL# +0.235*GHSERFE#
+  +0.1375*GHSERAL#;  6000 N                                            09SUNA!
+PARAMETER G(THETA_FE4AL13,AL:FE:SI;0) 298.15
+  -30118 +6.965*T +0.6275*GSHERAL# +0.235*GHSERFE# 
+  +0.1375*GHSERSI#;  6000 N                                             99LIU!
 PARAMETER G(THETA_FE4AL13,AL:FE:VA;0) 298.15
   -28100 +7.4*T +0.6275*GHSERAL# +0.235*GHSERFE#;  6000 N              09SUNA!
+
 PARAMETER G(THETA_FE4AL13,AL:NI:AL;0) 298.15
   -33048.45 +0.9914*T +0.765*GHSERAL# +0.235*GHSERNI#; 6000 N           09ZHA!
+PARAMETER G(THETA_FE4AL13,AL:NI:SI;0) 298.15
+  +0.6275*GHSERAL# +0.235*GHSERNI# +0.1375*GHSERSI#;  6000 N            24FRI!
 PARAMETER G(THETA_FE4AL13,AL:NI:VA;0) 298.15
   -28901.41 +0.6275*GHSERAL# +0.235*GHSERNI#;  6000 N                   09ZHA!
 
@@ -11543,6 +11647,9 @@ NUMBER  SOURCE
         B2 phase." International Journal of Materials Research 90.1 (1999): 
         76-85.'
 99KUM   'Hari Kumar, K. C. "XXVIII CALPHAD meeting." Grenoble, 2e7/5 (1999).'
+99LIU   'Liu, Zi-Kui, and Y. Austin Chang. "Thermodynamic assessment of the 
+        Al-Fe-Si system." Metallurgical and Materials Transactions A 30 
+        (1999): 1081-1095.'
 01CHE   'Chen, Qing, and Bo Sundman. "Modeling of thermodynamic properties for 
         Bcc, Fcc, liquid, and amorphous iron." Journal of phase equilibria 
         22.6 (2001): 631-644.'
