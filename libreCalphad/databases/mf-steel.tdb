@@ -83,6 +83,7 @@ $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
 DATABASE_INFO The following systems are available:'
   SER       SGTE Unary 5.0 Dinsdale (1991) and Chen (2001)'
+  AL-B      Mirkovic (2004)'
   AL-C      Gröbner (1996) and Connetable (2008)'
   AL-CO     Stein (2013) and He (2015)'
   AL-CU     Saunders (1991)'
@@ -765,7 +766,6 @@ $ ----------------------------------------------------------------------------
 $                           END-MEMBER DEFINITIONS
 $ ----------------------------------------------------------------------------
 
-
 $ ----------------------------------------------------------------------------
 $ ALB2CR2
 
@@ -793,6 +793,16 @@ CONSTITUENT ALB7CR3 : AL : B : CR : !
 PARAMETER G(ALB7CR3,AL:B:CR;0) 298.15
   -49777 +17.5*T +0.09091*GHSERAL# +0.6363*GHSERBB# 
   +0.2727*GHSERCR#;  6000 N                                             02CAM!
+
+$ ----------------------------------------------------------------------------
+$ ALB12
+$ ALUMINUM BORIDE
+
+PHASE ALB12 % 2 1 12 !
+CONSTITUENT ALB12 : AL : B : !
+
+PARAMETER G(ALB12,AL:B;0) 298.15
+  -149722 +5.78732*T +GHSERAL# +12*GHSERBB#;  6000 N                    04MIR!
 
 $ ----------------------------------------------------------------------------
 $ ALCU_DELTA
@@ -1431,7 +1441,7 @@ CONSTITUENT BCC_A2 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W
                    : B,C,H,N,O,VA : !
 
 PARAMETER G(BCC_A2,AL:B;0) 298.15
-  +GHSERAL# +3*GHSERBB#;  6000 N                                        23FRI!
+  +10*T +GHSERAL# +3*GHSERBB#;  6000 N                                  24FRI!
 PARAMETER G(BCC_A2,AL:C;0) 298.15
   +100000 +80*T +GHSERAL# +3*GHSERCC#;  6000 N                          08CON!
 PARAMETER G(BCC_A2,AL:H;0) 298.15
@@ -2879,6 +2889,7 @@ PARAMETER L(BETA_2,V:H,VA;2) 298.15
 
 $ ----------------------------------------------------------------------------
 $ BETA_RHOMB_B
+$ BETA BORIDE
 
 PHASE BETA_RHOMBO_B % 2 93 12 !
 CONSTITUENT BETA_RHOMBO_B : B : B,C : !
@@ -3611,7 +3622,7 @@ CONSTITUENT FCC_A1 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W
                    : B,C,H,N,O,VA : !
 
 PARAMETER G(FCC_A1,AL:B;0) 298.15
-  +GHSERAL# +GHSERBB#;  6000 N                                          24FRI!
+  +50208 -13.478*T +GHSERAL# +GHSERBB#;  6000 N                         04MIR!
 PARAMETER G(FCC_A1,AL:C;0) 298.15
   +81000 +GHSERAL# +GHSERCC#;  6000 N                                   08CON!
 PARAMETER G(FCC_A1,AL:N;0) 298.15
@@ -3891,6 +3902,8 @@ PARAMETER G(FCC_A1,W:VA;0) 298.15
   +19300 +0.63*T +GHSERW#; 6000 N                                       91DIN!
 
 
+PARAMETER L(FCC_A1,AL:B,VA;0) 298.15
+  +28602.2 -3.17802*T;  6000 N                                          04MIR!
 PARAMETER L(FCC_A1,AL:C,VA;0) 298.15
   -80000 +8*T;  6000 N                                                  08CON!
 
@@ -7451,6 +7464,13 @@ PARAMETER G(LIQUID,W;0) 298.15
   +52160.584 -14.10999*T -2713.468E-27*T**7 +GHSERW#; 3695 Y
   -30436.051 +375.175*T -54*T*LN(T);  6000.00 N                         91DIN!
 
+PARAMETER L(LIQUID,AL,B;0) 298.15
+  -927.53 -5.11312*T;  6000 N                                           04MIR!
+PARAMETER L(LIQUID,AL,B;1) 298.15
+  +31961.6;  6000 N                                                     04MIR!
+PARAMETER L(LIQUID,AL,B;2) 298.15
+  -12992;  6000 N                                                       04MIR!
+
 PARAMETER L(LIQUID,AL,C;0) 298.15
   +40861.0 -33.21138*T;  6000 N                                         96GRO!
 
@@ -8204,14 +8224,19 @@ PARAMETER TC(MB_B33,FE:B;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ MB2_C32
+$ PROTOTYPE: ALB2, ALUMINUM DIBORIDE
+$ PEARSON: hP3
+$ SPACE GROUP: P6/mmm
 
-PHASE MB2_C32 % 2 2 1 !
-CONSTITUENT MB2_C32 : B : CR,MO : !
+PHASE MB2_C32 % 2 1 2 !
+CONSTITUENT MB2_C32 : AL,CR,MO : B : !
 
-PARAMETER G(MB2_C32,B:CR;0) 298.15
-  -119061 +12.552*T +2*GHSERBB# +GHSERCR#;  6000 N                      02CAM!
-PARAMETER G(MB2_C32,B:MO;0) 298.15
-  -143814 +6.66*T +1.86*GHSERBB# +1.14*GHSERMO#;  6000 N                10PAN!
+PARAMETER G(MB2_C32,AL:B;0) 298.15
+  -23000 -3.05*T +GHSERAL# +2*GHSERBB#;  6000 N                         04MIR!
+PARAMETER G(MB2_C32,CR:B;0) 298.15
+  -119061 +12.552*T +GHSERCR# +2*GHSERBB#;  6000 N                      02CAM!
+PARAMETER G(MB2_C32,MO:B;0) 298.15
+  -143814 +6.66*T +1.14*GHSERMO# +1.86*GHSERBB#;  6000 N                10PAN!
 
 $ ----------------------------------------------------------------------------
 $ MB4
@@ -11649,7 +11674,7 @@ NUMBER  SOURCE
 99KUM   'Hari Kumar, K. C. "XXVIII CALPHAD meeting." Grenoble, 2e7/5 (1999).'
 99LIU   'Liu, Zi-Kui, and Y. Austin Chang. "Thermodynamic assessment of the 
         Al-Fe-Si system." Metallurgical and Materials Transactions A 30 
-        (1999): 1081-1095.'
+        F(1999): 1081-1095.'
 01CHE   'Chen, Qing, and Bo Sundman. "Modeling of thermodynamic properties for 
         Bcc, Fcc, liquid, and amorphous iron." Journal of phase equilibria 
         22.6 (2001): 631-644.'
@@ -11689,6 +11714,9 @@ NUMBER  SOURCE
         composition of titanium carbonitride and analysis using thermodynamic 
         modelling." International Journal of Materials Research 95.11 (2004): 
         987-992.'
+04MIR   'Mirković, Djordje, et al. "Experimental study and thermodynamic 
+        re-assessment of the Al-B system." Journal of Alloys and Compounds 
+        384.1-2 (2004): 168-174.'
 05BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
         systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system." 
         International Journal of Materials Research 96.4 (2005): 335-344.'
