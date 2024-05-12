@@ -84,6 +84,7 @@ $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
 DATABASE_INFO The following systems are available:'
   SER       SGTE Unary 5.0 Dinsdale (1991) and Chen (2001)'
   AL-B      Mirkovic (2004)'
+  AL-BI     Mirkovic (2009)'
   AL-C      Gröbner (1996) and Connetable (2008)'
   AL-CO     Stein (2013) and He (2015)'
   AL-CU     Saunders (1991)'
@@ -404,6 +405,18 @@ FUNCTION GHSERBB   298.15
 
 FUNCTION GBCCB 298.15
   +43514 -12.217*T +GHSERBB#; 3000 N                                    91DIN!
+
+$ ----------------------------------------------------------------------------
+$ BI
+
+FUNCTION GHSERBI 298.15
+  -7817.776 +128.418925*T -28.4096529*T*LN(T) +12.338888E-3*T**2
+  -8.381598E-6*T**3;  544.55 Y
+  +29293.369 -379.605174*T +49.678*T*LN(T) -73.0245E-3*T**2
+  +13.052833E-6*T**3 -3544705*T**(-1) +166.309E23*T**(-9); 800 Y
+  -11085.609 +182.955328*T -36.041*T*LN(T) +7.4641E-3*T**2
+  -1.05047E-6*T**3 +5175*T**(-1) +166.309E23*T**(-9); 1200 Y
+  -7580.864 +124.770814*T -27.196*T*LN(T) +166.309E23*T**(-9); 3000 N !
 
 $ ----------------------------------------------------------------------------
 $ C
@@ -1437,7 +1450,7 @@ $ PEARSON: cl2
 $ SPACE GROUP: Im-3m
 
 PHASE BCC_A2 %A 2 1 3 !
-CONSTITUENT BCC_A2 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W
+CONSTITUENT BCC_A2 : AL,BI,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W
                    : B,C,H,N,O,VA : !
 
 PARAMETER G(BCC_A2,AL:B;0) 298.15
@@ -1452,6 +1465,19 @@ PARAMETER G(BCC_A2,AL:O;0) 298.15
   +GHSERAL# +3*GHSEROO#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,AL:VA;0) 298.15
   +GBCCAL#;  2900 N                                                     91DIN!
+
+PARAMETER G(BCC_A2,BI:B;0) 298.15
+  +GHSERBI# +3*GHSERBB#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,BI:C;0) 298.15
+  +GHSERBI# +3*GHSERCC#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,BI:H;0) 298.15
+  +GHSERBI# +3*GHSERHH#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,BI:N;0) 298.15
+  +GHSERBI# +3*GHSERCC#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,BI:O;0) 298.15
+  +GHSERBI# +3*GHSEROO#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,BI:VA;0) 298.15
+  +11297 -13.9*T +GHSERBI#;  3000 N                                     91DIN!
 
 PARAMETER G(BCC_A2,CE:B;0) 298.15
   +GHSERCE# +3*GHSERBB#;  6000 N                                        23FRI!
@@ -3618,7 +3644,7 @@ $ PEARSON: cF4
 $ SPACE GROUP: Fm-3m
 
 PHASE FCC_A1 %B 2 1 1 !
-CONSTITUENT FCC_A1 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W 
+CONSTITUENT FCC_A1 : AL,BI,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W 
                    : B,C,H,N,O,VA : !
 
 PARAMETER G(FCC_A1,AL:B;0) 298.15
@@ -3633,6 +3659,19 @@ PARAMETER G(FCC_A1,AL:O;0) 298.15
   +GHSERAL# +GHSEROO#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,AL:VA;0) 298.15
   +GHSERAL#;  2900 N                                                    91DIN!
+
+PARAMETER G(FCC_A1,BI:B;0) 298.15
+  +GHSERBI# +GHSERBB#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,BI:C;0) 298.15
+  +GHSERBI# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,BI:H;0) 298.15
+  +GHSERBI# +GHSERHH#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,BI:N;0) 298.15
+  +GHSERBI# +GHSERNN#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,BI:O;0) 298.15
+  +GHSERBI# +GHSEROO#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,BI:VA;0) 298.15
+  +9900 -12.5*T ; 4000 N                                                91DIN!
 
 PARAMETER G(FCC_A1,CE:B;0) 298.15
   +GHSERCE# +GHSERBB#;  6000 N                                          24FRI!
@@ -4099,7 +4138,7 @@ PARAMETER L(FCC_A1,CR,SI:VA;0) 298.15
   +0;  6000 N                                                          17CUIC!
 
 $ ESTIMATE SAME CR,TI:VA AS HCP_A3
-PARAMETER L(HCP_A3,CR,TI:VA;0) 298.15
+PARAMETER L(FCC_A1,CR,TI:VA;0) 298.15
   +23900;  6000 N                                                      02GHOA!
 
 PARAMETER L(FCC_A1,CR,V:C;0) 298.15
@@ -5427,7 +5466,7 @@ $ PEARSON: hP2
 $ SPACE GROUP: P63/mmc
 
 PHASE HCP_A3 %B 2 1 .5 !
-CONSTITUENT HCP_A3 : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W 
+CONSTITUENT HCP_A3 : AL,BI,CE,CO,CR,CU,FE,MN,MO,NB,NI,P,S,SI,TA,TI,V,W 
                    : B,C,H,N,O,VA : !
 
 PARAMETER G(HCP_A3,AL:B;0) 298.15
@@ -5442,6 +5481,19 @@ PARAMETER G(HCP_A3,AL:O;0) 298.15
   +GHSERAL# +0.25*GHSEROO#;  6000 N                                     24FRI!
 PARAMETER G(HCP_A3,AL:VA;0) 298.15
   +5481-1.8*T +GHSERAL#; 2900 N                                         91DIN!
+
+PARAMETER G(HCP_A3,BI:B;0) 298.15
+  +GHSERBI# +0.5*GHSERBB#;  6000 N                                      24FRI!
+PARAMETER G(HCP_A3,BI:C;0) 298.15
+  +GHSERBI# +0.5*GHSERCC#;  6000 N                                      24FRI!
+PARAMETER G(HCP_A3,BI:H;0) 298.15
+  +GHSERBI# +0.25*GHSERHH#;  6000 N                                     24FRI!
+PARAMETER G(HCP_A3,BI:N;0) 298.15
+  +GHSERBI# +0.25*GHSERNN#;  6000 N                                     24FRI!
+PARAMETER G(HCP_A3,BI:O;0) 298.15
+  +GHSERBI# +0.25*GHSEROO#;  6000 N                                     24FRI!
+PARAMETER G(HCP_A3,BI:VA;0) 298.15
+  +9900 -11.8*T; 3000 N                                                 91DIN!
 
 PARAMETER G(HCP_A3,CE:B;0) 298.15
   +GHSERCE# +0.5*GHSERBB#;  6000 N                                      24FRI!
@@ -7349,8 +7401,8 @@ $ ----------------------------------------------------------------------------
 $ LIQUID
 
 PHASE LIQUID:L % 1 1 !
-CONSTITUENT LIQUID:L : AL,B,C,CE,CO,CR,CRO3/2,CU,FE,FEO,FEO3/2,FES,H,MN,MNS,
-                       MO,N,NB,NI,NIO,P,S,SI,TA,TI,V,W : ! 
+CONSTITUENT LIQUID:L : AL,B,BI,C,CE,CO,CR,CRO3/2,CU,FE,FEO,FEO3/2,FES,
+                       H,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,TA,TI,V,W : ! 
 
 PARAMETER G(LIQUID,AL;0) 298.15
   +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
@@ -7362,6 +7414,14 @@ PARAMETER G(LIQUID,B;0) 298.15
   +41119.703 +82.101722*T -14.9827763*T*LN(T) -7.095669E-3*T**2
   +0.507347E-6*T**3 +335484*T**(-1);  2348.00 Y
   +28842.012 +200.94731*T -31.4*T*LN(T);  6000.00 N                     91DIN!
+
+PARAMETER G(LIQUID,BI;0) 298.15
+  +11246.017 -20.636399*T -59.608E-20*T**7 +GHSERBI#; 544.55 Y
+  +40629.667 -400.415652*T +49.678*T*LN(T) -73.0245E-3*T**2
+  +13.052833E-6*T**3 -3544705*T**(-1); 800 Y
+  +250.689 +162.14485*T -36.041*T*LN(T) +7.4641E-3*T**2 
+  -1.05047E-6*T**3+5175*T**(-1); 1200 Y
+  +3755.434 +103.960336*T -27.196*T*LN(T); 3000 N                       91DIN!
 
 PARAMETER G(LIQUID,C;0) 298.15 
   +117369-24.63*T +GHSERCC#; 6000 N                                     91DIN!
@@ -7471,6 +7531,15 @@ PARAMETER L(LIQUID,AL,B;1) 298.15
 PARAMETER L(LIQUID,AL,B;2) 298.15
   -12992;  6000 N                                                       04MIR!
 
+PARAMETER L(LIQUID,AL,BI;0) 298.15
+  +23300 -1.665989*T;  6000 N                                           09MIR!
+PARAMETER L(LIQUID,AL,BI;1) 298.15
+  +13668.3 -6.547643*T;  6000 N                                         09MIR!
+PARAMETER L(LIQUID,AL,BI;2) 298.15
+  +19682.3 -13.657834*T;  6000 N                                        09MIR!
+PARAMETER L(LIQUID,AL,BI;3) 298.15
+  +6573.75 -1.8075*T;  6000 N                                           09MIR!
+  
 PARAMETER L(LIQUID,AL,C;0) 298.15
   +40861.0 -33.21138*T;  6000 N                                         96GRO!
 
@@ -10240,7 +10309,10 @@ $ ----------------------------------------------------------------------------
 $ RHOMBOHEDRAL_A7
 
 PHASE RHOMBOHEDRAL_A7 % 1 1 !
-CONSTITUENT RHOMBOHEDRAL_A7 : P : !
+CONSTITUENT RHOMBOHEDRAL_A7 : BI,P : !
+
+PARAMETER G(RHOMBOHEDRAL_A7,BI;0) 298.15
+  +GHSERBI#;  3000 N                                                    91DIN!
 
 PARAMETER G(RHOMBOHEDRAL_A7,P;0) 250
   -188 +0.12527*T +GHSERPP#;  3000 N                                    91DIN!
@@ -11758,6 +11830,10 @@ NUMBER  SOURCE
 09LIA   'Liang, Yu, et al. "A thermodynamic description of the Al-Cr-Si 
         system." Journal of phase equilibria and diffusion 30 (2009): 
         462-479.'
+09MIR   'Mirković, D., et al. "Integrated approach to thermodynamics, phase 
+        relations, liquid densities and solidification microstructures in the 
+        Al-Bi-Cu system." International journal of materials research 100.2 
+        (2009): 176-188.'
 09SUNA  'Sundman, Bo, et al. "An assessment of the entire Al-Fe system 
         including D03 ordering." Acta Materialia 57.10 (2009): 2896-2908.'
 09SUNB  'Sun, Wei-Hua, et al. "Reassessment of the Ni-B system supported by 
