@@ -158,6 +158,7 @@ DATABASE_INFO The following systems are available:'
   FE-V      Huang (1991)'
   FE-W      Gustafson (1987)'
   FES-S     Lee (2007)'
+  MG-MN     Groebner (2005)'
   MN-MO     Zheng (2017)'
   MN-NB     Liu (2012) EXCEPT MU PHASE'
   MN-NI     Kumar (1989) and Miettinen (2001) *' 
@@ -191,6 +192,7 @@ DATABASE_INFO The following systems are available:'
   AL-FE-MN  Zheng (2018) *'
   AL-FE-NI  Zhang (2009) *'
   AL-FE-SI  Liu (1999)'
+  AL-MG-MN  Du (2007)'
   AL-MN-SI  Du (2004)'
   B-C-NI    Oikawa (2022)'
   B-CR-FE   Pan (2010)'
@@ -1328,11 +1330,11 @@ $ ----------------------------------------------------------------------------
 $ AL4MN_R
 $ PROTOTPYE: AL4MN, LAMBDA AL4MN
 
-PHASE AL4MN_R % 2 461 107 !
+PHASE AL4MN_R % 2 4 1 !
 CONSTITUENT AL4MN_R : AL : MN : !
 
 PARAMETER G(AL4MN_R,AL:MN;0) 298.15
-  -1.16702984E7 +3890.09*T +461*GHSERAL# +107*GHSERMN#;  6000 N          07DU!
+  -20546.3 +6.84875*T +4*GHSERAL# +GHSERMN#;  6000 N                     07DU!
 
 $ ----------------------------------------------------------------------------
 $ AL5CR
@@ -2247,6 +2249,9 @@ PARAMETER L(BCC_A2,FE,W:VA;0) 298.15
   +41544;  6000 N                                                       87GUS!
 PARAMETER L(BCC_A2,FE,W:VA;1) 298.15
   -12621;  6000 N                                                       87GUS!
+
+PARAMETER L(BCC_A2,MG,MN:VA;0) 298.15
+  +85000;  6000 N                                                       05GRO!
 
 PARAMETER L(BCC_A2,MN,NI:VA;0) 298.15
   -51785 +3.5*T;  6000 N                                                89KUM!
@@ -3189,6 +3194,9 @@ PARAMETER L(CBCC_A12,FE,SI:VA;2) 298.15
 PARAMETER L(CBCC_A12,FE,V:VA;0) 298.15
   -10000;  6000 N                                                       91HUA!
 
+PARAMETER L(CBCC_A12,MG,MN:VA;0) 298.15
+  +85000;  6000 N                                                       05GRO!
+
 PARAMETER L(CBCC_A12,MN:C,VA;0) 298.15
   -52204;  6000 N                                                       10DJU!
 
@@ -3621,6 +3629,9 @@ PARAMETER L(CUB_A13,FE,SI:VA;2) 298.15
 
 PARAMETER L(CUB_A13,FE,V:VA;0) 298.15
   -10000;  6000 N                                                       91HUA!
+
+PARAMETER L(CUB_A13,MG,MN:VA;0) 298.15
+  +85000;  6000 N                                                       05GRO!
 
 PARAMETER L(CUB_A13,MN:C,VA;0) 298.15
   -10175;  6000 N                                                       10DJU!
@@ -4514,6 +4525,9 @@ PARAMETER L(FCC_A1,FE,W:VA;0) 298.15
 PARAMETER L(FCC_A1,FE,W:VA;1) 298.15
   -7258.6;  6000  N                                                     87GUS!
 
+PARAMETER L(FCC_A1,MG,MN:VA;0) 298.15
+  +85000;  6000 N                                                       05GRO!
+
 PARAMETER L(FCC_A1,MN:C,VA;0) 298.15
   -41333;  6000 N                                                       10DJU!
 
@@ -5145,7 +5159,7 @@ PHASE GAMMA_D82 % 2 8 5 !
 CONSTITUENT GAMMA_D82 : AL,FE,MN : AL,FE,MN : !
 
 PARAMETER G(GAMMA_D82,AL:AL;0) 298.15
-  +13*GHSERAL#;  6000 N                                                 24FRI!
+  +50000 +13*GHSERAL#;  6000 N                                          24FRI!
 PARAMETER G(GAMMA_D82,AL:FE;0) 298.15
   +8*GHSERAL# +5*GHSERFE#;  6000 N                                      24FRI!
 PARAMETER G(GAMMA_D82,AL:MN;0) 298.15
@@ -6358,6 +6372,9 @@ PARAMETER L(HCP_A3,FE,W:VA;0) 298.15
   +25977 -3.36*T;  6000 N                                               87GUS!
 PARAMETER L(HCP_A3,FE,W:VA;1) 298.15
   -7258.6;  6000  N                                                     87GUS!
+
+PARAMETER L(HCP_A3,MG,MN:VA;0) 298.15
+  +37148.1 -1.8103*T;  6000 N                                           05GRO!
 
 PARAMETER L(HCP_A3,MN:C,VA;0) 298.15
   -5006;  6000 N                                                        10DJU!
@@ -8245,6 +8262,11 @@ PARAMETER L(LIQUID,FES,S;0) 298.15
 PARAMETER L(LIQUID,FES,S;1) 298.15
   -72983 +24.7145*T;  6000 N                                            07LEE!
 
+PARAMETER L(LIQUID,MG,MN;0) 298.15
+  +26922.4 +9.0357*T;  6000 N                                           05GRO!
+PARAMETER L(LIQUID,MG,MN;1) 298.15
+  -3470.8;  6000 N                                                      05GRO!
+
 PARAMETER L(LIQUID,MN,MNS;0) 298.15
   +68500;  6000 N                                                       15DIL!
 PARAMETER L(LIQUID,MN,MNS;0) 298.15
@@ -8398,6 +8420,13 @@ PARAMETER L(LIQUID,AL,FE,SI;1) 298.15
   -50575 +63.727*T;  6000 N                                             99LIU!
 PARAMETER L(LIQUID,AL,FE,SI;2) 298.15
   -62178 +63.727*T;  6000 N                                             99LIU!
+
+PARAMETER L(LIQUID,AL,MG,MN;0) 298.15
+  +28000;  6000 N                                                        07DU!
+PARAMETER L(LIQUID,AL,MG,MN;1) 298.15
+  +0;  6000 N                                                            07DU!
+PARAMETER L(LIQUID,AL,MG,MN;2) 298.15
+  +0;  6000 N                                                            07DU!
 
 PARAMETER L(LIQUID,AL,MN,SI;0) 298.15
   -72818;  6000 N                                                        04DU!
@@ -11703,6 +11732,15 @@ PARAMETER G(TAU_ALFESI,AL:FE:SI;0) 298.15
   -28589 +4.255*T;  6000 N                                              99LIU!
 
 $ ----------------------------------------------------------------------------
+$ TAU_ALMGMN
+
+PHASE TAU_ALMGMN % 3 2 3 18 !
+CONSTITUENT TAU_ALMGMN : MN : MG : AL : !
+
+PARAMETER G(TAU_ALMGMN,MN:MG:AL;0) 298.15
+  -198999.91 +2*GHSERMN# +3*GHSERMG# +18*GHSERAL#;  6000 N               07DU!
+
+$ ----------------------------------------------------------------------------
 $ TAU1
 
 PHASE TAU1 % 2 0.818181 0.181818 !
@@ -12397,7 +12435,10 @@ NUMBER  SOURCE
         re-assessment of the Al-B system." Journal of Alloys and Compounds 
         384.1-2 (2004): 168-174.'
 05BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
-        systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system." 
+        systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system."
+05GRO   'Gröbner, J., et al. "Experimental investigation and thermodynamic 
+        calculation of binary Mg-Mn phase equilibria." Journal of phase 
+        equilibria and diffusion 26.3 (2005): 234-239.'
         International Journal of Materials Research 96.4 (2005): 335-344.'
 05MAR   'Markström, Andreas, K. Frisk, and B. Sundman. "A revised 
         thermodynamic description of the Co-WC system." Journal of phase 
