@@ -12854,7 +12854,7 @@ $ ----------------------------------------------------------------------------
 $ TETRAGONAL_A6
 
 PHASE TETRAGONAL_A6 % 1 1 !
-CONSTITUENT TETRAGONAL_A6 : BI,GA,SN :
+CONSTITUENT TETRAGONAL_A6 : BI,GA,SN : !
 
 PARAMETER G(TETRAGONAL_A6,BI;0) 298.15
   +4184.07 +GHSERBI#; 3000 N                                            91DIN!
