@@ -94,11 +94,12 @@ DATABASE_INFO The following systems are available:'
   AL-CO     Stein (2013) and He (2015)'
   AL-CR     Saunders (1991), Hu (2013), and Cui (2017)'
   AL-CU     Saunders (1991)'
-  AL-FE     Seierstein (1991) and Sundman (2009)'
+  AL-FE     Seierstein (1991), Sundman (2009), Lindwall (2015)'
   AL-MG     Chartrand (2006)'
   AL-MN     Du (2007)'
   AL-NB     He (2015)'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
+  AL-O      Taylor (1992) and Lindwall (2015)'
   AL-SI     Gröbner (1996)'
   B-C       Kasper (1996)'
   B-CR      Campbell (2002) and Pan (2010)'
@@ -193,6 +194,7 @@ DATABASE_INFO The following systems are available:'
   AL-CR-SI  Hu (2013)'
   AL-CU-NI  Wang (2019)'
   AL-FE-MN  Zheng (2018) *'
+  AL-FE-O   Lindwall (2015)'
   AL-FE-NI  Zhang (2009)'
   AL-FE-SI  Liu (1999)'
   AL-MG-MN  Du (2007)'
@@ -354,6 +356,11 @@ ELEMENT ZR   HCP_A3                    9.1224E+01  5.5663E+03  3.9181E+01 !
 
 
 SPECIES AL3+  AL/+3 !
+SPECIES ALO   AL1O1 !
+SPECIES ALO3/2  AL1O1.5 !
+SPECIES ALO2  AL1O2 !
+SPECIES AL2O  AL2O1 !
+SPECIES AL2O2 AL2O2 !
 SPECIES B2    B2 !
 SPECIES B11C  B11C !
 SPECIES B12   B12 !
@@ -937,6 +944,16 @@ PARAMETER G(ALCU_ZETA,AL:CU;0) 298.15
   -420000.0 +18.0*T +9*GHSERAL# +11*GHSERCU#;  6000 N                   91SAU!
 PARAMETER G(ALCU_ZETA,AL:NI;0) 298.15
   +9*GHSERAL# +11*GHSERNI#;  6000 N                                     19WAN!
+
+$ ----------------------------------------------------------------------------
+$ ALFEO3
+
+PHASE ALFEO3 % 3 1 1 3 !
+CONSTITUENT ALFEO3 : AL3+ : FE3+ : O2- : !
+
+PARAMETER G(ALFEO3,AL3+:FE3+:O2-;0) 298.15
+  -1284485.36 +795.2115*T -126.28*T*LN(T) -0.013681*T**2
+  +1512700*T**(-1) +1.1664E-7*T**3;  3000 N                             15LIN!
 
 $ ----------------------------------------------------------------------------
 $ ALMG_BETA
@@ -3586,7 +3603,9 @@ $ PEARSON: hR10
 $ SPACE GROUP: R-3c
 
 PHASE CORUNDUM_D51 % 3 2 1 3 !
-CONSTITUENT CORUNDUM_D51 : CR2+,CR3+,FE2+,FE3+ : CR3+,FE3+,NI2+,VA : O2- : !
+CONSTITUENT CORUNDUM_D51 : AL3+,CR2+,CR3+,FE2+,FE3+ 
+                         : CR3+,FE3+,NI2+,VA 
+                         : O2- : !
 
 FUNCTION GCR2O3 298.15
   -1177497.8 +814.9138*T -132.046*T*LN(T) +0.005256015*T**2
@@ -3594,8 +3613,21 @@ FUNCTION GCR2O3 298.15
   -1166947.9 +701.5624*T -115.5381*T*LN(T) -0.00620492*T**2
   +1.00698E-7*T**3 +239949*T**(-1);  6000 N                             08KJE!
 
+FUNCTION GCORUND 298.15
+  -1707351.3 +448.021092*T -67.4804*T*LN(T) -0.06747*T**2
+  +1.4205433E-5*T**3 +938780*T**(-1);  600 Y 
+  -1724886.06 +754.856573*T -116.258*T*LN(T) -0.0072257*T**2
+  +2.78532E-7*T**3 +2120700*T**(-1); 1500 Y 
+  -1772163.19 +1053.4548*T -156.058*T*LN(T) +0.00709105*T**2
+  -6.29402E-7*T**3 +12366640*T**(-1); 3000 N                            15LIN!
+
 FUNCTION GFE2O3 298.15
   -858683 +827.946*T -137.0089*T*LN(T) +1453810*T**(-1);  6000 N        91SUN!
+
+PARAMETER G(CORUNDUM_D51,AL3+:FE2+:O2-;0) 298.15
+  +85000 +GCORUND#;  3000 N                                             15LIN!
+PARAMETER G(CORUNDUM_D51,AL3+:VA:O2-;0) 298.15
+  +GCORUND#;  3000 N                                                    92TAY!
 
 PARAMETER G(CORUNDUM_D51,CR2+:CR3+:O2-;0) 298.15
   +665910 +GCR2O3#;  6000 N                                             08KJE!
@@ -3697,6 +3729,13 @@ PARAMETER BMAGN(CORUNDUM_D51,FE3+:VA:O2-;0) 298.15
 PARAMETER TC(CORUNDUM_D51,FE3+:VA:O2-;0) 298.15
   -2867;  6000 N                                                        91SUN!
 
+
+PARAMETER L(CORUNDUM_D51,AL3+,FE3+:VA:O2-;0) 298.15
+  +110010 -31.781*T;  6000 N                                            15LIN!
+PARAMETER L(CORUNDUM_D51,AL3+,FE3+:VA:O2-;1) 298.15
+  +25408;  6000 N                                                       15LIN!
+PARAMETER L(CORUNDUM_D51,AL3+,FE3+:VA:O2-;2) 298.15
+  -65489;  6000 N                                                       15LIN!
 
 PARAMETER L(CORUNDUM_D51,CR3+,FE3+:VA:O2-;0) 298.15
   -16250 +12.5*T;  6000 N                                               08KJE!
@@ -6065,8 +6104,55 @@ $ ----------------------------------------------------------------------------
 $ GAS
 
 PHASE GAS:G % 1 1 !
-CONSTITUENT GAS:G : C,C2,C3,C4,C5,CN,CNN,NCN,C2N,C2N2,C4N2,CR,CRO,CRO2,
-                    FE,FEO,H,H2,N,N2,NI,NIO,O2,O3,TI,V : !
+CONSTITUENT GAS:G : AL,ALO,ALO2,AL2O2,C,C2,C3,C4,C5,CN,CNN,NCN,C2N,C2N2,C4N2,
+                    CR,CRO,CRO2,FE,FEO,H,H2,N,N2,NI,NIO,O2,O3,TI,V : !
+
+FUNCTION GHGASAL 298.15
+  +3.26352E5 +1.64448E2*T;  6000 N                                      92TAY!
+FUNCTION GHGASALO 298.15
+  +6.86176E4 +2.18275E2*T;  6000 N                                      92TAY!
+FUNCTION GHGASALO2 298.15
+  -1.87862E5 +2.45216E2*T;  6000 N                                      92TAY!
+FUNCTION GHGASAL2O 298.15
+  -1.30541E5 +2.45216E2*T;  6000 N                                      92TAY!
+FUNCTION GHGASAL2O2 298.15
+  -3.94551E5 +2.89872E2*T;  6000 N                                      92TAY!
+
+PARAMETER G(GAS,AL;0) 298.15
+  +2.07817E1 -2.06115E-6*T +1.90356E-9*T**2 +5.39334E4*T**(-2) 
+  +GHGASAL# +R*T*LN(P/101325);  3000 Y
+  +3.68720E1 -6.15676E-3*T +6.67105E-7*T**2
+  -3.24628E7*T**(-2) +GHGASAL# +R*T*LN(P/101325);  6000 N               92TAY!
+
+PARAMETER G(GAS,ALO;0) 298.15
+  +2.73772E1 +1.74138*T -8.08558E-6*T**2 -8.58097E4*T**(-2) 
+  +GHGASALO# +R*T*LN(P/101325); 800 Y
+  +2.85617E1 +6.90067E-3*T +8.59728E-7*T**2 +8.74623E5*T**(-2)
+  +GHGASALO# +R*T*LN(P/101325);  1600 Y 
+  +2.25467E1 +1.84841E-2*T -3.39728E-6*T**2 -3.27373E6*T**(-2)
+  +GHGASALO# +R*T*LN(P/101325);  2800 Y 
+  +7.53329E1 -1.00236E-2*T +8.83619E-7*T**2 -5.44464E7*T**(-2)
+  +GHGASALO# +R*T*LN(P/101325);  6000 N                                 92TAY!
+
+PARAMETER G(GAS,ALO2;0) 298.15
+  +5.03724E1 +2.04591E-2*T -9.82200E-6*T**2 -5.92765E5*T**(-1)
+  +GHGASALO2# +R*T*LN(P/101325);  950 Y 
+  +6.32050E1 -9.19061E-4*T +2.52894E-7*T**2 -2.09178E6*T**(-1)
+  +GHGASLALO2# +R*T*LN(P/101325);  3550 Y
+  +5.11648E1 +3.43337E-3*T -1.83885E-7*T**2 +2.42915E7*T**(-1)
+  +GHGASALO2# +R*T*LN(P/101325);  6000 N                                92TAY!
+
+PARAMETER G(GAS,AL2O;0) 298.15
+  +4.92582E1 +2.41228E-2*T -1.28758E-5*T**2 -2.61852E5*T**(-1)
+  +GHGASAL2O# +R*T*LN(P/101325);  800 Y
+  +6.21617E1 +7.45798E-5*T -7.19397E-9*T**2 -1.47791E6*T**(-1)
+  +GHGASLAL2O# +R*T*LN(P/101325);  6000 N                               92TAY!
+
+PARAMETER G(GAS,AL2O2;0) 298.15
+  +7.60489E1 +1.11959E-2*T -4.86054E-6*T**2 -1.04799E6*T**(-1)
+  +GHGASAL2O2# +R*T*LN(P/101325);  1150 Y
+  +8.31292E1 +4.75089E-6*T -4.17203E-10*T**2 -1.89179E6*T**(-1)
+  +GHGASLAL2O2# +R*T*LN(P/101325);  6000 N                              92TAY!
 
 PARAMETER G(GAS,C;0) 298.15
   +7.10394885E5 -17.1679458*T -21.05667*T*LN(T) +2.5592375E-4*T**2
@@ -6327,7 +6413,7 @@ $ PEARSON: cF8
 $ SPACE GROUP: Fm-3m
 
 PHASE HALITE_B1 %B 2 1 1 !
-CONSTITUENT HALITE_B1 : CR3+,FE2+,NI2+,NI3+,VA : O2- : !
+CONSTITUENT HALITE_B1 : AL3+,CR3+,FE2+,NI2+,NI3+,VA : O2- : !
 
 FUNCTION GNIO 298.15
   -254927.2 +276.208*T -46.0391*T*LN(T) -0.00931454*T**2
@@ -6337,6 +6423,8 @@ FUNCTION GNIO 298.15
   -259131.4 +337.305*T -55.75758*T*LN(T) +0.002220246*T**2
   -7.80093E-7*T**3;  6000 N                                             96KOW!
 
+PARAMETER G(HALITE_B1,AL3+:O2-;0) 298.15
+  +50000 +0.5*GCORUND#;  3000 N                                         15LIN!
 PARAMETER G(HALITE_B1,CR3+:O2-;0) 298.15
   -563748.9 +407.4569*T -66.02315*T*LN(T) +0.002628*T**2
   -6.944225E-7*T**3 +750881*T**(-1);  1000 Y 
@@ -8387,13 +8475,30 @@ PARAMETER L(LAVES_C36,V:TI,V;0) 298.15
 $ ----------------------------------------------------------------------------
 $ LIQUID
 
-PHASE LIQUID:L % 1 1 !
-CONSTITUENT LIQUID:L : AL,B,BI,C,CE,CO,CR,CRO3/2,CU,FE,FEO,FEO3/2,FES,
+PHASE LIQUID:L % 1 1!
+CONSTITUENT LIQUID:L : AL,ALO3/2,B,BI,C,CE,CO,CR,CRO3/2,CU,FE,FEO,FEO3/2,FES,
                        H,MG,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,SN,TA,TI,V,W : ! 
 
+FUNCTION GLIQAL2O3 298.15
+  +1607850.8 +405.559491*T -67.4804*T*LN(T) -0.06747*T**2
+  +1.4205433E-5*T**3 +938780*T**(-1); 600 Y 
+  -1625385.57 +712.394972*T -116.258*T*LN(T) -0.0072257*T**2
+  +2.78532E-7*T**3 +2120700*T**(-1); 1500 Y
+  -1672662.69 +1010.9932*T -156.058*T*LN(T) +0.00709105*T**2
+  -6.29402E-7*T**3 +12366650*T**(-1); 1912 Y
+  +29178041.6 -168360.926*T +21987.1791*T*LN(T) -6.99552951*T**2
+  +4.10226192E-4*T**3 -7.98843618E9*T**(-1);  2327 Y
+  -1757702.05 +1344.84833*T -192.464*T*LN(T); 6000 N                    92TAY!
+
+FUNCTION GLIQFEO 298.15
+  -137252 +224.641*T -37.1815*T*LN(T);  6000 N                          15LIN!
+  
 PARAMETER G(LIQUID,AL;0) 298.15
   +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
   -795.991 +177.430209*T -31.748192*T*LN(T); 2900 N                     91DIN!
+
+PARAMETER G(LIQUID,ALO3/2;0) 298.15
+  +0.5*GLIQAL2O3#;  6000 N                                              92TAY!
 
 PARAMETER G(LIQUID,B;0) 298.15
   +40723.275 +86.843839*T -15.6641*T*LN(T) -6.864515E-3*T**2
@@ -8521,6 +8626,9 @@ PARAMETER G(LIQUID,W;0) 298.15
   +52160.584 -14.10999*T -2713.468E-27*T**7 +GHSERW#; 3695 Y
   -30436.051 +375.175*T -54*T*LN(T);  6000.00 N                         91DIN!
 
+
+PARAMETER L(LIQUID,AL,ALO3/2;0) 298.15
+  +110000 +46*T;  6000 N                                                15LIN!
 PARAMETER L(LIQUID,AL,B;0) 298.15
   -927.53 -5.11312*T;  6000 N                                           04MIR!
 PARAMETER L(LIQUID,AL,B;1) 298.15
@@ -11902,8 +12010,10 @@ $ PEARSON: cF56
 $ SPACE GROUP: Fd-3m
 
 PHASE SPINEL_H11 %B 4 1 2 2 4 !
-CONSTITUENT SPINEL_H11 : CR2+,CR3+,FE2+,FE3+,NI2+ : CR3+,FE2+,FE3+,NI2+,VA
-                       : CR2+,FE2+,VA : O2- : !
+CONSTITUENT SPINEL_H11 : AL3+,CR2+,CR3+,FE2+,FE3+,NI2+ 
+                       : AL3+,CR3+,FE2+,FE3+,NI2+,VA
+                       : CR2+,FE2+,VA 
+                       : O2- : !
 
 FUNCTION SPINELA 298.15
   +142000;  6000 N                                                      08KJE!
@@ -11933,7 +12043,77 @@ FUNCTION DELTAG 298.15
   +71546 +1.5*SPINELH# -10.5*SPINELE# +0.5*SPINELA# 
   +10.5*SPINELG# -0.5*SPINELB# -10.5*SPINELF# -SPINELR#;  6000 N        08KJE!
 
+FUNCTION DG3P3P 298.15
+  +133833.21 -52.276862*T;  3000 N                                      15LIN!
+FUNCTION GF2F2VAB 298.15
+  +7*GFFB# +JFF#;  3000 N                                               15LIN!
+FUNCTION GF2F3VAB 298.15
+  +7*GFFB#;  3000 N                                                     15LIN!
+FUNCTION GF3F3VAB 298.15
+  +7*GFFB# -JFF#;  3000 N                                               15LIN!
+FUNCTION GFEAL2O4 298.15
+  -2038654.70 +958.16741*T -155.3938*T*LN(T) -0.0097141*T**2
+  +1566908*T**(-1);  3000 N                                             15LIN!
+FUNCTION GFFB 298.15
+  -161731 +144.873*T -24.9879*T*LN(T) -0.0011952256*T**2
+  +206520*T**(-1);  3000 N                                              15LIN!
+FUNCTION GGAMMA 298.15
+  -1689977.34 +469.458181*T -70.5452*T*LN(T) -0.070794*T**2
+  +1.491345E-5*T**3 +981165*T**(-1); 600 Y 
+  -1708389.72 +791.591946*T -121.754*T*LN(T) -0.0075467*T**2
+  +2.89573E-7*T**3 +2222750*T**(-1); 1500 Y 
+  -1758861.74 +1110.41976*T -164.254*T*LN(T) +0.00775305*T**2
+  -6.8247E-7*T**3 +13162750*T**(-1); 3000 N                             15LIN!
+FUNCTION J 298.15
+  +29163.95 +7.88*T;  3000 N                                            15LIN!
+FUNCTION JFF 298.15
+  +46826 -27.266*T;  3000 N                                             15LIN!
 
+PARAMETER G(SPINEL_H11,AL3+:AL3+:CR2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERAL# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:AL3+:FE2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERAL# +2*GHSERFE# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:AL3+:VA:O2-;0) 298.15
+  +1.5*GFEAL2O4# +0.5*GF2F2VAB# +J#;  3000 N                            15LIN!
+
+PARAMETER G(SPINEL_H11,AL3+:CR3+:CR2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERCR# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:CR3+:FE2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERCR# +2*GHSERFE# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:CR3+:VA:O2-;0) 298.15
+  +GHSERAL# +2*GHSERCR# +4*GHSEROO#;  6000 N                            24FRI!
+
+PARAMETER G(SPINEL_H11,AL3+:FE2+:CR2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERFE# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:FE2+:FE2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERFE# +2*GHSERFE# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:FE2+:VA:O2-;0) 298.15
+  +J# +0.5*GFEAL2O4# +0.5*GF2F2VAB#;  3000 N                            15LIN!
+
+PARAMETER G(SPINEL_H11,AL3+:FE3+:CR2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERFE# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:FE3+:FE2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERFE# +2*GHSERFE# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:FE3+:VA:O2-;0) 298.15
+  +GF2F3VAB# +0.5*GFEAL2O4# +J# -0.5*GF2F2VAB#;  3000 N                 15LIN!
+
+PARAMETER G(SPINEL_H11,AL3+:NI2+:CR2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERNI# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:NI2+:FE2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERNI# +2*GHSERFE# +4*GHSEROO#;  6000 N                24FRI!
+PARAMETER G(SPINEL_H11,AL3+:NI2+:VA:O2-;0) 298.15
+  +GHSERAL# +2*GHSERNI# +4*GHSEROO#;  6000 N                            24FRI!
+
+PARAMETER G(SPINEL_H11,AL3+:VA:CR2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERCR# +4*GHSEROO#;  6000 N                            24FRI!
+PARAMETER G(SPINEL_H11,AL3+:VA:FE2+:O2-;0) 298.15
+  +GHSERAL# +2*GHSERFE# +4*GHSEROO#;  6000 N                            24FRI!
+PARAMETER G(SPINEL_H11,AL3+:VA:VA:O2-;0) 298.15
+  +8*GGAMMA# -7.5*GFEAL2O4# +2.5*GF2F2VAB# -5*J#
+  +44.9543481*T;  3000 N                                                15LIN!
+
+PARAMETER G(SPINEL_H11,CR2+:AL3+:CR2+:O2-;0) 298.15
+  +GHSERCR# +2*GHSERAL# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
 PARAMETER G(SPINEL_H11,CR2+:CR3+:CR2+:O2-;0) 298.15
   +10.5*SPINELF# -1.5*SPINELG# -1.5*SPINELB# +SPINELD#
   +SPINELR# +SPINELS#;  6000 N                                          08KJE!
@@ -12141,6 +12321,9 @@ PARAMETER BMAGN(SPINEL_H11,CR3+:VA:VA:O2-;0) 298.15
 PARAMETER TC(SPINEL_H11,CR3+:VA:VA:O2-;0) 298.15
   +100;  6000 N                                                         08KJE!
 
+PARAMETER G(SPINEL_H11,FE2+:AL3+:VA:O2-;0) 298.15
+  +GFEAL2O4#;  3000 N                                                   15LIN!
+
 PARAMETER G(SPINEL_H11,FE2+:CR3+:CR2+:O2-;0) 298.15
   +7*SPINELF# +2*SPINELG# -SPINELB# +SPINELD#;  6000 N                  08KJE!
 PARAMETER BMAGN(SPINEL_H11,FE2+:CR3+:CR2+:O2-;0) 298.15
@@ -12240,6 +12423,9 @@ PARAMETER BMAGN(SPINEL_H11,FE2+:VA:VA:O2-;0) 298.15
   +44.54;  6000 N                                                       91SUN!
 PARAMETER TC(SPINEL_H11,FE2+:VA:VA:O2-;0) 298.15
   +848;  6000 N                                                         91SUN!
+
+PARAMETER G(SPINEL_H11,FE3+:AL3+:VA:O2-;0) 298.15
+  -GF2F3VAB# +GF3F3VAB# +GFEAL2O4# +DG3P3P#;  3000 N                    15LIN!
 
 PARAMETER G(SPINEL_H11,FE3+:CR3+:CR2+:O2-;0) 298.15
   +7*SPINELF# +2*SPINELG# -2*SPINELB# +SPINELD#;  6000 N                08KJE!
@@ -12416,6 +12602,8 @@ PARAMETER L(SPINEL_H11,CR3+,NI2+:CR3+:VA:O2-;0) 298.15
 PARAMETER L(SPINEL_H11,CR3+,NI2+:NI2+:VA:O2-;0) 298.15
   +DELTAG#;  6000 N                                                     08KJE!
 
+PARAMETER L(SPINEL_H11,FE2+:AL3+,FE3+:VA:O2-;0) 298.15
+  +16427 -6.4653*T;  3000 N                                             15LIN!
 PARAMETER L(SPINEL_H11,FE2+:CR3+,FE2+:VA:O2-;0) 298.15
   +152380 -60*T;  6000 N                                                08KJE!
 PARAMETER L(SPINEL_H11,FE2+:CR3+,FE3+:VA:O2-;0) 298.15
@@ -12425,6 +12613,12 @@ PARAMETER L(SPINEL_H11,FE2+:CR3+,VA:VA:O2-;0) 298.15
 PARAMETER L(SPINEL_H11,FE2+:CR3+,VA:VA:O2-;1) 298.15
   +150000;  6000 N                                                      08KJE!
 
+PARAMETER L(SPINEL_H11,FE3+:AL3+,FE3+:VA:O2-;0) 298.15
+  -132425 -39.326*T;  3000 N                                            15LIN!
+PARAMETER L(SPINEL_H11,FE3+:AL3+,FE3+:VA:O2-;1) 298.15
+  -91226 +80.135*5;  3000 N                                             15LIN!
+PARAMETER L(SPINEL_H11,FE3+:AL3+,FE3+:VA:O2-;2) 298.15
+  -91.20798*T;  3000 N                                                  15LIN!
 PARAMETER L(SPINEL_H11,FE3+:CR3+,FE2+:VA:O2-;0) 298.15
   +152380 -60*T;  6000 N                                                08KJE!
 PARAMETER L(SPINEL_H11,FE3+:CR3+,NI2+:VA:O2-;0) 298.15
@@ -13050,6 +13244,9 @@ NUMBER  SOURCE
 92QIU   'Qiu, Caian. "An analysis of the Cr-Fe-Mo-C system and modification of 
         thermodynamic parameters." ISIJ international 32.10 (1992): 
         1117-1127.'
+92TAY   'Taylor, J. R., et al. "A Critical assessment of tnermodynamic and 
+        phase diagram data for the Al-O system." Calphad 16.2 (1992): 
+        173-179.'
 93DU    'Du, Hong. "A reevaluation of the Fe-N and Fe-CN systems." Journal of 
         Phase Equilibria 14 (1993): 682-693.'
 93FOR   'Forsberg, Annika, and John Ågren. "Thermodynamic evaluation of the 
@@ -13306,6 +13503,8 @@ NUMBER  SOURCE
         database for high Mn-high Al steels: Phase equilibria in the 
         Fe-Mn-Al-C system by experiment and thermodynamic modeling." Calphad 
         51 (2015): 89-103.'
+15LIN  'Lindwall, Greta, et al. "Thermodynamic modeling of the aluminum-iron-
+        oxygen system." Calphad 51 (2015): 178-192.'
 15ZHE   'Zheng, Weisen, et al. "Thermodynamic assessment of the Fe-Mn-Si 
         system and atomic mobility of its fcc phase." Journal of Alloys and 
         Compounds 632 (2015): 661-675.'
