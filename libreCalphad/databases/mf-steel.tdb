@@ -212,6 +212,7 @@ DATABASE_INFO The following systems are available:'
   C-CO-W    Guillermet (1989) and Markström (2005)'
   C-CR-FE   Andersson (1988), Qiu (1992), Khvan (2014), and Jacob (2023)'
   C-CR-MO   Qiu (1992) and Bratberg (2005)'
+  C-CR-MN   Lee (1993)'
   C-CR-NI   Lee (1992)'
   C-CR-V    Bratberg (2005)'
   C-CU-FE   Chen (2019)'
@@ -267,6 +268,7 @@ DATABASE_INFO The following systems are available:'
 '
   AL-C-FE-MN  Chin (2010)'
   C-CO-FE-NI  Guillermet (1988)'
+  C-CR-FE-MN  Lee (1993)'
   C-CR-FE-MO  Qiu (1992)'
   C-N-NB-V    Frisk (2008)'
   CR-FE-NI-O  Kjellqvist (2008)'
@@ -2184,6 +2186,10 @@ PARAMETER L(BCC_A2,CR,MO:VA;0) 298.15
 PARAMETER L(BCC_A2,CR,MO:VA;1) 298.15
   +5974 -2.428*T;  6000 N                                               91FRI!
 
+PARAMETER L(BCC_A2,CR,MN:C;0) 298.15
+  -20328 +18.7339*T;  6000 N                                           93LEEC!
+PARAMETER L(BCC_A2,CR,MN:C;1) 298.15
+  -9162 +4.4183*T;  6000 N                                             93LEEC!
 PARAMETER L(BCC_A2,CR,MN:VA;0) 298.15
   -20328 +18.7339*T; 6000.00 N                                         93LEEB!
 PARAMETER L(BCC_A2,CR,MN:VA;1) 298.15
@@ -3328,7 +3334,7 @@ PARAMETER G(CBCC_A12,CO:VA;0) 298.15
   +4155 +GHSERCO#; 6000 N                                               91DIN!
 
 PARAMETER G(CBCC_A12,CR:C;0) 298.15
-  +GHSERCR# +GHSERCC#;  6000 N                                          23FRI!
+  +5000 +GHSERCR# +GHSERCC#;  6000 N                                   93LEEC!
 PARAMETER G(CBCC_A12,CR:VA;0) 298.15 
   +11087 +2.7196*T +GHSERCR#; 6000 N                                    91DIN!
 
@@ -3396,7 +3402,8 @@ PARAMETER L(CBCC_A12,CO,MN:VA;0) 298.15
 
 PARAMETER L(CBCC_A12,CR,MG:VA;0) 298.15
   +80*T;  6000 N                                                        91ANS!
-
+PARAMETER L(CBCC_A12,CR,MN:C;0) 298.15
+  -38349 +22.6925*T;  6000 N                                           93LEEC!
 PARAMETER L(CBCC_A12,CR,MN:VA;0) 298.15
   -36796 +20.385*T; 6000.00 N                                           98ANS!
 
@@ -3412,14 +3419,12 @@ PARAMETER L(CBCC_A12,FE,MN:C;0) 298.15
   -36732;  6000 N                                                       11DJU!
 PARAMETER L(CBCC_A12,FE,MN:VA;0) 298.15
   -10184;  6000 N                                                      89HUAA!
-
 PARAMETER L(CBCC_A12,FE,SI:VA;0) 298.15
   -153141 +46.48*T;  6000 N                                             93FOR!
 PARAMETER L(CBCC_A12,FE,SI:VA;1) 298.15
   -92352;  6000 N                                                       93FOR!
 PARAMETER L(CBCC_A12,FE,SI:VA;2) 298.15
   +62240;  6000  N                                                      93FOR!
-
 PARAMETER L(CBCC_A12,FE,V:VA;0) 298.15
   -10000;  6000 N                                                       91HUA!
 
@@ -3555,6 +3560,8 @@ PARAMETER G(CEMENTITE_D011,W:C;0) 298.15
 
 PARAMETER L(CEMENTITE_D011,CR,FE:C;0) 298.15
   +14586 -9.18*T;  6000 N                                               14KHV!
+PARAMETER L(CEMENTITE_D011,CR,MN:C;0) 298.15
+  +9000;  6000 N                                                       93LEEC!
 PARAMETER L(CEMENTITE_D011,CR,MO:C;0) 298.15
   +40000;  6000 N                                                       92HIL!
 PARAMETER L(CEMENTITE_D011,CR,NI:B;0) 298.15
@@ -3788,6 +3795,8 @@ PARAMETER G(CUB_A13,AL:VA;0) 298.15
 PARAMETER G(CUB_A13,CO:VA;0) 298.15 
   +3155 +GHSERCO#; 6000 N                                               91DIN!
 
+PARAMETER G(CUB_A13,CR:C;0) 298.15
+  +5000 +GHSERCR# +GHSERCC#;  6000 N                                   93LEEC!
 PARAMETER G(CUB_A13,CR:VA;0) 298.15 
   +15899 +0.6276*T +GHSERCR#; 6000 N                                    91DIN!
 
@@ -3861,6 +3870,8 @@ PARAMETER L(CUB_A13,CO,MN:VA;1) 298.15
 
 PARAMETER L(CUB_A13,CR,CU:VA;0) 298.15
   +30000;  6000 N                                                       24FRI!
+PARAMETER L(CUB_A13,CR,MN:C;0) 298.15
+  -31260 +16.4919*T;  6000 N                                           93LEEC!
 PARAMETER L(CUB_A13,CR,MN:VA;0) 298.15
   -31260 +16.4919*T; 6000.00 N                                          98ANS!
 
@@ -4669,6 +4680,8 @@ PARAMETER L(FCC_A1,CR,FE:VA;1) 298.15
 PARAMETER L(FCC_A1,CR,MG:VA;0) 298.15
   +80*T;  6000 N                                                        91ANS!
 
+PARAMETER L(FCC_A1,CR,MN:C;0) 298.15
+  -19088 +17.5423*T;  6000 N                                           93LEEC!
 PARAMETER L(FCC_A1,CR,MN:VA;0) 298.15
   -19088 +17.5423*T; 6000.00 N                                         93LEEB!
 
@@ -6943,6 +6956,8 @@ PARAMETER L(HCP_A3,CR,FE:VA;0) 298.15
 PARAMETER L(HCP_A3,CR,MG:VA;0) 298.15
   +80*T;  6000 N                                                        91ANS!
 
+PARAMETER L(HCP_A3,CR,MN:C;0) 298.15
+  +60000;  6000 N                                                      93LEEC!
 PARAMETER L(HCP_A3,CR,MN:VA;0) 298.15
   +41800.0; 6000.00 N                                                   98ANS!
 
@@ -9835,6 +9850,8 @@ PARAMETER L(M7C3_D101,CR,FE:C;1) 298.15
   -7310;  6000 N                                                        14KHV!
 PARAMETER L(M7C3_D101,CR,FE:C;2) 298.15
   +27050;  6000 N                                                       14KHV!
+PARAMETER L(M7C3_D101,CR,MN:C;0) 298.15
+  +72737 -56.4964*T;  6000 N                                           93LEEC!
 PARAMETER L(M7C3_D101,CR,MO:C;0) 298.15
   +100000;  6000 N                                                      05BRA!
 PARAMETER L(M7C3_D101,CR,NI:C;0) 298.15
@@ -9932,7 +9949,7 @@ PARAMETER G(M23C6_D84,CR:FE:C;0) 298.15
 PARAMETER G(M23C6_D84,CR:MN:B;0) 298.15
   +20*GHSERCR# +3*GHSERMN# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CR:MN:C;0) 298.15
-  +20*GHSERCR# +3*GHSERMN# +6*GHSERCC#;  6000 N                         23FRI!
+  +0.869565*GCR23C6# +0.130435*GMN23C6#;  6000 N                       93LEEC!
 
 PARAMETER G(M23C6_D84,CR:MO:B;0) 298.15
   +20*GHSERCR# +3*GHSERMO# +6*GHSERBB#;  6000 N                         23FRI!
@@ -9993,7 +10010,7 @@ PARAMETER G(M23C6_D84,MN:CO:C;0) 298.15
 PARAMETER G(M23C6_D84,MN:CR:B;0) 298.15
   +20*GHSERMN# +3*GHSERCR# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,MN:CR:C;0) 298.15
-  +20*GHSERMN# +3*GHSERCR# +6*GHSERCC#;  6000 N                         23FRI!
+  +0.869565*GMN23C6# +0.130435*GCR23C6#;  6000 N                       93LEEC!
 
 PARAMETER G(M23C6_D84,MN:FE:B;0) 298.15
   +20*GHSERMN# +3*GHSERFE# +6*GHSERBB#;  6000 N                         23FRI!
@@ -10119,10 +10136,25 @@ PARAMETER L(M23C6_D84,CR,FE:FE:C;0) 298.15
   +6609;  6000 N                                                        14KHV!
 PARAMETER L(M23C6_D84,CR,FE:FE:C;1) 298.15
   -43600;  6000 N                                                       14KHV!
+PARAMETER L(M23C6_D84,CR,FE:MN:C;0) 298.15
+  -205342 +141.6667*T;  6000 N                                         93LEEC!
 PARAMETER L(M23C6_D84,CR,FE:MO:C;0) 298.15
   -177850 +153.9050*T;  6000 N                                          92QIU!
 PARAMETER L(M23C6_D84,CR,FE:V:C;0) 298.15
   -205342 +141.6667*T;  6000 N                                         92LEEB!
+
+PARAMETER L(M23C6_D84,CR,MN:CR:C;0) 298.15
+  -173680 +160*T;  6000 N                                              93LEEC!
+PARAMETER L(M23C6_D84,CR,MN:CR:C;1) 298.15
+  -286614;  6000 N                                                     93LEEC!
+PARAMETER L(M23C6_D84,CR,MN:FE:C;0) 298.15
+  -173680 +160*T;  6000 N                                              93LEEC!
+PARAMETER L(M23C6_D84,CR,MN:FE:C;1) 298.15
+  -286614;  6000 N                                                     93LEEC!
+PARAMETER L(M23C6_D84,CR,MN:MN:C;0) 298.15
+  -173680 +160*T;  6000 N                                              93LEEC!
+PARAMETER L(M23C6_D84,CR,MN:MN:C;1) 298.15
+  -286614;  6000 N                                                     93LEEC!
 
 PARAMETER L(M23C6_D84,CR,NI:CR:C;0) 298.15
   +100000;  6000 N                                                     92LEEA!
@@ -10148,6 +10180,10 @@ PARAMETER L(M23C6_D84,FE:CR,FE:C;0) 298.15
 PARAMETER L(M23C6_D84,FE:CR,FE:C;1) 298.15
   -6540;  6000 N                                                        14KHV!
 
+PARAMETER L(M23C6_D84,FE,MN:CR,FE:C;0) 298.15
+  -100000;  6000 N                                                     93LEEC!
+PARAMETER L(M23C6_D84,FE,MN:CR,MN:C;0) 298.15
+  -100000;  6000 N                                                     93LEEC!
 PARAMETER L(M23C6_D84,FE,MN:FE,MN:C;0) 298.15
   -95000;  6000 N                                                       11DJU!
 PARAMETER L(M23C6_D84,FE,NI:FE,NI:B;0) 298.15
@@ -13257,6 +13293,8 @@ NUMBER  SOURCE
         Fe-Cr & Fe-Ni liquid phases." Calphad 17.3 (1993): 251-268.'
 93LEEB  'Lee, Byeong-Joo. "A thermodynamic evaluation of the Cr-Mn and 
         Fe-Cr-Mn systems." Metallurgical Transactions A 24 (1993): 1919-1933.'
+93LEEC  'Lee, Byeong-Joo. "A thermodynamic evaluation of the Fe-Cr-Mn-C 
+        system." Metallurgical Transactions A 24 (1993): 1017-1025.'
 93OHT   'Ohtani, H., and M. Hillert. "Calculation of V-C-N and Ti-C-N phase 
         diagrams." Calphad 17.1 (1993): 93-99.'
 93SUN   'B. Sundman, SSOL the SGTE solution database (1993)'
