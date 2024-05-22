@@ -84,6 +84,7 @@ $ 2024-05-14 AL-MG SYSTEM INCORRECT. I SUSPECT DUE TO THE LIQUID ASSESSMENT.
 $ 2024-05-16 AL-MN-SI SYSTEM TERNARY INTERMETALLICS ARE SOMEWHAT OFF.
 $ 2024-05-18 AL-MN GAMMA PHASES INCORRECT
 $ 2024-05-21 C-CR-MN CEMENTITE_D011 DOES NOT MATCH LEE 1993 TERNARIES
+$ 2024-05-22 C-CR-SI M5SI3_D88 MODEL FROM DU 2000 INCOMPATIBLE WITH THIS ONE.
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -215,6 +216,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-MO   Qiu (1992) and Bratberg (2005)'
   C-CR-MN   Lee (1993)'
   C-CR-NI   Lee (1992)'
+  C-CR-SI   Du (200)'
   C-CR-V    Bratberg (2005)'
   C-CR-W    Gustaffson (1988)'
   C-CU-FE   Chen (2019)'
@@ -1013,73 +1015,81 @@ $ CR3SI PROTOTYPE INTERMETALLIC PHASE
 $ SPACE GROUP: Pm-3n
 $ PEARSON: cP8
 
-PHASE ALM3_A15 % 2 1 3 !
-CONSTITUENT ALM3_A15 : AL,CO,CR,NB,SI,TI : CR,FE,NB,SI,V : !
+PHASE ALM3_A15 % 3 1 3 3 !
+CONSTITUENT ALM3_A15 : AL,CO,CR,NB,SI,TI : CR,FE,NB,SI,V : C,VA!
 
-PARAMETER G(ALM3_A15,AL:CR;0) 298.15
+PARAMETER G(ALM3_A15,AL:CR:VA;0) 298.15
   -5528.04 +GHSERAL# +3*GHSERCR#;  6000 N                                13HU!
-PARAMETER G(ALM3_A15,AL:FE;0) 298.15
+PARAMETER G(ALM3_A15,AL:FE:VA;0) 298.15
   +GHSERAL# +3*GHSERFE#;  6000 N                                        24FRI!
-PARAMETER G(ALM3_A15,AL:NB;0) 298.15
+PARAMETER G(ALM3_A15,AL:NB:VA;0) 298.15
   -78360 +3.2*T +GHSERAL# +3*GHSERNB#;  6000 N                           15HE!
-PARAMETER G(ALM3_A15,AL:SI;0) 298.15
+PARAMETER G(ALM3_A15,AL:SI:VA;0) 298.15
   +20000 +GHSERAL# +3*GHSERSI#;  6000 N                                  13HU!
-PARAMETER G(ALM3_A15,AL:V;0) 298.15
+PARAMETER G(ALM3_A15,AL:V:VA;0) 298.15
   +GHSERAL# +3*GHSERV#;  6000 N                                         24FRI!
 
-PARAMETER G(ALM3_A15,CO:CR;0) 298.15
+PARAMETER G(ALM3_A15,CO:CR:VA;0) 298.15
   +GHSERCO# +3*GHSERCR#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,CO:FE;0) 298.15
+PARAMETER G(ALM3_A15,CO:FE:VA;0) 298.15
   +GHSERCO# +3*GHSERFE#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,CO:NB;0) 298.15
+PARAMETER G(ALM3_A15,CO:NB:VA;0) 298.15
   +GHSERCO# +3*GHSERNB#;  6000 N                                         15HE!
-PARAMETER G(ALM3_A15,CO:SI;0) 298.15
+PARAMETER G(ALM3_A15,CO:SI:VA;0) 298.15
   +GHSERCO# +3*GHSERSI#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,CO:V;0) 298.15
+PARAMETER G(ALM3_A15,CO:V:VA;0) 298.15
   -52000 +9*T +GHSERCO# +3*GHSERV#;  6000 N                             03BRA!
 
-PARAMETER G(ALM3_A15,CR:CR;0) 298.15
+PARAMETER G(ALM3_A15,CR:CR:C;0) 298.15
+  +4*GHSERCR# +3*GHSERCC#;  6000 N                                       00DU!
+PARAMETER G(ALM3_A15,CR:CR:VA;0) 298.15
   +20000 +10*T +4*GHSERCR#;   6000 N                                     13HU!
-PARAMETER G(ALM3_A15,CR:FE;0) 298.15
+PARAMETER G(ALM3_A15,CR:FE:VA;0) 298.15
   +8000 +GHSERCR# +3*GHSERFE#;  6000 N                                  97LIN!
-PARAMETER G(ALM3_A15,CR:NB;0) 298.15
+PARAMETER G(ALM3_A15,CR:NB:VA;0) 298.15
   +GHSERCR# +3*GHSERNB#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,CR:SI;0) 298.15
+PARAMETER G(ALM3_A15,CR:SI:C;0) 298.15
+  -40000 +3*GHSERCR# +GHSERSI# +3*GHSERCC#;  6000 N                      00DU!
+PARAMETER G(ALM3_A15,CR:SI:VA;0) 298.15
   +561830.45 -61.08*T +GHSERCR# +3*GHSERSI#;  6000 N                     13HU!
-PARAMETER G(ALM3_A15,CR:V;0) 298.15
+PARAMETER G(ALM3_A15,CR:V:VA;0) 298.15
   +GHSERCR# +3*GHSERV#;  6000 N                                         23FRI!
 
-PARAMETER G(ALM3_A15,NB:CR;0) 298.15
+PARAMETER G(ALM3_A15,NB:CR:VA;0) 298.15
   +GHSERNB# +3*GHSERCR#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,NB:FE;0) 298.15
+PARAMETER G(ALM3_A15,NB:FE:VA;0) 298.15
   +GHSERNB# +3*GHSERFE#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,NB:NB;0) 298.15
+PARAMETER G(ALM3_A15,NB:NB:VA;0) 298.15
   +20000 +10*T +4*GFCCNB#;  6000 N                                      95SAU!
-PARAMETER G(ALM3_A15,NB:SI;0) 298.15
+PARAMETER G(ALM3_A15,NB:SI:VA;0) 298.15
   +GHSERNB# +3*GHSERSI#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,NB:V;0) 298.15
+PARAMETER G(ALM3_A15,NB:V:VA;0) 298.15
   +GHSERNB# +3*GHSERV#;  6000 N                                         23FRI!
 
-PARAMETER G(ALM3_A15,SI:CR;0) 298.15
+PARAMETER G(ALM3_A15,SI:CR:C;0) 298.15
+  +40000 +3*GHSERSI# +GHSERCR# +3*GHSERCC#;  6000 N                      00DU!
+PARAMETER G(ALM3_A15,SI:CR:VA;0) 298.15
   -120883.71 +2.72*T +GHSERSI# +3*GHSERCR#;  6000 N                    17CUIC!
-PARAMETER G(ALM3_A15,SI:FE;0) 298.15
+PARAMETER G(ALM3_A15,SI:FE:VA;0) 298.15
   -50479.96 +GHSERSI# +3*GHSERFE#;  6000 N                             17CUID!
-PARAMETER G(ALM3_A15,SI:NB;0) 298.15
+PARAMETER G(ALM3_A15,SI:NB:VA;0) 298.15
   +GHSERSI# +3*GHSERNB#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,SI:SI;0) 298.15
+PARAMETER G(ALM3_A15,SI:SI:C;0) 298.15
+  +3*GHSERSI# +GHSERSI# +3*GSHERCC#;  6000 N                             13DU!
+PARAMETER G(ALM3_A15,SI:SI:VA;0) 298.15
   +415925.96 -65.94*T +4*GHSERSI#;  6000 N                               13HU!
-PARAMETER G(ALM3_A15,SI:V;0) 298.15
+PARAMETER G(ALM3_A15,SI:V:VA;0) 298.15
   +GHSERSI# +3*GHSERV#;  6000 N                                         23FRI!
 
-PARAMETER G(ALM3_A15,TI:CR;0) 298.15
+PARAMETER G(ALM3_A15,TI:CR:VA;0) 298.15
   +GHSERTI# +3*GHSERCR#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,TI:FE;0) 298.15
+PARAMETER G(ALM3_A15,TI:FE:VA;0) 298.15
   +GHSERTI# +3*GHSERFE#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,TI:NB;0) 298.15
+PARAMETER G(ALM3_A15,TI:NB:VA;0) 298.15
   +20000 +10*T +3*GFCCNB# +GFCCTI#;  6000 N                             95SAU!
-PARAMETER G(ALM3_A15,TI:SI;0) 298.15
+PARAMETER G(ALM3_A15,TI:SI:VA;0) 298.15
   +GHSERTI# +3*GHSERSI#;  6000 N                                        23FRI!
-PARAMETER G(ALM3_A15,TI:V;0) 298.15
+PARAMETER G(ALM3_A15,TI:V:VA;0) 298.15
   +GHSERTI# +3*GHSERV#;  6000 N                                         23FRI!
 
 
@@ -9269,6 +9279,12 @@ PARAMETER L(LIQUID,C,CR,FE;1) 298.15
   +57150;  6000 N                                                       14KHV!
 PARAMETER L(LIQUID,C,CR,FE;2) 298.15
   +62630;  6000 N                                                       14KHV!
+PARAMETER L(LIQUID,C,CR,SI;0) 298.15
+  -248421; 6000 N                                                        00DU!
+PARAMETER L(LIQUID,C,CR,SI;1) 298.15
+  +40606;  6000 N                                                        00DU!
+PARAMETER L(LIQUID,C,CR,SI;2) 298.15  
+  -30000;  6000 N                                                        00DU!
 PARAMETER L(LIQUID,C,CR,V;0) 298.15
   -769497;  6000 N                                                     92LEEB!
 PARAMETER L(LIQUID,C,CR,V;1) 298.15
@@ -13426,6 +13442,10 @@ NUMBER  SOURCE
 99LIU   'Liu, Zi-Kui, and Y. Austin Chang. "Thermodynamic assessment of the 
         Al-Fe-Si system." Metallurgical and Materials Transactions A 30 
         F(1999): 1081-1095.'
+00DU    'Du, Yong, Julius C. Schuster, and Loic Perring. "Experimental 
+        Investigation and Thermodynamic Description of the Constitution of the
+        Ternary System Cr-Si-C." Journal of the American Ceramic Society 83.8
+        (2000): 2067-2073.'
 01CHE   'Chen, Qing, and Bo Sundman. "Modeling of thermodynamic properties for 
         Bcc, Fcc, liquid, and amorphous iron." Journal of phase equilibria 
         22.6 (2001): 631-644.'
