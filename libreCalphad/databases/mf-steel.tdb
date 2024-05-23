@@ -238,6 +238,7 @@ DATABASE_INFO The following systems are available:'
   C-N-V     Frisk (2008)'
   C-NB-TI   Lee (2001)'
   C-NB-W    Huang (1997)'
+  C-NI-SI   Du (1999)'
   C-TI-V    Zhang (2015)'
   C-V-W     Bratberg (2005)'
   CO-FE-MN  Pendem (2022)'
@@ -2481,7 +2482,7 @@ PARAMETER L(BCC_A2,NB,TI:VA;2) 298.15
   +2500;  6000 N                                                        95SAU!
 
 PARAMETER L(BCC_A2,NB,W:VA;0) 298.15
-  -34343 +6.074*T;  6000 N                                              97HUA!
+  -34343 +6.074*T;  6000 N                                             97HUAA!
 
 PARAMETER L(BCC_A2,NI:H,VA;0) 298.15
   -1365900;  6000 N                                                     12KIM!
@@ -4970,7 +4971,7 @@ PARAMETER L(FCC_A1,NB:C,N;0) 298.15
 PARAMETER L(FCC_A1,NB:C,VA;0) 298.15
   -94050 +22.6993*T;  6000 N                                            01LEE!
 PARAMETER L(FCC_A1,NB:C,VA;1) 298.15
-  +0;  6000 N                                                           97HUA!
+  +0;  6000 N                                                          97HUAA!
 PARAMETER L(FCC_A1,NB:C,VA;2) 298.15
   -65000 +17.4391*T;  6000 N                                            01LEE!
 PARAMETER L(FCC_A1,NB:N,VA;0) 298.15
@@ -4991,9 +4992,9 @@ PARAMETER L(FCC_A1,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
 
 PARAMETER L(FCC_A1,NB,W:C;0) 298.15
-  +33160 -14.154*T;  6000 N                                             97HUA!
+  +33160 -14.154*T;  6000 N                                            97HUAA!
 PARAMETER L(FCC_A1,NB,W:C;1) 298.15
-  -7996;  6000 N                                                        97HUA!
+  -7996;  6000 N                                                       97HUAA!
 
 PARAMETER L(FCC_A1,NI:B,VA;0) 298.15
   +5119.116 -21.844*T;  6000 N                                          22OIK!
@@ -5425,7 +5426,6 @@ PARAMETER BMAGN(FCC_L12,NI:NI:VA;0) 298.15
   +0.1;  6000 N                                                         23WIT!
 PARAMETER TC(FCC_L12,NI:NI:VA;0) 298.15
   +250;  6000 N                                                         23WIT!
-
 PARAMETER G(FCC_L12,NI:SI:VA;0) 298.15
   -46826.6 -1.1151*T +0.75*GHSERNI# +0.25*GHSERSI#;  6000 N             23WIT!
 
@@ -6826,7 +6826,7 @@ PARAMETER G(HCP_A3,V:VA;0) 298.15
 PARAMETER G(HCP_A3,W:B;0) 298.15
   +GHSERW# +0.5*GHSERBB#;  6000 N                                       24FRI!
 PARAMETER G(HCP_A3,W:C;0) 298.15
-  -6715 -6.65*T +GHSERW# +0.5*GHSERCC#;  6000 N                         97HUA!
+  -6715 -6.65*T +GHSERW# +0.5*GHSERCC#;  6000 N                        97HUAA!
 PARAMETER G(HCP_A3,W:H;0) 298.15
   +GHSERW# +0.25*GHSERHH#;  6000 N                                      24FRI!
 PARAMETER G(HCP_A3,W:N;0) 298.15
@@ -7260,9 +7260,9 @@ PARAMETER L(HCP_A3,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
 
 PARAMETER L(HCP_A3,NB,W:C;0) 298.15
-  -18676 +7.969*T;  6000 N                                              97HUA!
+  -18676 +7.969*T;  6000 N                                             97HUAA!
 PARAMETER L(HCP_A3,NB,W:C;1) 298.15
-  +9876;  6000 N                                                        97HUA!
+  +9876;  6000 N                                                       97HUAA!
 
 $ NI:B,VA NEEDED TO SUPPRES HCP_A3
 PARAMETER L(HCP_A3,NI:B,VA;0) 298.15
@@ -8825,66 +8825,54 @@ PARAMETER L(LIQUID,C,CO;0) 298.15
   -107940.6 +24.956*T;  6000 N                                          97KUS!
 PARAMETER L(LIQUID,C,CO;1) 298.15 
   -9805.5;  6000 N                                                      97KUS!
-
 PARAMETER L(LIQUID,C,CR;0) 298.15
   -69245 -35*T;  6000 N                                                 12KHV!
 PARAMETER L(LIQUID,C,CR;1) 298.15
   +83242;  6000 N                                                       12KHV!
 PARAMETER L(LIQUID,C,CR;2) 298.15
   +88000;  6000 N                                                       12KHV!
-
 PARAMETER L(LIQUID,C,CU;0) 298.15
   +109638 -32.615*T;  6000 N                                            19CHE!
-
 PARAMETER L(LIQUID,C,FE;0) 298.15
   -123320 +28.5*T;  6000 N                                              23JAC!
 PARAMETER L(LIQUID,C,FE;1) 298.15
   +19300;  6000 N                                                       85GUS!
 PARAMETER L(LIQUID,C,FE;2) 298.15
   +49260 -19*T;  6000 N                                                 85GUS!
-
 PARAMETER L(LIQUID,C,MN;0) 298.15
   -179183 +43.8449*T;  6000 N                                           10DJU!
 PARAMETER L(LIQUID,C,MN;1) 298.15
   +6313;  6000 N                                                        10DJU!
 PARAMETER L(LIQUID,C,MN;2) 298.15
   +23281; 6000 N                                                        10DJU!
-
 PARAMETER L(LIQUID,C,MO;0) 298.15
   -217800 +38.41*T;  6000 N                                            88ANDC!
 PARAMETER L(LIQUID,C,MO;1) 298.15
   +30000;  6000 N                                                      88ANDC!
 PARAMETER L(LIQUID,C,MO;2) 298.15
   +47000;  6000 N                                                      88ANDC!
-
 PARAMETER L(LIQUID,C,NB;0) 298.15
   -292831 +31.2967*T;  6000 N                                           01LEE!
 PARAMETER L(LIQUID,C,NB;1) 298.15
   +6091;  6000 N                                                        01LEE!
 PARAMETER L(LIQUID,C,NB;2) 298.15
   +41021;  6000 N                                                       01LEE!
-
 PARAMETER L(LIQUID,C,NI;0) 298.15
   -111479 +35.2685*T;  6000 N                                          92LEEA!
-
 PARAMETER L(LIQUID,C,SI;0) 298.15
   +25645.0 -6.38115*T; 6000 N                                           96GRO!
-
 PARAMETER L(LIQUID,C,TA;0) 298.15
   -173413 -7.186*T;  6000 N                                             96FRI!
 PARAMETER L(LIQUID,C,TA;1) 298.15
   +23643;  6000 N                                                       96FRI!
-
 PARAMETER L(LIQUID,C,TI;0) 298.15
   -135351.7 -41.223*T;  6000 N                                          03FRI!
-
 PARAMETER L(LIQUID,C,V;0) 298.15
   -195667 -0.926*T;  6000 N                                             06HU !
 PARAMETER L(LIQUID,C,V;1) 298.15
   +268133 -62.747*T;  6000 N                                            06HU !
 PARAMETER L(LIQUID,C,V;2) 298.15
   +164341;  6000 N                                                      06HU !
-
 PARAMETER L(LIQUID,C,W;0) 298.15
   -107920 +6.38*T;  6000 N                                              87GUS!
 PARAMETER L(LIQUID,C,W;1) 298.15
@@ -9180,23 +9168,20 @@ PARAMETER L(LIQUID,N,NB;0) 298.15
   -292101;  6000 N                                                      96HUA!
 PARAMETER L(LIQUID,N,NB;1) 298.15
   -105406;  6000 N                                                      96HUA!
-
 PARAMETER L(LIQUID,N,TI;0) 298.15
   -376736;  6000 N                                                     96JONB!
 PARAMETER L(LIQUID,N,TI;1) 298.15
   -102480; 6000 N                                                      96JONB!
-
 PARAMETER L(LIQUID,N,V;0) 298.15
   -264845.009;  6000 N                                                  21DU !
 
 PARAMETER L(LIQUID,NB,TI;0) 298.15
   +8500;  6000 N                                                        95SAU!
 PARAMETER L(LIQUID,NB,W;0) 298.15
-  -34043 +3.603*T;  6000 N                                              97HUA!
+  -34043 +3.603*T;  6000 N                                             97HUAA!
 
 PARAMETER L(LIQUID,NI,NIO;0) 298.15
   +165532.6 -63.7325*T;  6000 N                                         96KOW!
-
 PARAMETER L(LIQUID,NI,SI;0) 298.15
   -215947 +14.7505*T;  6000 N                                           23WIT!
 PARAMETER L(LIQUID,NI,SI;1) 298.15
@@ -9209,17 +9194,14 @@ PARAMETER L(LIQUID,NI,SI;4) 298.15
   -20128 +26.1222*T;  6000 N                                            23WIT!
 PARAMETER L(LIQUID,NI,SI;5) 298.15
   -94335 +51.0161*T;  6000 N                                            23WIT!
-
 PARAMETER L(LIQUID,NI,TI;0) 298.15
   -153707.39 +34.859449*T;  6000 N                                      96BEL!
 PARAMETER L(LIQUID,NI,TI;1) 298.15
   -81824.755 +25.809901*T;  6000 N                                      96BEL!
 PARAMETER L(LIQUID,NI,TI;2) 298.15
   -10.077897*T;  6000 N                                                 96BEL!
-
 PARAMETER L(LIQUID,NI,V;0) 298.15
   -51927 +14.99*T;  6000 N                                              98KOR!
-
 PARAMETER L(LIQUID,NI,W;0) 298.15
   -20470 +7.55*T;  6000 N                                               17ISO!
 PARAMETER L(LIQUID,NI,W;1) 298.15
@@ -9403,13 +9385,19 @@ PARAMETER L(LIQUID,C,N,TI;0) 298.15
 
 PARAMETER L(LIQUID,C,NB,TI;0) 298.15
   +140812;  6000 N                                                      01LEE!
-
 PARAMETER L(LIQUID,C,NB,W;0) 298.15
-  -195015;  6000 N                                                      97HUA!
+  -195015;  6000 N                                                     97HUAA!
 PARAMETER L(LIQUID,C,NB,W;1) 298.15
-  +60769;  6000 N                                                       97HUA!
+  +60769;  6000 N                                                      97HUAA!
 PARAMETER L(LIQUID,C,NB,W;2) 298.15
-  +176422;  6000 N                                                      97HUA!
+  +176422;  6000 N                                                     97HUAA!
+
+PARAMETER L(LIQUID,C,NI,SI;0) 298.15
+  -145240;  6000 N                                                       99DU!
+PARAMETER L(LIQUID,C,NI,SI;1) 298.15
+  -145240;  6000 N                                                       99DU!
+PARAMETER L(LIQUID,C,NI,SI;2) 298.15
+  -145240;  6000 N                                                       99DU!
 
 PARAMETER L(LIQUID,C,TI,V;0) 298.15
   -111424.88 -30.606*T;  6000 N                                         15ZHA!
@@ -13478,7 +13466,7 @@ NUMBER  SOURCE
         Universitat Stuttgart (1996).'
 97ANS   'Ansara, Ibrahim, et al. "Thermodynamic assessment of the Al-Ni 
         system." Journal of Alloys and Compounds 247.1-2 (1997): 20-30.'
-97HUA   'Huang, Weiming, and Malin Selleby. "Thermodynamic assessment of the 
+97HUAA  'Huang, Weiming, and Malin Selleby. "Thermodynamic assessment of the 
         Nb-W-C system." International Journal of Materials Research 88.1 
         (1997): 55-62.'
 97KUS   'Kusoffsky, Alexandra, and Bo Jansson. "A thermodynamic evaluation of 
@@ -13506,6 +13494,9 @@ NUMBER  SOURCE
 99DUM   'Dumitrescu, L. FS, Mats Hillert, and B. Sundmann. "A reassessment of 
         Ti-CN based on a critical review of available assessments of Ti-N and 
         Ti-C." Zeitschrift fuer Metallkunde 90 (1999).'
+99DU    'Du, Yong, and Julius C. Schuster. "Experimental investigations and 
+        thermodynamic descriptions of the Ni-Si and C-Ni-Si systems." 
+        Metallurgical and Materials Transactions A 30 (1999): 2409-2418.'
 99DUP   'Dupin, N., and I. Ansara. "On the sublattice formalism applied to the
         B2 phase." International Journal of Materials Research 90.1 (1999): 
         76-85.'
