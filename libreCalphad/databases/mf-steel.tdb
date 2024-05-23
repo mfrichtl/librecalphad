@@ -132,7 +132,7 @@ DATABASE_INFO The following systems are available:'
   CO-W      Guillermet (1989) and Markström (2005)'
   CR-CU     Cui (2017)'
   CR-FE     Andersson (1987), Lee (1993), and Lindholm (1997)'
-  CR-MO     Frisk (1991) and Qiu (1992)'
+  CR-MO     Andersson (1987), Gustafson (19880, Frisk (1991) and Qiu (1992)'
   CR-MG     Ansara (1991)'
   CR-MN     Lee (1993) and Ansara (1998)'
   CR-N      Frisk (1991)'
@@ -218,7 +218,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-NI   Lee (1992)'
   C-CR-SI   Du (200)'
   C-CR-V    Bratberg (2005)'
-  C-CR-W    Gustaffson (1988)'
+  C-CR-W    gustafson (1988)'
   C-CU-FE   Chen (2019)'
   C-FE-MN   Huang (1990), Huang (1991), and Djurovic (2011)'
   C-FE-MO   Andersson (1988) and Hillert (1992)'
@@ -231,6 +231,7 @@ DATABASE_INFO The following systems are available:'
   C-MN-SI   Zheng (2017)'
   C-MN-V    Huang (1991)'
   C-MO-V    Bratberg (2002)'
+  C-MO-W    Gustafson (1988)'
   C-N-NB    Lee (2001) and Frisk (2008)'
   C-N-TI    Jonsson (1996), Lee (2001), and Frisk (2004)'
   C-N-V     Frisk (2008)'
@@ -242,12 +243,13 @@ DATABASE_INFO The following systems are available:'
   CO-FE-NI  Guillermet (1988) and Xia (2021)'
   CR-CU-FE  Cui (2017)'
   CR-FE-MN  Lee (1993)'
-  CR-FE-MO  Andersson (1988)'
+  CR-FE-MO  Andersson (1988) and Gustafson (1988)'
   CR-FE-N   Frisk (1990)'
   CR-FE-NI  Hillert (1990)'
   CR-FE-O   Kjellqvist (2008)'
   CR-FE-SI  Cui (2017)'
   CR-FE-V   Lee (1992)'
+  CR-FE-W   Gustafson (1988)'
   CR-NI-O   Kjellqvist (2008)'
   CR-NI-W   Gustafson (1988)'
   CR-TI-V   Ghosh (2002)'
@@ -258,6 +260,7 @@ DATABASE_INFO The following systems are available:'
   FE-MN-TI  Zhang (2021)'
   FE-MN-V   Huang (1991)'
   FE-MO-NI  Frisk (1992)'
+  FE-MO-W   Gustafson (1988)'
   FE-N-V    Ohtani (1993)'
   FE-NB-N   Zajac (1998), Lee (2001), and Khvan (2013)'
   FE-NB-TI  Lee (2001)'
@@ -275,7 +278,7 @@ DATABASE_INFO The following systems are available:'
   C-CO-FE-NI  Guillermet (1988)'
   C-CR-FE-MN  Lee (1993)'
   C-CR-FE-MO  Qiu (1992)'
-  C-CR-FE-W   Gustaffson (1988)'
+  C-CR-FE-W   Gustafson (1988)'
   C-N-NB-V    Frisk (2008)'
   CR-FE-NI-O  Kjellqvist (2008)'
 !
@@ -818,6 +821,9 @@ FUNCTION GHSERW   298.15
   -7646.311+130.4*T -24.1*T*LN(T) -1.936E-3*T**2 +0.207E-6*T**3
   +44500*T**(-1) -0.0533E-9*T**4;  3695.00 Y
  -82868.801 +389.362335*T -54*T*LN(T) +1528.621E30*T**(-9);  6000.00 N  91DIN!
+
+FUNCTION GFCCW  298.15
+  +19300 +0.63*T +GHSERW#; 6000 N                                       91DIN!
 
 $ ----------------------------------------------------------------------------
 $                           TYPE DEFINTIIONS
@@ -2450,12 +2456,15 @@ $   -50000;  6000 N                                                       02BRA!
 
 PARAMETER L(BCC_A2,MO,NI:VA;0) 298.15
   +42405.6;  6000 N                                                     18YAQ!
-
 PARAMETER L(BCC_A2,MO,V:C;0) 298.15
   +330000;  6000 N                                                      02BRA!
 PARAMETER L(BCC_A2,MO,V:VA;0) 298.15
   +19245;  6000 N                                                       02BRA!
-  
+PARAMETER L(BCC_A2,MO,W:C;0) 298.15
+  +2000;  6000 N                                                       88GUSC!
+PARAMETER L(BCC_A2,MO,W:VA;0) 298.15
+  +2000;  6000 N                                                       88GUSE!
+
 PARAMETER L(BCC_A2,NB:C,VA;0) 298.15
   -510295 -70*T;  6000 N                                                13KHV!
 PARAMETER L(BCC_A2,NB:N,VA;0) 298.15
@@ -2614,6 +2623,8 @@ PARAMETER L(BCC_A2,CU,FE,MN:VA;2) 298.15
 
 PARAMETER L(BCC_A2,FE,MO,NI:VA;0) 298.15
   -35743;  6000 N                                                       92FRI!
+PARAMETER L(BCC_A2,FE,MO,W:VA;0) 298.15
+  +3000;  6000 N                                                       88GUSD!
 
 PARAMETER L(BCC_A2,FE,MN,SI:VA;0) 298.15
   -49170 -73.96*T;  6000 N                                             17ZHEA!
@@ -3605,7 +3616,30 @@ $ ----------------------------------------------------------------------------
 $ CHI_A12
 
 PHASE CHI_A12 % 3 24 10 24 !
-CONSTITUENT CHI_A12 : FE : CR,MO : CR,FE,MO : !
+CONSTITUENT CHI_A12 : CR,FE : CR,MO,W : CR,FE,MO,W : !
+
+PARAMETER G(CHI_A12,CR:CR:CR;0) 298.15
+  +109000 +123*T +24*GFCCCR# +10*GSERCR# +24*GFCCCR#;  6000 N          88GUSF!
+PARAMETER G(CHI_A12,CR:CR:FE;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERCR# +24*GFCCFE#;  6000 N                88GUSF!
+PARAMETER G(CHI_A12,CR:CR:MO;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERCR# +24*GFCCMO##;  6000 N               88GUSF!
+PARAMETER G(CHI_A12,CR:CR:W;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERCR# +24*GFCCW#;  6000 N                 88GUSF!
+
+PARAMETER G(CHI_A12,CR:MO:CR;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERMO# +24*GFCCCR#;  6000 N                88GUSF!
+PARAMETER G(CHI_A12,CR:MO:FE;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERMO# +24*GFCCFE#;  6000 N                88GUSF!
+PARAMETER G(CHI_A12,CR:MO:MO;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERMO# +24*GFCCMO#;  6000 N                88GUSF!
+
+PARAMETER G(CHI_A12,CR:W:CR;0) 298.15
+  -260000 +24*GFCCCR# +10*GHSERW# +24*GFCCCR#;  6000 N                 88GUSF!
+PARAMETER G(CHI_A12,CR:W:FE;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERW# +24*GFCCFE#;  6000 N                 88GUSF!
+PARAMETER G(CHI_A12,CR:W:W;0) 298.15
+  +500000 +24*GFCCCR# +10*GHSERW# +24*GFCCW#;  6000 N                  88GUSF!
 
 PARAMETER G(CHI_A12,FE:CR:CR;0) 298.15
   +18300 -100*T +24*GFCCFE# +10*GHSERCR# +24*GFCCCR#;  6000 N          88ANDB!
@@ -3613,12 +3647,22 @@ PARAMETER G(CHI_A12,FE:CR:FE;0) 298.15
   +57300 -100*T +48*GFCCFE# +10*GHSERCR#;  6000 N                      88ANDB!
 PARAMETER G(CHI_A12,FE:CR:MO;0) 298.15
   +100000 +24*GFCCFE# +10*GHSERCR# +24*GFCCMO#;  6000 N                88ANDB!
+PARAMETER G(CHI_A12,FE:CR:W;0) 298.15
+  +100000 +24*GFCCFE# +10*GHSERCR# +24*GFCCW#;  6000 N                 88GUSF!
+
 PARAMETER G(CHI_A12,FE:MO:CR;0) 298.15
-  +20855 -385*T +24*GFCCFE# +10*GHSERMO# +24*GFCCCR#;  6000 N          88ANDB!
+  +32555 -385*T +24*GFCCFE# +10*GHSERMO# +24*GFCCCR#;  6000 N          88GUSF!
 PARAMETER G(CHI_A12,FE:MO:FE;0) 298.15
   +305210 -270*T +48*GFCCFE# +10*GHSERMO#;  6000 N                     88ANDB!
 PARAMETER G(CHI_A12,FE:MO:MO;0) 298.15
   +97300 -100*T +24*GFCCFE# +10*GHSERMO# +24*GFCCMO#;  6000 N          88ANDB!
+
+PARAMETER G(CHI_A12,FE:W:CR;0) 298.15
+  -56630 -250*T +24*GFCCFE# +10*GHSERW# +24*GFCCCR#;  6000 N           88GUSF!
+PARAMETER G(CHI_A12,FE:W:FE;0) 298.15
+  -11370 +50*T +24*GFCCFE# +10*GHSERW# +24*GFCCFE#;  6000 N            88GUSF!
+PARAMETER G(CHI_A12,FE:W:W;0) 298.15
+  +35300 +24*GFCCFE# +10*GHSERW# +24*GFCCW#;  6000 N                   88GUSF!
 
 $ ----------------------------------------------------------------------------
 $ CORUNDUM_D51
@@ -4509,7 +4553,7 @@ PARAMETER G(FCC_A1,W:N;0) 298.15
 PARAMETER G(FCC_A1,W:O;0) 298.15
   +GHSERW# +GHSEROO#;  6000 N                                           24FRI!
 PARAMETER G(FCC_A1,W:VA;0) 298.15
-  +19300 +0.63*T +GHSERW#; 6000 N                                       91DIN!
+  +GFCCW#;  6000 N                                                      91DIN!
 
 
 PARAMETER L(FCC_A1,AL:B,VA;0) 298.15
@@ -4917,6 +4961,8 @@ PARAMETER L(FCC_A1,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(FCC_A1,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
+PARAMETER L(FCC_A1,MO,W:VA;0) 298.15
+  +2000;  6000 N                                                       88GUSE!
 
 PARAMETER L(FCC_A1,NB:C,N;0) 298.15
   +12.5922*T;  6000 N                                                   01LEE!
@@ -7183,6 +7229,8 @@ PARAMETER L(HCP_A3,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(HCP_A3,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
+PARAMETER L(HCP_A3,MO,W:VA;0) 298.15
+  +2000;  6000 N                                                       88GUSC!
 
 PARAMETER L(HCP_A3,NB:C,N;0) 298.15
   -15000;  6000 N                                                       01LEE!
@@ -7741,7 +7789,7 @@ PARAMETER G(LAVES_C14,CR:TI;0) 298.15
 PARAMETER G(LAVES_C14,CR:V;0) 298.15
   +2*GHSERCR# +GHSERV#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C14,CR:W;0) 298.15  
-  +5000 +2*GHSERCR# +GHSERW#;  6000 N                                   24FRI!
+  -359 -7.2*T +2*GFCCCR# +GHSERW#;  6000 N                             88GUSF!
 
 PARAMETER G(LAVES_C14,CU:AL;0) 298.15
   +15000.0 +2*GHSERCU# +GHSERAL#;  6000 N                               91SAU!
@@ -7925,12 +7973,10 @@ PARAMETER L(LAVES_C14,AL,CO:NB;0) 298.15
   -244280 +50*T;  6000 N                                                 15HE!
 PARAMETER L(LAVES_C14,AL,CO:NB;1) 298.15
   -124000 +41.5*T;  6000 N                                               15HE!
-
 PARAMETER L(LAVES_C14,AL,CU:AL;0) 298.15
   -24000 +2.44*T;  6000 N                                               91SAU!
 PARAMETER L(LAVES_C14,AL,CU:CU;0) 298.15
   -24000 +2.44*T;  6000 N                                               91SAU!
-
 PARAMETER L(LAVES_C14,AL,NB:NB;0) 298.15
   -204000 +94.6*T;  6000 N                                               15HE!
 
@@ -7946,6 +7992,8 @@ PARAMETER L(LAVES_C14,CO,NB:NB;11) 298.15
 PARAMETER L(LAVES_C14,CR:CR,TI;0) 298.15
   +60000;  6000 N                                                      02GHOA!
 
+PARAMETER L(LAVES_C14,CR,FE:W;0) 298.15
+  -12500;  6000 N                                                      88GUSF!
 PARAMETER L(LAVES_C14,CR,TI:CR;0) 298.15
   +50000;  6000 N                                                      02GHOA!
 PARAMETER L(LAVES_C14,CR,TI:TI;0) 298.15
@@ -7955,22 +8003,19 @@ PARAMETER L(LAVES_C14,FE:FE,TA;0) 298.15
   +28062 -8.771*T;  6000 N                                              11WIT!
 PARAMETER L(LAVES_C14,FE:FE,NB;0) 298.15
   -33816;  6000 N                                                       13KHV!
-
 PARAMETER L(LAVES_C14,FE:FE,TI;0) 298.156
   +16000;  6000 N                                                       01LEE!
-
 PARAMETER L(LAVES_C14,FE:MN,TI;0) 298.15
   -113000 +38.6*T;  6000 N                                              21ZHA!
+PARAMETER L(LAVES_C14,FE:MO,W;0) 298.15
+  -7500;  6000 N                                                       88GUSE!
 
 PARAMETER L(LAVES_C14,FE,MN:TI;0) 298.15
   +4700;  6000 N                                                        21ZHA!
-
 PARAMETER L(LAVES_C14,FE,NB:TI;0) 298.15
   +30000;  6000 N                                                       01LEE!
-
 PARAMETER L(LAVES_C14,FE,TA:*;0) 298.15
   -12832 +28.525*T;  6000 N                                             11WIT!
-
 PARAMETER L(LAVES_C14,FE,TI:FE;0) 298.15
   +3177;  6000 N                                                        09KEY!
 PARAMETER L(LAVES_C14,FE,TI:NB;0) 298.15
@@ -7979,7 +8024,6 @@ PARAMETER L(LAVES_C14,FE,TI:TI;0) 298.15
   +3177;  6000 N                                                        09KEY!
 PARAMETER L(LAVES_C14,FE,TI:V;0) 298.15
   +3177;  6000 N                                                        12GUO!
-
 PARAMETER L(LAVES_C14,FE,V:FE;0) 298.15
   -98710 +29.646*T;  6000 N                                             12GUO!
 PARAMETER L(LAVES_C14,FE,V:FE;1) 298.15
@@ -11140,11 +11184,11 @@ PARAMETER G(MU_D85,CR:TA:W;0) 298.15
   +7*GFCCCR# +2*GHSERTA# +4*GHSERW#;  6000 N                            23FRI!
 
 PARAMETER G(MU_D85,CR:W:CO;0) 298.15
-  +7*GFCCCR# +2*GHSERW# +2*GHSERCO#;  6000 N                           23FRI!
+  +7*GFCCCR# +2*GHSERW# +2*GHSERCO#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,CR:W:CR;0) 298.15
-  +7*GFCCCR# +2*GHSERW# +4*GHSERCR#;  6000 N                            23FRI!
+  -2310 +7*GFCCCR# +2*GHSERW# +4*GHSERCR#;  6000 N                     88GUSF!
 PARAMETER G(MU_D85,CR:W:FE;0) 298.15
-  +7*GFCCCR# +2*GHSERW# +4*GHSERFE#;  6000 N                            23FRI!
+  +28700 +7*GFCCCR# +2*GHSERW# +4*GHSERFE#;  6000 N                    88GUSF!
 PARAMETER G(MU_D85,CR:W:MO;0) 298.15
   +7*GFCCCR# +2*GHSERW# +4*GHSERMO#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,CR:W:NB;0) 298.15
@@ -11154,7 +11198,7 @@ PARAMETER G(MU_D85,CR:W:NI;0) 298.15
 PARAMETER G(MU_D85,CR:W:TA;0) 298.15
   +7*GFCCCR# +2*GHSERW# +4*GHSERTA#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,CR:W:W;0) 298.15
-  +7*GFCCCR# +2*GHSERW# +4*GHSERW#;  6000 N                             23FRI!
+  +35260 -29*T +7*GFCCCR# +2*GHSERW# +4*GHSERW#;  6000 N               88GUSF!
 
 PARAMETER G(MU_D85,FE:MO:CO;0) 298.15
   +7*GFCCFE# +2*GHSERMO# +2*GHSERCO#;  6000 N                           23FRI!
@@ -11171,7 +11215,7 @@ PARAMETER G(MU_D85,FE:MO:NI;0) 298.15
 PARAMETER G(MU_D85,FE:MO:TA;0) 298.15
   +7*GFCCFE# +2*GHSERMO# +4*GHSERTA#;  6000 N                           23FRI!
 PARAMETER G(MU_D85,FE:MO:W;0) 298.15
-  +7*GFCCFE# +2*GHSERMO# +4*GHSERW#;  6000 N                            23FRI!
+  -72000 +7*GFCCFE# +2*GHSERMO# +4*GHSERW#;  6000 N                    88GUSE!
 
 PARAMETER G(MU_D85,FE:NB:CO;0) 298.15
   +7*GFCCFE# +2*GHSERNB# +2*GHSERCO#;  6000 N                           23FRI!
@@ -11208,13 +11252,13 @@ PARAMETER G(MU_D85,FE:TA:W;0) 298.15
   +7*GFCCFE# +2*GHSERTA# +4*GHSERW#;  6000 N                            23FRI!
   
 PARAMETER G(MU_D85,FE:W:CO;0) 298.15
-  +7*GFCCFE# +2*GHSERW# +2*GHSERCO#;  6000 N                           23FRI!
+  +7*GFCCFE# +2*GHSERW# +2*GHSERCO#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,FE:W:CR;0) 298.15
-  +7*GFCCFE# +2*GHSERW# +4*GHSERCR#;  6000 N                            23FRI!
+  +28700 +7*GFCCFE# +2*GHSERW# +4*GHSERCR#;  6000 N                    88GUSF!
 PARAMETER G(MU_D85,FE:W:FE;0) 298.15
   +14300 +26.7*T +7*GFCCFE# +4*GHSERFE# +2*GHSERW#;  6000 N             87GUS!
 PARAMETER G(MU_D85,FE:W:MO;0) 298.15
-  +7*GFCCFE# +2*GHSERW# +4*GHSERMO#;  6000 N                            23FRI!
+  +10000 +7*GFCCFE# +2*GHSERW# +4*GHSERMO#;  6000 N                    88GUSE!
 PARAMETER G(MU_D85,FE:W:NB;0) 298.15
   +7*GFCCFE# +2*GHSERW# +4*GHSERNB#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,FE:W:NI;0) 298.15
@@ -11365,6 +11409,8 @@ PARAMETER G(MU_D85,TA:W:W;0) 298.15
 
 PARAMETER L(MU_D85,CR,FE:MO:MO;0) 298.15
   -45000;  6000 N                                                      88ANDB!
+PARAMETER L(MU_D85,CR,FE:W:W;0) 298.15
+  -65200;  6000 N                                                      88GUSF!
 
 $ ----------------------------------------------------------------------------
 $ MU2_D85
@@ -11740,7 +11786,7 @@ PARAMETER G(SIGMA_D8B,FE:CR:SI;0) 298.15
 PARAMETER G(SIGMA_D8B,FE:CR:V;0) 298.15
   -245761 -67.3294*T +8*GFCCFE# +4*GHSERCR# +18*GHSERV#;  6000 N       92LEEC!
 PARAMETER G(SIGMA_D8B,FE:CR:W;0) 298.15
-  +8*GFCCFE# +4*GHSERCR# +18*GHSERW#;  6000 N                           24FRI!
+  +239870 -90*T +8*GFCCFE# +4*GHSERCR# +18*GHSERW#;  6000 N            88GUSF!
 
 PARAMETER G(SIGMA_D8B,FE:MO:AL;0) 298.15
   +8*GFCCFE# +4*GHSERMO# +18*GHSERAL#;  6000 N                          24FRI!
@@ -11785,9 +11831,9 @@ PARAMETER G(SIGMA_D8B,FE:W:AL;0) 298.15
 PARAMETER G(SIGMA_D8B,FE:W:CO;0) 298.15
   +8*GFCCFE# +4*GHSERW# +18*GBCCCO#;  6000 N                            24FRI!
 PARAMETER G(SIGMA_D8B,FE:W:CR;0) 298.15
-  +8*GFCCFE# +4*GHSERW# +18*GHSERCR#;  6000  N                          24FRI!
+  +167250 -50*T +8*GFCCFE# +4*GHSERW# +18*GHSERCR#;  6000  N           88GUSF!
 PARAMETER G(SIGMA_D8B,FE:W:FE;0) 298.15
-  +100000 +8*GFCCFE# +4*GHSERW# +18*GHSERFE#;  6000 N                   24FRI!
+  +8*GFCCFE# +4*GHSERW# +18*GHSERFE#;  6000 N                          88GUSF!
 PARAMETER G(SIGMA_D8B,FE:W:MN;0) 298.15
   +8*GFCCFE# +4*GHSERW# +18*GBCCMN#;  6000 N                            24FRI!
 PARAMETER G(SIGMA_D8B,FE:W:MO;0) 298.15
@@ -11797,7 +11843,7 @@ PARAMETER G(SIGMA_D8B,FE:W:NI;0) 298.15
 PARAMETER G(SIGMA_D8B,FE:W:V;0) 298.15
   +8*GFCCFE# +4*GHSERW# +18*GHSERV#;  6000 N                            24FRI!
 PARAMETER G(SIGMA_D8B,FE:W:W;0) 298.15
-  +200000 +8*GFCCFE# +4*GHSERW# +18*GHSERW#;  6000 N                    24FRI!
+  +200000 +8*GFCCFE# +4*GHSERW# +18*GHSERW#;  6000 N                   88GUSF!
 
 PARAMETER G(SIGMA_D8B,MN:CR:AL;0) 298.15
   -794960.00 +209.20*T +8*GBCCMN# +4*GHSERCR# +18*GHSERAL#;  6000 N    17CUIF!
@@ -11968,18 +12014,24 @@ PARAMETER L(SIGMA_D8B,FE:CR:FE,MO;0) 298.15
   +570000;  6000 N                                                     88ANDB!
 PARAMETER L(SIGMA_D8B,FE:CR:FE,V;0) 298.15
   -235158;  6000 N                                                     92LEEC!
+PARAMETER L(SIGMA_D8B,FE:CR:FE,W;0) 298.15
+  +570000;  6000 N                                                     88GUSF!
 PARAMETER L(SIGMA_D8B,FE:CR:CR,SI;0) 298.15
   -2098177.80 +142.26*T;  6000 N                                       18CUID!
-
+PARAMETER L(SIGMA_D8B,FE:CR:CR,W;0) 298.15
+  -148000;   6000 N                                                    88GUSF!
 PARAMETER L(SIGMA_D8B,FE:MO:CR,MO;0) 298.15
   +121000;  6000 N                                                     88ANDB!
 PARAMETER L(SIGMA_D8B,FE:MO:FE,MO;0) 298.15
   +222909;  6000 N                                                     88ANDB!
-
 PARAMETER L(SIGMA_D8B,FE:V:FE,V;0) 298.15
   -305784;  6000 N                                                      91HUA!
 PARAMETER L(SIGMA_D8B,FE:V:MN,V;0) 298.15
   -100000;  6000 N                                                      91HUA!
+PARAMETER L(SIGMA_D8B,FE:W:CR,W;0) 298.15
+  +121000;  6000 N                                                     88GUSF!
+PARAMETER L(SIGMA_D8B,FE:W:FE,W;0) 298.15
+  +222909;  6000 N                                                     88GUSF!
 
 PARAMETER L(SIGMA_D8B,FE,NI:MO:MO;0) 298.15
   -164570 -10*T;  6000 N                                                92FRI!
@@ -13306,6 +13358,16 @@ NUMBER  SOURCE
 88GUSC  Gustafson, Per. "A Thermodynamic Evaluation of the C-Mo-W System/Eine
         thermodynamische Optimierung des Systems C-Mo-W." International 
         Journal of Materials Research 79.6 (1988): 397-402.
+88GUSD  'Gustafson, Per. "A Thermodynamic Evaluation of the C-Mo-W System/
+        Eine thermodynamische Optimierung des Systems C-Mo-W." International 
+        Journal of Materials Research 79.6 (1988): 397-402.'
+88GUSE  'Gustafson, Per. "An Experimental Study and a Thermodynamic Evaluation
+        of the Fe-Mo-W System/Experimentelle Untersuchung und thermodynamische
+        Optimierung des Systems Fe-Mo-W." International Journal of Materials 
+        Research 79.6 (1988): 388-396.'
+88GUSF  Gustafson, Per. "An experimental study and a thermodynamic evaluation 
+        of the cr-fe-w system." Metallurgical Transactions A 19 (1988): 
+        2531-2546.
 89GUI   'Guillermet, Armando Fernández. "Thermodynamic properties of the Co-WC 
         system." Metallurgical transactions A 20 (1989): 935-956.'
 89HUAA  'Huang, Weiming. "An assessment of the Fe-Mn system." Calphad 13.3 
