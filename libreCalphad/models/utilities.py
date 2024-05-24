@@ -4,7 +4,7 @@ from pycalphad import equilibrium, variables as v
 from pymatgen.core import Composition
 
 
-def DG(db, components, phases, conditions):
+def DG(db, components, phases, conditions, calc_opts={}):
     """
     Function to calculate the Gibbs free energy difference between two phases.
 
@@ -16,6 +16,8 @@ def DG(db, components, phases, conditions):
                     List of the phases used to calculate the difference.
                 conditions, dictionary
                     Dictionary containing the conditions to use for the calculations.
+                calc_opts, dictionary
+                    Dictionary containing keyword arguments for passing to pycalphad's calculate function.
 
     Returns: delta_g, float, J/mol
                 Float of the molar Gibbs free energy difference, phases[0] - phases[1].
@@ -25,7 +27,7 @@ def DG(db, components, phases, conditions):
     eq_GM = []
     try:
         for phase in phases:
-            eq_GM.append(equilibrium(db, components, [phase], conditions, output='GM').GM.squeeze().values)
+            eq_GM.append(equilibrium(db, components, [phase], conditions, output='GM', calc_opts=calc_opts).GM.squeeze().values)
         return eq_GM[0] - eq_GM[1]
     except Exception as e:
         print(e)
@@ -62,9 +64,7 @@ def parse_composition(row, dependent_element):
     split_mat = row[material_col].split('-')
     split_mat = [elem.lower() for elem in split_mat]
     assert dependent_element in split_mat, f"Did not identify the dependent component ({dependent_element}) in {split_mat}."
-    alloy = []
     frac = 0
-    conditions = {}
     components = []
     for value in split_mat:
         if value == dependent_element:
@@ -78,32 +78,21 @@ def parse_composition(row, dependent_element):
                     element += char
             try:
                 frac = float(value.split(element)[0]) / 100
-                
-                conditions.update({v.X(element.upper()): frac})
                 components.append(element.upper())
-                # semi-arbitrary cutoff point for describing the alloy system, higher for substitutional elements
-                if element in interstitials and frac > 0.0005:
-                    alloy.append(element.capitalize())
-                elif frac > 0.002:
-                    alloy.append(element.capitalize())
-
             except Exception as e:
                 print(str(e))
                 print(f"Identified element: {element}")
                 print(row)
             comp_dict[element.capitalize()] = frac
-    
-    
 
-    alloy.sort()
     if 'VA' not in components:
         components.append('VA')
     row['components'] = components
-    row['conditions'] = conditions
-    row['alloy_system'] = dependent_element.capitalize() + '-' + '-'.join(alloy)
     solute_fraction = np.sum(list(comp_dict.values()))
     comp_dict[dependent_element.capitalize()] = 1 - solute_fraction
     comp_set = None
+    alloy = []
+    conditions = {}
     try:
         if weight_percent:
             comp_set = Composition.from_weight_dict(comp_dict)
@@ -111,13 +100,22 @@ def parse_composition(row, dependent_element):
             comp_set = Composition(comp_dict)
         row['composition'] = comp_set
         row['system'] = comp_set.chemical_system
-        
-        for element, frac in comp_set.items():
+        for element, frac in comp_set.to_reduced_dict.items():
             row[str(element)] = frac
+            # semi-arbitrary cutoff points for describing the alloy system, higher for substitutional elements
+            if element in interstitials and frac > 0.0005:
+                alloy.append(element.capitalize())
+            elif frac > 0.002:
+                alloy.append(element.capitalize())
+        conditions.update({v.X(element.upper()): frac})
     except Exception as e:
         print(str(e))
         print(row)
-    
+
+    alloy.sort()
+    row['alloy_system'] = dependent_element.capitalize() + '-' + '-'.join(alloy)
+    row['conditions'] = conditions
+
     return row
 
 
@@ -154,16 +152,14 @@ def trim_conditions(components, conditions, max_num_conditions=1000, solute_thre
     original_conditions = conditions.copy()
     if type(components) != np.ndarray:  # otherwise np.delete does not seem to work as expected.
         components = np.array(components)
-    for elem, frac in original_conditions.items():
-        if str(elem).startswith('X_'): 
-            component = str(elem).split('_')[1]
-            if component in always_remove_list or frac < solute_threshold:  # trim very small quantities because they seem to cause problems.
+    for key, val in original_conditions.items():
+        if str(key).startswith('X_'): 
+            component = str(key).split('_')[1]
+            if component in always_remove_list or val < solute_threshold:  # trim very small quantities because they seem to cause problems.
                 components = np.delete(components, np.where(components == component))
-                conditions.pop(elem)
+                conditions.pop(key)
 
     while len(conditions) > max_num_conditions:  # pycalphad seems to crash with too many conditions, kept getting stack smashing errors
-        if len(conditions) <= max_num_conditions:
-            break
         min_element = list(conditions.keys())[list(conditions.values()).index(sorted(conditions.values())[n])]
         component = str(min_element).split('_')[1]
         if component not in always_keep_list:
