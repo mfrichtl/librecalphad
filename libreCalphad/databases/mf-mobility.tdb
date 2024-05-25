@@ -35,9 +35,12 @@ DATABASE_INFO BCC Mobility data has been assessed for: '
   AU-FE       Liu (2009)'
   C-CR        Jonsson (1995)'
   C-FE        Jonsson (1992)'
+  CO-CR       Khorasgani (2022)'
+  CO-FE       Khorasgani (2022)'
+  CO-NI       Khorasgani (2022)'
   CR-CR       Jonsson (1995)'
-  CR-FE       Jonsson (1992) and Jonsson (1995)'
-  CR-NI       Jonsson (1995)'
+  CR-FE       Jonsson (1992), Jonsson (1995), and Khorasgani (2022)'
+  CR-NI       Jonsson (1995) and Khorasgani (2022)'
   CR-TI       Ghosh (2002)'
   CR-V        Ghosh (2002)'
   CU-FE       Liu (2009) and Wang (2012)'
@@ -57,6 +60,7 @@ DATABASE_INFO BCC Mobility data has been assessed for: '
   MN-SI       Deng (2017)'
   TI-V        Ghosh (2002)'
   '
+  
   CR-FE-MO    Lindwall (2012)'
   CR-FE-NI    Jonsson (1995)'
   CR-FE-V     Lindwall (2009)'
@@ -753,9 +757,21 @@ PARAMETER MQ(FCC_A1&CO,CO,NI:VA;1) 298.15
   -84429 -19*T;  6000 N                                                 22KOR!
 PARAMETER MQ(FCC_A1&CO,CO,NI:VA;2) 298.15
   -71803 -89*T;  6000 N                                                 22KOR!
+PARAMETER MQ(FCC_A1&CO,CR,MN:VA;0) 298.15
+  -30991.91 +30.00*T;  6000 N                                           23PEN!
+PARAMETER MQ(FCC_A1&CO,CR,MN:VA;1) 298.15
+  +74721.70;  6000 N                                                    23PEN!
 
+PARAMETER MQ(FCC_A1&CR,CO,MN:VA;0) 298.15
+  -173670.93 -63.71*T;  6000 N                                          23PEN!
+PARAMETER MQ(FCC_A1&CR,CO,MN:VA;1) 298.15
+  +149190.47;  6000 N                                                   23PEN!
 PARAMETER MQ(FCC_A1&CR,CR,FE:VA;0) 298.15
   +75238 -104*T;  6000 N                                                22KOR!
+PARAMETER MQ(FCC_A1&CR,CR,MN:VA;0) 298.15
+  +65419.99 +24.06*T;  6000 N                                           23PEN!
+PARAMETER MQ(FCC_A1&CR,CR,MN:VA;1) 298.15
+  -105390.7;  6000 N                                                    23PEN!
 PARAMETER MQ(FCC_A1&CR,CR,NI:VA;0) 298.15
   -119238 +37*T;  6000 N                                                22KOR!
 PARAMETER MQ(FCC_A1&CR,MO,NI:VA;0)  298.15
@@ -770,6 +786,14 @@ PARAMETER MQ(FCC_A1&FE,FE,MN:VA;1)  298.15
 PARAMETER MQ(FCC_A1&FE,FE,NI:VA;0) 298.15
   -122162 +104*T;  6000 N                                               22KOR!
 
+PARAMETER MQ(FCC_A1&MN,CO,CR:VA;0) 298.15
+  +46149.25 -8.05*T;  6000 N                                            23PEN!
+PARAMETER MQ(FCC_A1&MN,CO,CR:VA;1) 298.15
+  -50835.19;  6000 N                                                    23PEN!
+PARAMETER MQ(FCC_A1&MN,CR,MN:VA;0) 298.15
+  +117696.07 -15.61*T;  6000 N                                          23PEN!
+PARAMETER MQ(FCC_A1&MN,CR,MN:VA;1) 298.15
+  +53167.67;  6000 N                                                    23PEN!
 PARAMETER MQ(FCC_A1&MN,FE,MN:VA;0)  298.15
   -24655.58 +25.32*T;  6000 N                                          09LIUA!
 PARAMETER MQ(FCC_A1&MN,FE,MN:VA;1)  298.15
@@ -1041,7 +1065,7 @@ NUMBER  SOURCE
 22KOR   'Khorasgani, Ahmadreza Riyahi, et al. "Reassessment of mobility 
         parameters for Cantor High Entropy Alloys through an automated 
         procedure." Calphad 79 (2022): 102498.'
-23PAN   'Pendem, Sri Pragna, et al. "Thermodynamic and kinetic assessments in
+23PEN   'Pendem, Sri Pragna, et al. "Thermodynamic and kinetic assessments in
         Co-Cr-Mn system using diffusion data." Journal of Materials Science 
         58.38 (2023): 15196-15218.'
 !
