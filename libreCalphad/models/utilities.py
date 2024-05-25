@@ -103,7 +103,9 @@ def parse_composition(row, dependent_element):
         for element, frac in comp_set.to_reduced_dict.items():
             row[str(element)] = frac
             # semi-arbitrary cutoff points for describing the alloy system, higher for substitutional elements
-            if element in interstitials and frac > 0.0005:
+            if element.lower() == dependent_element:
+                continue
+            elif element in interstitials and frac > 0.0005:
                 alloy.append(element.capitalize())
             elif frac > 0.002:
                 alloy.append(element.capitalize())
