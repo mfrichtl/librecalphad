@@ -2588,6 +2588,8 @@ PARAMETER L(BCC_A2,AL,FE,NI:VA;2) 298.15
 
 PARAMETER L(BCC_A2,CO,CR,FE:VA;0) 298.15
   -1000;  6000 N                                                        19CHO!
+PARAMETER L(BCC_A2,CO,CR,MN:VA;0) 298.15
+  -10000;  6000 N                                                        22DO!
 PARAMETER L(BCC_A2,CO,CR,NI:VA;0) 298.15
   -60134 +17.700*T;  6000 N                                             16LIU!
 
@@ -4065,6 +4067,9 @@ PARAMETER L(CUB_A13,AL,MN,SI:VA;1) 298.15
 PARAMETER L(CUB_A13,AL,MN,SI:VA;2) 298.15
   +0;  6000 N                                                            04DU!
 
+PARAMETER L(CUB_A13,CO,CR,MN:VA;0) 298.15
+  -60000;  6000 N                                                        22DO!
+
 PARAMETER L(CUB_A13,FE,MN,SI:VA;0) 298.15
   -4905 -100*T;  6000 N                                                17ZHEA!
 
@@ -5178,6 +5183,8 @@ PARAMETER L(FCC_A1,AL,MN:C,VA;0) 298.15
 
 PARAMETER L(FCC_A1,CO,CR,FE:VA;0) 298.15
   +3000;  6000 N                                                        19CHO!
+PARAMETER L(FCC_A1,CO,CR,MN:VA;0) 298.15
+  -16000;  6000 N                                                        22DO!
 PARAMETER L(FCC_A1,CO,CR,NI:VA;0) 298.15
   -40710 +13.533*T;  6000 N                                             16LIU!
 PARAMETER L(FCC_A1,CO,CR,V:VA;0) 298.15
@@ -7449,12 +7456,14 @@ PARAMETER L(HCP_A3,AL,FE,NI:VA;1) 298.15
 PARAMETER L(HCP_A3,AL,FE,NI:VA;2) 298.15
   -207403.88 +117.740*T;  6000 N                                        09ZHA!
 
-$ ESTIMATE SAME CO,CR,* AS FCC_A1
-PARAMETER L(FCC_A1,CO,CR,FE:VA;0) 298.15
+$ ESTIMATE SAME CO,CR,FE(NI,V) AS FCC_A1
+PARAMETER L(HCP_A3,CO,CR,FE:VA;0) 298.15
   +3000;  6000 N                                                        19CHO!
-PARAMETER L(FCC_A1,CO,CR,NI:VA;0) 298.15
+PARAMETER L(HCP_A3,CO,CR,MN:VA;0) 298.15
+  -22000;  6000 N                                                        22DO!
+PARAMETER L(HCP_A3,CO,CR,NI:VA;0) 298.15
   -40710 +13.533*T;  6000 N                                             16LIU!
-PARAMETER L(FCC_A1,CO,CR,V:VA;0) 298.15
+PARAMETER L(HCP_A3,CO,CR,V:VA;0) 298.15
   +5000;  6000 N                                                        19CHO!
 
 $ ESTIMATE SAME CR,FE:N,VA AS FCC_A1
@@ -9481,6 +9490,8 @@ PARAMETER L(LIQUID,C,TI,V;1) 298.15
 PARAMETER L(LIQUID,C,TI,V;2) 298.15
   +180287.50 -86.582*T;  6000 N                                         15ZHA!
 
+PARAMETER L(LIQUID,CO,CR,MN;0) 298.15
+  -16000;  6000 N                                                        22DO!
 PARAMETER L(LIQUID,CO,CR,NI;0) 298.15
   -16000;  6000 N                                                       16LIU!
 
@@ -11777,6 +11788,8 @@ FUNCTION GSIGMAFECRFE 298.15
   +117300 -95.96*T +8*GFCCFE# +4*GHSERCR# +18*GHSERFE#;  6000 N        87ANDA!
 FUNCTION GSIGMAFEVFE 298.15
   -157961 +60.729*T +8*GFCCFE# +4*GHSERV# +18*GHSERFE#;  6000 N         91HUA!
+FUNCTION GSIGMAMNCRMN 298.15
+  -172946.0 +69.0245*T +8*GFCCMN# +4*GHSERCR# +18*GBCCMN#;  6000 N     93LEEB!
 FUNCTION GSIGMANIVNI 298.15
     -161645.05 +3532.8443*T -671.032*T*LN(T) -0.1382502*T**2
   +4.87E-7*T**3 +277840*T**(-1); 790 Y 
@@ -11792,7 +11805,7 @@ PARAMETER G(SIGMA_D8B,CO:CR:CR;0) 298.15
 PARAMETER G(SIGMA_D8B,CO:CR:FE;0) 298.15
   +0.307692*GSIGMACOCRCO# +0.692308*GSIGMAFECRFE#;  6000 N              19CHO!
 PARAMETER G(SIGMA_D8B,CO:CR:MN;0) 298.15
-  +8*GFCCCO# +4*GHSERCR# +18*GBCCMN#;  6000 N                           23FRI!
+  -250000 +0.307692*GSIGMACOCRCO# +0.692308*GSIGMAMNCRMN#;  6000 N       22DO!
 PARAMETER G(SIGMA_D8B,CO:CR:MO;0) 298.15
   +8*GFCCCO# +4*GHSERCR# +18*GHSERMO#;  6000 N                          23FRI!
 PARAMETER G(SIGMA_D8B,CO:CR:NI;0) 298.15
@@ -11942,13 +11955,13 @@ PARAMETER G(SIGMA_D8B,FE:W:W;0) 298.15
 PARAMETER G(SIGMA_D8B,MN:CR:AL;0) 298.15
   -794960.00 +209.20*T +8*GBCCMN# +4*GHSERCR# +18*GHSERAL#;  6000 N    17CUIF!
 PARAMETER G(SIGMA_D8B,MN:CR:CO;0) 298.15
-  +8*GFCCMN# +4*GHSERCR# +18*GBCCCO#;  6000 N                           23FRI!
+  +0.307692*GSIGMAMNCRMN# +0.692308*GSIGMACOCRCO#;  6000 N               22DO!
 PARAMETER G(SIGMA_D8B,MN:CR:CR;0) 298.15
   +65859.5 +8*GFCCMN# +22*GHSERCR#;  6000 N                            93LEEB!
 PARAMETER G(SIGMA_D8B,MN:CR:FE;0) 298.15
   -95576 -45.1955*T +8*GFCCMN# +4*GHSERCR# +18*GHSERFE#;  6000 N       93LEEB!
 PARAMETER G(SIGMA_D8B,MN:CR:MN;0) 298.15
-  -172946.0 +69.0245*T +8*GFCCMN# +4*GHSERCR# +18*GBCCMN#;  6000 N     93LEEB!
+  +GSIGMAMNCRMN#;  6000 N                                              93LEEB!
 PARAMETER G(SIGMA_D8B,MN:CR:MO;0) 298.15
   +8*GFCCMN# +4*GHSERCR# +18*GHSERMO#;  6000 N                          23FRI!
 PARAMETER G(SIGMA_D8B,MN:CR:NI;0) 298.15
@@ -12095,6 +12108,10 @@ PARAMETER G(SIGMA_D8B,NI:W:W;0) 298.15
   +265000 +8*GHSERNI# +4*GHSERW# +18*GHSERW#;  6000 N                  88GUSA!
 
 
+PARAMETER L(SIGMA_D8B,CO:CR:CO,MN;0) 298.15
+  -200000;  6000 N                                                       22DO!
+PARAMETER L(SIGMA_D8B,CO:CR:CR,MN;0) 298.15
+  -85000;  6000 N                                                        22DO!
 PARAMETER L(SIGMA_D8B,CO:CR:CR,V;0) 298.15
   -200000;  6000 N                                                      19CHO!
 PARAMETER L(SIGMA_D8B,CO:CR:FE,V;0) 298.15
@@ -12182,9 +12199,11 @@ PARAMETER L(SIGMA_D8B,MN:CR:AL,MN;0) 298.15
   -523000.00 -8.37*T;  6000 N                                          17CUIF!
 PARAMETER L(SIGMA_D8B,MN:CR:AL,MN;1) 298.15
   -253968.80 +83.68*T;  6000 N                                         17CUIF!
-
+PARAMETER L(SIGMA_D8B,MN:CR:CO,MN;0) 298.15
+  -200000;  6000 N                                                       22DO!
 PARAMETER L(SIGMA_D8B,MN:CR:CR,MN;0) 298.15
   -1095771 +862.0312*T;  6000 N                                        93LEEB!
+
 PARAMETER L(SIGMA_D8B,MN:V:FE,V;0) 298.15
   -300000;  6000 N                                                      91HUA!
 
@@ -12306,7 +12325,14 @@ $ SIGMA_H
 $ HIGH-TEMPERATURE SIGMA PHASE
 
 PHASE SIGMA_H % 3 8 4 18 !
-CONSTITUENT SIGMA_H : FE,MN : CR : AL,CR,FE,MN : !
+CONSTITUENT SIGMA_H : CO,FE,MN : CR : AL,CO,CR,FE,MN : !
+
+PARAMETER G(SIGMA_H,CO:CR:CO;0) 298.15
+  +GSIGMACOCRCO#;  6000 N                                               97KUS!
+PARAMETER G(SIGMA_H,CO:CR:CR;0) 298.15
+  +GSIGMACOCRCR#;  6000 N                                               97KUS!
+PARAMETER G(SIGMA_H,CO:CR:MN;0) 298.15
+  -250000 +0.307692*GSIGMACOCRCO# +0.692308*GSIGMAMNCRMN#;  6000 N       22DO!
 
 PARAMETER G(SIGMA_H,FE:CR:AL;0) 298.15
   +8*GFCCFE# +4*GHSERCR# +18*GHSERAL#;  6000 N                          24FRI!
@@ -12319,6 +12345,8 @@ PARAMETER G(SIGMA_H,FE:CR:MN;0) 298.15
 
 PARAMETER G(SIGMA_H,MN:CR:AL;0) 298.15
   -391559.64 -167.36*T +8*GHERMN# +4*GHSERCR# +18*GHSERAL#;  6000 N    17CUIF!
+PARAMETER G(SIGMA_H,MN:CR:CO;0) 298.15
+  +0.307692*GSIGMAMNCRMN# +0.692308*GSIGMACOCRCO#;  6000 N               22DO!
 PARAMETER G(SIGMA_H,MN:CR:CR;0) 298.15
   -192369.0 +152.4742*T +8*GFCCMN# +22*GHSERCR#;  6000 N               93LEEB!
 PARAMETER G(SIGMA_H,MN:CR:FE;0) 298.15
@@ -12326,6 +12354,11 @@ PARAMETER G(SIGMA_H,MN:CR:FE;0) 298.15
 PARAMETER G(SIGMA_H,MN:CR:MN;0) 298.15
   -74263.0 -10.7082*T +18*GBCCMN# +8*GFCCMN# +4*GHSERCR#;  6000 N      93LEEB!
 
+
+PARAMETER L(SIGMA_H,CO:CR:CO,MN;0) 298.15
+  -200000;  6000 N                                                       22DO!
+PARAMETER L(SIGMA_H,CO:CR:CR,MN;0) 298.15
+  -85000;  6000 N                                                        22DO!
 
 PARAMETER L(SIGMA_H,FE:CR:CR,MN;0) 298.15
   +90000;  6000 N                                                      93LEEB!
@@ -12336,6 +12369,8 @@ PARAMETER L(SIGMA_H,MN:CR:AL,MN;0) 298.15
   -523000.00 -8.37*T;  6000 N                                          17CUIF!
 PARAMETER L(SIGMA_H,MN:CR:AL,MN;1) 298.15
   +148619.86 -125.52*T;  6000 N                                        17CUIF!
+PARAMETER L(SIGMA_H,MN:CR:CO,MN;0) 298.15
+  -200000;  6000 N                                                       22DO!
 PARAMETER L(SIGMA_H,MN:CR:CR,MN;0) 298.15
   +90000;  6000 N                                                      93LEEB!
 
@@ -13946,6 +13981,9 @@ NUMBER  SOURCE
 21XIA   'Xia, Cheng-Hui, et al. "Thermodynamic assessment of the Co-Fe-Ni 
         system and diffusion study of its fcc phase." Journal of Alloys and 
         Compounds 853 (2021): 157165.'
+22DO    'Do, Hyeon-Seok, Won-Mi Choi, and Byeong-Joo Lee. "A thermodynamic 
+        description for the Co-Cr-Fe-Mn-Ni system." Journal of Materials 
+        Science (2022): 1-17.'
 22OIK   'Oikawa, Katsunari, and Nobufumi Ueshima. "Experimental Investigation 
         and Thermodynamic Assessment of Ni-B and Ni-B-C Systems." Journal of 
         Phase Equilibria and Diffusion 43.6 (2022): 814-826.'
