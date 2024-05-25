@@ -255,7 +255,7 @@ DATABASE_INFO The following systems are available:'
   CR-FE-MN  Lee (1993)'
   CR-FE-MO  Andersson (1988) and Gustafson (1988)'
   CR-FE-N   Frisk (1990)'
-  CR-FE-NI  Hillert (1990)'
+  CR-FE-NI  Hillert (1990) and Lee (1993)'
   CR-FE-O   Kjellqvist (2008)'
   CR-FE-SI  Cui (2017)'
   CR-FE-V   Lee (1992)'
@@ -2603,17 +2603,14 @@ PARAMETER L(BCC_A2,CR,CU,FE:VA;2) 298.15
 
 PARAMETER L(BCC_A2,CR,FE,MN:VA;0) 298.15
   -5996;  6000 N                                                       93LEEB!
-
 PARAMETER L(BCC_A2,CR,FE,NI:VA;0) 298.15
-  +1390;  6000 N                                                        90HIL!
-
+  -2673 +2.04145*T;  6000 N                                            93LEEA!
 PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
   -59914.88 +4.18*T;  6000 N                                           17CUID!
 PARAMETER L(BCC_A2,CR,FE,SI:VA;1) 298.15
   -66944.00 +4.18*T;  6000 N                                           17CUID!
 PARAMETER L(BCC_A2,CR,FE,SI:VA;2) 298.15
   -48701.76 +8.37*T;  6000 N                                           17CUID!
-
 PARAMETER L(BCC_A2,CR,FE,V:VA;0) 298.15
   +14881;  6000 N                                                      92LEEC!
 PARAMETER L(BCC_A2,CR,FE,V:VA;1) 298.15
@@ -5196,7 +5193,7 @@ PARAMETER L(FCC_A1,CR,FE,MN:VA;0) 298.15
 PARAMETER L(FCC_A1,CR,FE,NI:C;0) 298.15
   -8515;  6000 N                                                        91HIL!
 PARAMETER L(FCC_A1,CR,FE,NI:VA;0) 298.15
-  +1618;  6000  N                                                       90HIL!
+  +16580 -9.7835*T;  6000 N                                            93LEEA!
 PARAMETER TC(FCC_A1,CR,FE,NI:VA;0) 298.15
   +0;  6000 N                                                           21XIA!
 PARAMETER TC(FCC_A1,CR,FE,NI:VA;1) 298.15
@@ -7475,7 +7472,7 @@ $ ESTIMATE SAME CR,FE,NI:X AS FCC_A1
 PARAMETER L(HCP_A3,CR,FE,NI:C;0) 298.15
   -6386.25;  6000 N                                                     91HIL!
 PARAMETER L(HCP_A3,CR,FE,NI:VA;0) 298.15
-  +1618;  6000  N                                                       90HIL!
+  +16580 -9.7835*T;  6000 N                                            93LEEA!
 
 $ ESTIMATE SAME CR,MO,V:C AS FCC_A1
 PARAMETER L(HCP_A3,CR,MO,V:C;0) 298.15
@@ -9494,6 +9491,12 @@ PARAMETER L(LIQUID,CR,FE,MN;0) 298.15
   +2378;  6000 N                                                       93LEEB!
 PARAMETER L(LIQUID,CR,FE,N;0) 298.15
   -340750 +187.4*T;  6000 N                                             90FRI!
+PARAMETER L(LIQUID,CR,FE,NI;0) 298.15
+  +36583;  6000 N                                                      93LEEA!
+PARAMETER L(LIQUID,CR,FE,NI;1) 298.15
+  +13254;  6000 N                                                      93LEEA!
+PARAMETER L(LIQUID,CR,FE,NI;2) 298.15
+  -10018;  6000 N                                                      93LEEA!
 PARAMETER L(LIQUID,CR,FE,SI;0) 298.15
   -53600 -13.3*T;  6000 N                                               97LIN!
 PARAMETER L(LIQUID,CR,FE,V;0) 298.15
