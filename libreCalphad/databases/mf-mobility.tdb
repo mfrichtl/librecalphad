@@ -631,6 +631,10 @@ $PARAMETER VS(FCC_A1)  298.15
 $  +1E-5;  6000 N    !
 
 $ --- DIAGONAL TERMS ---
+PARAMETER MQ(FCC_A1&C,CR:C;0) 298.15
+  +72077 -15.1318*T;  6000 N                                            91LIU!
+PARAMETER MQ(FCC_A1&C,CR:VA;0) 298.15
+  -147723 +32.646*T;  6000 N                                            91LIU!
 PARAMETER MQ(FCC_A1&C,FE:VA;0)  298.15
   -148123.29 -88.33*T;  6000 N                                         09LIUA!
 PARAMETER MQ(FCC_A1&C,FE:C;0)  298.15
@@ -645,54 +649,62 @@ PARAMETER MQ(FCC_A1&C,MN:VA;0)  298.15
 PARAMETER MQ(FCC_A1&C,MN:C;0)  298.15
   -103452.18 -81.33*T;  6000 N                                         09LIUA!
 
+PARAMETER MQ(FCC_A1&CR,CO:VA;0) 298.15
+  -253700 -97.17*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&CR,CR:VA;0) 298.15
   -286000 -71.9*T;  6000 N                                              07TUR!
 
 PARAMETER MQ(FCC_A1&CR,FE:C;0)  298.15
-  -286000 +R*T*LN(35E-5);  6000 N                                       91LIU!
+  -284227 -75.60*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&CR,FE:VA;0)  298.15
-  -286000 +R*T*LN(35E-5);  6000 N                                       91LIU!
-
+  -284227 -75.60*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&CR,MO:VA;0)  298.15
   -315205.34 +R*T*LN(1.27E-4);  6000 N                                  15ZHU!
-
 PARAMETER MQ(FCC_A1&CR,NI:VA;0) 298.15
-  -287000 -64.4*T;  6000 N                                              07TUR!
+  -281441 -67.48*T;  6000 N                                             22KOR!
 
+PARAMETER MQ(FCC_A1&CO,CO:VA;0) 298.15
+  -302004 -69.02*T;  6000 N                                             22KOR!
+PARAMETER MQ(FCC_A&CO,FE:VA;0) 298.15
+  -291556 -82.55*T;  6000 N                                             22KOR!
+PARAMETER MQ(FCC_A1&CO,NI:VA;0) 298.15
+  -275997 -74.85*T;  6000 N                                             22KOR!
+
+PARAMETER MQ(FCC_A1&FE,CO:VA;0) 298.15
+  -259651 -91.34*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&FE,CR:C)  298.15
   -286000 +R*T*LN(7E-5);  6000 N                                        91LIU!
 PARAMETER MQ(FCC_A1&FE,CR:VA)  298.15
   -286000 +R*T*LN(7E-5);  6000 N                                        91LIU!
-
 PARAMETER MQ(FCC_A1&FE,FE:C)  298.15
-  -286000 +R*T*LN(7E-5);  6000 N                                        91LIU!
+  -272762 -89.00*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&FE,FE:VA)  298.15
-  -286000 +R*T*LN(7E-5);  6000 N                                        91LIU!
-
+  -272762 -89.00*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&FE,MN:C;0)  298.15
   -212755.85 -98.07*T;  6000 N                                         09LIUA!
 PARAMETER MQ(FCC_A1&FE,MN:VA;0)  298.15
   -212755.85 -98.07*T;  6000 N                                         09LIUA!
-
 PARAMETER MQ(FCC_A1&FE,MO:VA;0) 298.15
   -315205.34 -74.59*T;  6000 N                                          17ZHE!
-
+PARAMETER MQ(FCC_1&FE,NI:VA;0) 298.15
+  -280012 -69.60*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&FE,SI:VA;0)  298.15
   -286000 -79.55*T;  6000 N                                             15ZHE!
 
+PARAMETER MQ(FCC_A1&MN,CO:VA;0) 298.15
+  -239136 -99.67*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&MN,FE:C;0)  298.15
   -246512.70 -104.56*T;  6000 N                                        09LIUA!
 PARAMETER MQ(FCC_A1&MN,FE:VA;0)  298.15
   -246512.70 -104.56*T;  6000 N                                        09LIUA!
-
 PARAMETER MQ(FCC_A1&MN,MN:C;0)  298.15
   -212755.85 -98.07*T;  6000 N                                         09LIUA!
 PARAMETER MQ(FCC_A1&MN,MN:VA;0)  298.15
   -212755.85 -98.07*T;  6000 N                                         09LIUA!
-
 PARAMETER MQ(FCC_A1&MN,MO:VA;0) 298.15
   -315205.34 -74.59*T;  6000 N                                          17ZHE!
-
+PARAMETER MQ(FCC_A1&MN,NI:VA;0) 298.15
+  -280900 -59.82*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&MN,SI:VA;0)  298.15
   -246512.70 -104.56*T;  6000 N                                         15ZHE!
 
@@ -712,16 +724,18 @@ PARAMETER MQ(FCC_A1&NB,NB:VA;0) 298.15
 PARAMETER MQ(FCC_A1&NB,NI:VA;0) 298.15
   -253446.06 -80.89*T;  6000 N                                          12LIU!
 
+PARAMETER MQ(FCC_A1&NI,CO:VA;0) 298.15
+  -299340 -69.00*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&NI,CR:VA;0)  298.15
   -235000 -82*T;  6000 N                                                07TUR!
 PARAMETER MQ(FCC_A1&NI,FE:VA;0)  298.15
-  -286000 -86.0*T;  6000 N                                              94JON!
+  -279673 -86.56*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&NI,MO:VA;0)  298.15
   -315205.34 +R*T*LN(1.27E-4);  6000 N                                  12LIU!
 PARAMETER MQ(FCC_A1&NI,NB:VA;0) 298.15
   -217919.25 +R*T*LN(9.78E-5);  6000 N                                  12LIU!
 PARAMETER MQ(FCC_A1&NI,NI:VA;0) 298.15
-  -286000 -86*T;  6000 N                                                07TUR!
+  -279750 -75.40*T;  6000 N                                             22KOR!
 
 PARAMETER MQ(FCC_A1&SI,FE:VA;0) 298.15
   -228000 -110*T;  6000 N                                               15ZHE!
@@ -731,44 +745,62 @@ PARAMETER MQ(FCC_A1&SI,SI:VA;0)  298.15
   -294000 -125*T;  6000 N                                               15ZHE!
 
 $ --- BINARY INTERACTIONS ---
+PARAMETER MQ(FCC_A1&CO,CO,FE:VA;0) 298.15
+  +87403 -62*T;  6000 N                                                 22KOR!
+PARAMETER MQ(FCC_A1&CO,CO,NI:VA;0) 298.15
+  +37515 -105*T;  6000 N                                                22KOR!
+PARAMETER MQ(FCC_A1&CO,CO,NI:VA;1) 298.15
+  -84429 -19*T;  6000 N                                                 22KOR!
+PARAMETER MQ(FCC_A1&CO,CO,NI:VA;2) 298.15
+  -71803 -89*T;  6000 N                                                 22KOR!
+
+PARAMETER MQ(FCC_A1&CR,CR,FE:VA;0) 298.15
+  +75238 -104*T;  6000 N                                                22KOR!
 PARAMETER MQ(FCC_A1&CR,CR,NI:VA;0) 298.15
-  -62564.55;  6000 N                                                    15ZHU!
+  -119238 +37*T;  6000 N                                                22KOR!
 PARAMETER MQ(FCC_A1&CR,MO,NI:VA;0)  298.15
   -44238.72;  6000 N                                                    15ZHU!
 
+PARAMETER MQ(FCC_A1&FE,CO,FE:VA;0) 298.15
+  -108520 +84*T;  6000 N                                                22KOR!
 PARAMETER MQ(FCC_A1&FE,FE,MN:VA;0)  298.15
   -10711.5 -26.32*T;  6000 N                                           09LIUA!
 PARAMETER MQ(FCC_A1&FE,FE,MN:VA;1)  298.15
   +16312.22;  6000 N                                                   09LIUA!
-
+PARAMETER MQ(FCC_A1&FE,FE,NI:VA;0) 298.15
+  -122162 +104*T;  6000 N                                               22KOR!
 
 PARAMETER MQ(FCC_A1&MN,FE,MN:VA;0)  298.15
   -24655.58 +25.32*T;  6000 N                                          09LIUA!
 PARAMETER MQ(FCC_A1&MN,FE,MN:VA;1)  298.15
   -32017.56;  6000 N                                                   09LIUA!
-
 PARAMETER MQ(FCC_A1&MN,FE,MO:VA;0) 298.15
   +32346;  6000 N                                                       17ZHE!
-
 PARAMETER MQ(FCC_A1&MN,FE,SI:VA;0)  298.15
   +80000;  6000 N                                                       15ZHE!
 
 PARAMETER MQ(FCC_A1&MO,CR,NI:VA;0)  298.15
   -47822.42;  6000 N                                                    15ZHU!
-
 PARAMETER MQ(FCC_A1&MO,FE,MO:VA;0) 298.15
   +112767 +198.082*T;  6000 N                                           17ZHE!
-
 PARAMETER MQ(FCC_A1&MO,MO,NI:VA;0)  298.15
   +13817.12;  6000 N                                                    12LIU!
 
 PARAMETER MQ(FCC_A1&NB,NI,NB:VA;0) 298.15
   -408725.27;  6000 N                                                   12LIU!
 
+PARAMETER MQ(FCC_A1&NI,CO,NI:VA;0) 298.15
+  -48612 +41*T;  6000 N                                                 22KOR!
+PARAMETER MQ(FCC_A1&NI,CO,NI:VA;1) 298.15
+  +41377 -29*T;  6000 N                                                 22KOR!
+PARAMETER MQ(FCC_A1&NI,CO,NI:VA;2) 298.15
+  -134403 +104*T;  6000 N                                               22KOR!
 PARAMETER MQ(FCC_A1&NI,CR,MO:VA;0)  298.15
   +423883.57;  6000 N                                                   15ZHU!
 PARAMETER MQ(FCC_A1&NI,CR,NI:VA;0) 298.15
-  -81000;  6000 N                                                       07TUR!
+  -90434 +11*T; 6000 N                                                  22KOR!
+PARAMETER MQ(FCC_A1&NI,FE,NI:VA;0) 298.15
+  -86158 +94*T;  6000 N                                                 22KOR!
 PARAMETER MQ(FCC_A1&NI,MO,NI:VA;0)  298.15
   +62758.43;  6000 N                                                    15ZHU!
 PARAMETER MQ(FCC_A1&NI,NI,MO:VA;0) 298.15
@@ -1005,5 +1037,11 @@ NUMBER  SOURCE
 17ZHE   'Zheng, Weisen, et al. "Experimental investigation and computer 
         simulation of diffusion in Fe-Mo and Fe-Mn-Mo alloys with different 
         optimization methods." Metallurgical and Materials Transactions A 48 
-        (2017): 536-550.'  
+        (2017): 536-550.'
+22KOR   'Khorasgani, Ahmadreza Riyahi, et al. "Reassessment of mobility 
+        parameters for Cantor High Entropy Alloys through an automated 
+        procedure." Calphad 79 (2022): 102498.'
+23PAN   'Pendem, Sri Pragna, et al. "Thermodynamic and kinetic assessments in
+        Co-Cr-Mn system using diffusion data." Journal of Materials Science 
+        58.38 (2023): 15196-15218.'
 !
