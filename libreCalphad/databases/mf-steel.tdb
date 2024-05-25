@@ -128,6 +128,7 @@ DATABASE_INFO The following systems are available:'
   CO-CR     Kusoffsky (1997)'
   CO-FE     Ohnuma (2002)'
   CO-MN     Huang (1989)'
+  CO-N      Guillermet (1992)'
   CO-NB     He (2015)'
   CO-NI     Guillermet (1987)'
   CO-V      Bratberg (2003)'
@@ -246,6 +247,7 @@ DATABASE_INFO The following systems are available:'
   CO-CR-NI  Liu (2016)'
   CO-CR-V   Choi (2019)'
   CO-FE-MN  Pendem (2022)'
+  CO-FE-N   Guillermet (1992)'
   CO-FE-NI  Guillermet (1988) and Xia (2021)'
   CO-FE-V   Choi (2019)'
   CO-NI-V   Choi (2019)'
@@ -1801,7 +1803,7 @@ PARAMETER G(BCC_A2,CO:C;0) 298.15
 PARAMETER G(BCC_A2,CO:H;0) 298.15
   +1245550 +733.3*T +GHSERCO# +1.5*GHSERHH#;  6000 N                    12KIM!
 PARAMETER G(BCC_A2,CO:N;0) 298.15
-  +GBCCCO# +3*GHSERNN#;  6000 N                                         23FRI!
+  +50000 +250*T +GHSERCO# +3*GHSERNN#;  6000 N                          24FRI!
 PARAMETER G(BCC_A2,CO:O;0) 298.15
   +GBCCCO# +3*GHSEROO#;  6000 N                                         24FRI!
 PARAMETER G(BCC_A2,CO:VA;0) 298.15 
@@ -2128,6 +2130,7 @@ PARAMETER L(BCC_A2,CE,FE:VA;0) 298.15
 
 PARAMETER L(BCC_A2,CO:H,VA;0) 298.15
   -1200000;  6000 N                                                     12KIM!
+
 
 PARAMETER L(BCC_A2,CO,CR:C;0) 298.15
   +17208 -13.519*T;  6000 N                                             97KUS!
@@ -3585,8 +3588,8 @@ PARAMETER G(CEMENTITE_D011,CO:B;0) 298.15
   +3*GHSERCO# +GHSERBB#;  6000 N                                        24FRI!
 PARAMETER G(CEMENTITE_D011,CO:C;0) 298.15
   -1567 +3.963*T +3*GHSERCO# +GHSERCC#;  6000 N                        88GUIA!
-PARAMETER G(CEMENTITE_D011,CO:N;0) 298.15
-  +3*GHSERCO# +GHSERNN#;  6000 N                                        24FRI!
+PARAMETER G(CEMENTITE_D011,CO:N;0) 298.15 
+  +75000 +25*T +3*GHSERCO# +GHSERNN#;  6000 N                           24FRI!
 PARAMETER G(CEMENTITE_D011,CO:VA;0) 298.15
   +10000 +3*GHSERCO#;  6000 N                                           24FRI!
 
@@ -4330,10 +4333,10 @@ PARAMETER G(FCC_A1,CO:B;0) 298.15
   +GHSERCO# +GHSERBB#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,CO:C;0) 298.15
   +50463.8 -6.849*T +GHSERCO# +GHSERCC#;  6000 N                        89GUI!
-PARAMETER G(FCC_A1,CO:N;0) 298.15
-  +GHSERCO# +GHSERNN#;  6000 N                                          23FRI!
 PARAMETER G(FCC_A1,CO:H;0) 298.15
   +28000 +70*T +GHSERCO# +0.5*GHSERHH#;  6000 N                         12KIM!
+PARAMETER G(FCC_A1,CO:N;0) 298.15
+  +21028 +284.763*T -50.261*T*LN(T) +198552*T**(-1);  6000 N           92GUIA!
 PARAMETER G(FCC_A1,CO:O;0) 298.15
   +GHSERCO# +GHSEROO#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,CO:VA;0) 298.15 
@@ -4683,6 +4686,8 @@ PARAMETER L(FCC_A1,CE,FE:VA;0) 298.15
 
 PARAMETER L(FCC_A1,CO:H,VA;0) 298.15
   -25000 -6.5*T;  6000 N                                                12KIM!
+PARAMETER L(FCC_A1,CO:N,VA;0) 298.15
+  -6500;  6000 N                                                       92GUIA!
 
 PARAMETER L(FCC_A1,CO,CR:C;0) 298.15
   +1500 -9.592*T;  6000 N                                               97KUS!
@@ -4695,6 +4700,8 @@ PARAMETER L(FCC_A1,CO,FE:C;0) 298.15
   +313;  6000 N                                                        88GUIA!
 PARAMETER L(FCC_A1,CO,FE:C;1) 298.15
   -1063;  6000 N                                                       88GUIA!
+PARAMETER L(FCC_A1,CO,FE:N;0) 298.15
+  -16043;  6000 N                                                      92GUIB!
 PARAMETER L(FCC_A1,CO,FE:VA;0) 298.15
   -8968.75;  6000 N                                                     02OHN!
 PARAMETER L(FCC_A1,CO,FE:VA;2) 298.15
@@ -6679,7 +6686,8 @@ PARAMETER G(HCP_A3,CO:C;0) 298.15
 PARAMETER G(HCP_A3,CO:H;0) 298.15
   +14500 +30*T +GHSERCO# +0.25*GHSERHH#;  6000 N                        12KIM!
 PARAMETER G(HCP_A3,CO:N;0) 298.15
-  +GHSERCO# +0.25*GHSERNN#;  6000 N                                     24FRI!
+  -13140 +198.577*T -36.621*T*LN(T) +96383*T**(-1) 
+  -8.42E-4*T**2;  6000 N                                               92GUIA!
 PARAMETER G(HCP_A3,CO:O;0) 298.15
   +GHSERCO# +0.25*GHSEROO#;  6000 N                                     24FRI!
 PARAMETER G(HCP_A3,CO:VA;0) 298.15 
@@ -6975,6 +6983,8 @@ PARAMETER L(HCP_A3,CE,FE:VA;0) 298.15
 
 PARAMETER L(HCP_A3,CO:H,VA;0) 298.15
   -20000;  6000 N                                                       12KIM!
+PARAMETER L(HCP_A3,CO:N,VA;0) 298.15
+  +5000 -5*T;  6000 N                                                  92GUIA!
 
 PARAMETER L(HCP_A3,CO,CR:C;0)  298.15
   -6436;  6000 N                                                        97KUS!
@@ -6983,11 +6993,13 @@ PARAMETER L(HCP_A3,CO,CR:VA;0) 298.15
 PARAMETER TC(HCP_A3,CO,CR:VA;0) 298.15
   -1795;  6000 N                                                        97KUS!
 
-$ ESTIMATE SAME CO-FE:C AS FCC_A1
+$ ESTIMATE SAME CO-FE:C(N) AS FCC_A1
 PARAMETER L(HCP_A3,CO,FE:C;0) 298.15
   +234.75;  6000 N                                                     88GUIA!
 PARAMETER L(HCP_A3,CO,FE:C;1) 298.15
   -797.25;  6000 N                                                     88GUIA!
+PARAMETER L(FCC_A1,CO,FE:N;0) 298.15
+  -16043;  6000 N                                                      92GUIB!
 PARAMETER L(HCP_A3,CO,FE:VA;0) 298.15
   +5000;  6000 N                                                        02OHN!
 PARAMETER TC(HCP_A3,CO,FE:VA;0) 298.15
@@ -8960,25 +8972,22 @@ PARAMETER L(LIQUID,CO,CR;0) 298.15
   -3034 -5.624*T;  6000 N                                               97KUS!
 PARAMETER L(LIQUID,CO,CR;1) 298.15
   +909;  6000 N                                                         97KUS!
-
 PARAMETER L(LIQUID,CO,FE;0) 298.15
   -9753.82;  6000 N                                                     02OHN!
 PARAMETER L(LIQUID,CO,FE;2) 298.15
   +2757.96;  6000 N                                                     02OHN!
-
 PARAMETER L(LIQUID,CO,H;0) 298.15
   +500 +16*T;  6000 N                                                   12KIM!
-
 PARAMETER L(LIQUID,CO,MN;0) 298.15
   -29476;  6000 N                                                      89HUAB!
-
+PARAMETER L(LIQUID,CO,N;0) 298.15
+  -7700;  6000 N                                                       92GUIA!
 PARAMETER L(LIQUID,CO,NB;0) 298.15
   -63612 +10*T;  6000 N                                                  15HE!
 PARAMETER L(LIQUID,CO,NB;1) 298.15
   -22540 +9*T;  6000 N                                                   15HE!
 PARAMETER L(LIQUID,CO,NB;2) 298.15
   +4000;  6000 N                                                         15HE!
-
 PARAMETER L(LIQUID,CO,NI;0) 298.15
   +1331;  6000 N                                                        87GUI!
 
@@ -12208,7 +12217,7 @@ PARAMETER L(SIGMA_D8B,NI:V:CO,FE,V;0) 298.15
   -300000;  6000 N                                                      19CHO!
 PARAMETER L(SIGMA_D8B,NI:V:FE,NI,V;0) 298.15
   -300000;  6000 N                                                      19CHO!
-  
+
 $ ----------------------------------------------------------------------------
 $ SIGMA2_D8B
 $ SIGMA PHASE WITH 10:4:16 SUBLATTICE
@@ -13572,6 +13581,15 @@ NUMBER  SOURCE
 92FRI   'Frisk, Karin. "An experimental and theoretical study of the phase 
         equilibria in the Fe-Mo-Ni system." Metallurgical Transactions A 23 
         (1992): 639-649.'
+92GUIA  'Fernandez Guillermet, Armando, and Stefan Jonsson. "Predictive 
+        approach to thermodynamic properties of Co nitrides and phase 
+        stability in the Co-N system." International Journal of Materials 
+        Research 83.1 (1992): 21-31.'
+92GUIB  'Guillermet, Armando Fernández. "Thermodynamic Analysis of the Fe-Co-N
+        System and Predictive Approach to the Phase Diagram/Die 
+        thermodynamische Berechnung des Systems Fe-Co-N und die Annäherung an
+        das Phasendiagramm." International Journal of Materials Research 83.3
+        (1992): 165-175.'
 92HIL   'Hillert, Mats, and C. Qiu. "A reassessment of the Fe-Cr-Mo-C system."
         Journal of Phase Equilibria 13 (1992): 512-521.'
 92LEEA  'Lee, Byeong-Joo. "On the stability of Cr carbides." Calphad 16.2 
