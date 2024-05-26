@@ -252,6 +252,7 @@ DATABASE_INFO The following systems are available:'
   CO-FE-N   Guillermet (1992)'
   CO-FE-NI  Guillermet (1988) and Xia (2021)'
   CO-FE-V   Choi (2019)'
+  CO-FE-W   Guillermet (1988)'
   CO-NI-V   Choi (2019)'
   CR-CU-FE  Cui (2017)'
   CR-FE-MN  Lee (1993) and Do (2022)'
@@ -9525,6 +9526,12 @@ PARAMETER L(LIQUID,CO,CR,NI;0) 298.15
 
 PARAMETER L(LIQUID,CO,FE,V;0) 298.15
   +30000;  6000 N                                                       19CHO!
+PARAMETER L(LIQUID,CO,FE,W;0) 298.15
+  +0;  6000 N                                                          88GUIC!
+PARAMETER L(LIQUID,CO,FE,W;1) 298.15
+  +11287;  6000 N                                                      88GUIC!
+PARAMETER L(LIQUID,CO,FE,W;2) 298.15
+  +0;  6000 N                                                          88GUIC!
 
 PARAMETER L(LIQUID,CR,FE,MN;0) 298.15
   +2378;  6000 N                                                       93LEEB!
@@ -13772,6 +13779,8 @@ NUMBER  SOURCE
 88GUIB  Guillermet, Armando Fernändez. "Thermodynamic Properties of the Fe-Co-
         Ni-C System/Thermodynamische Eigenschaften des Systems Fe-Co-Ni-C." 
         International Journal of Materials Research 79.8 (1988): 524-536.'
+88GUIC  'Guillermet, Armando Fernández. "Thermodynamic Calculation of the 
+        Fe--Co--W Phase Diagram." Z. Metallkd. 79.10 (1988): 633-642.'
 88GUSA  'Gustafson, Per. "A thermodynamic evaluation of the Cr-Ni-W system." 
         Calphad 12.3 (1988): 277-292.'
 88GUSB  'Gustafson, Per. "A thermodynamic evaluation of the c-cr-fe-w system."
