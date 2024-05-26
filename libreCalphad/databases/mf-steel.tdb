@@ -8357,7 +8357,7 @@ PARAMETER G(LAVES_C15,MN:CR;0) 298.15
 PARAMETER G(LAVES_C15,MN:CU;0) 298.15
   +2*GHSERMN# +GHSERCU#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,MN:FE;0) 298.15
-  +*GHSERMN# +GHSERFE#;  6000 N                                         24FRI!
+  +2*GHSERMN# +GHSERFE#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,MN:MN;0) 298.15
   +15000 +2*GHSERMN# +GHSERMN#;  6000 N                                09CHEB!
 PARAMETER G(LAVES_C15,MN:NB;0) 298.15
