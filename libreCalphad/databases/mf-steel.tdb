@@ -91,6 +91,8 @@ $ 2024-05-25 MN-NI FROM GUO 2005 HAS SOME ISSUES WITH INTERMETALLICS
 $ 2024-05-26 CO-MO FROM DAVYDOV 1999 SOME HCP_A3 ISSUES.
 $ 2024-05-27 M5SI3 IN SI-TA SYSTEM FROM VAHLAS 1989 INCORRECT.
 $ 2024-05-27 MSI2_C40 IN SI-V SYSTEM FROM ZHANG 2008 INCORRECT.
+$ 2024-05-27 M5SI3 PHASES FROM CR-MO-SI FROM WU 2023 NOT INCORPORATED DUE TO
+$            INCOMPATIBLE MODELS
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -140,7 +142,8 @@ DATABASE_INFO The following systems are available:'
   CO-W      Guillermet (1989) and Markström (2005)'
   CR-CU     Cui (2017)'
   CR-FE     Andersson (1987), Lee (1993), and Lindholm (1997)'
-  CR-MO     Andersson (1987), Gustafson (19880, Frisk (1991) and Qiu (1992)'
+  CR-MO     Andersson (1987), Gustafson (1988), Frisk (1991), Qiu (1992),
+            and Frichtl (2024)'
   CR-MG     Ansara (1991)'
   CR-MN     Lee (1993) and Ansara (1998)'
   CR-N      Frisk (1991)'
@@ -275,6 +278,7 @@ DATABASE_INFO The following systems are available:'
   CR-FE-W   Gustafson (1988)'
   CR-MN-NI  Do (2022)'
   CR-MN-TI  Chen (2009)'
+  CR-MO-SI  Wu (2023) and Frichtl (2024)'
   CR-NI-O   Kjellqvist (2008)'
   CR-NI-W   Gustafson (1988)'
   CR-TI-V   Ghosh (2002)'
@@ -1061,7 +1065,7 @@ $ SPACE GROUP: Pm-3n
 $ PEARSON: cP8
 
 PHASE ALM3_A15 % 3 1 3 3 !
-CONSTITUENT ALM3_A15 : AL,CO,CR,NB,SI,TI,V : CR,FE,MO,NB,SI,V : C,VA : !
+CONSTITUENT ALM3_A15 : AL,CO,CR,MO,NB,SI,TI,V : CR,FE,MO,NB,SI,V : C,VA : !
 
 PARAMETER G(ALM3_A15,AL:CR:VA;0) 298.15
   -5528.04 +GHSERAL# +3*GHSERCR#;  6000 N                                13HU!
@@ -1096,7 +1100,7 @@ PARAMETER G(ALM3_A15,CR:CR:VA;0) 298.15
 PARAMETER G(ALM3_A15,CR:FE:VA;0) 298.15
   +8000 +GHSERCR# +3*GHSERFE#;  6000 N                                  97LIN!
 PARAMETER G(ALM3_A15,CR:MO:VA;0) 298.15
-  +GHSERCR# +3*GHSERMO#;  6000 N                                        24FRI!
+  +50000 +GHSERCR# +3*GHSERMO#;  6000 N                                 24FRI!
 PARAMETER G(ALM3_A15,CR:NB:VA;0) 298.15
   +GHSERCR# +3*GHSERNB#;  6000 N                                        23FRI!
 PARAMETER G(ALM3_A15,CR:SI:C;0) 298.15
@@ -1105,6 +1109,19 @@ PARAMETER G(ALM3_A15,CR:SI:VA;0) 298.15
   +561830.45 -61.08*T +GHSERCR# +3*GHSERSI#;  6000 N                     13HU!
 PARAMETER G(ALM3_A15,CR:V:VA;0) 298.15
   +GHSERCR# +3*GHSERV#;  6000 N                                         23FRI!
+
+PARAMETER G(ALM3_A15,MO:CR:VA;0) 298.15
+  +115000 +GHSERMO# +3*GHSERCR#;  6000 N                                 23WU!
+PARAMETER G(ALM3_A15,MO:FE:VA;0) 298.15
+  +GHSERMO# +3*GHSERFE#;  6000 N                                        24FRI!
+PARAMETER G(ALM3_A15,MO:MO:VA;0) 298.15
+  +100000 +GHSERMO# +3*GHSERMO#;  6000 N                                24FRI!
+PARAMETER G(ALM3_A15,MO:NB:VA;0) 298.15
+  +GHSERMO# +3*GHSERMO#;  6000 N                                        24FRI!
+PARAMETER G(ALM3_A15,MO:SI:VA;0) 298.15
+  -117023.4 -5.2028*T +GHSERMO# +3*GHSERSI#;  6000 N                     23WU!
+PARAMETER G(ALM3_A15,MO:V:VA;0) 298.15
+  +GHSERMO# +3*GHSERV#;  6000 N                                         24FRI!
 
 PARAMETER G(ALM3_A15,NB:CR:VA;0) 298.15
   +GHSERNB# +3*GHSERCR#;  6000 N                                        23FRI!
@@ -1175,6 +1192,9 @@ PARAMETER L(ALM3_A15,CR:CR,SI;0) 298.15
 
 PARAMETER L(ALM3_A15,CR,SI:CR;0) 298.15
   -376560;  6000 N                                                     17CUIC!
+
+PARAMETER L(ALM3_A15,CR,MO:SI;0) 298.15
+  +6380 -10*T;  6000 N                                                   23WU!
 
 PARAMETER L(ALM3_A15,FE:CR,SI;0) 298.15
   -376560;  6000 N                                                     17CUIC!
@@ -2714,6 +2734,9 @@ PARAMETER L(BCC_A2,CR,NI,W:VA;1) 298.15
   -122160;  6000 N                                                     88GUSA!
 PARAMETER L(BCC_A2,CR,NI,W:VA;2) 298.15
   +4102;  6000 N                                                       88GUSA!
+
+PARAMETER L(BCC_A2,CR,MO,SI:VA;0) 298.15
+  -49000;  6000 N                                                        23WU!
 
 PARAMETER L(BCC_A2,CU,FE,MN:VA;0) 298.15
   +0;  6000 N                                                          17CUIB!
@@ -7987,7 +8010,7 @@ PARAMETER G(LAVES_C14,CR:FE;0) 298.15
 PARAMETER G(LAVES_C14,CR:MN;0) 298.15
   +7000 +2*GHSERCR# +GHSERMN#;  6000 N                                 09CHEB!
 PARAMETER G(LAVES_C14,CR:MO;0) 298.15
-  +2*GHSERCR# +GHSERMO#;  6000 N                                        24FRI!
+  +5000 +2*GHSERCR# +GHSERMO#;  6000 N                                  24FRI!
 PARAMETER G(LAVES_C14,CR:NB;0) 298.15
   +2*GHSERCR# +GHSERNB#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C14,CR:TA;0) 298.15
@@ -9761,6 +9784,13 @@ PARAMETER L(LIQUID,CR,MN,NI;1) 298.15
 PARAMETER L(LIQUID,CR,MN,NI;2) 298.15
   +65000;  6000 N                                                        22DO!
 
+PARAMETER L(LIQUID,CR,MO,SI;0) 298.15
+  +287000;  6000 N                                                       23WU!
+PARAMETER L(LIQUID,CR,MO,SI;1) 298.15
+  -119000;  6000 N                                                       23WU!
+PARAMETER L(LIQUID,CR,MO,SI;2) 298.15
+  -30000;  6000 N                                                        23WU!
+
 PARAMETER L(LIQUID,CR,NI,W;0) 298.15
   +41500;  6000 N                                                      88GUSA!
 
@@ -10950,7 +10980,7 @@ $ MSI_B20
 $ PROTOTYPE: FESI
 
 PHASE MSI_B20 % 2 0.5 0.5 !
-CONSTITUENT MSI_B20 : CR,FE,MN,NI : AL,FE,SI : !
+CONSTITUENT MSI_B20 : CR,FE,MN,MO,NI : AL,FE,SI : !
 
 PARAMETER G(MSI_B20,CR:AL;0) 298.15
   +0.5*GHSERCR# +0.5*GHSERAL#;  6000 N                                  24FRI!
@@ -10976,6 +11006,13 @@ PARAMETER G(MSI_B20,MN:SI;0) 298.15
   -46659.5 +145.80765*T -24.66*T*LN(T) -0.003195*T**2 
   +160000*T**(-1);  6000 N                                              15ZHE!
 
+PARAMETER G(MSI_B20,MO:AL;0) 298.15
+  +0.5*GHSERMO# +0.5*GHSERAL#;  6000 N                                  24FRI!
+PARAMETER G(MSI_B20,MO:FE;0) 298.15
+  +0.5*GHSERMO# +0.5*GHSERFE#;  6000 N                                  24FRI!
+PARAMETER G(MSI_B20,MO:SI;0) 298.15
+  +5000 +0.5*GHSERMO# +0.5*GHSERS#;  6000 N                              23WU!
+
 PARAMETER G(MSI_B20,NI:AL;0) 298.15
   +0.5*GHSERNI# +0.5*GHSERAL#;  6000 N                                   04DU!
 PARAMETER G(MSI_B20,NI:FE;0) 298.15
@@ -10994,6 +11031,10 @@ PARAMETER G(MSI_B20,SI:SI;0) 298.15
 
 PARAMETER L(CR,FE:SI;0) 298.15
   +15000;  6000 N                                                       97LIN!
+PARAMETER L(CR,MO:SI;0) 298.15
+  -93190 -15*T;  6000 N                                                  23WU!
+PARAMETER L(CR,MO:SI;1) 298.15
+  +23000;  6000 N                                                        23WU!
 
 PARAMETER L(MSI_B20,FE:FE,SI;0) 298.15
   -15000 +8.907*T;  6000 N                                              23WIT!
@@ -11067,12 +11108,14 @@ $ SPACE GROUP: P6_222
 $ PEARSON hP9
 
 PHASE MSI2_C40 % 2 1 2 !
-CONSTITUENT MSI2_C40 : CR,SI,TA,V : CR,SI : !
+CONSTITUENT MSI2_C40 : CR,MO,SI,TA,V : CR,SI : !
 
 PARAMETER G(MSI2_C40,CR:CR;0) 298.15
   +219200.00 +3*GHSERCR#;  6000 N                                      17CUIC!
 PARAMETER G(MSI2_C40,SI:CR;0) 298.15
   +224822.01 -27.60*T +GHSERSI# +2*GHSERCR#;  6000 N                   17CUIC!
+PARAMETER G(MSI2_C40,MO:CR;0) 298.15
+  +GHSERMO# +2*GSHERCR#;  6000 N                                        24FRI!
 PARAMETER G(MSI2_C40,TA:CR;0) 298.15
   +GHSERTA# +2*GSHERCR#;  6000 N                                        24FRI!
 PARAMETER G(MSI2_C40,V:CR;0) 298.15
@@ -11083,6 +11126,8 @@ PARAMETER G(MSI2_C40,CR:SI;0) 298.15
   -1.77861666E-9*T**3 +365453.69752*T**(-1);  6000 N                   17CUIC!
 PARAMETER G(MSI2_C40,SI:SI;0) 298.15
   +84525.00 -26.28*T +3*GHSERSI#;  6000 N                              17CUIC!
+PARAMETER G(MSI2_C40,MO:SI;0) 298.15
+  -131448.4227 -5.55*T +GHSERMO# +2*GSHERSI#;  6000 N                   10GEN!
 PARAMETER G(MSI2_C40,TA:SI;0) 298.15
   -119100 +15.2532*T +GHSERTA# +2*GHSERSI#;  6000 N                     89VAH!
 $ PARAMETER G(MSI2_C40,V:SI;0) 298.15
@@ -11090,6 +11135,10 @@ $   -162308.4 +408.29196*T +145*T -67.8*T*LN(T) -0.0075*T**2 +330000*T**(-1)
 $   +GHSERV# +2*GHSERSI#;  6000 N                                         08ZHA!
 
 
+PARAMETER L(MSI2_C40,CR,MO:SI;0) 298.15
+  -121638 -18*T;  6000 N                                                 23WU!
+PARAMETER L(MSI2_C40,CR,MO:SI;1) 298.15
+  +66000;  6000 N                                                        23WU!
 PARAMETER L(MSI2_C40,CR,SI:CR;0) 298.15
   +1535.45;  6000 N                                                    17CUIC!
 PARAMETER L(MSI2_C40,CR,SI:SI;0) 298.15
@@ -11805,7 +11854,7 @@ PARAMETER G(MU_D85,FE:W:W;0) 298.15
 PARAMETER G(MU_D85,MO:MO:CO;0) 298.15
   +105928.1 +30.152*T +7*GHSERMO# +2*GHSERMO# +4*GHSERCO#;  6000 N      99DAV!
 PARAMETER G(MU_D85,MO:MO:CR;0) 298.15
-  +7*GFCCMO# +2*GHSERMO# +4*GHSERCR#;  6000 N                           24FRI!
+  +50000 +7*GFCCMO# +2*GHSERMO# +4*GHSERCR#;  6000 N                    24FRI!
 PARAMETER G(MU_D85,MO:MO:FE;0) 298.15
   +7*GFCCMO# +2*GHSERMO# +4*GHSERFE#;  6000 N                           24FRI!
 PARAMETER G(MU_D85,MO:MO:MO;0) 298.15
@@ -14669,5 +14718,7 @@ NUMBER  SOURCE
         modelling of the ternary system Fe-Ni-Si with re-modelling of the 
         constituent binary systems." Journal of Alloys and Compounds 935 
         (2023): 168118.'
+23WU    'Wu, Hao, et al. "Thermodynamic assessment of the Cr-Mo-Si ternary
+        system." Calphad 83 (2023): 102631.'
 24FRI   'Frichtl, M., unpublished, 2024.'
 !
