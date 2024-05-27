@@ -180,7 +180,8 @@ DATABASE_INFO The following systems are available:'
   MN-V      Huang (1991)'
   MO-N      Frisk (1991)'
   MO-NI     Frisk (1992) and Yaqoob (2018)'
-  MO-SI     'Vahlas (1989)'
+  MO-SI     Vahlas (1989)'
+  MO-V      Bratberg (2002)'
   MN-S      Dilner (2015) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
   N-NB      Huang (1996) and Khvan (2013)'
   N-TI      Jonsson (1996) and Lee (2001) EXCEPT N-RICH NITRIDES'
@@ -284,6 +285,7 @@ DATABASE_INFO The following systems are available:'
   FE-MN-TI  Zhang (2021)'
   FE-MN-V   Huang (1991)'
   FE-MO-NI  Frisk (1992)'
+  FE-MO-SI  Miettinen (1998)'
   FE-MO-W   Gustafson (1988)'
   FE-N-V    Ohtani (1993)'
   FE-NB-N   Zajac (1998), Lee (2001), and Khvan (2013)'
@@ -2722,6 +2724,8 @@ PARAMETER L(BCC_A2,CU,FE,MN:VA;2) 298.15
 
 PARAMETER L(BCC_A2,FE,MO,NI:VA;0) 298.15
   -35743;  6000 N                                                       92FRI!
+PARAMETER L(BCC_A2,FE,MO,SI:VA;0) 298.15
+  +0;  6000 N                                                           98MIE!
 PARAMETER L(BCC_A2,FE,MO,W:VA;0) 298.15
   +3000;  6000 N                                                       88GUSD!
 
@@ -5370,6 +5374,8 @@ PARAMETER L(FCC_A1,FE,MO,NI:VA;1) 298.15
   +11555 -55.81*T;  6000 N                                              92FRI!
 PARAMETER L(FCC_A1,FE,MO,NI:VA;2) 298.15
   +77975;  6000 N                                                       92FRI!
+PARAMETER L(FCC_A1,FE,MO,SI:VA;0) 298.15
+  +0;  6000 N                                                           98MIE!
 
 PARAMETER L(FCC_A1,FE,NB:C,VA;0) 298.15
   -40000;  6000 N                                                      90HUAA!
@@ -9784,6 +9790,8 @@ PARAMETER L(LIQUID,FE,MN,TI;2) 298.15
 
 PARAMETER L(LIQUID,FE,MO,NI;0) 298.15
   +50000;  6000 N                                                       92FRI!
+PARAMETER L(LIQUID,FE,MO,SI;0) 298.15
+  +110000;  6000 N                                                      98MIE!
 
 PARAMETER L(LIQUID,FE,N,NB;0) 298.15
   -160000;  6000 N                                                      01LEE!
@@ -14641,6 +14649,9 @@ NUMBER  SOURCE
 21XIA   'Xia, Cheng-Hui, et al. "Thermodynamic assessment of the Co-Fe-Ni 
         system and diffusion study of its fcc phase." Journal of Alloys and 
         Compounds 853 (2021): 157165.'
+22BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
+        systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system." 
+        International Journal of Materials Research 96.4 (2022): 335-344.'
 22DO    'Do, Hyeon-Seok, Won-Mi Choi, and Byeong-Joo Lee. "A thermodynamic 
         description for the Co-Cr-Fe-Mn-Ni system." Journal of Materials 
         Science (2022): 1-17.'
