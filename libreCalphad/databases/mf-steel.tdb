@@ -93,6 +93,7 @@ $ 2024-05-27 M5SI3 IN SI-TA SYSTEM FROM VAHLAS 1989 INCORRECT.
 $ 2024-05-27 MSI2_C40 IN SI-V SYSTEM FROM ZHANG 2008 INCORRECT.
 $ 2024-05-27 M5SI3 PHASES FROM CR-MO-SI FROM WU 2023 NOT INCORPORATED DUE TO
 $            INCOMPATIBLE MODELS
+$ 2024-05-28 MO-TI MO SOLUBILITY IN HCP_A3 TI INCORRECT.
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -143,7 +144,7 @@ DATABASE_INFO The following systems are available:'
   CR-CU     Cui (2017)'
   CR-FE     Andersson (1987), Lee (1993), and Lindholm (1997)'
   CR-MO     Andersson (1987), Gustafson (1988), Frisk (1991), Qiu (1992),
-            and Frichtl (2024)'
+            Hu (2016), and Frichtl (2024)'
   CR-MG     Ansara (1991)'
   CR-MN     Lee (1993) and Ansara (1998)'
   CR-N      Frisk (1991)'
@@ -184,6 +185,7 @@ DATABASE_INFO The following systems are available:'
   MO-N      Frisk (1991)'
   MO-NI     Frisk (1992) and Yaqoob (2018)'
   MO-SI     Vahlas (1989)'
+  MO-TI     Saunders (1995)'
   MO-V      Bratberg (2002)'
   MN-S      Dilner (2015) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
   N-NB      Huang (1996) and Khvan (2013)'
@@ -279,6 +281,7 @@ DATABASE_INFO The following systems are available:'
   CR-MN-NI  Do (2022)'
   CR-MN-TI  Chen (2009)'
   CR-MO-SI  Wu (2023) and Frichtl (2024)'
+  CR-MO-TI  Hu (2016)'
   CR-NI-O   Kjellqvist (2008)'
   CR-NI-W   Gustafson (1988)'
   CR-SI-V   Chaia (2015)'
@@ -302,6 +305,7 @@ DATABASE_INFO The following systems are available:'
   FE-NI-V   Zhao (2014)'
   FE-NI-W   Guillermet (1986)'
   FE-TI-V   Guo (2012)'
+  MO-TI-V   Hu (2016)'
   N-NB-TI   Lee (2001)'
   N-NB-V    Frisk (2008)'
 '
@@ -317,6 +321,7 @@ DATABASE_INFO The following systems are available:'
   CR-FE-MN-NI Do (2022)'
   CR-FE-NI-O  Kjellqvist (2008)'
   CR-FE-NI-V  Choi (2019)'
+  CR-MO-TI-V  Hu (2016)'
 !
 $ ----------------------------------------------------------------------------
 $ SINGLE-ELEMENT REFERENCES FROM SGTE UNARY DATABASE 5.0
@@ -648,6 +653,9 @@ $ MO
 
 FUNCTION GFCCMO 298.15
   +15200 +0.63*T +GHSERMO#; 5000 N                                      91DIN!
+
+FUNCTION GHCPMO 298.15
+  +11550 +GHSERMO#; 5000 N                                              91DIN!
 
 FUNCTION GHSERMO  298.15
   -7746.302 +131.9197*T -23.56414*T*LN(T) -3.443396E-3*T**2 +0.566283E-6*T**3
@@ -1132,7 +1140,7 @@ PARAMETER G(ALM3_A15,NB:FE:VA;0) 298.15
 PARAMETER G(ALM3_A15,NB:MO:VA;0) 298.15
   +GHSERNB# +3*GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(ALM3_A15,NB:NB:VA;0) 298.15
-  +20000 +10*T +4*GFCCNB#;  6000 N                                      95SAU!
+  +20000 +10*T +4*GFCCNB#;  6000 N                                     95SAUA!
 PARAMETER G(ALM3_A15,NB:SI:VA;0) 298.15
   +GHSERNB# +3*GHSERSI#;  6000 N                                        23FRI!
 PARAMETER G(ALM3_A15,NB:V:VA;0) 298.15
@@ -1162,7 +1170,7 @@ PARAMETER G(ALM3_A15,TI:FE:VA;0) 298.15
 PARAMETER G(ALM3_A15,TI:MO:VA;0) 298.15
   +GHSERTI# +3*GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(ALM3_A15,TI:NB:VA;0) 298.15
-  +20000 +10*T +3*GFCCNB# +GFCCTI#;  6000 N                             95SAU!
+  +20000 +10*T +3*GFCCNB# +GFCCTI#;  6000 N                            95SAUA!
 PARAMETER G(ALM3_A15,TI:SI:VA;0) 298.15
   +GHSERTI# +3*GHSERSI#;  6000 N                                        23FRI!
 PARAMETER G(ALM3_A15,TI:V:VA;0) 298.15
@@ -1221,7 +1229,7 @@ $ ALM3_D019
 $ NI3SN PROTOTYPE ORDERED INTERMETALLIC PHASE
 
 PHASE ALM3_D019 % 2 3 1 !
-CONSTITUENT ALM3_D019 : CO,NB,TI : MO,NB,TI,W : !
+CONSTITUENT ALM3_D019 : CO,MO,NB,TI : MO,NB,TI,W : !
 
 PARAMETER G(ALM3_D019,CO:MO;0) 298.15
   -47009.6 +20.816*T +3*GHSERCO# +GHSERMO#;  6000 N                     99DAV!
@@ -1232,51 +1240,60 @@ PARAMETER G(ALM3_D019,CO:TI;0) 298.15
 PARAMETER G(ALM3_D019,CO:W;0) 298.15
   -17930 +2.40*T +3*GHSERCO# +GHSERW#;  6000 N                          05MAR!
 
+PARAMETER G(ALM3_D019,MO:MO;0) 298.15
+  +3*GHCPMO# +GHCPMO#;  6000 N                                         95SAUB!
+PARAMETER G(ALM3_D019,MO:NB;0) 298.15
+  +3*GHSERMO# +GHSERNB#;  6000 N                                        24FRI!
+PARAMETER G(ALM3_D019,MO:TI;0) 298.15
+  +17072 -4.5*T +3*GHCPMO# +GHSERTI#;  6000 N                          95SAUB!
+PARAMETER G(ALM3_D019,MO:W;0) 298.15
+  +3*GHSERMO# +GHSERW#;  6000 N                                         24FRI!
+
 PARAMETER G(ALM3_D019,NB:MO;0) 298.15
   +3*GHSERNB# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(ALM3_D019,NB:NB;0) 298.15
-  +4*GHCPNB#;  6000 N                                                   95SAU!
+  +4*GHCPNB#;  6000 N                                                  95SAUA!
 PARAMETER G(ALM3_D019,NB:TI;0) 298.15
-  +10668 +3*GHCPNB# +GHSERTI#;  6000  N                                 95SAU!
+  +10668 +3*GHCPNB# +GHSERTI#;  6000  N                                95SAUA!
 PARAMETER G(ALM3_D019,NB:W;0) 298.15
   +3*GHCPNB# +GHSERW#;  6000 N                                          23FRI!
 
 PARAMETER G(ALM3_D019,TI:MO;0) 298.15
-  +3*GHSERTI# +GHSERMO#;  6000 N                                        24FRI!
+  +17072 -4.5*T +3*GHSERTI# +GHSERMO#;  6000 N                         95SAUB!
 PARAMETER G(ALM3_D019,TI:NB;0) 298.15
-  +10668 +3*GHSERTI# +GHCPNB#;  6000 N                                  95SAU!
+  +10668 +3*GHSERTI# +GHCPNB#;  6000 N                                 95SAUA!
 PARAMETER G(ALM3_D019,TI:TI;0) 298.15
-  +4 +4*GHSERTI#;  6000 N                                               95SAU!
+  +4 +4*GHSERTI#;  6000 N                                              95SAUB!
 PARAMETER G(ALM3_D019,TI:W;0) 298.15
   +3*GHSERTI# +GHSERW#;  6000 N                                         23FRI!
 
 
 PARAMETER L(ALM3_D019,NB:NB,TI;0) 298.15
-  +4924;  6000 N                                                        95SAU!
+  +4924;  6000 N                                                       95SAUA!
 PARAMETER L(ALM3_D019,NB:NB,TI;1) 298.15
-  +468;  6000 N                                                         95SAU!
+  +468;  6000 N                                                        95SAUA!
 PARAMETER L(ALM3_D019,NB:NB,TI;2) 298.15
-  +40;  6000 N                                                          95SAU!
+  +40;  6000 N                                                         95SAUA!
 
 PARAMETER L(ALM3_D019,NB,TI:NB;0) 298.15
-  +30248;  6000 N                                                       95SAU!
+  +30248;  6000 N                                                      95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:NB;1) 298.15
-  +4220;  6000 N                                                        95SAU!
+  +4220;  6000 N                                                       95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:NB;2) 298.15
-  +3164;  6000 N                                                        95SAU!
+  +3164;  6000 N                                                       95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:TI;0) 298.15
-  +30248;  6000 N                                                       95SAU!
+  +30248;  6000 N                                                      95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:TI;1) 298.15
-  -4220;  6000 N                                                        95SAU!
+  -4220;  6000 N                                                       95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:TI;2) 298.15
-  +3164;  6000 N                                                        95SAU!
+  +3164;  6000 N                                                       95SAUA!
 
 PARAMETER L(ALM3_D019,TI:NB,TI;0) 298.15
-  +4924;  6000 N                                                        95SAU!
+  +4924;  6000 N                                                       95SAUA!
 PARAMETER L(ALM3_D019,TI:NB,TI;1) 298.15
-  -468;  6000 N                                                         95SAU!
+  -468;  6000 N                                                        95SAUA!
 PARAMETER L(ALM3_D019,TI:NB,TI;2) 298.15
-  +40;  6000 N                                                          95SAU!
+  +40;  6000 N                                                         95SAUA!
 
 $ ----------------------------------------------------------------------------
 
@@ -2560,6 +2577,10 @@ PARAMETER L(BCC_A2,MO,NI:VA;0) 298.15
   +42405.6;  6000 N                                                     18YAQ!
 PARAMETER L(BCC_A2,MO,SI:VA;0) 298.15
   -70899.6;  6000 N                                                     89VAH!
+PARAMETER L(BCC_A2,MO,TI:VA;0) 298.15
+  +2000;  6000 N                                                       95SAUB!
+PARAMETER L(BCC_A2,MO,TI:VA;1) 298.15
+  -2000;  6000 N                                                       95SAUB!
 PARAMETER L(BCC_A2,MO,V:C;0) 298.15
   +330000;  6000 N                                                      02BRA!
 PARAMETER L(BCC_A2,MO,V:VA;0) 298.15
@@ -2577,11 +2598,11 @@ PARAMETER L(BCC_A2,NB:N,VA;1) 298.15
   -1917408;  6000 N                                                     13KHV!
 
 PARAMETER L(BCC_A2,NB,TI:VA;0) 298.15
-  +14000;  6000 N                                                       95SAU!
+  +14000;  6000 N                                                      95SAUA!
 PARAMETER L(BCC_A2,NB,TI:VA;1) 298.15
-  +1E-4;  6000 N                                                        95SAU!
+  +1E-4;  6000 N                                                       95SAUA!
 PARAMETER L(BCC_A2,NB,TI:VA;2) 298.15
-  +2500;  6000 N                                                        95SAU!
+  +2500;  6000 N                                                       95SAUA!
 
 PARAMETER L(BCC_A2,NB,W:VA;0) 298.15
   -34343 +6.074*T;  6000 N                                             97HUAA!
@@ -2900,6 +2921,11 @@ PARAMETER G(BCC_B2,MN:MN:VA;0) 298.15
 PARAMETER G(BCC_B2,MN:SI:VA;0) 298.15
   +0;  6000 N                                                           24FRI!
 
+PARAMETER G(BCC_B2,MO:MO:VA;0) 298.15
+  +0;  6000 N                                                          95SAUB!
+PARAMETER G(BCC_B2,MO:TI:VA;0) 298.15
+  +5000;  6000 N                                                       95SAUB!
+
 PARAMETER G(BCC_B2,NI:AL:VA;0) 298.15
   -49978 +7.5795*T;  6000 N                                             99DUP!
 PARAMETER G(BCC_B2,NI:CO:VA;0) 298.15
@@ -2933,6 +2959,10 @@ PARAMETER G(BCC_B2,TI:FE:VA;0) 298.15
   +5.56492656E-6*T**3;  6000 N                                          12GUO!
 PARAMETER TC(BCC_B2,TI:FE:VA;0) 298.15
   -1325;  6000 N                                                        99KUM!
+PARAMETER G(BCC_B2,TI:MO:VA;0) 298.15
+  +5000;  6000 N                                                       95SAUB!
+PARAMETER G(BCC_B2,TI:TI:VA;0) 298.15
+  +0;  6000 N                                                          95SAUB!
 
 PARAMETER G(BCC_B2,TI:NI:VA;0) 298.15
   -33193.7 +10.284*T;  6000 N                                           09KEY!
@@ -3108,6 +3138,14 @@ PARAMETER L(BCC_B2,MN:FE,TI:VA;0) 298.15
 PARAMETER L(BCC_B2,MN,TI:FE:VA;0) 298.15
   +11480;  6000 N                                                       21ZHA!
 
+PARAMETER L(BCC_B2,MO:MO,TI:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
+
+PARAMETER L(BCC_B2,MO,TI:MO:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
+PARAMETER L(BCC_B2,MO,TI:TI:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
+
 PARAMETER L(BCC_B2,NI:AL,FE:VA;0) 298.15
   -29728.16;  6000 N                                                    09ZHA!
 PARAMETER L(BCC_B2,NI:AL,CU:VA;0) 298.15
@@ -3161,6 +3199,8 @@ PARAMETER L(BCC_B2,TI:FE,TI:VA;1) 298.15
   +12256;  6000 N                                                       99KUM!
 PARAMETER L(BCC_B2,TI:FE,V:VA;0) 298.15
   +43130 -11.936*T;  6000 N                                             12GUO!
+PARAMETER L(BCC_B2,TI:MO,TI:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
 PARAMETER L(BCC_B2,TI:NI,TI:VA;0) 298.15
   +60723.7 -15.4024*T;  6000 N                                          09KEY!
 
@@ -3223,12 +3263,14 @@ $ BCT_D022
 $ PROTOTYPE: AL3TI ORDERED INTERMETALLIC PHASE
 
 PHASE BCT_D022 % 2 3 1 !
-CONSTITUENT BCT_D022 : AL,CO,FE,NB,NI,TI : AL,CR,NB,TI,V : !
+CONSTITUENT BCT_D022 : AL,CO,FE,MO,NB,NI,TI : AL,CR,MO,NB,TI,V : !
 
 PARAMETER G(BCT_D022,AL:AL;0) 298.15
   +40000 +3*GHSERAL# +GHSERAL#;  6000 N                                  15HE!
 PARAMETER G(BCT_D022,AL:CR;0) 298.15
   +3*GHSERAL# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,AL:MO;0) 298.15
+  +3*GHSERAL# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,AL:NB;0) 298.15
   -166984 +34.8*T +3*GHSERAL# +GHSERNB#;  6000 N                         15HE!
 PARAMETER G(BCT_D022,AL:TI;0) 298.15
@@ -3240,6 +3282,8 @@ PARAMETER G(BCT_D022,CO:AL;0) 298.15
   +3*GHSERCO# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,CO:CR;0) 298.15
   -10000 +3*GHSERCO# +GHSERCR#;  6000 N                                 19CHO!
+PARAMETER G(BCT_D022,CO:MO;0) 298.15
+  +3*GHSERCO# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,CO:NB;0) 298.15
   +3*GHSERCO# +GFCCNB#;  6000 N                                         24FRI!
 PARAMETER G(BCT_D022,CO:TI;0) 298.15
@@ -3251,6 +3295,8 @@ PARAMETER G(BCT_D022,FE:AL;0) 298.15
   +3*GHSERFE# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,FE:CR;0) 298.15
   +3*GHSERFE# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,FE:MO;0) 298.15
+  +3*GHSERFE# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,FE:NB;0) 298.15
   +3*GHSERFE# +GFCCNB#;  6000 N                                         24FRI!
 PARAMETER G(BCT_D022,FE:TI;0) 298.15
@@ -3258,10 +3304,25 @@ PARAMETER G(BCT_D022,FE:TI;0) 298.15
 PARAMETER G(BCT_D022,FE:V;0) 298.15
   -10000 +3*GHSERFE# +GHSERV#;  6000 N                                  19CHO!
 
+PARAMETER G(BCT_D022,MO:AL;0) 298.15
+  +3*GHSERMO# +GHSERAL#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,MO:CR;0) 298.15
+  +3*GHSERMO# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,MO:MO;0) 298.15
+  +3*GFCCMO# +GFCCMO#;  6000 N                                         95SAUB!
+PARAMETER G(BCT_D022,MO:NB;0) 298.15
+  +3*GHSERMO# +GFCCNB#;  6000 N                                         24FRI!
+PARAMETER G(BCT_D022,MO:TI;0) 298.15
+  +3*GFCCMO# +GFCCTI#;  6000 N                                         95SAUB!
+PARAMETER G(BCT_D022,MO:V;0) 298.15
+  +3*GHSERMO# +GHSERV#;  6000 N                                         24FRI!
+
 PARAMETER G(BCT_D022,NB:AL;0) 298.15
   +20000 +3*GHSERNB# +GHSERAL#;  6000 N                                  15HE!
 PARAMETER G(BCT_D022,NB:CR;0) 298.15
   +3*GHSERNB# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,NB:MO;0) 298.15
+  +3*GHSERNB# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,NB:NB;0) 298.15
   +40000 +3*GHSERNB# +GHSERNB#;  6000 N                                  15HE!
 PARAMETER G(BCT_D022,NB:TI;0) 298.15
@@ -3273,6 +3334,8 @@ PARAMETER G(BCT_D022,NI:AL;0) 298.15
   +3*GHSERNI# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,NI:CR;0) 298.15
   +3*GHSERNI# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,NI:MO;0) 298.15
+  +3*GHSERNI# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,NI:NB;0) 298.15
   +3*GHSERNI# +GFCCNB#;  6000 N                                         24FRI!
 PARAMETER G(BCT_D022,NI:TI;0) 298.15
@@ -3285,10 +3348,12 @@ PARAMETER G(BCT_D022,TI:AL;0) 298.15
   +3*GHSERTI# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(BCT_D022,TI:CR;0) 298.15
   +3*GHSERTI# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(BCT_D022,TI:MO;0) 298.15
+  +3*GFCCTI# +GFCCMO#;  6000 N                                         95SAUB!
 PARAMETER G(BCT_D022,TI:NB;0) 298.15
-  +3*GFCCTI# +GFCCNB#;  6000 N                                          95SAU!
+  +3*GFCCTI# +GFCCNB#;  6000 N                                         95SAUA!
 PARAMETER G(BCT_D022,TI:TI;0) 298.15
-  +4*GFCCTI#;  6000 N                                                   95SAU!
+  +4*GFCCTI#;  6000 N                                                  95SAUB!
 PARAMETER G(BCT_D022,TI:V;0) 298.15
   +3*GFCCTI# +GFCCV#;  6000 N                                           24FRI!
 
@@ -5162,6 +5227,8 @@ PARAMETER L(FCC_A1,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(FCC_A1,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
+PARAMETER L(FCC_A1,MO,TI:VA;0) 298.15
+  +16500;  6000 N                                                      95SAUB!
 PARAMETER L(FCC_A1,MO,W:VA;0) 298.15
   +2000;  6000 N                                                       88GUSE!
 
@@ -5181,7 +5248,7 @@ PARAMETER L(FCC_A1,NB,TI:C;0) 298.15
 PARAMETER L(FCC_A1,NB,TI:N;0) 298.15
   +0;  6000 N                                                           01LEE!
 PARAMETER L(FCC_A1,NB,TI:VA;0) 298.15
-  +13600;  6000 N                                                       95SAU!
+  +13600;  6000 N                                                      95SAUA!
 
 PARAMETER L(FCC_A1,NB,V:C;0) 298.15
   +29000;  6000 N                                                       08FRI!
@@ -6939,7 +7006,7 @@ PARAMETER G(HCP_A3,MO:N;0) 298.15
 PARAMETER G(HCP_A3,MO:O;0) 298.15
   +GHSERMO# +0.5*GHSEROO#;  6000 N                                      24FRI!
 PARAMETER G(HCP_A3,MO:VA;0) 298.15
-  +11550 +GHSERMO#; 5000 N                                              91DIN!
+  +GHCPMO#;  6000 N                                                     91DIN!
 
 PARAMETER G(HCP_A3,NB:B;0) 298.15
   +GHSERNB# +0.5*GHSERBB#;  6000 N                                      24FRI!
@@ -7449,6 +7516,8 @@ PARAMETER L(HCP_A3,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(HCP_A3,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
+PARAMETER L(HCP_A3,MO,TI:VA;0) 298.15
+  +22760 -6*T;  6000 N                                                 95SAUB!
 PARAMETER L(HCP_A3,MO,W:VA;0) 298.15
   +2000;  6000 N                                                       88GUSC!
 
@@ -7464,11 +7533,11 @@ PARAMETER L(HCP_A3,NB,TI:C;0) 298.15
 PARAMETER L(HCP_A3,NB,TI:N;0) 298.15
   -8430 +13.0928*T;  6000 N                                             01LEE!
 PARAMETER L(HCP_A3,NB,TI:VA;0) 298.15
-  +13600;  6000 N                                                       95SAU!
+  +13600;  6000 N                                                      95SAUA!
 PARAMETER L(HCP_A3,NB,TI:VA;1) 298.15
-  +1E-4;  6000 N                                                        95SAU!
+  +1E-4;  6000 N                                                       95SAUA!
 PARAMETER L(HCP_A3,NB,TI:VA;2) 298.15
-  +2500;  6000 N                                                        95SAU!
+  +2500;  6000 N                                                       95SAUA!
 
 $ ESTIMATE SAME NB,V:C AS FCC_A1
 PARAMETER L(HCP_A3,NB,V:C;0) 298.15
@@ -9476,6 +9545,8 @@ PARAMETER L(LIQUID,MO,SI;1) 298.15
   -47107.9 +33.710280*T;  6000 N                                        89VAH!
 PARAMETER L(LIQUID,MO,SI;2) 298.15
   +75846.6 -30.900000*T;  6000 N                                        89VAH!
+PARAMETER L(LIQUID,MO,TI;0) 298.15
+  -9000 +2*T;  6000 N                                                  95SAUB!
 PARAMETER L(LIQUID,MO,V;0) 298.15
   +17784;  6000 N                                                       02BRA!
 
@@ -9491,7 +9562,7 @@ PARAMETER L(LIQUID,N,V;0) 298.15
   -264845.009;  6000 N                                                  21DU !
 
 PARAMETER L(LIQUID,NB,TI;0) 298.15
-  +8500;  6000 N                                                        95SAU!
+  +8500;  6000 N                                                       95SAUA!
 PARAMETER L(LIQUID,NB,W;0) 298.15
   -34043 +3.603*T;  6000 N                                             97HUAA!
 
@@ -14075,10 +14146,12 @@ $ TETRA_L10
 $ CUAU PROTOTYPE ORDERED INTERMETALLIC PHASE
 
 PHASE TETRA_L10 % 2 0.5 0.5 !
-CONSTITUENT TETRA_L10 : MN,NB,NI,TI : MN,NB,NI,TI : !
+CONSTITUENT TETRA_L10 : MN,MO,NB,NI,TI : MN,MO,NB,NI,TI : !
 
 PARAMETER G(TETRA_L10,MN:MN;0) 298.15
   +5000 +GFCCMN#;  6000 N                                               05GUO!
+PARAMETER G(TETRA_L10,MN:MO;0) 298.15
+  +0.5*GHSERMN# +0.5*GFCCMO#;  6000 N                                   24FRI!
 PARAMETER G(TETRA_L10,MN:NB;0) 298.15
   +0.5*GFCCMN# +0.5*GFCCNB#;  6000 N                                    24FRI!
 PARAMETER G(TETRA_L10,MN:NI;0) 298.15
@@ -14086,17 +14159,32 @@ PARAMETER G(TETRA_L10,MN:NI;0) 298.15
 PARAMETER G(TETRA_L10,MN:TI;0) 298.15
   +0.5*GFCCMN# +0.5*GFCCTI#;  6000 N                                    24FRI!
 
+PARAMETER G(TETRA_L10,MO:MN;0) 298.15
+  +0.5*GFCCMO# +0.5*GHSERMN#;  6000 N                                   24FRI!
+PARAMETER G(TETRA_L10,MO:MO;0) 298.15
+  +0.5*GFCCMO# +0.5*GFCCMO#;  6000 N                                   95SAUB!
+PARAMETER G(TETRA_L10,MO:NB;0) 298.15
+  +0.5*GFCCMO# +0.5*GFCCNB#;  6000 N                                    24FRI!
+PARAMETER G(TETRA_L10,MO:NI;0) 298.15
+  +0.5*GFCCMO# +0.5*GHSERNI#;  6000 N                                   24FRI!
+PARAMETER G(TETRA_L10,MO:TI;0) 298.15
+  +4125 +0.5*GFCCMO# +0.5*GFCCTI#;  6000 N                             95SAUB!
+
 PARAMETER G(TETRA_L10,NB:MN;0) 298.15
   +0.5*GFCCNB# +0.5*GFCCMN#;  6000 N                                    24FRI!
+PARAMETER G(TETRA_L10,NB:MO;0) 298.15
+  +0.5*GFCCNB# +0.5*GFCCMO#;  6000 N                                    24FRI!
 PARAMETER G(TETRA_L10,NB:NB;0) 298.15
-  +GFCCNB#;  6000 N                                                     95SAU!
+  +GFCCNB#;  6000 N                                                    95SAUA!
 PARAMETER G(TETRA_L10,NB:NI;0) 298.15
   +0.5*GFCCNB# +0.5*GHSERNI#;  6000 N                                   24FRI!
 PARAMETER G(TETRA_L10,NB:TI;0) 298.15
-  +6800 +0.5*GFCCNB# +0.5*GFCCTI#;  6000 N                              95SAU!
+  +6800 +0.5*GFCCNB# +0.5*GFCCTI#;  6000 N                             95SAUA!
 
 PARAMETER G(TETRA_L10,NI:MN;0) 298.15
   -9740.25 -2.96685*T +0.5*GHSERMN# +0.5*GHSERNI#;  6000 N              05GUO!
+PARAMETER G(TETRA_L10,NI:MO;0) 298.15
+  +0.5*GHSERNI# +0.5*GFCCMO#;  6000 N                                   24FRI!
 PARAMETER G(TETRA_L10,NI:NB;0) 298.15
   +0.5*GHSERNI# +0.5*GFCCNB#; 6000 N                                    24FRI!
 PARAMETER G(TETRA_L10,NI:NI;0) 298.15
@@ -14104,12 +14192,16 @@ PARAMETER G(TETRA_L10,NI:NI;0) 298.15
 PARAMETER G(TETRA_L10,NI:TI;0) 298.15
   +0.5*GHSERNI# +0.5*GFCCTI#;  6000 N                                   24FRI!
 
+PARAMETER G(TETRA_L10,TI:MN;0) 298.15
+  +0.5*GFCCTI# +0.5*GHSERMN#;  6000 N                                   24FRI!
+PARAMETER G(TETRA_L10,TI:MO;0) 298.15
+  +4125 +0.5*GFCCTI# +0.5*GFCCMO#;  6000 N                             95SAUB!
 PARAMETER G(TETRA_L10,TI:NB;0) 298.15
-  +3400 +0.5*GFCCTI# +0.5*GFCCNB#;  6000 N                              95SAU!
+  +3400 +0.5*GFCCTI# +0.5*GFCCNB#;  6000 N                             95SAUA!
 PARAMETER G(TETRA_L10,TI:NI;0) 298.15
   +0.5*GFCCTI# +0.5*GHSERNI#;  6000 N                                   24FRI!
 PARAMETER G(TETRA_L10,TI:TI;0) 298.15
-  +GFCCTI#;  6000 N                                                     95SAU!
+  +GFCCTI#;  6000 N                                                    95SAUB!
 
 
 PARAMETER L(TETRA_L10,MN:MN,NI;0) 298.15
@@ -14126,41 +14218,50 @@ PARAMETER L(TETRA_L10,MN,NI:NI;0) 298.15
 PARAMETER L(TETRA_L10,MN,NI:NI;1) 298.15
   -3422.2 +4.96075*T;  6000 N                                           05GUO!
 
+PARAMETER L(TETRA_L10,MO:MO,TI;0) 298.15
+  +4125;  6000 N                                                       95SAUB!
+
+PARAMETER L(TETRA_L10,MO,TI:MO;0) 298.15
+  +4125;  6000 N                                                       95SAUB!
+PARAMETER L(TETRA_L10,MO,TI:TI;0) 298.15
+  +4125;  6000 N                                                       95SAUB!
+
 PARAMETER L(TETRA_L10,NB:NB,TI;0) 298.15
-  +3869;  6000 N                                                        95SAU!
+  +3869;  6000 N                                                       95SAUA!
 PARAMETER L(TETRA_L10,NB:NB,TI;1) 298.15
-  +625;  6000 N                                                         95SAU!
+  +625;  6000 N                                                        95SAUA!
 PARAMETER L(TETRA_L10,NB:NB,TI;2) 298.15
-  +156;  6000 N                                                         95SAU!
+  +156;  6000 N                                                        95SAUA!
 
 PARAMETER L(TETRA_L10,NB,TI:NB;0) 298.15
-  +3869;  6000 N                                                        95SAU!
+  +3869;  6000 N                                                       95SAUA!
 PARAMETER L(TETRA_L10,NB,TI:NB;1) 298.15
-  +625;  6000 N                                                         95SAU!
+  +625;  6000 N                                                        95SAUA!
 PARAMETER L(TETRA_L10,NB,TI:NB;2) 298.15
-  +156;  6000 N                                                         95SAU!
+  +156;  6000 N                                                        95SAUA!
 PARAMETER L(TETRA_L10,NB,TI:TI;0) 298.15
-  +3869;  6000 N                                                        95SAU!
+  +3869;  6000 N                                                       95SAUA!
 PARAMETER L(TETRA_L10,NB,TI:TI;1) 298.15
-  -625;  6000 N                                                         95SAU!
+  -625;  6000 N                                                        95SAUA!
 PARAMETER L(TETRA_L10,NB,TI:TI;2) 298.15
-  +156;  6000 N                                                         95SAU!
+  +156;  6000 N                                                        95SAUA!
 
 PARAMETER L(TETRA_L10,NI:MN,NI;0) 298.15
   +36448.4 -16.7053*T;  6000 N                                          05GUO!
 PARAMETER L(TETRA_L10,NI:MN,NI;1) 298.15
   +31096.55 -5.95375*T;  6000 N                                         05GUO!
 
+PARAMETER L(TETRA_L10,TI:MO,TI;0) 298.15
+  +4125;  6000 N                                                       95SAUB!
 PARAMETER L(TETRA_L10,TI:NB,TI;0) 298.15
-  +3869;  6000 N                                                        95SAU!
+  +3869;  6000 N                                                       95SAUA!
 PARAMETER L(TETRA_L10,TI:NB,TI;1) 298.15
-  -625;  6000 N                                                         95SAU!
+  -625;  6000 N                                                        95SAUA!
 PARAMETER L(TETRA_L10,TI:NB,TI;2) 298.15
-  +156;  6000 N                                                         95SAU!
-
+  +156;  6000 N                                                        95SAUA!
 
 PARAMETER L(TETRA_L10,NB,TI:NB,TI;0) 298.15
-  -3750;  6000 N                                                        95SAU!
+  -3750;  6000 N                                                       95SAUA!
 
 $ ----------------------------------------------------------------------------
 $ TETRAGONAL_A6
@@ -14422,8 +14523,10 @@ NUMBER  SOURCE
 95KOW   Kowalski, M., and P. J. Spencer. "Thermodynamic reevaluation of the
         CO, Fe-O and Ni-O systems: Remodelling of the liquid, BCC and FCC 
         phases." Calphad 19.3 (1995): 229-243.
-95SAU   'N. Saunders, "COST 507 Thermochemical Database for Light Metal Alloys 
+95SAUA  'N. Saunders, "COST 507 Thermochemical Database for Light Metal Alloys 
         2" (1998)'
+95SAUB  'N. Saunders, "System Mo-Ti." COST 507: Thermochemical Database for
+        Light Metal Alloys 2. (1995): 249-252'
 96BEL   'Bellen, Peter, KC Hari Kumar, and Patrick Wollants. "Thermodynamic 
         assessment of the Ni-Ti phase diagram." International Journal of 
         Materials Research 87.12 (1996): 972-978.'
@@ -14686,6 +14789,8 @@ NUMBER  SOURCE
 16GOE   'Göhring, Holger, et al. "Thermodynamics of the Fe-N and Fe-NC 
         systems: The Fe-N and Fe-NC phase diagrams revisited." Metallurgical 
         and Materials Transactions A 47 (2016): 6173-6186.'
+16HU    'Hu, Biao, et al. "CALPHAD-type thermodynamic assessment of the 
+        Ti-Mo-Cr-V quaternary system." Calphad 55 (2016): 103-112.'
 16LIU   Liu, Xuan L., et al. "Thermodynamic modeling of Al-Co-Cr, Al-Co-Ni, 
         Co-Cr-Ni ternary systems towards a description for Al-Co-Cr-Ni." 
         Calphad 52 (2016): 125-142.
