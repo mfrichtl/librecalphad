@@ -281,6 +281,7 @@ DATABASE_INFO The following systems are available:'
   CR-MO-SI  Wu (2023) and Frichtl (2024)'
   CR-NI-O   Kjellqvist (2008)'
   CR-NI-W   Gustafson (1988)'
+  CR-SI-V   Chaia (2015)'
   CR-TI-V   Ghosh (2002)'
   CU-FE-MN  Wang (2007) and Cui (2017)'
   CU-FE-NI  Sundman (1993) *'
@@ -2156,7 +2157,7 @@ PARAMETER G(BCC_A2,V:N;0) 298.15
 PARAMETER G(BCC_A2,V:O;0) 298.15
   +GHSERV# +3*GHSEROO#;  6000 N                                         24FRI!
 PARAMETER G(BCC_A2,V:VA;0) 298.15
-  +GHSERV#;  4000 N                                                     91DIN!
+  +GHSERV#;  6000 N                                                     91DIN!
   
 PARAMETER G(BCC_A2,W:B;0) 298.15
   +GHSERW# +3*GHSERBB#;  6000 N                                         23FRI!
@@ -3319,45 +3320,45 @@ PARAMETER G(BCT_D1A,W:NI;0) 298.15
   -91400 +56.25*T +GHSERW# +4*GHSERNI#;  6000 N                         17ISO!
 
 $ ----------------------------------------------------------------------------
-$ BCT_D2G
+$ BCT_D26
 $ PROTOTYPE: PT8TI, FE16C2
 
-PHASE BCT_D2G %B 3 1 0.125 2.875 !
-CONSTITUENT BCT_D2G : NI : W,VA : W,VA : !
+PHASE BCT_D26 %B 3 1 0.125 2.875 !
+CONSTITUENT BCT_D26 : NI : W,VA : W,VA : !
 
-PARAMETER G(BCT_D2G,NI:W:W;0) 298.15
+PARAMETER G(BCT_D26,NI:W:W;0) 298.15
   +GHSERNI# +GHSERW#;  6000 N                                           17ISO!
 
-PARAMETER G(BCT_D2G,NI:W:VA;0) 298.15
+PARAMETER G(BCT_D26,NI:W:VA;0) 298.15
   -2100 -1.56*T +GHSERNI# +0.125*GHSERW#;  6000 N                       17ISO!
-PARAMETER BMAGN(BCT_D2G,NI:W:VA;0) 298.15
+PARAMETER BMAGN(BCT_D26,NI:W:VA;0) 298.15
   +0.52;  6000 N                                                        17ISO!
-PARAMETER TC(BCT_D2G,NI:W:VA;0) 298.15
+PARAMETER TC(BCT_D26,NI:W:VA;0) 298.15
   +633;  6000 N                                                         17ISO!
 
-PARAMETER G(BCT_D2G,NI:VA:W;0) 298.15
+PARAMETER G(BCT_D26,NI:VA:W;0) 298.15
   +50000 -2100 +GHSERNI# +2.875*GHSERW#;  6000 N                        24FRI!
-PARAMETER BMAGN(BCT_D2G,NI:VA:W;0) 298.15
+PARAMETER BMAGN(BCT_D26,NI:VA:W;0) 298.15
   +0.52;  6000 N                                                        17ISO!
-PARAMETER TC(BCT_D2G,NI:VA:W;0) 298.15
+PARAMETER TC(BCT_D26,NI:VA:W;0) 298.15
   +633;  6000 N                                                         17ISO!
 
-PARAMETER G(BCT_D2G,NI:VA:VA;0) 298.15
+PARAMETER G(BCT_D26,NI:VA:VA;0) 298.15
   +GBCTNI#;  6000 N                                                     17ISO!
-PARAMETER BMAGN(BCT_D2G,NI:VA:VA;0) 298.15
+PARAMETER BMAGN(BCT_D26,NI:VA:VA;0) 298.15
   +0.52;  6000 N                                                        17ISO!
-PARAMETER TC(BCT_D2G,NI:VA:VA;0) 298.15
+PARAMETER TC(BCT_D26,NI:VA:VA;0) 298.15
   +633;  6000 N                                                         17ISO!
 
 
-PARAMETER L(BCT_D2G,NI:W:W,VA;0) 298.15
+PARAMETER L(BCT_D26,NI:W:W,VA;0) 298.15
   +19000 +14*T;  6000 N                                                 17ISO!
-PARAMETER L(BCT_D2G,NI:VA:W,VA;0) 298.15
+PARAMETER L(BCT_D26,NI:VA:W,VA;0) 298.15
   +19000 +75*T;  6000 N                                                 24FRI!
 
-PARAMETER L(BCT_D2G,NI:W,VA:W;0) 298.15
+PARAMETER L(BCT_D26,NI:W,VA:W;0) 298.15
   +19000 +14*T;  6000 N                                                 17ISO!
-PARAMETER L(BCT_D2G,NI:W,VA:VA;0) 298.15
+PARAMETER L(BCT_D26,NI:W,VA:VA;0) 298.15
   +19000 +14*T;  6000 N                                                 17ISO!
 
 $ ----------------------------------------------------------------------------
@@ -9795,6 +9796,13 @@ PARAMETER L(LIQUID,CR,MO,SI;2) 298.15
 PARAMETER L(LIQUID,CR,NI,W;0) 298.15
   +41500;  6000 N                                                      88GUSA!
 
+PARAMETER L(LIQUID,CR,SI,V;0) 298.15
+  +0;  6000 N                                                           15CHA!
+PARAMETER L(LIQUID,CR,SI,V;1) 298.15
+  +162696;  6000 N                                                      15CHA!
+PARAMETER L(LIQUID,CR,SI,V;2) 298.15
+  +0;  6000 N                                                           15CHA!
+
 PARAMETER L(LIQUID,CU,FE,MN;0) 298.15
   +2241298 -140*T; 6000 N                                               07WAN!
 PARAMETER L(LIQUID,CU,FE,MN;1) 298.15
@@ -10980,7 +10988,7 @@ $ MSI_B20
 $ PROTOTYPE: FESI
 
 PHASE MSI_B20 % 2 0.5 0.5 !
-CONSTITUENT MSI_B20 : CR,FE,MN,MO,NI : AL,FE,SI : !
+CONSTITUENT MSI_B20 : CR,FE,MN,MO,NI,V : AL,FE,SI : !
 
 PARAMETER G(MSI_B20,CR:AL;0) 298.15
   +0.5*GHSERCR# +0.5*GHSERAL#;  6000 N                                  24FRI!
@@ -11028,6 +11036,13 @@ PARAMETER G(MSI_B20,SI:FE;0) 298.15
 PARAMETER G(MSI_B20,SI:SI;0) 298.15
   +21000 +GHSERSI#;  6000 N                                             23WIT!
 
+PARAMETER G(MSI_B20,V:AL;0) 298.15
+  +0.5*GHSERV# +0.5*GHSERAL#;  6000 N                                   24FRI!
+PARAMETER G(MSI_B20,V:FE;0) 298.15
+  +0.5*GHSERV# +0.5*GHSERFE#;  6000 N                                   24FRI!
+PARAMETER G(MSI_B20,V:SI;0) 298.15
+  +2500 +0.5*GHSERV# +0.5*GHSERS#;  6000 N                              24CHA!
+
 
 PARAMETER L(CR,FE:SI;0) 298.15
   +15000;  6000 N                                                       97LIN!
@@ -11035,6 +11050,8 @@ PARAMETER L(CR,MO:SI;0) 298.15
   -93190 -15*T;  6000 N                                                  23WU!
 PARAMETER L(CR,MO:SI;1) 298.15
   +23000;  6000 N                                                        23WU!
+PARAMETER L(CR,V:SI;0) 298.15
+  -44705.5;  6000 N                                                     15CHA!
 
 PARAMETER L(MSI_B20,FE:FE,SI;0) 298.15
   -15000 +8.907*T;  6000 N                                              23WIT!
@@ -11612,11 +11629,36 @@ $ SPACE GROUP: Immm
 $ PEARSON: oI44
 
 PHASE V6SI5 % 2 6 5 !
-CONSTITUENT V6SI5 : V : SI : !
+CONSTITUENT V6SI5 : CR,V : SI : !
 
+PARAMETER G(V6SI5,CR:SI;0) 298.15
+  -307769 +6*GHSERCR# +5*GHSERSI#;  6000 N                              15CHA!
 PARAMETER G(V6SI5,V:SI;0) 298.15
   -580401.8 +65.04476*T +6*GHSERV# +5*GHSERSI#;  6000 N                 08ZHA!
 
+
+PARAMETER L(V6SI5,CR,V:SI;0) 298.15
+  -128788 +26.5551*T;  6000 N                                           15CHA!
+PARAMETER L(V6SI5,CR,V:SI;1) 298.15
+  -37928;  6000 N                                                       15CHA!
+
+$ ----------------------------------------------------------------------------
+$ M11SI8
+
+PHASE M11SI8 % 2 11 8 !
+CONSTITUENT M11SI8 : CR,V : SI : !
+
+PARAMETER G(M11SI8,CR:SI;0) 298.15
+  -600568 +6.5627*T +11*GHSERCR# +8*GHSERSI#;  6000 N                   15CHA!
+PARAMETER G(M11SI8,V:SI;0) 298.15
+  -972949 +111.5672*T +11*GHSERV# +8*GHSERSI#;  6000 N                  15CHA!
+
+
+PARAMETER L(M11S8,CR,V:SI;0) 298.15
+  -208895 +30*T;  6000 N                                                15CHA!
+PARAMETER L(M11SI8,CR,V:SI;1) 298.15
+  -38571;  6000 N                                                       15CHA!
+  
 $ ----------------------------------------------------------------------------
 $ FE3NISI_B21
 $ PROTOTYPE: ALAU4
@@ -14616,6 +14658,8 @@ NUMBER  SOURCE
 15BIG   'Bigdeli, Sedigheh, Huahai Mao, and Malin Selleby. "On the third-
         generation Calphad databases: An updated description of Mn." physica 
         status solidi (b) 252.10 (2015): 2199-2208.'
+15CHA   'Chaia, N., et al. "Thermodynamic modeling of the V-Cr-Si system." 
+        Calphad 48 (2015): 166-174.'
 15DIL   'Dilner, David, Huahai Mao, and Malin Selleby. "Thermodynamic 
         assessment of the Mn-S and Fe-Mn-S systems." Calphad 48 (2015): 
         95-105.'
