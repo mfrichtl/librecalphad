@@ -94,6 +94,7 @@ $ 2024-05-27 MSI2_C40 IN SI-V SYSTEM FROM ZHANG 2008 INCORRECT.
 $ 2024-05-27 M5SI3 PHASES FROM CR-MO-SI FROM WU 2023 NOT INCORPORATED DUE TO
 $            INCOMPATIBLE MODELS
 $ 2024-05-28 MO-TI MO SOLUBILITY IN HCP_A3 TI INCORRECT.
+$ 2024-05-30 CO-SI FROM ZHANG 2006 INTERMETALLICS INCORRECT.
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -139,6 +140,7 @@ DATABASE_INFO The following systems are available:'
   CO-N      Guillermet (1992)'
   CO-NB     He (2015)'
   CO-NI     Guillermet (1987)'
+  CO-SI     Zhang (2006)'
   CO-V      Bratberg (2003)'
   CO-W      Guillermet (1989) and Markström (2005)'
   CR-CU     Cui (2017)'
@@ -4057,6 +4059,40 @@ PARAMETER L(CORUNDUM_D51,CR3+,FE3+:VA:O2-;0) 298.15
   -16250 +12.5*T;  6000 N                                               08KJE!
 
 $ ----------------------------------------------------------------------------
+$ CO2SI_BETA
+$ BETA CO2SI PHASE (HIGH TEMPERATURE ALLOTROPE OF M2SI_C23)
+
+PHASE CO2SI_BETA % 2 2 1 !
+CONSTITUENT CO2SI_BETA : CO,SI : CO,SI : !
+
+FUNCTION GCO2SIBCOCO 298.15
+  +15000 +3*GHSERCO#;  6000 N                                           06ZHA!
+FUNCTION GCO2SIBCOSI 298.15
+  +2983.62 -1.8216*T +GCO2SICOSI#;  6000 N                              06ZHA!
+FUNCTION GCO2SIBSISI 298.15
+  +15000 +3*GHSERSI#;  6000 N                                           06ZHA!
+
+PARAMETER G(CO2SI_BETA,CO:CO;0) 298.15
+  +GCO2SIBCOCO#;  6000 N                                                06ZHA!
+PARAMETER G(CO2SI_BETA,CO:SI;0) 298.15
+  +GCO2SIBCOSI#;  6000 N                                                06ZHA!
+PARAMETER G(CO2SI_BETA,SI:CO;0) 298.15
+  +GCO2SIBCOCO# +GCO2SIBSISI# -GCO2SIBCOSI#;  6000 N                    06ZHA!
+PARAMETER G(CO2SI_BETA,SI:SI;0) 298.15
+  +GCO2SIBSISI#;  6000 N                                                06ZHA!
+
+
+PARAMETER L(CO2SI_BETA,CO:CO,SI;0) 298.15
+  +190.638;  6000 N                                                     06ZHA!
+
+PARAMETER L(CO2SI_BETA,CO,SI:CO;0) 298.15
+  -92147.4;  6000 N                                                     06ZHA!
+PARAMETER L(CO2SI_BETA,CO,SI:SI;0) 298.15
+  -92147.4;  6000 N                                                     06ZHA!
+
+PARAMETER L(CO2SI_BETA,SI:CO,SI;0) 298.15
+  +190.638;  6000 N                                                     06ZHA!
+$ ----------------------------------------------------------------------------
 $ CRNI2_OP6
 
 PHASE CRNI2_OP6 % 2 1 2 !
@@ -4937,12 +4973,6 @@ PARAMETER L(FCC_A1,CO,MN:VA;0) 298.15
   -23756;  6000 N                                                      89HUAB!
 PARAMETER L(FCC_A1,CO,MN:VA;1) 298.15
   -2343;  6000 N                                                       89HUAB!
-$ PARAMETER BMAGN(FCC_A1,CO,MN:VA;0) 298.15
-$   -1.07;  6000 N                                                       89HUAB!
-$ PARAMETER TC(FCC_A1,CO,MN:VA;0) 298.15
-$   -2685;  6000 N                                                       89HUAB!
-$ PARAMETER TC(FCC-A1,CO,MN:VA;1) 298.15
-$   +3657;  6000 N                                                       89HUAB!
 PARAMETER L(FCC_A1,CO,NB:VA;0) 298.15
   -34360;  6000 N                                                        15HE!
 PARAMETER L(FCC_A1,CO,NB:VA;1) 298.15
@@ -4961,6 +4991,14 @@ PARAMETER TC(FCC_A1,CO,NI:VA;0) 298.15
   +411;  6000  N                                                        87GUI!
 PARAMETER TC(FCC_A1,CO,NI:VA;1) 298.15
   -99;  6000 N                                                          87GUI!
+PARAMETER G(FCC_A1,CO,SI:VA;0) 298.15
+  -166661.9 +29.94175*T;  6000 N                                        06ZHA!
+PARAMETER G(FCC_A1,CO,SI:VA;1) 298.15
+  -58780.2 +28.62343*T;  6000 N                                         06ZHA!
+PARAMETER BMAGN(FCC_A1,CO,SI:VA;0) 298.15
+  -2.95;  6000 N                                                        06ZHA!
+PARAMETER TC(FCC_A1,CO,SI:VA;0) 298.15
+  -1943.6;  6000 N                                                      06ZHA!
 PARAMETER L(FCC_A1,CO,V:VA;0) 298.15
   -49221.25 +9.3*T;  6000 N                                             03BRA!
 PARAMETER L(FCC_A1,CO,V:VA;1) 298.15
@@ -7277,6 +7315,14 @@ PARAMETER TC(HCP_A3,CO,NI:VA;0) 298.15
   +411;  6000 N                                                         87GUI!
 PARAMETER TC(HCP_A3,CO,NI:VA;1) 298.15
   -99;  6000 N                                                          87GUI!
+PARAMETER L(HCP_A3,CO,SI:VA;0) 298.15
+  -199795.7 +35.01457*T;  6000 N                                        06ZHA!
+PARAMETER L(HCP_A3,CO,SI:VA;1) 298.15
+  +3322.1 +9.000271*T;  6000 N                                          06ZHA!
+PARAMETER BMAGN(HCP_A3,CO,SI:VA;0) 298.15
+  +0;  6000 N                                                           06ZHA!
+PARAMETER TC(HCP_A3,CO,SI:VA;0) 298.15
+  +0;  6000 N                                                           06ZHA!
 PARAMETER L(HCP_A3,CO,V:VA;0) 298.15
   -46521.25 +9.3*T;  6000 N                                             03BRA!
 PARAMETER L(HCP_A3,CO,V:VA;1) 298.15
@@ -9363,6 +9409,14 @@ PARAMETER L(LIQUID,CO,NB;2) 298.15
   +4000;  6000 N                                                         15HE!
 PARAMETER L(LIQUID,CO,NI;0) 298.15
   +1331;  6000 N                                                        87GUI!
+PARAMETER L(LIQUID,CO,SI;0) 298.15
+  -183483.8 +34.80023*T;  6000 N                                        06ZHA!
+PARAMETER L(LIQUID,CO,SI;1) 298.15
+  -3219.5 -15.28341*T;  6000 N                                          06ZHA!
+PARAMETER L(LIQUID,CO,SI;2) 298.15
+  +34241.7;  6000 N                                                     06ZHA!
+PARAMETER L(LIQUID,CO,SI;3) 298.15
+  +15579.7;  6000 N                                                     06ZHA!
 PARAMETER L(LIQUID,CO,V;0) 298.15
   -37500;  6000 N                                                       03BRA!
 PARAMETER L(LIQUID,CO,V;1) 298.15
@@ -11121,7 +11175,16 @@ $ MSI_B20
 $ PROTOTYPE: FESI
 
 PHASE MSI_B20 % 2 0.5 0.5 !
-CONSTITUENT MSI_B20 : CR,FE,MN,MO,NI,V : AL,FE,SI : !
+CONSTITUENT MSI_B20 : CO,CR,FE,MN,MO,NI,V : AL,CO,FE,SI : !
+
+FUNCTION GMSICOSI 298.15
+  -48001.0 +50.451*T -10.582*T*LN(T) -0.010127*T**2 -389369.9*T**(-1)
+  +0.5*GHSERCO# +0.5*GHSERSI#;  6000 N                                  06ZHA!
+
+PARAMETER G(MSI_B20,CO:CO;0) 298.15
+  +5000;  6000 N                                                        06ZHA!
+PARAMETER G(MSI_B20,CO:SI;0) 298.15
+  +GMSICOSI#;  6000 N                                                   06ZHA!
 
 PARAMETER G(MSI_B20,CR:AL;0) 298.15
   +0.5*GHSERCR# +0.5*GHSERAL#;  6000 N                                  24FRI!
@@ -11163,6 +11226,8 @@ PARAMETER G(MSI_B20,NI:SI;0) 298.15
 
 PARAMETER G(MSI_B20,SI:AL;0) 298.15
   +0.5*GHSERSI# +0.5*GHSERAL#;  6000 N                                  24FRI!
+PARAMETER G(MSI_B20,SI:CO;0) 298.15
+  +10000 +GHSERSI# +GHSERCO# -GMSICOSI#;  6000 N                        06ZHA!
 PARAMETER G(MSI_B20,SI:FE;0) 298.15
   -44218.53 +142.6233*T -24.285*T*LN(T) +107055*T**(-1) -0.003681*T**2
   +1.4593E-7*T**3;  6000 N                                              23WIT!
@@ -11177,13 +11242,21 @@ PARAMETER G(MSI_B20,V:SI;0) 298.15
   +2500 +0.5*GHSERV# +0.5*GHSERS#;  6000 N                              24CHA!
 
 
-PARAMETER L(CR,FE:SI;0) 298.15
+PARAMETER L(MSI_B20,CO:CO,SI;0) 298.15
+  -4396.1;  6000 N                                                      06ZHA!
+
+PARAMETER L(MSI_B20,CO,SI:CO;0) 298.15
+  +6995.6;  6000 N                                                      06ZHA!
+PARAMETER L(MSI_B20,CO,SI:SI;0) 298.15
+  +6995.6;  6000 N                                                      06ZHA!
+
+PARAMETER L(MSI_B20,CR,FE:SI;0) 298.15
   +15000;  6000 N                                                       97LIN!
-PARAMETER L(CR,MO:SI;0) 298.15
+PARAMETER L(MSI_B20,CR,MO:SI;0) 298.15
   -93190 -15*T;  6000 N                                                  23WU!
-PARAMETER L(CR,MO:SI;1) 298.15
+PARAMETER L(MSI_B20,CR,MO:SI;1) 298.15
   +23000;  6000 N                                                        23WU!
-PARAMETER L(CR,V:SI;0) 298.15
+PARAMETER L(MSI_B20,CR,V:SI;0) 298.15
   -44705.5;  6000 N                                                     15CHA!
 
 PARAMETER L(MSI_B20,FE:FE,SI;0) 298.15
@@ -11191,6 +11264,8 @@ PARAMETER L(MSI_B20,FE:FE,SI;0) 298.15
 PARAMETER L(MSI_B20,FE,MN:SI;0) 298.15
   -2500 +9.7*T;  6000 N                                                 15ZHE!
 
+PARAMETER L(MSI_B20,SI:CO,SI;0) 298.15
+  -4396.1;  6000 N                                                      06ZHA!
 
 PARAMETER L(MSI_B20,FE,NI,SI:SI;0) 298.15
   -40000;  6000 N                                                       23WIT!
@@ -11211,8 +11286,11 @@ $ ----------------------------------------------------------------------------
 $ MSI2_C1
 
 PHASE MSI2_C1 % 2 1 2 !
-CONSTITUENT MSI2_C1 : FE,NI : SI : !
+CONSTITUENT MSI2_C1 : CO,FE,NI : SI : !
 
+PARAMETER G(MSI2_C1,CO:SI;0) 298.15
+  -123717.6 +349.87443*T -60.53316*T*LN(T) -0.0129216*T**2 
+  -190260.6*T**(-1) +GHSERCO# +2*GHSERSI#;  6000 N                      06ZHA!
 PARAMETER G(MSI2_C1,FE:SI;0) 298.15
   -76973 +13.3*T +GHSERFE# +2*GHSERSI#;  6000  N                        23WIT!
 PARAMETER G(MSI2_C1,NI:SI;0) 298.15
@@ -11309,6 +11387,43 @@ PARAMETER G(MSI2_C54,TI:SI;0) 298.15
   -170901 +6.71175*T +GHSERTI# +2*GHSERSI#;  6000 N                     89VAH!
 
 $ ----------------------------------------------------------------------------
+$ M2SI_C23
+$ PROTOTYPE: CO2SI
+$ SPACE GROUP: Pnma
+$ PEARSON: oP12
+
+PHASE M2SI_C23 % 2 2 1 !
+CONSTITUENT M2SI_C23 : CO,SI : CO,SI : !
+
+FUNCTION GCO2SICOCO 298.15
+  +5000 +2*GHSERCO# +GHSERCO#;  6000 N                                 06ZHA!
+FUNCTION GCO2SICOSI 298.15
+  -85640.4 -74.97495*T -2.38326*T*LN(T) -0.045279*T**2 -4257813.6*T**(-1)
+  +2*GHSERCO# +GHSERSI#;  6000 N                                        06ZHA!
+FUNCTION GCO2SISISI 298.15
+  +5000 +2*GHSERSI# +GHSERSI#;  6000 N                                 06ZHA!
+PARAMETER G(M2SI_C23,CO:CO;0) 298.15
+  +GCO2SICOCO#;  6000 N                                                 06ZHA!
+PARAMETER G(M2SI_C23,CO:SI;0) 298.15
+  +GCO2SICOSI#;  6000 N                                                 06ZHA!
+PARAMETER G(M2SI_C23,SI:CO;0) 298.15
+  +GCO2SICOCO# +GCO2SISISI# -GCO2SICOSI#;  6000 N                       06ZHA!
+PARAMETER G(M2SI_C23,SI:SI;0) 298.15
+  +GCO2SISISI#;  6000 N                                                 06ZHA!
+
+
+PARAMETER L(M2SI_C23,CO:CO,SI;0) 298.15
+  +6647.1;  6000 N                                                      06ZHA!
+
+PARAMETER L(M2SI_C23,CO,SI:CO;0) 298.15
+  -70565.4;  6000 N                                                     06ZHA!
+PARAMETER L(M2SI_C23,CO,SI:SI;0) 298.15
+  -70565.4;  6000 N                                                     06ZHA!
+
+PARAMETER L(M2SI_C23,SI:CO,SI;0) 298.15
+  +6647.1;  6000 N                                                      06ZHA!
+
+$ ----------------------------------------------------------------------------
 $ M2SI_THETA
 
 PHASE M2SI_THETA %B 3 1 1 1 !
@@ -11403,8 +11518,10 @@ $ SPACE GROUP: P4_2/N
 $ PEARSON: tP32
 
 PHASE M3SI % 2 3 1 !
-CONSTITUENT M3SI : TA,TI : SI : !
+CONSTITUENT M3SI : CO,TA,TI : SI : !
 
+PARAMETER G(M3SI,CO:SI;0) 298.15
+  -57775.2 -39.98972*T +3*GHSERCO# +GHSERSI#;  6000 N                   06ZHA!
 PARAMETER G(M3SI,TA:SI;0) 298.15
   -154800 +29.32548*T +3*GHSERTA# +GHSERSI#;  6000 N                    89VAH!
 PARAMETER G(M3SI,TI:SI;0) 298.15
@@ -14727,6 +14844,8 @@ NUMBER  SOURCE
 06UMI   'Umino, R., et al. "Experimental determination and thermodynamic 
         calculation of phase equilibria in the Fe- Mn- Al system." Journal of 
         phase equilibria and diffusion 27 (2006): 54-62.'
+06zha   'Zhang, Lijun, et al. "Experimental investigation and thermodynamic 
+        description of the Co-Si system." Calphad 30.4 (2006): 470-481.'
 07DU    'Du, Yong, et al. "Reassessment of the Al-Mn system and a 
         thermodynamic description of the Al-Mg-Mn system." International 
         journal of materials research 98.9 (2007): 855-871.'
