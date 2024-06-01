@@ -6290,11 +6290,15 @@ PARAMETER G(FE2TA3,TA:FE;0) 298.15
 PARAMETER G(FE2TA3,TA:TA;0) 298.15
   +80000 +5*GHSERTA#;  6000 N                                           11WIT!
 
-PARAMETER G(FE2TA3,*:FE,TA;0) 298.15
+PARAMETER G(FE2TA3,FE:FE,TA;0) 298.15
   -30000 +20*T;  6000 N                                                 11WIT!
-PARAMETER G(FE2TA3,FE,TA:*;0) 298.15
+PARAMETER G(FE2TA3,FE,TA:FE;0) 298.15
+  -60000 +10*T;  6000 N                                                 11WIT!
+  PARAMETER G(FE2TA3,FE,TA:TA;0) 298.15
   -60000 +10*T;  6000 N                                                 11WIT!
 
+PARAMETER G(FE2TA3,TA:FE,TA;0) 298.15
+  -30000 +20*T;  6000 N                                                 11WIT!
 
 $ ----------------------------------------------------------------------------
 $ GAMMA_D82
@@ -8658,7 +8662,9 @@ PARAMETER L(LAVES_C14,FE,MN:TI;0) 298.15
   +4700;  6000 N                                                        21ZHA!
 PARAMETER L(LAVES_C14,FE,NB:TI;0) 298.15
   +30000;  6000 N                                                       01LEE!
-PARAMETER L(LAVES_C14,FE,TA:*;0) 298.15
+PARAMETER L(LAVES_C14,FE,TA:FE;0) 298.15
+  -12832 +28.525*T;  6000 N                                             11WIT!
+PARAMETER L(LAVES_C14,FE,TA:TA;0) 298.15
   -12832 +28.525*T;  6000 N                                             11WIT!
 PARAMETER L(LAVES_C14,FE,TI:FE;0) 298.15
   +3177;  6000 N                                                        09KEY!
@@ -9089,7 +9095,11 @@ PARAMETER L(LAVES_C15,CR,TI:TI;0) 298.15
   +21340.62 +13.54203*T;  6000 N                                       02GHOA!
 PARAMETER L(LAVES_C15,CR,TI:V;0) 298.15
   +22514 -18*T;  6000 N                                                02GHOA!
-PARAMETER L(LAVES_C15,CR,V:*;0) 298.15
+PARAMETER L(LAVES_C15,CR,V:CR;0) 298.15
+  +26406 -22*T;  6000 N                                                02GHOA!
+PARAMETER L(LAVES_C15,CR,V:TI;0) 298.15
+  +26406 -22*T;  6000 N                                                02GHOA!
+PARAMETER L(LAVES_C15,CR,V:V;0) 298.15
   +26406 -22*T;  6000 N                                                02GHOA!
 PARAMETER L(LAVES_C15,CR,ZR:ZR;0) 298.15
   +13864.39;  6000 N                                                   17LIUB!
@@ -9375,7 +9385,11 @@ PARAMETER L(LAVES_C36,TI:CR,V;0) 298.15
   -26406 -22*T;  6000 N                                                02GHOA!
 PARAMETER L(LAVES_C36,TI:TI,V;0) 298.15
   +5000;  6000 N                                                       02GHOA!
-PARAMETER L(LAVES_C36,TI,V:*;0) 298.15
+PARAMETER L(LAVES_C36,TI,V:CR;0) 298.15
+  +5000;  6000 N                                                       02GHOA!
+PARAMETER L(LAVES_C36,TI,V:TI;0) 298.15
+  +5000;  6000 N                                                       02GHOA!
+  PARAMETER L(LAVES_C36,TI,V:V;0) 298.15
   +5000;  6000 N                                                       02GHOA!
 
 PARAMETER L(LAVES_C36,V:CR,TI;0) 298.15
@@ -12696,8 +12710,6 @@ PARAMETER G(MU_D85,TA:TA:TA;0) 298.15
   +77000 +13*GHSERTA#;  6000 N                                          11WIT!
 PARAMETER G(MU_D85,TA:TA:W;0) 298.15
   +7*GHSERTA# +2*GHSERTA# +4*GHSERW#;  6000 N                           23FRI!
-PARAMETER G(MU_D85,TA:TA:*;0) 298.15
-  -16008 +71.487*T;  6000 N                                             11WIT!
 
 PARAMETER G(MU_D85,TA:W:CO;0) 298.15
   +7*GFCCTA# +2*GHSERW# +4*GHSERCO#;  6000 N                            23FRI!
@@ -12737,7 +12749,11 @@ PARAMETER L(MU_D85,MO:MO:CO,MO;0) 298.15
   -133923.6 +125.818*T;  6000 N                                         99DAV!
 
 PARAMETER L(MU_D85,MO,NI:MO:MO;0) 298.15
-  +150000;   6000 N !
+  +150000;   6000 N                                                     24FRI!
+
+PARAMETER G(MU_D85,TA:TA:FE,TA;0) 298.15
+  -16008 +71.487*T;  6000 N                                             11WIT!
+  
 $ ----------------------------------------------------------------------------
 $ MU2_D85
 $ PROTOTYPE: W6FE7
