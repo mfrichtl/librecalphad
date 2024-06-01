@@ -160,6 +160,7 @@ DATABASE_INFO The following systems are available:'
   CU-MN     Miettinen (2003) and He (2008)'
   CU-NI     Jan (1986) and an Mey (1992)'
   CU-S      Lee (2007)'
+  CU-SI     Yan (2000)'
   FE-FES    Lee (2007)'
   FE-H      Zinkevich (2002) and Kim (2012)'
   FE-MN     Huang (1989) and Djurovic (2011)'
@@ -2407,21 +2408,22 @@ PARAMETER L(BCC_A2,CR,W:VA;0) 298.15
 PARAMETER L(BCC_A2,CR,W:VA;1) 298.15
   -1320;  6000 N                                                       88GUSA!
 
-PARAMETER L(BCC_A2,CU,MN:VA;0) 298.15
-  +18366.034 -16.2210*T;  6000 N                                         08HE!
-PARAMETER L(BCC_A2,CU,MN:VA;1) 298.15
-  -12667.53;  6000 N                                                     08HE!
-
 PARAMETER L(BCC_A2,CU,FE:VA;0) 298.15
   +39676.0 -4.73222*T;  6000 N                                          95CHE!
 PARAMETER TC(BCC_A2,CU,FE:VA;0) 298.15
   -41.4;  6000 N                                                        95CHE!
-
+PARAMETER L(BCC_A2,CU,MN:VA;0) 298.15
+  +18366.034 -16.2210*T;  6000 N                                         08HE!
+PARAMETER L(BCC_A2,CU,MN:VA;1) 298.15
+  -12667.53;  6000 N                                                     08HE!
 PARAMETER L(BCC_A2,CU,NI:VA;0) 298.15
   +8366 +2.80*T;  6000 N                                                86JAN!
-
 PARAMETER L(BCC_A2,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
+PARAMETER L(BCC_A2,CU,SI:VA;0) 298.15
+  -26447.3 +10.21623*T;  6000 N                                         00YAN!
+PARAMETER L(BCC_A2,CU,SI:VA;1) 298.15
+  -47275.11 -8.517323*T;  6000 N                                        00YAN!
 
 PARAMETER L(BCC_A2,FE:C,VA;0) 298.15
   -190*T;  6000 N                                                       85GUS!
@@ -4390,6 +4392,51 @@ PARAMETER L(CUB_A13,FE,MN,TI:VA;2) 298.15
   -408500 +83.8*T;  6000 N                                              21ZHA!
 
 $ ----------------------------------------------------------------------------
+$ CU15SI4_EPS
+$ PROTOTYPE: CU15SI4, EPSILON COPPER SILICIDE
+
+PHASE CU15SI4_EPS % 2 0.789474 0.210526 !
+CONSTITUENT CU15SI4_EPS : CU : SI : !
+
+PARAMETER G(CU15SI4_EPS,CU:SI;0) 298.15
+  +1240.9639 -6.7191165*T +0.789474*GHSERCU# 
+  +0.210526*GHSERSI#;  6000 N                                           00YAN!
+
+$ ----------------------------------------------------------------------------
+$ CU19SI6_ETA
+$ PROTOTYPE: CU19SI6, ETA COPPER SILICIDE
+$ SPACE GROUP: R-3m
+
+PHASE CU19SI6_ETA % 2 0.76 0.24 !
+CONSTITUENT CU19SI6_ETA : CU : SI : !
+
+PARAMETER G(CU19SI6_ETA,CU:SI;0) 298.15
+  +1367.6622 -7.1976229*T +0.76*GHSERCU# +0.24*GHSERSI#;  6000 N        00YAN!
+
+$ ----------------------------------------------------------------------------
+$ CU33SI7_DELTA
+$ PROTOTYPE: CU33SI7, DELTA COPPER SILICIDE
+
+PHASE CU33SI7_DELTA % 2 0.825 0.175 !
+CONSTITUENT CU33SI7_DELTA : CU : SI : !
+
+PARAMETER G(CU33SI7_DELTA,CU:SI;0) 298.15
+  +1972.382 -6.9663933*T +0.825*GHSERCU# +0.175*GHSERSI#;  6000 N       00YAN!
+
+$ ----------------------------------------------------------------------------
+$ CU56SI11_A13
+$ PROTOTYPE: BETA MANAGNESE
+$ SPACE GROUP: P4132
+$ PEARSON: cP20
+
+PHASE CU56SI11_A13 % 2 0.835821 0.164179 !
+CONSTITUENT CU56SI11_A13 : CU : SI : !
+
+PARAMETER G(CU56SI11_A13,CU:SI;0) 298.15
+  +1046.4873 -5.8746832*T +0.835821*GHSERCU# 
+  +0.164179*GHSERSI#;  6000 N                                           00YAN!
+
+$ ----------------------------------------------------------------------------
 $ CUZR2_C11B
 
 PHASE CUZR2_C11B % 2 1 2 !
@@ -5187,6 +5234,10 @@ PARAMETER TC(FCC_A1,CU,NI:VA;0) 298.15
   +633.0;  6000 N                                                       92MEY!
 PARAMETER L(FCC_A1,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
+PARAMETER L(FCC_A1,CU,SI:VA;0) 298.15
+  -42203.5 +13.89137*T;  6000 N                                         00YAN!
+PARAMETER L(FCC_A1,CU,SI:VA;1) 298.15
+  -1102.2 -18.177912*T;  6000 N                                         00YAN!
 
 PARAMETER L(FCC_A1,FE:C,VA;0) 298.15
   -34671;  6000 N                                                       85GUS!
@@ -7488,7 +7539,6 @@ PARAMETER L(HCP_A3,CU,FE:C;1) 298.15
   -31195.95;  6000 N                                                    19CHE!
 PARAMETER L(HCP_A3,CU,FE:VA;0) 298.15
   +64979.4 -10.416675*T;  6000 N                                        19CHE!
-
 $ ESTIMATE SAME CU,MN:VA AS FCC
 PARAMETER L(HCP_A3,CU,MN:VA;0) 298.15
   +30353.262 -19.86555*T;  6000 N                                        08HE!
@@ -7496,7 +7546,6 @@ PARAMETER L(HCP_A3,CU,MN:VA;1) 298.15
   -18232.2795 +4.40985*T;  6000 N                                        08HE!
 PARAMETER L(HCP_A3,CU,MN:VA;2) 298.15
   +1556.34;  6000 N                                                      08HE!
-
 $ ESTIMATE SAME CU,NI:VA AS FCC_A1
 PARAMETER L(HCP_A3,CU,NI:VA;0) 298.15
   +8047.72 +3.42217*T;  6000 N                                          92MEY!
@@ -7506,10 +7555,13 @@ PARAMETER BMAGN(HCP_A3,CU,NI:VA;0) 298.15
   +0.52;  6000 N                                                        92MEY!
 PARAMETER TC(HCP_A3,CU,NI:VA;0) 298.15
   +633.0;  6000 N                                                       92MEY!
-
 $ ESTIMATE SAME CU,S:VA AS FCC_A1
 PARAMETER L(HCP_A3,CU,S:VA;0) 298.15
   -102200 -26.5*T;  6000 N                                              07LEE!
+PARAMETER L(HCP_A3,CU,SI:VA;0) 298.15
+  -26798.8 -0.731518*T;  6000 N                                         00YAN!
+PARAMETER L(HCP_A3,CU,SI:VA;1) 298.15
+  -28064.75 -0.028889*T;  6000 N                                        00YAN!
 
 PARAMETER L(HCP_A3,FE:C,N;0) 298.15
   -20772 -32.504*T;  6000 N                                             16GOE!
@@ -9559,19 +9611,22 @@ PARAMETER L(LIQUID,CU,FE;2) 298.15
   +12714.4 -5.18624*T;  6000 N                                          95CHE!
 PARAMETER L(LIQUID,CU,FE;3) 298.15
   +1177.1;  6000 N                                                      95CHE!
-
 PARAMETER L(LIQUID,CU,FES;0) 298.15
   +250*T;  6000 N                                                       07LEE!
-
 PARAMETER L(LIQUID,CU,MN;0) 298.15
   +1118.55 -5.6225*T;  6000 N                                            08HE!
 PARAMETER L(LIQUID,CU,MN;1) 298.15
   -10915.375;  6000 N                                                    08HE!
-
 PARAMETER L(LIQUID,CU,NI;0) 298.15
   +12048.61 +1.29093*T;  6000 N                                         92MEY!
 PARAMETER L(LIQUID,CU,NI;1) 298.15
   -1861.61 +0.94201*T;  6000 N                                          92MEY!
+PARAMETER L(LIQUID,CU,SI;0) 298.15
+  -38763.5 +12*T;  6000 N                                               00YAN!
+PARAMETER L(LIQUID,CU,SI;1) 298.15
+  -52431.2 +27.4571*T;  6000 N                                          00YAN!
+PARAMETER L(LIQUID,CU,SI;2) 298.15
+  -29426.5 +14.775*T;  6000 N                                           00YAN!
 
 PARAMETER L(LIQUID,FE,FEO;0) 298.15
   +109625.2 -20.050*T;  6000 N                                          96KOW!
@@ -14874,6 +14929,8 @@ NUMBER  SOURCE
         Investigation and Thermodynamic Description of the Constitution of the
         Ternary System Cr-Si-C." Journal of the American Ceramic Society 83.8
         (2000): 2067-2073.'
+00YAN   'Yan, Xinyan, and Y. A. Chang. "A thermodynamic analysis of the Cu-Si
+        system." Journal of Alloys and Compounds 308.1-2 (2000): 221-229.'
 01CHE   'Chen, Qing, and Bo Sundman. "Modeling of thermodynamic properties for 
         Bcc, Fcc, liquid, and amorphous iron." Journal of phase equilibria 
         22.6 (2001): 631-644.'
