@@ -274,12 +274,14 @@ DATABASE_INFO The following systems are available:'
   CO-CR-MN  Do (2022)'
   CO-CR-NI  Liu (2016)'
   CO-CR-V   Choi (2019)'
+  CO-CR-W   Wang (2021) *'
   CO-FE-MN  Pendem (2022)'
   CO-FE-N   Guillermet (1992)'
   CO-FE-NI  Guillermet (1988) and Xia (2021)'
   CO-FE-V   Choi (2019)'
   CO-FE-W   Guillermet (1988)'
   CO-NI-V   Choi (2019)'
+  CO-NI-W   Wang (2021) *'
   CR-CU-FE  Cui (2017)'
   CR-CU-SI  Zhang (2021)'
   CR-CU-ZR  Liu (2017)'
@@ -1285,6 +1287,8 @@ PARAMETER L(ALM3_A15,V:SI,V;0) 298.15
 $ ----------------------------------------------------------------------------
 $ ALM3_D019
 $ NI3SN PROTOTYPE ORDERED INTERMETALLIC PHASE
+$ SPACE GROUP: P63/mmc
+$ PEARSON: hP8
 
 PHASE ALM3_D019 % 2 3 1 !
 CONSTITUENT ALM3_D019 : CO,MO,NB,TI : MO,NB,TI,W : !
@@ -5832,9 +5836,16 @@ PARAMETER L(FCC_A1,CO,CR,NI:VA;0) 298.15
   -40710 +13.533*T;  6000 N                                             16LIU!
 PARAMETER L(FCC_A1,CO,CR,V:VA;0) 298.15
   +5000;  6000 N                                                        19CHO!
+PARAMETER L(FCC_A1,CO,CR,W:VA;0) 298.15
+  +26295.6;  6000 N                                                     21WAN!
 
 PARAMETER L(FCC_A1,CO,FE,NI:C;0) 298.15
   -61862; 6000.00  N                                                   88GUIB!
+
+PARAMETER L(FCC_A1,CO,NI,W:VA;0) 298.15
+  -43467.0;  6000 N                                                     21WAN!
+PARAMETER L(FCC_A1,CO,NI,W:VA;1) 298.15
+  -153423.8;  6000 N                                                    21WAN!
 
 PARAMETER L(FCC_A1,CR,FE:N,VA;0) 298.15
   -162516;  6000 N                                                      90FRI!
@@ -8230,7 +8241,7 @@ PARAMETER L(HCP_A3,AL,FE,NI:VA;1) 298.15
 PARAMETER L(HCP_A3,AL,FE,NI:VA;2) 298.15
   -207403.88 +117.740*T;  6000 N                                        09ZHA!
 
-$ ESTIMATE SAME CO,CR,FE(NI,V) AS FCC_A1
+$ ESTIMATE SAME CO,CR,FE(NI,V,W) AS FCC_A1
 PARAMETER L(HCP_A3,CO,CR,FE:VA;0) 298.15
   +3000;  6000 N                                                        19CHO!
 PARAMETER L(HCP_A3,CO,CR,MN:VA;0) 298.15
@@ -8239,6 +8250,18 @@ PARAMETER L(HCP_A3,CO,CR,NI:VA;0) 298.15
   -40710 +13.533*T;  6000 N                                             16LIU!
 PARAMETER L(HCP_A3,CO,CR,V:VA;0) 298.15
   +5000;  6000 N                                                        19CHO!
+PARAMETER L(HCP_A3,CO,CR,W:VA;0) 298.15
+  +26295.6;  6000 N                                                     21WAN!
+
+$ ESTIMATE SAME CO,FE,NI:C AS FCC_A1
+PARAMETER L(HCP_A3,CO,FE,NI:C;0) 298.15
+  -61862; 6000.00  N                                                   88GUIB!
+
+$ ESTIMATE SAME CO,NI,W:VA AS FCC_A1
+PARAMETER L(HCP_A3,CO,NI,W:VA;0) 298.15
+  -43467.0;  6000 N                                                     21WAN!
+PARAMETER L(HCP_A3,CO,NI,W:VA;1) 298.15
+  -153423.8;  6000 N                                                    21WAN!
 
 $ ESTIMATE SAME CR,FE:N,VA AS FCC_A1
 PARAMETER L(HCP_A3,CR,FE:N,VA;0) 298.15
@@ -10682,6 +10705,8 @@ PARAMETER L(LIQUID,CO,CR,MN;0) 298.15
   -16000;  6000 N                                                        22DO!
 PARAMETER L(LIQUID,CO,CR,NI;0) 298.15
   -16000;  6000 N                                                       16LIU!
+PARAMETER L(LIQUID,CO,CR,W;0) 298.15
+  +20000;  6000 N                                                       21WAN!
 
 PARAMETER L(LIQUID,CO,FE,V;0) 298.15
   +30000;  6000 N                                                       19CHO!
@@ -15921,6 +15946,8 @@ NUMBER  SOURCE
 21XIA   'Xia, Cheng-Hui, et al. "Thermodynamic assessment of the Co-Fe-Ni 
         system and diffusion study of its fcc phase." Journal of Alloys and 
         Compounds 853 (2021): 157165.'
+21WAN   Wang, Peisheng, et al. "Thermodynamic assessment of the Co-Cr-Ni, 
+        Co-Cr-W and Co-Ni-W." Calphad 73 (2021): 102252.
 21ZHA   'Zhang, Yu, et al. "Experimental investigation and CALPHAD modeling of
         the Cu-Cr-Si ternary system." Calphad 74 (2021): 102324.'
 22BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
