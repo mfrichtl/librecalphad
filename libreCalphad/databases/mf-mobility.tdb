@@ -657,7 +657,6 @@ PARAMETER MQ(FCC_A1&CR,CO:VA;0) 298.15
   -253700 -97.17*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&CR,CR:VA;0) 298.15
   -286000 -71.9*T;  6000 N                                              07TUR!
-
 PARAMETER MQ(FCC_A1&CR,FE:C;0)  298.15
   -284227 -75.60*T;  6000 N                                             22KOR!
 PARAMETER MQ(FCC_A1&CR,FE:VA;0)  298.15
@@ -747,6 +746,9 @@ PARAMETER MQ(FCC_A1&SI,MN:VA;0)  298.15
   -228000 -110*T;  6000 N                                               15ZHE!
 PARAMETER MQ(FCC_A1&SI,SI:VA;0)  298.15
   -294000 -125*T;  6000 N                                               15ZHE!
+
+PARAMETER MQ(FCC_A1&V,FE:VA;0) 298.15
+  +330000 +R*T*LN(800E-4);  6000 N                                      08BRA!
 
 $ --- BINARY INTERACTIONS ---
 PARAMETER MQ(FCC_A1&CO,CO,FE:VA;0) 298.15
@@ -959,6 +961,9 @@ PARAMETER MQ(HCP_A3&SI,MN:VA;0)  298.15
 PARAMETER MQ(HCP_A3&SI,SI:VA;0)  298.15
   -294000 -125*T;  6000 N                                               15ZHE!
 
+PARAMETER MQ(HCP_A3&V,FE:VA;0) 298.15
+  +330000 +R*T*LN(800E-4);  6000 N                                      08BRA!
+
 $ --- BINARY INTERACTIONS ---
 PARAMETER MQ(HCP_A3&CR,CR,NI:VA;0) 298.15
   -62564.55;  6000 N                                                    15ZHU!
@@ -1033,6 +1038,10 @@ NUMBER  SOURCE
         (Fe3C) and Hägg carbide (Fe5C2)." Calphad 31.1 (2007): 141-147.'
 07TUR   'Turchi, P. E. A., L. Kaufman, and Zi-Kui Liu. "Modeling of Ni-Cr-Mo
         based alloys: part II—kinetics." Calphad 31.2 (2007): 237-248.'
+08BRA   'Bratberg, Johan, John Ågren, and Karin Frisk. "Diffusion simulations
+        of MC and M7C3 carbide coarsening in bcc and fcc matrix utilising new
+        thermodynamic and kinetic description." Materials Science and 
+        Technology 24.6 (2008): 695-704.'
 09LIN   'Lindwall, Greta, and Karin Frisk. "Assessment and evaluation of
         mobilities for diffusion in the bcc Cr-V-Fe system." Journal of phase
         equilibria and diffusion 30.4 (2009): 323-333.'
