@@ -217,6 +217,7 @@ DATABASE_INFO The following systems are available:'
   TI-V      Ghosh (2002) and Guo (2012)'
   V-H       Ukita (2008)'
   V-W       Bratberg (2005)'
+  V-ZR      Servant (2004)'
   '
   AL-C-FE   Connetable (2008)'
   AL-C-MN   Chin (2010) and Zheng (2018)'
@@ -2784,6 +2785,12 @@ PARAMETER L(BCC_A2,V:N,VA;0) 298.15
   -1559450.57 +257.074961*T;  6000 N                                    21DU !
 PARAMETER L(BCC_A2,V,W:VA;0) 298.15
   +17828;  6000 N                                                       05BRA!
+PARAMETER L(BCC_A2,V,ZR:VA;0) 298.15
+  +2253.9668 +19.4653*T;  6000 N                                        04SER!
+PARAMETER L(BCC_A2,V,ZR:VA;1) 298.15
+  -9657.3231 +10.8995*T;  6000 N                                        04SER!
+PARAMETER L(BCC_A2,V,ZR:VA;2) 298.15
+  -593.4275;  6000 N                                                   04SER!
 
 
 PARAMETER L(BCC_A2,AL,CO,NB:VA;0) 298.15
@@ -8290,6 +8297,8 @@ PARAMETER L(HCP_A3,V:N,VA;1) 298.15
 $ ESTIMATE SAME V,W:C AS FCC_A1
 PARAMETER L(HCP_A3,V,W:C;0) 298.15
   -2172.975 +9.975*T;  6000 N                                           05BRA!
+PARAMETER L(HCP_A3,V,ZR:VA;0) 298.15
+  +18619.6518 +2.0608*T;  6000 N                                        04SER!
 
 PARAMETER L(HCP_A3,W:C,VA;0) 298.15
   +4165;  6000 N                                                        89GUI!
@@ -9017,7 +9026,7 @@ PARAMETER G(LAVES_C14,V:V;0) 298.15
 PARAMETER G(LAVES_C14,V:W;0) 298.15
   +2*GHSERV# +GHSERW#;  6000 N                                          24FRI!
 PARAMETER G(LAVES_C14,V:ZR;0) 298.15
-  +2*GHSERV# +GHSERZR#;  6000 N                                         24FRI!
+  +30000 +2*GHSERV# +GHSERZR#;  6000 N                                  24FRI!
 
 PARAMETER G(LAVES_C14,ZR:AL;0) 298.15
   +2*GHSERZR# +GHSERAL#;  6000 N                                        24FRI!
@@ -9044,7 +9053,7 @@ PARAMETER G(LAVES_C14,ZR:TA;0) 298.15
 PARAMETER G(LAVES_C14,ZR:TI;0) 298.15
   +2*GHSERZR# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C14,ZR:V;0) 298.15
-  +GHSERZR# +2*GHSERZR#;  6000 N                                        24FRI!
+  +30000 +GHSERZR# +2*GHSERZR#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C14,ZR:W;0) 298.15
   +2*GHSERZR# +GHSERW#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C14,ZR:ZR;0) 298.15
@@ -9519,7 +9528,7 @@ PARAMETER G(LAVES_C15,V:TI;0) 298.15
 PARAMETER G(LAVES_C15,V:V;0) 298.15
   +15000 +3*GHSERV#;  6000 N                                           02GHOA!
 PARAMETER G(LAVES_C15,V:ZR;0) 298.15
-  +2*GHSERV# +GHSERZR#;  6000 N                                        24FRI!
+  -14357.3712 +5.7519*T +2*GHSERV# +GHSERZR#;  6000 N                   04SER!
 
 PARAMETER G(LAVES_C15,ZR:AL;0) 298.15
   +2*GHSERZR# +GHSERAL#;  6000 N                                        24FRI!
@@ -9546,7 +9555,7 @@ PARAMETER G(LAVES_C15,ZR:SI;0) 298.15
 PARAMETER G(LAVES_C15,ZR:TI;0) 298.15
   +2*GHSERZR# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,ZR:V;0) 298.15
-  +3*GHSERZR#;  6000 N                                                  24FRI!
+  +24357.3712 -5.7519*T +2*GHSERZR# +GHSERV#;  6000 N                   04SER!
 PARAMETER G(LAVES_C15,ZR:ZR;0) 298.15
   +81154.0 -8.33*T +2*GHSERZR# +GHSERZR#;  6000 N                        15LU!
 
@@ -9631,7 +9640,14 @@ PARAMETER L(LAVES_C15,V:CR,V;0) 298.15
   +26406 -22*T;  6000 N                                                02GHOA!
 PARAMETER L(LAVES_C15,V:TI,V;0) 298.15
   +5000;  6000 N                                                       02GHOA!
-  
+PARAMETER L(LAVES_C15,V:V,ZR;0) 298.15
+  +283353.8355;  6000 N                                                 04SER!
+
+PARAMETER L(LAVES_C15,V,ZR:V;0) 298.15
+  +21202.2498;  6000 N                                                  04SER!
+
+PARAMETER L(LAVES_C15,ZR:V,ZR;0) 298.15
+  +55319.091 +2.2596;  6000 N                                           04SER!
 
 PARAMETER L(LAVES_C15,CR:CR,NB,ZR;0) 298.15
   -93650.0;  6000 N                                                      15LU!
@@ -10688,6 +10704,12 @@ PARAMETER L(LIQUID,TI,V;1) 298.15
 
 PARAMETER L(LIQUID,V,W;0) 298.15
   +3972;  6000 N                                                        05BRA!
+PARAMETER L(LIQUID,V,ZR;0) 298.15
+  -17401.8117 +14.2689*T;  6000 N                                       04SER!
+PARAMETER L(LIQUID,V,ZR;1) 298.15
+  -868.4157 +3.1097*T;  6000 N                                          04SER!
+PARAMETER L(LIQUID,V,ZR;2) 298.15
+  +3201.7954;  6000 N                                                   04SER!
 
 
 PARAMETER L(LIQUID,AL,CO,NB;0) 298.15
@@ -16061,6 +16083,9 @@ NUMBER  SOURCE
 04MIR   'Mirković, Djordje, et al. "Experimental study and thermodynamic 
         re-assessment of the Al-B system." Journal of Alloys and Compounds 
         384.1-2 (2004): 168-174.'
+04SER   'Servant, C. "Thermodynamic assessments of the phase diagrams of the 
+        hafnium-vanadium and vanadium-zirconium systems." Journal of phase 
+        equilibria and diffusion 26.1 (2005): 39-49.'
 05BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
         systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system."
 05GRO   'Gröbner, J., et al. "Experimental investigation and thermodynamic 
