@@ -247,6 +247,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-MN   Lee (1993)'
   C-CR-NI   Lee (1992)'
   C-CR-SI   Du (2000)'
+  C-CR-TI   Haglöf (2022)'
   C-CR-V    Bratberg (2005)'
   C-CR-W    gustafson (1988)'
   C-CU-FE   Chen (2019)'
@@ -4997,7 +4998,12 @@ PARAMETER G(FCC_A1,CR:B;0) 298.15
   +GHSERCR# +GHSERBB#;  6000 N                                          02CAM!
 PARAMETER G(FCC_A1,CR:C;0) 298.15
   $ +1200 -1.94*T +GHSERCR# +GHSERCC#;  6000 N                           92LEEA!
-  -32690 +248.42*T -41.678*T*LN(T) -3.01955E-3*T**(-1);  6000 N         04BRA!
+  $ -32690 +248.42*T -41.678*T*LN(T) -3.01955E-3*T**(-1);  6000 N         04BRA!
+  -620 +314.34*T -51.3385*T*LN(T) -6.57E-4*T**2 -3.412E-7*T**3;  6000 N 22HAG!
+PARAMETER BMAGN(FCC_A1,CR:C;0) 298.15
+  +1.317;  6000 N                                                       22HAG!
+PARAMETER TC(FCC_A1,CR:C;0) 298.15
+  +249;  6000 N                                                         22HAG!
 PARAMETER G(FCC_A1,CR:H;0) 298.15
   +GHSERCR# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,CR:N;0) 298.15
@@ -5447,10 +5453,8 @@ PARAMETER L(FCC_A1,CR:N,VA;0) 298.15
   +20000;  6000 N                                                       91FRI!
 PARAMETER L(FCC_A1,CR:O,VA;0) 298.15
   -170000 +20*T;  6000 N                                                08KJE!
-
 PARAMETER L(FCC_A1,CR,CU:VA;0) 298.15
   +70672.86 -15.85*T;  6000 N                                          17CUIB!
-
 PARAMETER L(FCC_A1,CR,FE:C;0) 298.15
   -69534 +3.2353*T;  6000 N                                             14KHV!
 PARAMETER L(FCC_A1,CR,FE:N;0) 298.15
@@ -5461,15 +5465,12 @@ PARAMETER L(FCC_A1,CR,FE:VA;0) 298.15
   +10833 -7.477*T;  6000 N                                             87ANDA!
 PARAMETER L(FCC_A1,CR,FE:VA;1) 298.15
   +1410;  6000 N                                                       87ANDA!
-
 PARAMETER L(FCC_A1,CR,MG:VA;0) 298.15
   +80*T;  6000 N                                                        91ANS!
-
 PARAMETER L(FCC_A1,CR,MN:C;0) 298.15
   -19088 +17.5423*T;  6000 N                                           93LEEC!
 PARAMETER L(FCC_A1,CR,MN:VA;0) 298.15
   -19088 +17.5423*T; 6000.00 N                                         93LEEB!
-
 PARAMETER L(FCC_A1,CR,MO:C;0) 298.15
   -65469 +51.4*T;  6000 N                                               05BRA!
 PARAMETER L(FCC_A1,CR,MO:N;0) 298.15
@@ -5478,7 +5479,6 @@ PARAMETER L(FCC_A1,CR,MO:VA;0) 298.15
   +28890 -7.962*T;  6000 N                                              92QIU!
 PARAMETER L(FCC_A1,CR,MO:VA;1) 298.15
   +5974 -2.428*T;  6000 N                                               92QIU!
-
 PARAMETER L(FCC_A1,CR,NI:B;0) 298.15
   -5000;  6000 N                                                        02CAM!
 PARAMETER L(FCC_A1,CR,NI:C;0) 298.15
@@ -5491,21 +5491,25 @@ PARAMETER BMAGN(FCC_A1,CR,NI:VA;0) 298.15
   -1.91;  6000 N                                                       88GUSA!
 PARAMETER TC(FCC_A1,CR,NI:VA;0) 298.15
   -3605;  6000 N                                                       88GUSA!
-
 PARAMETER L(FCC_A1,CR,SI:VA;0) 298.15
   +0;  6000 N                                                          17CUIC!
-
+PARAMETER L(FCC_A1,CR,TI:C;0) 298.15
+  +33180 -34.65*T;  6000 N                                              22HAG!
+PARAMETER L(FCC_A1,CR,TI:C;1) 298.15
+  +2920 -27.40*T;  6000 N                                               22HAG!
+PARAMETER L(FCC_A1,CR,TI:C;2) 298.15
+  -3980 -12.44*T;  6000 N                                               22HAG!
+PARAMETER TC(FCC_A1,CR,TI:C;0) 298.15
+  -277;  6000 N                                                         22HAG!
 $ ESTIMATE SAME CR,TI:VA AS HCP_A3
 PARAMETER L(FCC_A1,CR,TI:VA;0) 298.15
   +23900;  6000 N                                                      02GHOA!
-
 PARAMETER L(FCC_A1,CR,V:C;0) 298.15
   +35698 -50.0981*T;  6000 N                                           92LEEB!
 PARAMETER L(FCC_A1,CR,V:VA;0) 298.15
   -9874 -2.6964*T;  6000 N                                             92LEEC!
 PARAMETER L(FCC_A1,CR,V:VA;1) 298.15
   -1720 -2.5237*T;  6000 N                                             92LEEC!
-
 PARAMETER L(FCC_A1,CR,W:VA;0) 298.15
   +31520;  6000 N                                                      88GUSA!
 PARAMETER L(FCC_A1,CR,W:VA;1) 298.15
@@ -5907,6 +5911,13 @@ PARAMETER L(FCC_A1,CR,MO,V:C;0) 298.15
 
 PARAMETER L(FCC_A1,CR,NI,W:VA;0) 298.15
   +23006;  6000 N                                                      88GUSA!
+
+PARAMETER L(FCC_A1,CR,TI:C,VA;0) 298.15
+  -70.38*T;  6000 N                                                     22HAG!
+PARAMETER L(FCC_A1,CR,TI:C,VA;1) 298.15
+  +163100;  6000 N                                                      22HAG!
+PARAMETER L(FCC_A1,CR,TI:C,VA;2) 298.15
+  +0;  6000 N                                                           22HAG!
 
 PARAMETER L(FCC_A1,CU,FE,MN:VA;0) 298.15
   +27614.40;  6000 N                                                   17CUIB!
@@ -10774,6 +10785,12 @@ PARAMETER L(LIQUID,C,CR,SI;1) 298.15
   +40606;  6000 N                                                        00DU!
 PARAMETER L(LIQUID,C,CR,SI;2) 298.15  
   -30000;  6000 N                                                        00DU!
+PARAMETER L(LIQUID,C,CR,TI;0) 298.15
+  -614000;  6000 N                                                      22HAG!
+PARAMETER L(LIQUID,C,CR,TI;1) 298.15
+  -117500;  6000 N                                                      22HAG!
+PARAMETER L(LIQUID,C,CR,TI;2) 298.15
+  -199400;  6000 N                                                      22HAG!
 PARAMETER L(LIQUID,C,CR,V;0) 298.15
   -769497;  6000 N                                                     92LEEB!
 PARAMETER L(LIQUID,C,CR,V;1) 298.15
@@ -11284,7 +11301,7 @@ $ ----------------------------------------------------------------------------
 $ M3C2_D510
 
 PHASE M3C2_D510 % 2 3 2 !
-CONSTITUENT M3C2_D510 : CR,FE,MN,MO,V,W : C : !
+CONSTITUENT M3C2_D510 : CR,FE,MN,MO,TI,V,W : C : !
 
 PARAMETER G(M3C2_D510,CR:C;0) 298.15
   -100823.8 +530.66989*T -89.6694*T*LN(T) -0.0301188*T**2;  6000 N     87ANDB!
@@ -11294,6 +11311,9 @@ PARAMETER G(M3C2_D510,MN:C;0) 298.15
   -76135 +750.415*T -125.589*T*LN(T) +922711*T**(-1);  6000 N           91HUA!
 PARAMETER G(M3C2_D510,MO:C;0) 298.15
   +27183 +3*GHSERMO# +2*GHSERCC#;  6000 N                               92QIU!
+PARAMETER G(M3C2_D510,TI:C;0) 298.15
+  -354780 +701.80*T -114.187*T*LN(T) -0.01213*T**2
+  +853000*T**(-1);  6000 N                                              22HAG!
 PARAMETER G(M3C2_D510,V:C;0) 298.15
   -222500 +16.6545*T +3*GHSERV# +2*GHSERCC#;  6000 N                   92LEEB!
 PARAMETER G(M3C2_D510,W:C;0) 298.15
@@ -11305,6 +11325,8 @@ $ PARAMETER L(M3C2_D510,CR,FE:C;0) 298.15
 $   +100*T;  6000 N                                                       24FRI!
 PARAMETER L(M3C2_D510,CR,MO:C;0) 298.15
   +40000;  6000 N                                                       92QIU!
+PARAMETER L(M3C2_D510,CR,TI:C;0) 298.15
+  -70100;  6000 N                                                       22HAG!
 PARAMETER L(M3C2_D510,CR,V:C;0) 298.15
   +21072;  6000 N                                                      92LEEB!
 
@@ -11419,7 +11441,7 @@ $ ----------------------------------------------------------------------------
 $ M7C3_D101
 
 PHASE M7C3_D101 % 2 7 3 !
-CONSTITUENT M7C3_D101 : CO,CR,FE,MN,MO,NI,V,W : C : !
+CONSTITUENT M7C3_D101 : CO,CR,FE,MN,MO,NI,TI,V,W : C : !
 
 PARAMETER G(M7C3_D101,CO:C;0) 298.15
   +75000 +50*T +7*GHSERCO# +3*GHSERCC#;  6000 N                         97KUS!
@@ -11433,6 +11455,8 @@ PARAMETER G(M7C3_D101,MO:C;0) 298.15
   -140415 +24.24*T +7*GHSERMO# +3*GHSERCC#;  6000 N                     92QIU!
 PARAMETER G(M7C3_D101,NI:C;0) 298.15
   +107130 -36.605*T +7*GHSERNI# +3*GHSERCC#;  6000 N                   92LEEA!
+PARAMETER G(M7C3_D101,TI:C;0) 298.15
+  -393380 -66.83*T +7*GHSERTI# +3*GHSERCC#;  6000 N                     22HAG!
 PARAMETER G(M7C3_D101,V:C;0) 298.15
   -454245 +1518.48*T -250.981*T*LN(T) +2.148691*T**(-1);  6000 N        91HUA!
 PARAMETER G(M7C3_D101,W:C;0) 298.15
@@ -16269,6 +16293,9 @@ NUMBER  SOURCE
 22DO    'Do, Hyeon-Seok, Won-Mi Choi, and Byeong-Joo Lee. "A thermodynamic 
         description for the Co-Cr-Fe-Mn-Ni system." Journal of Materials 
         Science (2022): 1-17.'
+22HAG   'Haglöf, Fredrik, Andreas Blomqvist, and Malin Selleby. 
+        "Thermodynamic assessment of the CCrTi system—Supported by DFT 
+        calculations." Calphad 77 (2022): 102405.'
 22JIA   'Jiang, Yueshan, et al. "Experimental and thermodynamic study of high-
         temperature phase stability of Fe-Zr binary alloy." Calphad 77 
         (2022): 102419.'
