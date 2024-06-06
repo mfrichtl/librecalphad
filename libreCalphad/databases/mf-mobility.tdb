@@ -446,22 +446,14 @@ PARAMETER MQ(BCC_A2&V,CR:VA;0)  298.15
   -418826;  6000 N                                                      09LIN!
 PARAMETER MF(BCC_A2&V,CR:VA;0)  298.15
   -27.246*T;  6000 N                                                    09LIN!
-
 PARAMETER MQ(BCC_A2&V,FE:VA;0)  298.15
   -201974;  6000 N                                                      09LIN!
 PARAMETER MF(BCC_A2&V,FE:VA;0)  298.15
   -89.051*T;  6000 N                                                    09LIN!
-
-PARAMETER MQ(BCC_A2&V,CR:VA;0) 298.15
-  -410358;  6000 N                                                      02GHO!
-PARAMETER MF(BCC_A2&V,CR:VA;0) 298.15
-  +R*T*LN(1.398E-2);  6000 N                                            02GHO!
-
 PARAMETER MQ(BCC_A2&V,TI:VA;0) 298.15
   -184134;  6000 N                                                      02GHO!
 PARAMETER MF(BCC_A2&V,TI:VA;0) 298.15
   +R*T*LN(3.788E-6);  6000 N                                            02GHO!
-
 PARAMETER MQ(BCC_A2&V,V:VA;0)  298.15
   -308051;  6000 N                                                      09LIN!
 PARAMETER MF(BCC_A2&V,V:VA;0)  298.15
@@ -476,7 +468,6 @@ PARAMETER MQ(BCC_A2&ZN,FE:VA;0)  298.15
   -211177.58;  6000 N                                                  09LIUB!
 PARAMETER MF(BCC_A2&ZN,FE:VA;0)  298.15
   -76.07*T;  6000 N                                                    09LIUB!
-
 PARAMETER MQ(BCC_A2&ZN,ZN:VA;0)  298.15
   -76318.89;  6000 N                                                    12WAN!
 PARAMETER MF(BCC_A2&ZN,ZN:VA;0)  298.15
@@ -491,13 +482,10 @@ PARAMETER MQ(BCC_A2&CR,CR,FE:VA;1) 298.15
   +2820;  6000 N                                                        92JON!
 PARAMETER MF(BCC_A2&CR,CR,FE:VA;1) 298.15
   +37.5*T;  6000 N                                                      92JON!
-
 PARAMETER MQ(BCC_A2&CR,CR,NI:VA;0) 298.15
   +350000;  6000 N                                                      95JON!
-
 PARAMETER MQ(BCC_A2&CR,CR,TI:VA;0) 298.15
   +162989;  6000 N                                                      02GHO!
-
 PARAMETER MQ(BCC_A2&CR,FE,NI:VA;0) 298.15
   +150000;  6000 N                                                      95JON!
 
@@ -512,7 +500,6 @@ PARAMETER MQ(BCC_A2&FE,CR,FE:VA;1)  298.15
   -416000;  6000 N                                                      92JON!
 PARAMETER MF(BCC_A2&FE,CR,FE:VA;1)  298.15
   +348*T;  6000 N                                                       92JON!
-
 PARAMETER MQ(BCC_A2&FE,CR,NI:VA;0)  298.15
   +350000;  6000 N                                                      95JON!
 
@@ -520,15 +507,12 @@ PARAMETER MQ(BCC_A2&FE,FE,MO:VA;0)  298.15
   +112767;  6000 N                                                      12LIN!
 PARAMETER MF(BCC_A2&FE,FE,MO:VA;0)  298.15
   +37.942*T;  6000 N                                                    12LIN!
-
 PARAMETER MQ(BCC_A2&FE,FE,NI:VA;0) 298.15
   +150000;  6000 N                                                      92JON!
-
 PARAMETER MQ(BCC_A2&FE,FE,SI:VA;0)  298.15
   -104880.52;  6000 N                                                   12WAN!
 PARAMETER MF(BCC_A2&FE,FE,SI:VA;0)  298.15
   +81.18*T;  6000 N                                                     12WAN!
-
 PARAMETER MQ(BCC_A2&FE,FE,V:VA;0)  298.15
   +112059;  6000 N                                                      09LIN!
 PARAMETER MF(BCC_A2&FE,FE,V:VA;0) 298.15
@@ -536,7 +520,6 @@ PARAMETER MF(BCC_A2&FE,FE,V:VA;0) 298.15
 
 PARAMETER MQ(BCC_A2&MN,FE,MO:VA;0) 298.15
   +130000;  6000 N                                                      17ZHE!
-
 PARAMETER MQ(BCC_A2&MN,FE,SI:VA;0)  298.15
   -77210;  6000 N                                                       17DEN!
 
@@ -545,7 +528,6 @@ PARAMETER MQ(BCC_A2&MO,CR,FE:VA;0)  298.15
 
 PARAMETER MQ(BCC_A2&MO,FE,MN:VA;0) 298.15
   +360000;  6000 N                                                      17ZHE!
-
 PARAMETER MQ(BCC_A2&MO,FE,MO:VA;0)  298.15
   +272835;  6000 N                                                      12LIN!
 PARAMETER MF(BCC_A2&MO,FE,MO:VA;0)  298.15
@@ -555,12 +537,11 @@ PARAMETER MQ(BCC_A2&NI,CR,FE:VA;0) 298.15
   -88000;  6000 N                                                       95JON!
 PARAMETER MF(BCC_A2&NI,CR,FE:VA;0) 298.15
   +10*T;  6000 N                                                        95JON!
-
 PARAMETER MQ(BCC_A2&NI,CR,NI:VA;0) 298.15
   +350000;  6000 N                                                      95JON!
+
 PARAMETER MQ(BCC_A2&NI,FE,NI:VA;0) 298.15
   +150000;  6000 N                                                      95JON!
-
 PARAMETER MQ(BCC_A2&SI,FE,MN:VA;0)  298.15
   +119900;  6000 N                                                      17DEN!
 
@@ -1032,7 +1013,7 @@ NUMBER  SOURCE
         Materials Research 86.8 (1995): 522-529.'
 95JON   'Jonsson, Bjorn. "Assessment of the mobilities of Cr, Fe and Ni in bcc
         Cr-Fe-Ni alloys." ISIJ international 35.11 (1995): 1415-1421.'
-02GHOA  'Ghosh, G. "Thermodynamic and kinetic modeling of the Cr-Ti-V system."
+02GHO  'Ghosh, G. "Thermodynamic and kinetic modeling of the Cr-Ti-V system."
         Journal of phase equilibria 23.4 (2002): 310.'
 07SCH   'Schneider, André, and Gerhard Inden. "Carbon diffusion in cementite 
         (Fe3C) and Hägg carbide (Fe5C2)." Calphad 31.1 (2007): 141-147.'
