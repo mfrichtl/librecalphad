@@ -214,6 +214,7 @@ DATABASE_INFO The following systems are available:'
   SI-TI     Vahlas (1989)'
   SI-V      Zhang (2008)'
   SI-W      Vahlas (1989) and Frichtl (2024)'
+  TA-V      Danon (2004)'
   TI-CA     Dumitrescu (1999)'
   TI-V      Ghosh (2002) and Guo (2012)'
   V-H       Ukita (2008)'
@@ -2774,6 +2775,11 @@ PARAMETER L(BCC_A2,TI,V:VA;0) 298.15
   +6523.17;  6000 N                                                    02GHOA!
 PARAMETER L(BCC_A2,TI,V:VA;1) 298.15
   +2025.39;  6000 N                                                    02GHOA!
+
+PARAMETER L(BCC_A2,TA,V:VA;0) 298.15
+  +5476.65; 6000 N                                                      04DAN!
+PARAMETER L(BCC_A2,TA,V:VA;1) 298.15
+  -16527.68;  6000 N                                                    04DAN!
 
 PARAMETER L(BCC_A2,V:C,VA;0) 298.15
   -342833;  6000 N                                                      06HU !
@@ -8962,7 +8968,7 @@ PARAMETER G(LAVES_C14,TA:TA;0) 298.15
 PARAMETER G(LAVES_C14,TA:TI;0) 298.15
   +2*GHSERTA# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C14,TA:V;0) 298.15
-  +2*GHSERTA# +GHSERV#;  6000 N                                         24FRI!
+  +30000 +13897.16 +1.006*T +2*GHSERTA# +GHSERV#;  6000 N               04DAN!
 PARAMETER G(LAVES_C14,TA:W;0) 298.15
   +2*GHSERTA# +GHSERW#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C14,TA:ZR;0) 298.15
@@ -9021,11 +9027,11 @@ PARAMETER G(LAVES_C14,V:NI;0) 298.15
 PARAMETER G(LAVES_C14,V:SI;0) 298.15
   +2*GHSERV# +1*GHSERSI#;  6000 N                                       24FRI!
 PARAMETER G(LAVES_C14,V:TA;0) 298.15
-  +2*GHSERV# +GHSERTA#;  6000 N                                         24FRI!
+  -13897.16 -1.006*T +2*GHSERV# +GHSERTA#;  6000 N                      04DAN!
 PARAMETER G(LAVES_C14,V:TI;0) 298.15
   +15000 +2*GHSERV# +GHSERTI#;  6000 N                                  12GUO!
 PARAMETER G(LAVES_C14,V:V;0) 298.15
-  +15000 +3*GHSERV#;  6000 N                                            12GUO!
+  +15000 +3*GHSERV#;  6000 N                                            04DAN!
 PARAMETER G(LAVES_C14,V:W;0) 298.15
   +2*GHSERV# +GHSERW#;  6000 N                                          24FRI!
 PARAMETER G(LAVES_C14,V:ZR;0) 298.15
@@ -9184,6 +9190,13 @@ PARAMETER L(LAVES_C14,NB,ZR:ZR;0) 298.15
 
 PARAMETER L(LAVES_C14,TA:FE,TA;0) 298.15 
   +28062 -8.771*T;  6000 N                                              11WIT!
+PARAMETER L(LAVES_C14,TA:TA,V;0) 298.15
+  +9971.59;  6000 N                                                     04DAN!
+
+PARAMETER L(LAVES_C14,TA,V:TA;0) 298.15
+  +18461.85;  6000 N                                                    04DAN!
+PARAMETER L(LAVES_C14,TA,V:V;0) 298.15
+  +18461.85;  6000 N                                                    04DAN!
 
 PARAMETER L(LAVES_C14,TI:CR,TI;0) 298.15
   +60000;  6000 N                                                      02GHOA!
@@ -9194,7 +9207,9 @@ PARAMETER L(LAVES_C14,TI:FE,TI;0) 298.15
 PARAMETER L(LAVES_C14,TI:MN,TI;0) 298.15
   +6510 +7.533*T;  6000 N                                               21ZHA!
 
-
+PARAMETER L(LAVES_C14,V:TA,V;0) 298.15
+  +9971.59;  6000 N                                                     04DAN!
+  
 PARAMETER L(LAVES_C14,FE,MN,TI:TI;0) 298.15
   +51000;  6000 N                                                       21ZHA!
 PARAMETER L(LAVES_C14,FE,MN,TI:TI;1) 298.15
@@ -9210,8 +9225,8 @@ $ PEARSON: cF24
 $ MNNISI: TAU2 IN GUPTA 2006, TAU6 IN HU 2011
 
 PHASE LAVES_C15 % 2 2 1 !
-CONSTITUENT LAVES_C15 : AL,CO,CR,CU,FE,MO,MN,NB,NI,TI,V,ZR
-                      : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,SI,TI,V,ZR : !
+CONSTITUENT LAVES_C15 : AL,CO,CR,CU,FE,MO,MN,NB,NI,TA,TI,V,ZR
+                      : AL,CE,CO,CR,CU,FE,MN,MO,NB,NI,SI,TA,TI,V,ZR : !
 
 PARAMETER G(LAVES_C15,AL:AL;0) 298.15
   +15000.0 +3*GHSERAL#;  6000 N                                         91SAU!
@@ -9235,6 +9250,8 @@ PARAMETER G(LAVES_C15,AL:NI;0) 298.15
   +2*GHSERAL# +GC15NI#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C15,AL:SI;0) 298.15
   +15000 +2*GHSERAL# +GHSERSI#;  6000 N                                 24FRI!
+PARAMETER G(LAVES_C15,AL:TA;0) 298.15
+  +2*GHSERAL# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,AL:TI;0) 298.15
   +2*GHSERAL# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,AL:V;0) 298.15
@@ -9264,6 +9281,8 @@ PARAMETER G(LAVES_C15,CO:NI;0) 298.15
   +2*GHSERCO# +GHSERNI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CO:SI;0) 298.15
   +2*GHSERCO# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,CO:TA;0) 298.15
+  +2*GHSERCO# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CO:TI;0) 298.15
   +2*GHSERCO# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CO:V;0) 298.15
@@ -9293,6 +9312,8 @@ PARAMETER G(LAVES_C15,CR:NI;0) 298.15
   +2*GHSERCR# +GC15NI#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C15,CR:SI;0) 298.15
   +2*GHSERCR# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,CR:TA;0) 298.15
+  +2*GHSERCR# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CR:TI;0) 298.15
   -29567.59 +7.55767*T +2*GHSERCR# +GHSERTI#;  6000 N                  02GHOA!
 PARAMETER G(LAVES_C15,CR:V;0) 298.15
@@ -9322,6 +9343,8 @@ PARAMETER G(LAVES_C15,CU:NI;0) 298.15
   +2*GHSERCU# +GC15NI#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C15,CU:SI;0) 298.15
   +2*GHSERCU# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,CU:TA;0) 298.15
+  +2*GHSERCU# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CU:TI;0) 298.15
   +2*GHSERCU# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CU:V;0) 298.15
@@ -9351,6 +9374,8 @@ PARAMETER G(LAVES_C15,FE:NI;0) 298.15
   +2*GC15FE# +GC15NI#;  6000 N                                          09KEY!
 PARAMETER G(LAVES_C15,FE:SI;0) 298.15
   +2*GHSERFE# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,FE:TA;0) 298.15
+  +2*GHSERFE# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,FE:TI;0) 298.15
   +2*GHSERFE# +GHSERTI#;  6000 N                                        23FRI!
 PARAMETER G(LAVES_C15,FE:V;0) 298.15
@@ -9381,6 +9406,8 @@ PARAMETER G(LAVES_C15,MO:NI;0) 298.15
   +75000 +2*GHSERMO# +GHSERNI#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,MO:SI;0) 298.15
   +2*GHSERMO# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,MO:TA;0) 298.15
+  +2*GHSERMO# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,MO:TI;0) 298.15
   +50000 +2*GHSERMO# +GHSERTI#;  6000 N                                  16HU!
 PARAMETER G(LAVES_C15,MO:V;0) 298.15
@@ -9410,6 +9437,8 @@ PARAMETER G(LAVES_C15,MN:NI;0) 298.15
   +30260.982 +2*GHSERMN# +GHSERNI#;  6000 N                              11HU!
 PARAMETER G(LAVES_C15,MN:SI;0) 298.15
   +5000.001 +2*GHSERMN# +GHSERSI#;  6000 N                               11HU!
+PARAMETER G(LAVES_C15,MN:TA;0) 298.15
+  +2*GHSERMN# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,MN:TI;0) 298.15
   -10000 +2*GHSERMN# +GHSERTI#;  6000 N                                09CHEB!
 PARAMETER G(LAVES_C15,MN:V;0) 298.15
@@ -9439,6 +9468,8 @@ PARAMETER G(LAVES_C15,NB:NI;0) 298.15
   +2*GHSERNB# +GHSERNI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NB:SI;0) 298.15
   +2*GHSERNB# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,NB:TA;0) 298.15
+  +2*GHSERNB# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NB:TI;0) 298.15
   +2*GHSERNB# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NB:V;0) 298.15
@@ -9468,12 +9499,45 @@ PARAMETER G(LAVES_C15,NI:NI;0) 298.15
   +3*GC15NI#;  6000 N                                                   09KEY!
 PARAMETER G(LAVES_C15,NI:SI;0) 298.15
   +2*GHSERNI# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,NI:TA;0) 298.15
+  +2*GHSERNI# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NI:TI;0) 298.15
   +2*GC15NI# +GHSERTI#;  6000 N                                         23FRI!
 PARAMETER G(LAVES_C15,NI:V;0) 298.15
   +2*GC15NI# +GHSERV#;  6000 N                                          23FRI!
 PARAMETER G(LAVES_C15,NI:ZR;0) 298.15
   +2*GHSERNI# +GHSERZR#;  6000 N                                        24FRI!
+
+PARAMETER G(LAVES_C15,TA:AL;0) 298.15
+  +2*GHSERTA# +GHSERAL#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:CE;0) 298.15
+  +2*GHSERTA# +GHSERCE#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:CO;0) 298.15
+  +2*GHSERTA# +GHSERCO#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:CR;0) 298.15
+  +2*GHSERTA# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:CU;0) 298.15
+  +2*GHSERTA# +GHSERCU#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:FE;0) 298.15
+  +2*GHSERTA# +GHSERFE#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:MN;0) 298.15
+  +2*GHSERTA# +GHSERMN#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:MO;0) 298.15
+  +2*GHSERTA# +GHSERMO#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:NB;0) 298.15
+  +2*GHSERTA# +GHSERNB#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:NI;0) 298.15
+  +2*GHSERTA# +GHSERNI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:SI;0) 298.15
+  +2*GHSERTA# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:TA;0) 298.15
+  +15000 +2*GHSERTA# +GHSERTA#;  6000 N                                 04DAN!
+PARAMETER G(LAVES_C15,TA:TI;0) 298.15
+  +2*GHSERTA# +GHSERTI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TA:V;0) 298.15
+  +30000 +17547.3 -1.99*T +2*GHSERTA# +GHSERV#;  6000 N                 04DAN!
+PARAMETER G(LAVES_C15,TA:ZR;0) 298.15
+  +2*GHSERTA# +GHSERZR#;  6000 N                                        24FRI!
 
 PARAMETER G(LAVES_C15,TI:AL;0) 298.15
   +2*GHSERTI# +GHSERAL#;  6000 N                                        24FRI!
@@ -9497,6 +9561,8 @@ PARAMETER G(LAVES_C15,TI:NI;0) 298.15
   +2*GHSERTI# +GC15NI#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C15,TI:SI;0) 298.15
   +2*GHSERTI# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,TI:TA;0) 298.15
+  +2*GHSERTI# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,TI:TI;0) 298.15
   +3*GC15TI#; 6000 N                                                   02GHOA!
 PARAMETER G(LAVES_C15,TI:V;0) 298.15
@@ -9526,6 +9592,8 @@ PARAMETER G(LAVES_C15,V:NI;0) 298.15
   +2*GHSERV# +GC15NI#;  6000 N                                          24FRI!
 PARAMETER G(LAVES_C15,V:SI;0) 298.15
   +2*GHSERV# +GHSERSI#;  6000 N                                         24FRI!
+PARAMETER G(LAVES_C15,V:TA;0) 298.15
+  -17547.3 +1.99*T +2*GHSERV# +GHSERTA#;  6000 N                        04DAN!
 PARAMETER G(LAVES_C15,V:TI;0) 298.15
   +25622 -14*T +2*GHSERV# +GHSERTI#;  6000 N                           02GHOA!
 PARAMETER G(LAVES_C15,V:V;0) 298.15
@@ -9555,6 +9623,8 @@ PARAMETER G(LAVES_C15,ZR:NI;0) 298.15
   +2*GHSERZR# +GC15NI#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C15,ZR:SI;0) 298.15
   +2*GHSERZR# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(LAVES_C15,ZR:TA;0) 298.15
+  +2*GHSERZR# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,ZR:TI;0) 298.15
   +2*GHSERZR# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,ZR:V;0) 298.15
@@ -9624,6 +9694,14 @@ PARAMETER L(LAVES_C15,MN:NI,SI;1) 298.15
 PARAMETER L(LAVES_C15,MO,NI:NI;0) 298.15
   -150000;  6000 N                                                      24FRI!
 
+PARAMETER L(LAVES_C15,TA:TA,V;0) 298.15
+  +8451.51;  6000 N                                                     04DAN!
+
+PARAMETER L(LAVES_C15,TA,V:TA;0) 298.15
+  +10330.84;  6000 N                                                    04DAN!
+PARAMETER L(LAVES_C15,TA,V:V;0) 298.15
+  +10330.84;  6000 N                                                    04DAN!
+
 PARAMETER L(LAVES_C15,TI:CR,TI;0) 298.15
   +50000;  6000 N                                                      02GHOA!
 PARAMETER L(LAVES_C15,TI:CR,V;0) 298.15
@@ -9641,6 +9719,8 @@ PARAMETER L(LAVES_C15,V:CR,TI;0) 298.15
   +22514 -18*T;  6000 N                                                02GHOA!
 PARAMETER L(LAVES_C15,V:CR,V;0) 298.15
   +26406 -22*T;  6000 N                                                02GHOA!
+PARAMETER L(LAVES_C15,V:TA,V;0) 298.15
+  +8451.51;  6000 N                                                     04DAN!
 PARAMETER L(LAVES_C15,V:TI,V;0) 298.15
   +5000;  6000 N                                                       02GHOA!
 PARAMETER L(LAVES_C15,V:V,ZR;0) 298.15
@@ -10706,6 +10786,9 @@ PARAMETER L(LIQUID,TI,V;0) 298.15
   +368.55;  6000 N                                                     02GHOA!
 PARAMETER L(LIQUID,TI,V;1) 298.15
   +2838.63;  6000 N                                                    02GHOA!
+
+PARAMETER L(LIQUID,TA,V;0) 298.15
+  -3707.72 +0.285*T;  6000 N                                            04DAN!
 
 PARAMETER L(LIQUID,V,W;0) 298.15
   +3972;  6000 N                                                        05BRA!
@@ -16078,7 +16161,10 @@ NUMBER  SOURCE
 03MIE   'Miettinen, Jyrki. "Thermodynamic description of the Cu-Al-Mn system
         in the copper-rich corner." Calphad 27.1 (2003): 103-114.'
 04BRA   'Bratberg, Johan, and Karin Frisk. "An experimental and theoretical 
-        analysis of the phase equilibria in the Fe-Cr-VC system." 
+        analysis of the phase equilibria in the Fe-Cr-VC system."
+04DAN   'Danon, C. A., and C. Servant. "A thermodynamic evaluation of the 
+        Ta-V system." Journal of alloys and compounds 366.1-2 (2004): 
+        191-200.'
         Metallurgical and materials transactions A 35 (2004): 3649-3663.'
 04DU    'Du, Yong, et al. "A thermodynamic description of the Al-Mn-Si system
         over the entire composition and temperature ranges." Metallurgical and
