@@ -202,6 +202,7 @@ DATABASE_INFO The following systems are available:'
   N-TI      Jonsson (1996) and Lee (2001) EXCEPT N-RICH NITRIDES'
   N-V       Du (2021) EXCEPT GAS PHASE'
   NB-TI     Saunders (1995) EXCEPT ORDERED B2 PHASE'
+  NB-V      Kumar (1994)'
   NB-W      Huang (1997)'
   NB-ZR     Guillermet (1991)'
   NI-O      Kowalski (1996) and Kjellqvist (2008)'
@@ -1246,7 +1247,7 @@ PARAMETER G(ALM3_A15,V:FE:VA;0) 298.15
 PARAMETER G(ALM3_A15,V:MO:VA;0) 298.15
   +20000 +GHSERV# +3*GHSERMO#;  6000 N                                  24FRI!
 PARAMETER G(ALM3_A15,V:NB:VA;0) 298.15
-  +GHSERV# +3*GHSERNB#;  6000 N                                         24FRI!
+  +20000 +GHSERV# +3*GHSERNB#;  6000 N                                  24FRI!
 PARAMETER G(ALM3_A15,V:SI:VA;0) 298.15
   +217099.2 -6.47189*T +GHSERV# +3*GHSERSI#;  6000 N                    08ZHA!
 PARAMETER G(ALM3_A15,V:V:VA;0) 298.15
@@ -2717,7 +2718,8 @@ PARAMETER L(BCC_A2,NB,TI:VA;1) 298.15
   +1E-4;  6000 N                                                       95SAUA!
 PARAMETER L(BCC_A2,NB,TI:VA;2) 298.15
   +2500;  6000 N                                                       95SAUA!
-
+PARAMETER L(BCC_A2,NB,V:VA;0) 298.15
+  +9080;  6000 N                                                        94KUM!
 PARAMETER L(BCC_A2,NB,W:VA;0) 298.15
   -34343 +6.074*T;  6000 N                                             97HUAA!
 PARAMETER L(BCC_A2,NB,ZR:VA;0) 298.15
@@ -5734,14 +5736,15 @@ PARAMETER L(FCC_A1,NB,TI:N;0) 298.15
   +0;  6000 N                                                           01LEE!
 PARAMETER L(FCC_A1,NB,TI:VA;0) 298.15
   +13600;  6000 N                                                      95SAUA!
-
 PARAMETER L(FCC_A1,NB,V:C;0) 298.15
   +29000;  6000 N                                                       08FRI!
 PARAMETER L(FCC_A1,NB,V:C;1) 298.15
   -5000;  6000 N                                                        08FRI!
 PARAMETER L(FCC_A1,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
-
+$ ESTIMATE SAME NB,V:VA AS HCP_A3
+PARAMETER L(FCC_A1,NB,V:VA;0) 298.15
+  +9080;  6000 N                                                        94KUM!
 PARAMETER L(FCC_A1,NB,W:C;0) 298.15
   +33160 -14.154*T;  6000 N                                            97HUAA!
 PARAMETER L(FCC_A1,NB,W:C;1) 298.15
@@ -8218,7 +8221,6 @@ PARAMETER L(HCP_A3,NB,TI:VA;1) 298.15
   +1E-4;  6000 N                                                       95SAUA!
 PARAMETER L(HCP_A3,NB,TI:VA;2) 298.15
   +2500;  6000 N                                                       95SAUA!
-
 $ ESTIMATE SAME NB,V:C AS FCC_A1
 PARAMETER L(HCP_A3,NB,V:C;0) 298.15
   +21750;  6000 N                                                       08FRI!
@@ -8226,7 +8228,8 @@ PARAMETER L(HCP_A3,NB,V:C;1) 298.15
   -3750;  6000 N                                                        08FRI!
 PARAMETER L(HCP_A3,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
-
+PARAMETER L(HCP_A3,NB,V:VA;0) 298.15
+  +9080;  6000 N                                                        94KUM!
 PARAMETER L(HCP_A3,NB,W:C;0) 298.15
   -18676 +7.969*T;  6000 N                                             97HUAA!
 PARAMETER L(HCP_A3,NB,W:C;1) 298.15
@@ -8928,7 +8931,7 @@ PARAMETER G(LAVES_C14,NB:TA;0) 298.15
 PARAMETER G(LAVES_C14,NB:TI;0) 298.15
   +15000 +2*GHSERNB# +GHSERTI#;  6000 N                                 01LEE!
 PARAMETER G(LAVES_C14,NB:V;0) 298.15
-  +2*GHSERNB# +GHSERV#;  6000 N                                         24FRI!
+  +15000 +2*GHSERNB# +GHSERV#;  6000 N                                  24FRI!
 PARAMETER G(LAVES_C14,NB:W;0) 298.15
   +2*GHSERNB# +GHSERW#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C14,NB:ZR;0) 298.15
@@ -9439,7 +9442,7 @@ PARAMETER G(LAVES_C15,NB:SI;0) 298.15
 PARAMETER G(LAVES_C15,NB:TI;0) 298.15
   +2*GHSERNB# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NB:V;0) 298.15
-  +2*GHSERNB# +GHSERV#;  6000 N                                         24FRI!
+  +15000 +2*GHSERNB# +GHSERV#;  6000 N                                  24FRI!
 PARAMETER G(LAVES_C15,NB:ZR;0) 298.15
   +13904.0 +9.40*T +2*GHSERNB# +GHSERZR#;  6000 N                        15LU!
 
@@ -10636,6 +10639,8 @@ PARAMETER L(LIQUID,N,V;0) 298.15
 
 PARAMETER L(LIQUID,NB,TI;0) 298.15
   +8500;  6000 N                                                       95SAUA!
+PARAMETER L(LIQUID,NB,V;0) 298.15
+  -1875;  6000 N                                                        94KUM!
 PARAMETER L(LIQUID,NB,W;0) 298.15
   -34043 +3.603*T;  6000 N                                             97HUAA!
 PARAMETER L(LIQUID,NB,ZR;0) 298.15
@@ -14389,7 +14394,7 @@ PARAMETER G(SIGMA2_D8B,NB:NB:CO;0) 298.15
 PARAMETER G(SIGMA2_D8B,NB:NB:NB:0) 298.15
   +150000 +10*GHSERNB# +4*GHSERNB# +16*GHSERNB#;  6000 N                 15HE!
 PARAMETER G(SIGMA2_D8B,NB:NB:V;0) 298.15
-  +10*GHSERNB# +4*GHSERNB# +16*GHSERV#;  6000 N                         24FRI!
+  +150000 +10*GHSERNB# +4*GHSERNB# +16*GHSERV#;  6000 N                 24FRI!
 
 PARAMETER G(SIGMA2_D8B,NB:V:AL;0) 298.15
   +10*GHSERNB# +4*GHSERV# +16*GHSERAL#;  6000 N                         24FRI!
@@ -14398,7 +14403,7 @@ PARAMETER G(SIGMA2_D8B,NB:V:CO;0) 298.15
 PARAMETER G(SIGMA2_D8B,NB:V:NB;0) 298.15
   +10*GHSERNB# +4*GHSERV# +16*GHSERNB#;  6000 N                         24FRI!
 PARAMETER G(SIGMA2_D8B,NB:V:V;0) 298.15
-  +10*GHSERNB# +4*GHSERV# +16*GHSERV#;  6000 N                          24FRI!
+  +150000 +10*GHSERNB# +4*GHSERV# +16*GHSERV#;  6000 N                  24FRI!
 
 PARAMETER G(SIGMA2_D8B,V:NB:AL;0) 298.15
   +10*GHSERV# +4*GHSERNB# +16*GHSERAL#;  6000 N                         24FRI!
@@ -14407,7 +14412,7 @@ PARAMETER G(SIGMA2_D8B,V:NB:CO;0) 298.15
 PARAMETER G(SIGMA2_D8B,V:NB:NB;0) 298.15
   +10*GHSERV# +4*GHSERNB# +16*GHSERNB#;  6000 N                         24FRI!
 PARAMETER G(SIGMA2_D8B,V:NB:V;0) 298.15
-  +10*GHSERV# +4*GHSERNB# +16*GHSERV#;  6000 N                          24FRI!
+  +150000 +10*GHSERV# +4*GHSERNB# +16*GHSERV#;  6000 N                  24FRI!
 
 PARAMETER G(SIGMA2_D8B,V:V:AL;0) 298.15
   +10*GHSERV# +4*GHSERV# +16*GHSERAL#;  6000 N                          24FRI!
@@ -15953,6 +15958,8 @@ NUMBER  SOURCE
 93SAU   'Saunders, N. "System Mn-Ti." COST 507: Thermochemical Database for
         Light Metal Alloys, Volume 2. (1993): 241-244.'
 93SUN   'B. Sundman, SSOL the SGTE solution database (1993)'
+94KUM   'Kumar, KC Hari, Patrick Wollants, and Lucas Delaey. "Thermodynamic 
+        calculation of Nb-Ti-V phase diagram." Calphad 18.1 (1994): 71-79.'
 94RAG   'Raghavan, V., and Dara P. Antia. "The chromium equivalents of ferrite 
         stabilizers in commercial stainless steels." Metallurgical and 
         Materials Transactions A 25 (1994): 2827-2828.'
