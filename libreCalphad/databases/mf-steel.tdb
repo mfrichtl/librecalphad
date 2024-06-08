@@ -193,8 +193,10 @@ DATABASE_INFO The following systems are available:'
   MN-TI     Saunders (1993)'
   MN-V      Huang (1991)'
   MO-N      Frisk (1991)'
+  MO-NB     Xiong (2004)'
   MO-NI     Frisk (1992) and Yaqoob (2018)'
   MO-SI     Vahlas (1989)'
+  MO-TA     Xiong (2004)'
   MO-TI     Saunders (1995)'
   MO-V      Bratberg (2002)'
   MN-N      Qiu (1993)'
@@ -202,7 +204,7 @@ DATABASE_INFO The following systems are available:'
   N-NB      Huang (1996) and Khvan (2013)'
   N-TI      Jonsson (1996) and Lee (2001) EXCEPT N-RICH NITRIDES'
   N-V       Du (2021) EXCEPT GAS PHASE'
-  NB-TA     Servant (2004)'
+  NB-TA     Servant (2004) and xiong (2004)'
   NB-TI     Saunders (1995) EXCEPT ORDERED B2 PHASE'
   NB-V      Kumar (1994) and Servant (2004)'
   NB-W      Huang (1997)'
@@ -2728,10 +2730,18 @@ $ SOLUBILITY IN BCC TOO MUCH.
 $ PARAMETER L(BCC_A2,MO:C,VA;0) 298.15
 $   -50000;  6000 N                                                       02BRA!
 
+PARAMETER L(BCC_A2,MO,NB:VA;0) 298.15
+  -68202.6 +29.85596*T;  6000 N                                         04XIO!
+PARAMETER L(BCC_A2,MN,NB:VA;1) 298.15
+  +8201.3;  6000 N                                                      04XIO!
 PARAMETER L(BCC_A2,MO,NI:VA;0) 298.15
   +42405.6;  6000 N                                                     18YAQ!
 PARAMETER L(BCC_A2,MO,SI:VA;0) 298.15
   -70899.6;  6000 N                                                     89VAH!
+PARAMETER L(BCC_A2,MO,TA:VA;0) 298.15
+  -75129.2 +30*T;  6000 N                                               04XIO!
+PARAMETER L(BCC_A2,MO,TA:VA;1) 298.15
+  +6039.24;  6000 N                                                     04XIO!
 PARAMETER L(BCC_A2,MO,TI:VA;0) 298.15
   +2000;  6000 N                                                       95SAUB!
 PARAMETER L(BCC_A2,MO,TI:VA;1) 298.15
@@ -2752,6 +2762,8 @@ PARAMETER L(BCC_A2,NB:N,VA;0) 298.15
 PARAMETER L(BCC_A2,NB:N,VA;1) 298.15
   -1917408;  6000 N                                                     13KHV!
 
+PARAMETER L(BCC_A2,NB,TA:VA;0) 298.15
+  +1298.03;  6000 N                                                     04XIO!
 PARAMETER L(BCC_A2,NB,TI:VA;0) 298.15
   +14000;  6000 N                                                      95SAUA!
 PARAMETER L(BCC_A2,NB,TI:VA;1) 298.15
@@ -9575,7 +9587,7 @@ PARAMETER G(LAVES_C15,MO:NI;0) 298.15
 PARAMETER G(LAVES_C15,MO:SI;0) 298.15
   +2*GHSERMO# +GHSERSI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,MO:TA;0) 298.15
-  +2*GHSERMO# +GHSERTA#;  6000 N                                        24FRI!
+  +15000 +2*GHSERMO# +GHSERTA#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,MO:TI;0) 298.15
   +50000 +2*GHSERMO# +GHSERTI#;  6000 N                                  16HU!
 PARAMETER G(LAVES_C15,MO:V;0) 298.15
@@ -9699,7 +9711,7 @@ PARAMETER G(LAVES_C15,TA:HF;0) 298.15
 PARAMETER G(LAVES_C15,TA:MN;0) 298.15
   +2*GHSERTA# +GHSERMN#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,TA:MO;0) 298.15
-  +2*GHSERTA# +GHSERMO#;  6000 N                                        24FRI!
+  +15000 +2*GHSERTA# +GHSERMO#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,TA:NB;0) 298.15
   +2*GHSERTA# +GHSERNB#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,TA:NI;0) 298.15
@@ -10861,6 +10873,10 @@ PARAMETER L(LIQUID,MNS,S;0) 298.15
 
 PARAMETER L(LIQUID,MO,N;0) 298.15
   -198280 +37.49*T;  6000 N                                             91FRI!
+PARAMETER L(LIQUID,MO,NB;0) 298.15
+  +15253.7;  6000 N                                                     04XIO!
+PARAMETER L(LIQUID,MO,NB;1) 298.15
+  +10594.2;  6000 N                                                     04XIO!
 PARAMETER L(LIQUID,MO,NI;0) 298.15
   -16922.3;  6000 N                                                     18YAQ!
 PARAMETER L(LIQUID,MO,NI;1) 298.15
@@ -10871,6 +10887,10 @@ PARAMETER L(LIQUID,MO,SI;1) 298.15
   -47107.9 +33.710280*T;  6000 N                                        89VAH!
 PARAMETER L(LIQUID,MO,SI;2) 298.15
   +75846.6 -30.900000*T;  6000 N                                        89VAH!
+PARAMETER L(LIQUID,MO,TA;0) 298.15
+  +13978.9;  6000 N                                                     04XIO!
+PARAMETER L(LIQUID,MO,TA;1) 298.15
+  +577.5;  6000 N                                                       04XIO!
 PARAMETER L(LIQUID,MO,TI;0) 298.15
   -9000 +2*T;  6000 N                                                  95SAUB!
 PARAMETER L(LIQUID,MO,V;0) 298.15
@@ -10887,6 +10907,8 @@ PARAMETER L(LIQUID,N,TI;1) 298.15
 PARAMETER L(LIQUID,N,V;0) 298.15
   -264845.009;  6000 N                                                  21DU !
 
+PARAMETER L(LIQUID,NB,TA;0) 298.15
+  +0;  6000 N                                                           04XIO!
 PARAMETER L(LIQUID,NB,TI;0) 298.15
   +8500;  6000 N                                                       95SAUA!
 PARAMETER L(LIQUID,NB,V;0) 298.15
@@ -16376,6 +16398,8 @@ NUMBER  SOURCE
         equilibria and diffusion 26.1 (2005): 39-49.'
 04SERB  'Servant, C., and C. A. Danon. "CALPHAD modelling of the unmixing of 
         transition metal carbide phases." Calphad 28.4 (2004): 337-353.'
+04XIO   'Xiong, Wei, et al. "Thermodynamic assessment of the Mo-Nb-Ta system."
+        Calphad 28.2 (2004): 133-140.'
 05BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
         systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system."
 05GRO   'Gröbner, J., et al. "Experimental investigation and thermodynamic 
