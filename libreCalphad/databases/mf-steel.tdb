@@ -640,6 +640,15 @@ FUNCTION GHSERHH 298.15
  +1.14281783E-08*T**3 +3561002.5*T**(-1); 6000.00  N                    91DIN!
 
 $ ----------------------------------------------------------------------------
+$ HF
+
+FUNCTION GHSERHF 298.15
+  -6987.297 +110.744026*T -22.7075*T*LN(T) -4.146145E-3*T**2
+  -0.000477E-6*T**3 -22590*T**(-1);  2506.00 Y
+  -1446776.329 +6193.609991*T -787.5363829*T*LN(T) +173.5215E-3*T**2
+  -7.575759E-6*T**3 +501742495*T**(-1);  3000 Y
+  -34274.698 +277.882368*T -44*T*LN(T); 3001 N                          91DIN!
+
 $ MG 
 
 FUNCTION GHSERMG 298.15
@@ -1970,7 +1979,7 @@ $ PEARSON: cl2
 $ SPACE GROUP: Im-3m
 
 PHASE BCC_A2 %A 2 1 3 !
-CONSTITUENT BCC_A2 : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+CONSTITUENT BCC_A2 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                      P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA : !
 
@@ -2097,6 +2106,23 @@ PARAMETER BMAGN(BCC_A2,FE:VA;0) 298.15
   +2.22; 6000 N                                                         91DIN!
 PARAMETER TC(BCC_A2,FE:VA;0) 298.15
   +1043; 6000 N                                                         91DIN!
+
+PARAMETER G(BCC_A2,HF:B;0) 298.15
+  +GHSERHF# +3*GHSERBB#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,HF:C;0) 298.15
+  +GHSERHF# +3*GHSERCC#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,HF:N;0) 298.15
+  +GHSERHF# +3*GHSERNN#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,HF:H;0) 298.15
+  +GHSERHF# +3*GHSERHH#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,HF:O;0) 298.15
+  +GHSERHF# +3*GHSEROO#;  6000 N                                        24FRI!
+PARAMETER G(BCC_A2,HF:VA;0) 298.15 
+  +5370.703 +103.836026*T -22.8995*T*LN(T) -4.206605E-3*T**2
+  +0.871923E-6*T**3 -22590*T**(-1)-0.1446E-9*T**4;  2506.00 Y
+  +1912456.771 -8624.20573*T +1087.6141247*T*LN(T) -286.857065E-3*T**2
+  +13.427829E-6*T**3 -610085091*T**(-1);  3000 Y
+  -32498.178 +276.723247*T -44*T*LN(T); 3001 N                          91DIN!
 
 PARAMETER G(BCC_A2,MG:B;0) 298.15
   +GHSERMG# +3*GHSERBB#;  6000 N                                        24FRI!
@@ -3000,9 +3026,9 @@ $ SPACE GROUP: Pm-3m
 TYPE_DEFINITION E GES AMEND_PHASE_DESCRIPTION BCC_B2 DIS_PART BCC_A2 !
 
 PHASE BCC_B2 %AE 3 0.5 0.5 3 !
-CONSTITUENT BCC_B2 : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+CONSTITUENT BCC_B2 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                      P,S,SI,SN,TA,TI,V,W,ZR
-                   : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+                   : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                      P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA :  !
 
@@ -3408,13 +3434,13 @@ $ SPACE GROUP: Fm-3m
 
 TYPE_DEFINITION G GES AMEND_PHASE_DESCRIPTION BCC_D03 DIS_PART BCC_A2 !
 PHASE BCC_D03:B %AG 5 0.25 0.25 0.25 0.25 3 !
-CONSTITUENT BCC_D03 : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+CONSTITUENT BCC_D03 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
-                    : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+                    : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
-                    : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+                    : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
-                    : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+                    : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
                     : B,C,H,N,O,VA :  !
 
@@ -4958,7 +4984,7 @@ $ PEARSON: cF4
 $ SPACE GROUP: Fm-3m
 
 PHASE FCC_A1 %B 2 1 1 !
-CONSTITUENT FCC_A1 : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+CONSTITUENT FCC_A1 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                      P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA : !
 
@@ -5084,6 +5110,19 @@ PARAMETER BMAGN(FCC_A1,FE:VA;0) 298.15
   -2.1; 6000 N                                                          85GUS!
 PARAMETER TC(FCC_A1,FE:VA;0) 298.15
   -201; 6000 N                                                          85GUS!
+
+PARAMETER G(FCC_A1,HF:B;0) 298.15
+  +GHSERHF# +GHSERBB#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,HF:C;0) 298.15
+  +GHSERHF# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,HF:H;0) 298.15
+  +GHSERHF# +GHSERHH#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,HF:N;0) 298.15
+  +GHSERHF# +0.5*GHSERNN#; 6000 N                                       24FRI!
+PARAMETER G(FCC_A1,HF:O;0) 298.15
+  +GHSERHF# +GHSEROO#;  6000 N                                          24FRI!
+PARAMETER G(FCC_A1,HF:VA;0) 298.15 
+  +10000 -2.2*T +GHSERHF#; 3001 N                                       91DIN!
 
 PARAMETER G(FCC_A1,MG:B;0) 298.15
   +GHSERMG# +GHSERBB#;  6000 N                                          24FRI!
@@ -6078,13 +6117,13 @@ $ FCC_L10
 TYPE_DEFINITION C GES AMEND_PHASE_DESCRIPTION FCC_L10 DIS_PART FCC_A1 !
 
 PHASE FCC_L10:F %BC 5 0.25 0.25 0.25 0.25 1 !
-CONSTITUENT FCC_L10:F : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+CONSTITUENT FCC_L10:F : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
-                      : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+                      : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
-                      : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+                      : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
-                      : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+                      : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
                       : B,C,H,N,O,VA :  !
 
@@ -6142,9 +6181,9 @@ $ 2 SUBLATTICE ORDERED L12 MODEL
 TYPE_DEFINITION D GES AMEND_PHASE_DESCRIPTION FCC_L12 DIS_PART FCC_A1 !
 
 PHASE FCC_L12 %BD 3 0.75 0.25 1 !
-CONSTITUENT FCC_L12 : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+CONSTITUENT FCC_L12 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
-                    : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+                    : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
                     : B,C,H,N,O,VA :  !
 
@@ -7557,7 +7596,7 @@ $ PEARSON: hP2
 $ SPACE GROUP: P63/mmc
 
 PHASE HCP_A3 %B 2 1 .5 !
-CONSTITUENT HCP_A3 : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,NB,NI,
+CONSTITUENT HCP_A3 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                      P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA : !
 
@@ -7664,6 +7703,19 @@ PARAMETER G(HCP_A3,FE:O;0) 298.15
   +48.75*T +GHSERFE# +0.5*GHSEROO#;  6000 N                             08KJE!
 PARAMETER G(HCP_A3,FE:VA;0) 298.15 
   +GHCPFE#; 6000 N                                                      91DIN!
+
+PARAMETER G(HCP_A3,HF:B;0) 298.15
+  +GHSERHF# +0.5*GHSERBB#;  6000 N                                      24FRI!
+PARAMETER G(HCP_A3,HF:C;0) 298.15
+  +GHSERHF# +0.5*GHSERCC#;  6000 N                                      24FRI!
+PARAMETER G(HCP_A3,HF:H;0) 298.15
+  +GHSERHF# +0.25*GHSERHH#;  6000 N                                     24FRI!
+PARAMETER G(HCP_A3,HF:N;0) 298.15
+  +GHSERHF# +0.25*GHSERNN#;  6000 N                                     24FRI!
+PARAMETER G(HCP_A3,HF:O;0) 298.15
+  +GHSERHF# +0.5*GHSEROO#;  6000 N                                      24FRI!
+PARAMETER G(HCP_A3,HF:VA;0) 298.15 
+  +GHSERHF#; 3001 N                                                     91DIN!
 
 PARAMETER G(HCP_A3,MG:B;0) 298.15
   +GHSERMG# +0.5*GHSERBB#;  6000 N                                      24FRI!
@@ -8581,13 +8633,13 @@ $ ORDERED HCP PHASE
 TYPE_DEFINITION F GES AMEND_PHASE_DESCRIPTION HCP_L12 DIS_PART HCP_A3 !
 
 PHASE HCP_L12:F %BF 5 0.25 0.25 0.25 0.25 0.5 !
-CONSTITUENT HCP_L12:F : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+CONSTITUENT HCP_L12:F : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
-                      : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+                      : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
-                      : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+                      : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
-                      : AL,BI,CE,CO,CR,CU,FE,MG,MN,MO,
+                      : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,
                         NB,NI,P,S,SI,SN,TA,TI,V,W,ZR
                       : B,C,H,N,O,VA : !
 
@@ -10141,7 +10193,7 @@ $ LIQUID
 
 PHASE LIQUID:L % 1 1!
 CONSTITUENT LIQUID:L : AL,ALO3/2,B,BI,C,CE,CO,CR,CRO3/2,CU,FE,FEO,FEO3/2,FES,
-                       H,MG,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,SN,TA,TI,V,W,ZR : ! 
+                       H,HF,MG,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,SN,TA,TI,V,W,ZR : ! 
 
 FUNCTION GLIQAL2O3 298.15
   +1607850.8 +405.559491*T -67.4804*T*LN(T) -0.06747*T**2
@@ -10154,23 +10206,23 @@ FUNCTION GLIQAL2O3 298.15
   +4.10226192E-4*T**3 -7.98843618E9*T**(-1);  2327 Y
   -1757702.05 +1344.84833*T -192.464*T*LN(T); 6000 N                    92TAY!
 
+FUNCTION GFEO 298.15
+  -279318 +252.848*T -46.12826*T*LN(T) -5.7402984E-3*T**2;  6000 N      96KOW!
+
 FUNCTION GLIQFEO 298.15
   -137252 +224.641*T -37.1815*T*LN(T);  6000 N                          15LIN!
   
 PARAMETER G(LIQUID,AL;0) 298.15
   +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
   -795.991 +177.430209*T -31.748192*T*LN(T); 2900 N                     91DIN!
-
 PARAMETER G(LIQUID,ALO3/2;0) 298.15
   +0.5*GLIQAL2O3#;  6000 N                                              92TAY!
-
 PARAMETER G(LIQUID,B;0) 298.15
   +40723.275 +86.843839*T -15.6641*T*LN(T) -6.864515E-3*T**2
   +0.618878E-6*T**3 +370843*T**(-1);   500.00 Y
   +41119.703 +82.101722*T -14.9827763*T*LN(T) -7.095669E-3*T**2
   +0.507347E-6*T**3 +335484*T**(-1);  2348.00 Y
   +28842.012 +200.94731*T -31.4*T*LN(T);  6000.00 N                     91DIN!
-
 PARAMETER G(LIQUID,BI;0) 298.15
   +11246.017 -20.636399*T -59.608E-20*T**7 +GHSERBI#; 544.55 Y
   +40629.667 -400.415652*T +49.678*T*LN(T) -73.0245E-3*T**2
@@ -10178,102 +10230,81 @@ PARAMETER G(LIQUID,BI;0) 298.15
   +250.689 +162.14485*T -36.041*T*LN(T) +7.4641E-3*T**2 
   -1.05047E-6*T**3+5175*T**(-1); 1200 Y
   +3755.434 +103.960336*T -27.196*T*LN(T); 3000 N                       91DIN!
-
 PARAMETER G(LIQUID,C;0) 298.15 
   +117369-24.63*T +GHSERCC#; 6000 N                                     91DIN!
-
 PARAMETER G(LIQUID,CE;0) 298.15
   +4117.865 -11.423898*T -7.5383948*T*LN(T) -29.36407E-3*T**2
   +4.827734E-6*T**3 -198834*T**(-1);  1000.00 Y
   -6730.605 +183.023193*T -37.6978*T*LN(T);  4000.00 N                  91DIN!
-
 PARAMETER G(LIQUID,CO;0) 298.15 
   +GLIQCO#; 6000 N                                                      91DIN!
-
 PARAMETER G(LIQUID,CR;0) 298.15 
   +GLIQCR#;  6000 N                                                     91DIN!
-
 PARAMETER G(LIQUID,CRO3/2;0) 298.15
   -523537 +130.3885*T -1.98556*T*LN(T) +GLIQCR# 
   +1.5*GHSEROO# ;  6000 N                                               08KJE!
-
 PARAMETER G(LIQUID,CU;0) 298.15
   +12964.735 -9.511904*T -584.89E-23*T**7 +GHSERCU#; 1357.77 Y
   -46.545 +173.881484*T -31.38*T*LN(T); 3200 N                          91DIN!
-
 PARAMETER G(LIQUID,FE;0) 298.15 
   +GLIQFE#; 6000 N                                                      91DIN!
-
-FUNCTION GFEO 298.15
-  -279318 +252.848*T -46.12826*T*LN(T) -5.7402984E-3*T**2;  6000 N      96KOW!
-
 PARAMETER G(LIQUID,FEO,0) 298.15
   +34008 -20.969*T +GFEO#;  6000 N                                      96KOW!
-
 PARAMETER G(LIQUID,FEO3/2,0) 298.15
   +39712 -20.007*T +0.5*GFE2O3#;  6000 N                                96KOW!
-
 PARAMETER G(LIQUID,FES;0) 298.15
   -104225 -1.479*T +GLIQFE# +GLIQSS#;  6000 N                           07LEE!
-
 PARAMETER G(LIQUID,H;0) 298.15
   +8035 +25*T +2*T*LN(T) +0.5*GHSERHH#;  6000 N                         91DIN!
-
+PARAMETER G(LIQUID,HF;0) 298.15
+  +20414.959 +99.790933*T -22.7075*T*LN(T) -4.146145E-3*T**2
+  -0.000477E-6*T**3 -22590*T**(-1);  1000.00 Y
+  +49731.499 -149.91739*T +12.116812*T*LN(T) -21.262021E-3*T**2
+  +1.376466E-6*T**3 -4449699*T**(-1);  2506.00 Y
+  -4247.217 +265.470523*T -44*T*LN(T);  3001 N                          91DIN!
 PARAMETER G(LIQUID,MG;0) 298.15
   +8202.243 -8.83693*T -80.176E-21*T**7 +GHSERMG#; 923 Y
   -5439.869 +195.324057*T -34.3088*T*LN(T);  3000.00 N                  91DIN!
-
 PARAMETER G(LIQUID,MN;0) 298.15 
   +GLIQMN# +5.08809684E-6*(P-101325) 
   +6.98821050E-7*T*(P-101325); 6000 N                                   05GUO!
 PARAMETER G(LIQUID,MNS;0) 298.15
   +26110 -13.94*T +GMNS#;  6000 N                                       15DIL!
-
 PARAMETER G(LIQUID,MO;0) 298.15
   +41831.347 -14.694912*T +424.519E-24*T**7 +GHSERMO#; 2896 Y
   +3538.963 +271.6697*T -42.63829*T*LN(T);  5000.00 N                   91DIN!
-
 PARAMETER G(LIQUID,N;0) 298.15 
   +GLIQN#;  6000 N                                                      91DIN!
-
 PARAMETER G(LIQUID,NB;0) 298.15 
   +29781.555 -10.816418*T -306.098E-25*T**7 +GHSERNB#; 2750 Y
   -7499.398 +260.756148*T -41.77*T*LN(T);  6000.00 N                    91DIN!
-
 PARAMETER G(LIQUID,NI;0) 173
   +16414.686 -9.397*T -382.318E-23*T**7 +GHSERNI#
   +1.67910034E-6*(P-101325) +3.68203821E-7*T*(P-101325); 1728 Y
   -9549.817 +268.597977*T -43.1*T*LN(T) +1.67910034E-6*(P-101325)
   +3.68203821E-7*T*(P-101325); 6000 N                                   05GUO!
-
 PARAMETER G(LIQUID,NIO;0) 298.15
   +54392 -24.413*T +GNIO#;  6000 N                                      96KOW!
-
 PARAMETER G(LIQUID,P;0) 250.00
   -26316.111 +434.930931*T -70.7440584*T*LN(T) -2.898936E-3*T**2
   +39.049371E-6*T**3 +1141147*T**(-1);   317.30 Y
   -7232.449 +133.291873*T -26.326*T*LN(T);  3000.00 N                   91DIN!
-
 PARAMETER G(LIQUID,S;0) 298.15
   +GLIQSS#; 6000 N                                                      91DIN!
-
 PARAMETER G(LIQUID,SI;0) 298.15
   +50696.36 -30.099439*T +209.307E-23*T**7 +GHSERSI#; 1687 Y
   +40370.523 +137.722298*T -27.196*T*LN(T);  3600.00 N                  91DIN!
-
 PARAMETER G(LIQUID,SN;0) 100
   +7103.092 -14.087767*T +147.031E-20*T**7 +GHSERSN#; 505.078 Y
   +9496.31 -9.809114*T -8.2590486*T*LN(T) -16.814429E-3*T**2
   +2.623131E-6*T**3 -1081244*T**(-1);   800.00 Y
   -1285.372+125.182498*T -28.4512*T*LN(T);  3000.00 N                   91DIN!
-
 PARAMETER G(LIQUID,TA;0) 298.15
   +21875.086 +111.561128*T -23.7592624*T*LN(T) -2.623033E-3*T**2
   +0.170109E-6*T**3 -3293*T**(-1);  1000.00 Y
   +43884.339 -61.981795*T +0.0279523*T*LN(T) -12.330066E-3*T**2
   +0.614599E-6*T**3 -3523338*T**(-1);  3290.00 Y
   -6314.543 +258.110873*T -41.84*T*LN(T);  6000.00 N                    91DIN!
-
 PARAMETER G(LIQUID,TI;0) 298.15
   +4134.494 +126.63427*T -23.9933*T*LN(T) -4.777975E-3*T**2
   +0.106716E-6*T**3 +72636*T**(-1);   900.00 Y
@@ -10284,15 +10315,12 @@ PARAMETER G(LIQUID,TI;0) 298.15
   +369519.198 -2554.0225*T +342.059267*T*LN(T) -163.409355E-3*T**2
   +12.457117E-6*T**3 -67034516*T**(-1);  1941.00 Y
   -19887.066 +298.7367*T -46.29*T*LN(T);  6000.00 N                     91DIN!
-
 PARAMETER G(LIQUID,V;0) 298.15
   +20764.117 -9.455552*T -519.136E-24*T**7 +GHSERV#; 2183 Y
   -19617.51 +311.055983*T -47.43*T*LN(T);  6000.00 N                    91DIN!
-
 PARAMETER G(LIQUID,W;0) 298.15
   +52160.584 -14.10999*T -2713.468E-27*T**7 +GHSERW#; 3695 Y
   -30436.051 +375.175*T -54*T*LN(T);  6000.00 N                         91DIN!
-
 PARAMETER G(LIQUID,ZR;0) 298.15
   +18147.69 -9.080812*T +1627.5E-25*T**7 +GHSERZR#; 2128 Y
   -8281.26 +253.812609*T -42.144*T*LN(T);  6000.00 N                    91DIN!
