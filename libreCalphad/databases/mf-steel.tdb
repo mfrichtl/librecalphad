@@ -201,8 +201,9 @@ DATABASE_INFO The following systems are available:'
   N-NB      Huang (1996) and Khvan (2013)'
   N-TI      Jonsson (1996) and Lee (2001) EXCEPT N-RICH NITRIDES'
   N-V       Du (2021) EXCEPT GAS PHASE'
+  NB-TA     Servant (2004)'
   NB-TI     Saunders (1995) EXCEPT ORDERED B2 PHASE'
-  NB-V      Kumar (1994)'
+  NB-V      Kumar (1994) and Servant (2004)'
   NB-W      Huang (1997)'
   NB-ZR     Guillermet (1991)'
   NI-O      Kowalski (1996) and Kjellqvist (2008)'
@@ -214,7 +215,7 @@ DATABASE_INFO The following systems are available:'
   SI-TI     Vahlas (1989)'
   SI-V      Zhang (2008)'
   SI-W      Vahlas (1989) and Frichtl (2024)'
-  TA-V      Danon (2004)'
+  TA-V      Danon (2004) and Servant (2004)'
   TI-CA     Dumitrescu (1999)'
   TI-V      Ghosh (2002) and Guo (2012)'
   V-H       Ukita (2008)'
@@ -269,11 +270,15 @@ DATABASE_INFO The following systems are available:'
   C-N-NB    Lee (2001) and Frisk (2008)'
   C-N-TI    Jonsson (1996), Lee (2001), and Frisk (2004)'
   C-N-V     Frisk (2008)'
+  C-NB-TA   Servant (2004)'
   C-NB-TI   Lee (2001)'
+  C-NB-V    Servant (2004)'
   C-NB-W    Huang (1997)'
   C-NI-SI   Du (1999)'
+  C-TA-V    Servant (2004)'
   C-TI-V    Zhang (2015)'
   C-V-W     Bratberg (2005)'
+  C-V-ZR    Servant (2004)'
   CO-CR-FE  Choi (2019) and Do (2022)'
   CO-CR-MN  Do (2022)'
   CO-CR-NI  Liu (2016)'
@@ -2776,6 +2781,8 @@ PARAMETER L(BCC_A2,TI,V:VA;0) 298.15
 PARAMETER L(BCC_A2,TI,V:VA;1) 298.15
   +2025.39;  6000 N                                                    02GHOA!
 
+PARAMETER L(BCC_A2,TA,V:C;0) 298.15
+  -9879.25 +1*T;  6000 N                                               04SERB!
 PARAMETER L(BCC_A2,TA,V:VA;0) 298.15
   +5476.65; 6000 N                                                      04DAN!
 PARAMETER L(BCC_A2,TA,V:VA;1) 298.15
@@ -2793,12 +2800,14 @@ PARAMETER L(BCC_A2,V:N,VA;0) 298.15
   -1559450.57 +257.074961*T;  6000 N                                    21DU !
 PARAMETER L(BCC_A2,V,W:VA;0) 298.15
   +17828;  6000 N                                                       05BRA!
+PARAMETER L(BCC_A2,V,ZR:C;0) 298.15
+  -40000 +17*T;  6000 N                                                04SERB!
 PARAMETER L(BCC_A2,V,ZR:VA;0) 298.15
-  +2253.9668 +19.4653*T;  6000 N                                        04SER!
+  +2253.9668 +19.4653*T;  6000 N                                       04SERA!
 PARAMETER L(BCC_A2,V,ZR:VA;1) 298.15
-  -9657.3231 +10.8995*T;  6000 N                                        04SER!
+  -9657.3231 +10.8995*T;  6000 N                                       04SERA!
 PARAMETER L(BCC_A2,V,ZR:VA;2) 298.15
-  -593.4275;  6000 N                                                   04SER!
+  -593.4275;  6000 N                                                   04SERA!
 
 
 PARAMETER L(BCC_A2,AL,CO,NB:VA;0) 298.15
@@ -5736,6 +5745,14 @@ PARAMETER L(FCC_A1,NB:C,VA;2) 298.15
 PARAMETER L(FCC_A1,NB:N,VA;0) 298.15
   -65218;  6000 N                                                       96HUA!
 
+PARAMETER L(FCC_A1,NB,TA:C;0) 298.15
+  -3697 +0.119*T +2E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(FCC_A1,NB,TA:C;0) 298.15
+  -33 -0.007*T;  6000 N                                                04SERB!
+PARAMETER L(FCC_A1,NB,TA:VA;0) 298.15
+  -3697 +0.119*T +2E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(FCC_A1,NB,TA:VA;1) 298.15
+  -33 -0.007*T;  6000 N                                                04SERB!
 PARAMETER L(FCC_A1,NB,TI:C;0) 298.15
   -33979;  6000 N                                                       01LEE!
 PARAMETER L(FCC_A1,NB,TI:N;0) 298.15
@@ -5743,14 +5760,17 @@ PARAMETER L(FCC_A1,NB,TI:N;0) 298.15
 PARAMETER L(FCC_A1,NB,TI:VA;0) 298.15
   +13600;  6000 N                                                      95SAUA!
 PARAMETER L(FCC_A1,NB,V:C;0) 298.15
-  +29000;  6000 N                                                       08FRI!
+  $ +29000;  6000 N                                                       08FRI!
+  +35020.05 -6.364001*T -92.7480930E-6*T**2;  6000 N                   04SERB!
 PARAMETER L(FCC_A1,NB,V:C;1) 298.15
-  -5000;  6000 N                                                        08FRI!
+  $ -5000;  6000 N                                                        08FRI!
+  +1000.121 -2.99968*T +14.9564765E-6*T**2;  6000 N                    04SERB!
 PARAMETER L(FCC_A1,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
-$ ESTIMATE SAME NB,V:VA AS HCP_A3
 PARAMETER L(FCC_A1,NB,V:VA;0) 298.15
-  +9080;  6000 N                                                        94KUM!
+  +35020.05 -6.364001*T +92.7480930E-6*T**2;  6000 N                   04SERB!
+PARAMETER L(FCC_A1,NB,V:VA;1) 298.15
+  +1000.121 -2.99968*T +14.9564765E-6*T**2;  6000 N                    04SERB!
 PARAMETER L(FCC_A1,NB,W:C;0) 298.15
   +33160 -14.154*T;  6000 N                                            97HUAA!
 PARAMETER L(FCC_A1,NB,W:C;1) 298.15
@@ -5801,11 +5821,19 @@ PARAMETER L(FCC_A1,SI:C,VA;0) 298.15
 PARAMETER L(FCC_A1,TA:C,VA;0) 298.15
   -60408.46 +4.173*T;  6000 N                                           96FRI!
 
+PARAMETER L(FCC_A1,TA,V:C;0) 298.15
+  +48920 -20.508*T +3.74346E-7*T**2;  6000 N                           04SERB!
+PARAMETER L(FCC_A1,TA,V:C;1) 298.15
+  -110.9634 -1.28982*T +12.71632E-6*T**2;  6000 N                      04SERB!
+PARAMETER L(FCC_A1,TA,V:VA;0) 298.15
+  +4920 -20.508*T +3.74346E-7*T**2;  6000 N                            04SERB!
+PARAMETER L(FCC_A1,TA,V:VA;1) 298.15
+  -110.96344 -1.28982*T +12.71632E-6*T**2;  6000 N                     04SERB!
+
 PARAMETER L(FCC_A1,TI:C,N;0) 298.15
   -72712 +30.95*T;  6000 N                                              04FRI!
 PARAMETER V0(FCC_A1,TI:C,N;0) 298.15
   -2.4953E-7;  6000 N                                                   08FRI!
-
 PARAMETER L(FCC_A1,TI:C,VA;0) 298.15
   -40219.8 -18.250*T;  6000 N                                           03FRI!
 PARAMETER L(FCC_A1,TI:C,VA;1) 298.15
@@ -5839,6 +5867,14 @@ PARAMETER L(FCC_A1,V:N,VA;1) 298.15
 
 PARAMETER L(FCC_A1,V,W:C;0) 298.15
   -28973 +13.3*T;  6000 N                                               05BRA!
+PARAMETER L(FCC_A1,V,ZR:C;0) 298.15
+  +204710.15 -50.6589*T;  6000 N                                       04SERB!
+PARAMETER L(FCC_A1,V,ZR:C;1) 298.15
+  -78288.92 +33.6500*T;  6000 N                                        04SERB!
+PARAMETER L(FCC_A1,V,ZR:VA;0) 298.15
+  +204710.15 -50.6589*T;  6000 N                                       04SERB!
+PARAMETER L(FCC_A1,V,ZR:VA;1) 298.15
+  -78288.92 +33.6500*T;  6000 N                                        04SERB!
 
 PARAMETER L(FCC_A1,W:C,VA;0) 298.15
   -17.98*T;  6000 N                                                     87GUS!
@@ -5955,12 +5991,10 @@ PARAMETER L(FCC_A1,FE,MN,MO:VA;1) 298.15
   +0;  6000 N                                                          17ZHEB!
 PARAMETER L(FCC_A1,FE,MN,MO:VA;2) 298.15
   -180000;  6000 N                                                     17ZHEB!
-
 PARAMETER L(FCC_A1,FE,MN,SI:VA;0) 298.15
   -53347 -67.55*T;  6000 N                                             17ZHEA!
 PARAMETER TC(FCC_A1,FE,MN,SI:VA;0) 298.15
   +13854;  6000 N                                                       93FOR!
-
 PARAMETER L(FCC_A1,FE,MN,TI:VA;0) 298.15
   +12000;  6000 N                                                       21ZHA!
 PARAMETER L(FCC_A1,FE,MN,TI:VA;1) 298.15
@@ -5986,17 +6020,14 @@ PARAMETER L(FCC_A1,FE,NI,SI:VA;1) 298.15
   -115000;  6000 N                                                      23WIT!
 PARAMETER L(FCC_A1,FE,NI,SI:VA;2) 298.15
   -180000;  6000 N                                                      23WIT!
-
 PARAMETER L(FCC_A1,FE,NI,TI:VA;0) 298.15
   +17818;  6000 N                                                       09KEY!
-
 PARAMETER L(FCC_A1,FE,NI,V:VA;0) 298.15
   -80920 +40*T;  6000 N                                                 14ZHA!
 PARAMETER L(FCC_A1,FE,NI,V:VA;1) 298.15
   -70920 +40*T;  6000 N                                                 14ZHA!
 PARAMETER L(FCC_A1,FE,NI,V:VA;2) 298.15
   -85920 +40*T;  6000 N                                                 14ZHA!
-
 PARAMETER L(FCC_A1,FE,NI,W:VA;0) 298.15
   -35044;  6000 N                                                       86GUI!
 PARAMETER L(FCC_A1,FE,NI,W:VA;1) 298.15
@@ -8217,6 +8248,16 @@ PARAMETER L(HCP_A3,NB:C,VA;0) 298.15
 PARAMETER L(HCP_A3,NB:N,VA;0) 298.15
   -950;  6000 N                                                         98ZAJ!
 
+$ ESTIMATE SAME NB,TA:(C,VA) AS FCC_A1
+
+PARAMETER L(HCP_A3,NB,TA:C;0) 298.15
+  -3697 +0.119*T +2E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(HCP_A3,NB,TA:C;0) 298.15
+  -33 -0.007*T;  6000 N                                                04SERB!
+PARAMETER L(HCP_A3,NB,TA:VA;0) 298.15
+  -3697 +0.119*T +2E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(HCP_A3,NB,TA:VA;1) 298.15
+  -33 -0.007*T;  6000 N                                                04SERB!
 PARAMETER L(HCP_A3,NB,TI:C;0) 298.15
   -10739 +13.0928*T;  6000 N                                            01LEE!
 PARAMETER L(HCP_A3,NB,TI:N;0) 298.15
@@ -8229,9 +8270,11 @@ PARAMETER L(HCP_A3,NB,TI:VA;2) 298.15
   +2500;  6000 N                                                       95SAUA!
 $ ESTIMATE SAME NB,V:C AS FCC_A1
 PARAMETER L(HCP_A3,NB,V:C;0) 298.15
-  +21750;  6000 N                                                       08FRI!
+  $ +29000;  6000 N                                                       08FRI!
+  +35020.05 -6.364001*T -92.7480930E-6*T**2;  6000 N                   04SERB!
 PARAMETER L(HCP_A3,NB,V:C;1) 298.15
-  -3750;  6000 N                                                        08FRI!
+  $ -5000;  6000 N                                                        08FRI!
+  +1000.121 -2.99968*T +14.9564765E-6*T**2;  6000 N                    04SERB!
 PARAMETER L(HCP_A3,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
 PARAMETER L(HCP_A3,NB,V:VA;0) 298.15
@@ -8283,6 +8326,14 @@ PARAMETER L(HCP_A3,NI,W:VA;1) 298.15
 PARAMETER L(HCP_A3,TA:C,VA;0) 298.15
   -6917.554;  6000 N                                                    96FRI!
 
+PARAMETER L(HCP_A3,TA,V:C;0) 298.15
+  -45000 +0.2676*T;  6000 N                                            04SERB!
+PARAMETER L(HCP_A3,TA,V:VA;0) 298.15
+  +4920 -20.508*T +3.74346E-7*T**2;  6000 N                            04SERB!
+$ ESTIMATE SAME TA,V: VA AS FCC_A1
+PARAMETER L(HCP_A3,TA,V:VA;1) 298.15
+  -110.96344 -1.28982*T +12.71632E-6*T**2;  6000 N                     04SERB!
+
 PARAMETER L(HCP_A3,TI:C,N;0) 298.15
   -32725;  6000 N                                                      96JONA!
 PARAMETER L(HCP_A3,TI:C,VA;0) 298.15
@@ -8306,8 +8357,13 @@ PARAMETER L(HCP_A3,V:N,VA;1) 298.15
 $ ESTIMATE SAME V,W:C AS FCC_A1
 PARAMETER L(HCP_A3,V,W:C;0) 298.15
   -2172.975 +9.975*T;  6000 N                                           05BRA!
+$ ESTIMATE SAME V,ZR:C AS FCC_A1
+PARAMETER L(HCP_A3,V,ZR:C;0) 298.15
+  +204710.15 -50.6589*T;  6000 N                                       04SERB!
+PARAMETER L(HCP_A3,V,ZR:C;1) 298.15
+  -78288.92 +33.6500*T;  6000 N                                        04SERB!
 PARAMETER L(HCP_A3,V,ZR:VA;0) 298.15
-  +18619.6518 +2.0608*T;  6000 N                                        04SER!
+  +18619.6518 +2.0608*T;  6000 N                                       04SERA!
 
 PARAMETER L(HCP_A3,W:C,VA;0) 298.15
   +4165;  6000 N                                                        89GUI!
@@ -9599,7 +9655,7 @@ PARAMETER G(LAVES_C15,V:TI;0) 298.15
 PARAMETER G(LAVES_C15,V:V;0) 298.15
   +15000 +3*GHSERV#;  6000 N                                           02GHOA!
 PARAMETER G(LAVES_C15,V:ZR;0) 298.15
-  -14357.3712 +5.7519*T +2*GHSERV# +GHSERZR#;  6000 N                   04SER!
+  -14357.3712 +5.7519*T +2*GHSERV# +GHSERZR#;  6000 N                  04SERA!
 
 PARAMETER G(LAVES_C15,ZR:AL;0) 298.15
   +2*GHSERZR# +GHSERAL#;  6000 N                                        24FRI!
@@ -9628,7 +9684,7 @@ PARAMETER G(LAVES_C15,ZR:TA;0) 298.15
 PARAMETER G(LAVES_C15,ZR:TI;0) 298.15
   +2*GHSERZR# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,ZR:V;0) 298.15
-  +24357.3712 -5.7519*T +2*GHSERZR# +GHSERV#;  6000 N                   04SER!
+  +24357.3712 -5.7519*T +2*GHSERZR# +GHSERV#;  6000 N                  04SERA!
 PARAMETER G(LAVES_C15,ZR:ZR;0) 298.15
   +81154.0 -8.33*T +2*GHSERZR# +GHSERZR#;  6000 N                        15LU!
 
@@ -9724,13 +9780,13 @@ PARAMETER L(LAVES_C15,V:TA,V;0) 298.15
 PARAMETER L(LAVES_C15,V:TI,V;0) 298.15
   +5000;  6000 N                                                       02GHOA!
 PARAMETER L(LAVES_C15,V:V,ZR;0) 298.15
-  +283353.8355;  6000 N                                                 04SER!
+  +283353.8355;  6000 N                                                04SERA!
 
 PARAMETER L(LAVES_C15,V,ZR:V;0) 298.15
-  +21202.2498;  6000 N                                                  04SER!
+  +21202.2498;  6000 N                                                 04SERA!
 
 PARAMETER L(LAVES_C15,ZR:V,ZR;0) 298.15
-  +55319.091 +2.2596;  6000 N                                           04SER!
+  +55319.091 +2.2596;  6000 N                                          04SERA!
 
 PARAMETER L(LAVES_C15,CR:CR,NB,ZR;0) 298.15
   -93650.0;  6000 N                                                      15LU!
@@ -10793,11 +10849,11 @@ PARAMETER L(LIQUID,TA,V;0) 298.15
 PARAMETER L(LIQUID,V,W;0) 298.15
   +3972;  6000 N                                                        05BRA!
 PARAMETER L(LIQUID,V,ZR;0) 298.15
-  -17401.8117 +14.2689*T;  6000 N                                       04SER!
+  -17401.8117 +14.2689*T;  6000 N                                      04SERA!
 PARAMETER L(LIQUID,V,ZR;1) 298.15
-  -868.4157 +3.1097*T;  6000 N                                          04SER!
+  -868.4157 +3.1097*T;  6000 N                                         04SERA!
 PARAMETER L(LIQUID,V,ZR;2) 298.15
-  +3201.7954;  6000 N                                                   04SER!
+  +3201.7954;  6000 N                                                  04SERA!
 
 
 PARAMETER L(LIQUID,AL,CO,NB;0) 298.15
@@ -10971,8 +11027,20 @@ PARAMETER L(LIQUID,C,MO,V;0) 298.15
 PARAMETER L(LIQUID,C,N,TI;0) 298.15
   -110875;  6000 N                                                     96JONA!
 
+PARAMETER L(LIQUID,C,NB,TA;0) 298.15
+  +6088 +0.304*T -8E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(LIQUID,C,NB,TA;1) 298.15
+  +5976 +0.296*T -8E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(LIQUID,C,NB,TA;2) 298.15
+  +6088 +0.304*T -8E-6*T**2;  6000 N                                   04SERB!
 PARAMETER L(LIQUID,C,NB,TI;0) 298.15
   +140812;  6000 N                                                      01LEE!
+PARAMETER L(LIQUID,C,NB,V;0) 298.15
+  -125000 -0.288*T +8E-6*T**2;  6000 N                                 04SERB!
+PARAMETER L(LIQUID,C,NB,V;1) 298.15
+  -25000 -0.448*T +8E-6*T**2;  6000 N                                  04SERB!
+PARAMETER L(LIQUID,C,NB,V;2) 298.15
+  -125000 -0.288*T +8E-6*T**2;  6000 N                                 04SERB!
 PARAMETER L(LIQUID,C,NB,W;0) 298.15
   -195015;  6000 N                                                     97HUAA!
 PARAMETER L(LIQUID,C,NB,W;1) 298.15
@@ -10987,12 +11055,25 @@ PARAMETER L(LIQUID,C,NI,SI;1) 298.15
 PARAMETER L(LIQUID,C,NI,SI;2) 298.15
   -145240;  6000 N                                                       99DU!
 
+PARAMETER L(LIQUID,C,TA,V;0) 298.15
+  -300000 -17*T +16E-6*T**2;  6000 N                                   04SERB!
+PARAMETER L(LIQUID,C,TA,V;1) 298.15
+  +45000 -0.152*T +16E-6*T**2;  6000 N                                 04SERB!
+PARAMETER L(LIQUID,C,TA,V;2) 298.15
+  -300000 -17*T +16E-6*T**2;  6000 N                                   04SERB!
 PARAMETER L(LIQUID,C,TI,V;0) 298.15
   -111424.88 -30.606*T;  6000 N                                         15ZHA!
 PARAMETER L(LIQUID,C,TI,V;1) 298.15
   -102629.55 +11.569*T;  6000 N                                         15ZHA!
 PARAMETER L(LIQUID,C,TI,V;2) 298.15
   +180287.50 -86.582*T;  6000 N                                         15ZHA!
+
+PARAMETER L(LIQUID,C,V,ZR;0) 298.15
+  -560190.49 +96.9015*T;  6000 N                                       04SERB!
+PARAMETER L(LIQUID,C,V,ZR;1) 298.15
+  -560190.49 +96.9015*T;  6000 N                                       04SERB!
+PARAMETER L(LIQUID,C,V,ZR;2) 298.15
+  +76944.71 -27.8242*T;  6000 N                                        04SERB!
 
 PARAMETER L(LIQUID,CO,CR,MN;0) 298.15
   -16000;  6000 N                                                        22DO!
@@ -16176,9 +16257,11 @@ NUMBER  SOURCE
 04MIR   'Mirković, Djordje, et al. "Experimental study and thermodynamic 
         re-assessment of the Al-B system." Journal of Alloys and Compounds 
         384.1-2 (2004): 168-174.'
-04SER   'Servant, C. "Thermodynamic assessments of the phase diagrams of the 
+04SERA  'Servant, C. "Thermodynamic assessments of the phase diagrams of the 
         hafnium-vanadium and vanadium-zirconium systems." Journal of phase 
         equilibria and diffusion 26.1 (2005): 39-49.'
+04SERB  'Servant, C., and C. A. Danon. "CALPHAD modelling of the unmixing of 
+        transition metal carbide phases." Calphad 28.4 (2004): 337-353.'
 05BRA   'Bratberg, Johan. "Investigation and modification of carbide sub-
         systems in the multicomponent Fe-C-Co-Cr-Mo-Si-V-W system."
 05GRO   'Gröbner, J., et al. "Experimental investigation and thermodynamic 
