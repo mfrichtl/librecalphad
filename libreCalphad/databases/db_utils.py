@@ -89,6 +89,9 @@ def check_endmembers(db, phase, ref='!'):
                     if len(i.split(',')) > 1:
                         constituent_dict[sl] = i.split(',')
                         sl += 1
+                    elif len(i) <= 2 and i != '!':  # single component sublattice
+                        constituent_dict[sl] = i
+                        sl += 1
                 if splitted_line[-1] == '!':
                     multiline_constituent = False
                 else:
