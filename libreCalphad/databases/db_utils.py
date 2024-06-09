@@ -131,6 +131,8 @@ def check_endmembers(db, phase, ref='!'):
             next_line = ' '
             for i in site_dict.keys():
                 component = endmember.split(':')[i]
+                if component == 'VA':
+                    continue
                 if component in doubled_components:
                     component = component + component
                 if site_dict[i] == 1:
