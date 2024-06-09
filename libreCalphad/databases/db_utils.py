@@ -98,6 +98,8 @@ def check_endmembers(db, phase, ref='!'):
             # Now figure out which endmembers are present
             if line.startswith(f'PARAMETER G({phase}'):
                 endmember = line.split(',')[1].split(';')[0]
+                # Check endmember definition formatting
+                assert len(endmember.split(' ')) == 1, f"Improperly formatted endmember -- {endmember}"
                 # Check to make sure this is a valid endmember
                 for i in range(len(endmember.split(':'))):
                     component = endmember.split(':')[i]
