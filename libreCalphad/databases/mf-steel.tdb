@@ -459,6 +459,8 @@ SPECIES CNN   C1N1N1 !
 SPECIES C2N   C2N1 !
 SPECIES C2N2  C2N2 !
 SPECIES C4N2  C4N2 !
+SPECIES CO2+  CO/+2 !
+SPECIES CO3+  CO/+3 !
 SPECIES CR2+  CR/+2 !
 SPECIES CR3+  CR/+3 !
 SPECIES CRO   CR1O1 !
@@ -5056,7 +5058,7 @@ PARAMETER G(FCC_A1,CO:H;0) 298.15
 PARAMETER G(FCC_A1,CO:N;0) 298.15
   +21028 +284.763*T -50.261*T*LN(T) +198552*T**(-1);  6000 N           92GUIA!
 PARAMETER G(FCC_A1,CO:O;0) 298.15
-  +GHSERCO# +GHSEROO#;  6000 N                                          24FRI!
+  -213318 +107.071*T +GHSERCO# +GHSEROO#;  6000 N                       03CHE!
 PARAMETER G(FCC_A1,CO:VA;0) 298.15 
   +GFCCCO#; 6000 N                                                      91DIN!
 PARAMETER BMAGN(FCC_A1,CO:VA;0) 298.15 
@@ -7546,8 +7548,11 @@ $ PEARSON: cF8
 $ SPACE GROUP: Fm-3m
 
 PHASE HALITE_B1 %B 2 1 1 !
-CONSTITUENT HALITE_B1 : AL3+,CR3+,FE2+,NI2+,NI3+,VA : O2- : !
+CONSTITUENT HALITE_B1 : AL3+,CO2+,CR3+,FE2+,NI2+,NI3+,VA : O2- : !
 
+FUNCTION GCOOS 298.15
+  -252530 +270.075*T -47.825*T*LN(T) -0.005112*T**2 
+  +225008*T**(-1);  6000 N                                              03CHE!
 FUNCTION GNIO 298.15
   -254927.2 +276.208*T -46.0391*T*LN(T) -0.00931454*T**2
   +1.29092E-6*T**3 +382916*T**(-1);  1000 Y
@@ -7558,6 +7563,14 @@ FUNCTION GNIO 298.15
 
 PARAMETER G(HALITE_B1,AL3+:O2-;0) 298.15
   +50000 +0.5*GCORUND#;  3000 N                                         15LIN!
+PARAMETER G(HALITE_B1,CO2+:O2-;0) 298.15
+  +GCOOS#;  6000 N                                                      03CHE!
+PARAMETER BMAGN(HALITE_B1,CO2+:O2-;0) 298.15
+  +2.0;  6000 N                                                         03CHE!
+PARAMETER NT(HALITE_B1,CO2+:O2-;0) 298.15
+  +290;  60000 N                                                        03CHE!
+PARAMETER TC(HALITE_B1,CO2+:O2-;0) 298.15
+  -870;  6000 N                                                         03CHE!
 PARAMETER G(HALITE_B1,CR3+:O2-;0) 298.15
   -563748.9 +407.4569*T -66.02315*T*LN(T) +0.002628*T**2
   -6.944225E-7*T**3 +750881*T**(-1);  1000 Y 
@@ -7673,7 +7686,7 @@ PARAMETER G(HCP_A3,CO:N;0) 298.15
   -13140 +198.577*T -36.621*T*LN(T) +96383*T**(-1) 
   -8.42E-4*T**2;  6000 N                                               92GUIA!
 PARAMETER G(HCP_A3,CO:O;0) 298.15
-  +GHSERCO# +0.25*GHSEROO#;  6000 N                                     24FRI!
+  -122309 +66.269*T +GHSERCO# +0.25*GHSEROO#;  6000 N                   03CHE!
 PARAMETER G(HCP_A3,CO:VA;0) 298.15 
   +GHSERCO#; 6000 N                                                     91DIN!
 PARAMETER BMAGN(HCP_A3,CO:VA;0) 298.15 
@@ -11368,6 +11381,32 @@ PARAMETER L(LIQUID,MN,NI,SI;2) 298.15
   -80000;  6000 N                                                        11HU!
 
 $ ----------------------------------------------------------------------------
+$ IONIC_LIQ
+$ IONIC 2-SUBLATTICE LIQUID MODEL
+$ IT MAY COME IN HANDY TO INCLUDE THIS IN THE DATABASE
+
+PHASE IONIC_LIQ:Y % 2 1 1 !
+CONSTITUENT IONIC_LIQ : CO2+,CO3+ : O2-,VA : !
+
+FUNCTION GCOOLIQ 298.15
+  +42060 -20*T +GCOOS#;  6000 N                                         03CHE!
+
+PARAMETER G(IONIC_LIQ,CO2+:O2-;0) 298.15
+  +2*GCOOLIQ#;  6000 N                                                  03CHE!
+PARAMETER G(IONIC_LIQ,CO2+:VA;0) 298.15
+  +GCOLIQ#;  6000 N                                                     91DIN!
+PARAMETER G(IONIC_LIQ,CO3+:O2-;0) 298.15
+  -76314 +103.63*T +2*GCOOS# +GHSEROO#;  6000 N                         03CHE!
+PARAMETER G(IONIC_LIQ,CO3+:VA;0) 298.15
+  +76314 +103.63*T +2*GCOLIQ# +2*GCOOS# +GHSEROO# -3*GCOOLIQ#;  6000 N  03CHE!
+
+
+PARAMETER L(IONIC_LIQ,CO2+:O2-,VA;0) 298.15
+  +182675 -30.556*T;  6000 N                                            03CHE!
+PARAMETER L(IONIC_LIQ,CO2+:O2-,VA;1) 298.15
+  +54226 -20*T;  6000 N                                                 03CHE!
+
+$ ----------------------------------------------------------------------------
 $ MB_B33
 
 PHASE MB_B33 %B 2 1 1 !
@@ -14837,8 +14876,8 @@ $ PEARSON: cF56
 $ SPACE GROUP: Fd-3m
 
 PHASE SPINEL_H11 %B 4 1 2 2 4 !
-CONSTITUENT SPINEL_H11 : AL3+,CR2+,CR3+,FE2+,FE3+,NI2+ 
-                       : AL3+,CR3+,FE2+,FE3+,NI2+,VA
+CONSTITUENT SPINEL_H11 : AL3+,CO2+,CO3+,CR2+,CR3+,FE2+,FE3+,NI2+ 
+                       : AL3+,CO2+,CO3+,CR3+,FE2+,FE3+,NI2+,VA
                        : CR2+,FE2+,VA 
                        : O2- : !
 
@@ -14896,6 +14935,12 @@ FUNCTION J 298.15
 FUNCTION JFF 298.15
   +46826 -27.266*T;  3000 N                                             15LIN!
 
+FUNCTION GCO3O4 298.15
+  -969727 +915.076*T -150.26*T*LN(T) -0.004773*T**2
+  +1358967*T**(-1);  6000 N                                             03CHE!
+FUNCTION ICO3O4 298.15
+  +95345 -85.852*T +GCO3O4#;  6000 N                                    03CHE!
+
 PARAMETER G(SPINEL_H11,AL3+:AL3+:CR2+:O2-;0) 298.15
   +GHSERAL# +2*GHSERAL# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
 PARAMETER G(SPINEL_H11,AL3+:AL3+:FE2+:O2-;0) 298.15
@@ -14938,6 +14983,16 @@ PARAMETER G(SPINEL_H11,AL3+:VA:FE2+:O2-;0) 298.15
 PARAMETER G(SPINEL_H11,AL3+:VA:VA:O2-;0) 298.15
   +8*GGAMMA# -7.5*GFEAL2O4# +2.5*GF2F2VAB# -5*J#
   +44.9543481*T;  3000 N                                                15LIN!
+
+PARAMETER G(SPINEL_H11,CO2+:CO2+:VA:O2-;0) 298.15
+  +23.05272*T +GCO3O4# +2*ICO3O4#;  6000 N                              03CHE!
+PARAMETER G(SPINEL_H11,CO2+:CO3+:VA:O2-;0) 298.15
+  +ICO3O4#;  6000 N                                                     03CHE!
+
+PARAMETER G(SPINEL_H11,CO3+:CO2+:VA:O2-;0) 298.15
+  +23.05272*T +2*ICO3O4#;  6000 N                                       03CHE!
+PARAMETER G(SPINEL_H11,CO3+:CO3+:VA:O2-;0) 298.15
+  +0;  6000 N                                                           03CHE!
 
 PARAMETER G(SPINEL_H11,CR2+:AL3+:CR2+:O2-;0) 298.15
   +GHSERCR# +2*GHSERAL# +2*GHSERCR# +4*GHSEROO#;  6000 N                24FRI!
@@ -15414,6 +15469,11 @@ PARAMETER BMAGN(SPINEL_H11,NI2+:VA:VA:O2-;0) 298.15
 PARAMETER TC(SPINEL_H11,NI2+:VA:VA:O2-;0) 298.15
   +858;  6000 N                                                         08KJE!
 
+
+PARAMETER L(SPINEL_H11,CO2+,CO3+:CO2+:VA:O2-;0) 298.15
+  -30847 +44.249*T;  6000 N                                             03CHE!
+PARAMETER L(SPINEL_H11,CO2+,CO3+:CO3+:VA:O2-;0) 298.15
+  -30847 +44.249*T;  6000 N                                             03CHE!
 
 PARAMETER L(SPINEL_H11,CR3+,FE2+:CR3+:VA:O2-;0)  298.15
   +20000;  6000 N                                                       08KJE!
@@ -16373,6 +16433,9 @@ NUMBER  SOURCE
         Journal of alloys and compounds 339.1-2 (2002): 118-139.'
 03BRA   'Bratberg, Johan, and Bo Sundman. "A thermodynamic assessment of the 
         Co-V system." Journal of phase equilibria 24 (2003): 495-503.'
+03CHE   'Chen, Ming, Bengt Hallstedt, and Ludwig J. Gauckler. "Thermodynamic 
+        assessment of the Co-O system." Journal of Phase Equilibria 24 
+        (2003): 212-227.'
 03FRI   'Frisk, Karin. "A revised thermodynamic description of the Ti-C 
         system." Calphad 27.4 (2003): 367-373.'                 
 03MIE   'Miettinen, Jyrki. "Thermodynamic description of the Cu-Al-Mn system
