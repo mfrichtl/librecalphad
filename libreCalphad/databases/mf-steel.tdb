@@ -225,7 +225,7 @@ DATABASE_INFO The following systems are available:'
   NI-TI     Bellen (1996) and De Keyzer (2009) ORDERING INCORRECT'
   NI-V      Korb (1998)'
   NI-W      Gustafson (1988) and Isomäki (2017)'
-  SI-O      Hallstedt (1992) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
+  O-SI      Hallstedt (1992) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
   SI-TA     Vahlas (1989)'
   SI-TI     Vahlas (1989)'
   SI-V      Zhang (2008)'
@@ -479,6 +479,7 @@ SPECIES CRO   CR1O1 !
 SPECIES CRO3/2   CR1O1.5 !
 SPECIES CRO2  CR1O2 !
 SPECIES CRO3  CR1O3 !
+SPECIES CU2S  CU2S1 !
 SPECIES FE2+  FE/+2 !
 SPECIES FE3+  FE/+3 !
 SPECIES FEO   FE1O1 !
@@ -1400,7 +1401,6 @@ PARAMETER L(ALM3_D019,TI:NB,TI;2) 298.15
   +40;  6000 N                                                         95SAUA!
 
 $ ----------------------------------------------------------------------------
-
 $ AL2CU_C16
 $ PROTOTYPE: AL2CU
 $ SPACE GROUP: I4/mcm
@@ -1962,7 +1962,6 @@ PARAMETER G(AL18CR2MG3,AL:CR:MG;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ AL99CR23
-
 $ ALPHA_RHOMBO_B
 
 PHASE ALPHA_RHOMBO_B % 1 1 !
@@ -1974,6 +1973,18 @@ PARAMETER G(ALPHA_RHOMBO_B,B;0) 298.15
   +28477.506 -106.789208*T +12.1072478*T*LN(T) -13.316875E-3*T**2
   +0.706895E-6*T**3 -8002403*T**(-1); 3000 Y
   -25699.64 +225.127135*T -31.4*T*LN(T); 6000 N                         91DIN!
+
+$ ----------------------------------------------------------------------------
+$ ANILITE
+$ PROTOTYPE: CU7S4
+$ SPACE GROUP: Pnma
+$ PEARSON: oP44
+
+PHASE ANILITE % 2 1.75 1 !
+CONSTITUENT ANILITE : CU : S : !
+
+PARAMETER G(ANILITE,CU:S;0) 298.15
+  -76000.8 -22.78185*T +1.75*GHSERCU# +GHSERSS#;  6000 N                07LEE!
 
 $ ----------------------------------------------------------------------------
 $ B4C_D1G
@@ -4144,6 +4155,30 @@ PARAMETER L(CEMENTITE_D011,NI:B,C;0) 298.15
   +50000;  6000 N                                                       22OIK!
 
 $ ----------------------------------------------------------------------------
+$ CHALCOCITE_ALPHA
+$ CU2S, LOW-TEMPERATURE
+$ SPACE GROUP: P2_1/c
+$ PEARSON: mP144
+
+PHASE CHALCOCITE_ALPHA % 2 2 1 !
+CONSTITUENT CHALCOCITE_ALPHA : CU : S : !
+
+PARAMETER G(CHALCOCITE_ALPHA,CU:S;0) 298.15
+  -78474.5 -83.8534*T +7.2618*T*LN(T) +2*GHSERCU# +GHSERSS#;  6000 N    07LEE!
+
+$ ----------------------------------------------------------------------------
+$ CHALCOCITE_BETA
+$ CU2S, HIGH-TEMPERATURE
+$ SPACE GROUP: P6_3/mmc
+$ PEARSON: hP16
+
+PHASE CHALCOCITE_BETA % 2 2 1 !
+CONSTITUENT CHALCOCITE_BETA : CU : S : !
+
+PARAMETER G(CHALCOCITE_BETA,CU:S;0) 298.15
+  -79412 -56.4306*T +3.0602*T*LN(T) +2*GHSERCU# +GHSERSS#;  6000 N      07LEE!
+
+$ ----------------------------------------------------------------------------
 $ CHI_A12
 
 PHASE CHI_A12 % 3 24 10 24 !
@@ -4373,6 +4408,18 @@ PARAMETER L(CO2SI_BETA,CO,SI:SI;0) 298.15
 
 PARAMETER L(CO2SI_BETA,SI:CO,SI;0) 298.15
   +190.638;  6000 N                                                     06ZHA!
+
+$ ----------------------------------------------------------------------------
+$ COVELLITE_B18
+$ PROTOTYPE: CUS
+$ SPACE GROUP: P6_3/mmc
+$ PEARSON: hP12
+
+PHASE COVELLITE_B18 % 2 1 1 !
+CONSTITUENT COVELLITE_B18 : CU : S : !
+
+PARAMETER G(COVELLITE_B18,CU:S;0) 298.15
+  -52804.7 -6.6291*T +GHSERCU# +GHSERSS#;  6000 N                       07LEE!
 
 $ ----------------------------------------------------------------------------
 $ CRISTOBALITE_C9
@@ -5010,6 +5057,62 @@ PARAMETER L(DIAMOND_A4,C,FE,MN;0) 298.15
   +300000 + 1000*T;  6000 N                                             23FRI!
 PARAMETER L(DIAMOND_A4,FE,NI,SI;0) 298.15
   +350000;  6000 N                                                      23WIT!
+
+$ ----------------------------------------------------------------------------
+$ DIGENITE
+$ PROTOTYPE: CU2S
+$ SPACE GROUP: Fm-3m
+$ PEARSON: cF44
+
+PHASE DIGENITE % 3 2 1 1 !
+CONSTITUENT DIGENITE : CU,FE,VA : CU,VA : S : !
+
+PARAMETER G(DIGENITE,CU:CU:S;0) 298.15
+  -49.3852*T +2*GHSERCU# +GHSERCU# +GHSERSS#;  6000 N                   07LEE!
+
+PARAMETER G(DIGENITE,CU:VA:S;0) 298.15
+  -73851.5 -97.82124*T +8.1715*T*LN(T) +2*GHSERCU# +GHSERSS#;  6000 N   07LEE!
+
+PARAMETER G(DIGENITE,FE:CU:S;0) 298.15
+  +2*GHSERFE# +GHSERCU# +GHSERSS#;  6000 N                              07LEE!
+
+PARAMETER G(DIGENITE,FE:VA:S;0) 298.15
+  +2*GHSERFE# +GHSERSS#;  6000 N                                        07LEE!
+
+PARAMETER G(DIGENITE,VA:CU:S;0) 298.15
+  +100000 +GHSERCU# +GHSERSS#;  6000 N                                  07LEE!
+
+PARAMETER G(DIGENITE,VA:VA:S;0) 298.15
+  +105281 +GHSERSS#;  6000 N                                            07LEE!
+
+
+PARAMETER L(DIGENITE,CU,FE:VA:S;0) 298.15
+  -81000;  6000 N                                                       07LEE!
+PARAMETER L(DIGENITE,CU,VA:VA:S;0) 298.15
+  -154893 +51.3874*T;  6000 N                                           07LEE!
+
+PARAMETER L(DIGENITE,FE,VA:VA:S;0) 298.15
+  -550000;  6000 N                                                      07LEE!
+
+
+PARAMETER L(DIGENITE,CU,FE,VA:VA:S;0) 298.15
+  -900000;  6000 N                                                      07LEE!
+PARAMETER L(DIGENITE,CU,FE,VA:VA:S;1) 298.15
+  +0;  6000 N                                                           07LEE!
+PARAMETER L(DIGENITE,CU,FE,VA:VA:S;2) 298.15
+  +0;  6000 N                                                           07LEE!
+
+$ ----------------------------------------------------------------------------
+$ DJURLEITE
+$ PROTOTYPE: CU31S16
+$ SPACE GROUP: P2_1/c
+$ PEARSON: mP376
+
+PHASE DJURLEITE % 2 1.93 1 !
+CONSTITUENT DJURLEITE : CU : S : !
+
+PARAMETER G(DJURLEITE,CU:S;0) 298.15
+  -79718.6 -30.97899*T +1.93*GHSERCU# +GHSERSS#;  6000 N                07LEE!
 
 $ ----------------------------------------------------------------------------
 $ E_PHASE
@@ -8254,9 +8357,9 @@ PARAMETER BMAGN(HCP_A3,CU,NI:VA;0) 298.15
   +0.52;  6000 N                                                        92MEY!
 PARAMETER TC(HCP_A3,CU,NI:VA;0) 298.15
   +633.0;  6000 N                                                       92MEY!
-$ ESTIMATE SAME CU,S:VA AS FCC_A1
+$ ESTIMATE SIMILAR CU,S:VA AS FCC_A1, TEMP TERM MADE IT SHOW UP IN BINARY
 PARAMETER L(HCP_A3,CU,S:VA;0) 298.15
-  -102200 -26.5*T;  6000 N                                              07LEE!
+  -102200;  6000 N                                                      24FRI!
 PARAMETER L(HCP_A3,CU,SI:VA;0) 298.15
   -26798.8 -0.731518*T;  6000 N                                         00YAN!
 PARAMETER L(HCP_A3,CU,SI:VA;1) 298.15
@@ -10510,8 +10613,8 @@ $ ----------------------------------------------------------------------------
 $ LIQUID
 
 PHASE LIQUID:L % 1 1!
-CONSTITUENT LIQUID:L : AL,ALO3/2,B,BI,C,CE,CO,CR,CRO3/2,CU,FE,FEO,FEO3/2,FES,
-                       H,HF,MG,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,SN,TA,TI,V,
+CONSTITUENT LIQUID:L : AL,ALO3/2,B,BI,C,CE,CO,CR,CRO3/2,CU,CU2S,FE,FEO,FEO3/2,
+                       FES,H,HF,MG,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,SN,TA,TI,V,
                        W,ZR : ! 
 
 FUNCTION GLIQAL2O3 298.15
@@ -10561,6 +10664,9 @@ PARAMETER G(LIQUID,CRO3/2;0) 298.15
 PARAMETER G(LIQUID,CU;0) 298.15
   +12964.735 -9.511904*T -584.89E-23*T**7 +GHSERCU#; 1357.77 Y
   -46.545 +173.881484*T -31.38*T*LN(T); 3200 N                          91DIN!
+PARAMETER G(LIQUID,CU2S;0) 298.15
+  -73851.5 -97.82124*T +8.1715*T*LN(T) +22136 -15.6267*T 
+  +2*GHSERCU# +GHSERSS#;  6000 N                                        07LEE!
 PARAMETER G(LIQUID,FE;0) 298.15 
   +GLIQFE#; 6000 N                                                      91DIN!
 PARAMETER G(LIQUID,FEO,0) 298.15
@@ -10903,6 +11009,10 @@ PARAMETER L(LIQUID,CR,ZR;1) 298.15
 PARAMETER L(LIQUID,CR,ZR;2) 298.15
   -8284.8 -0.92*T;  6000 N                                               15LU!
 
+PARAMETER L(LIQUID,CU,CU2S;0) 298.15
+  +85840 -27.6287*T;  6000 N                                            07LEE!
+PARAMETER L(LIQUID,CU,CUS2;1) 298.15
+  -12900 +8.5262*T;  6000 N                                             07LEE!
 PARAMETER L(LIQUID,CU,FE;0) 298.15
   +35625.8 -2.19045*T;  6000 N                                          95CHE!
 PARAMETER L(LIQUID,CU,FE;1) 298.15
@@ -10933,6 +11043,17 @@ PARAMETER L(LIQUID,CU,ZR;1) 298.15
   +6344.7 +0.24*T;  6000 N                                             17LIUA!
 PARAMETER L(LIQUID,CU,ZR;2) 298.15
   -16141.0 +9.30*T;  6000 N                                            17LIUA!
+
+PARAMETER L(LIQUID,CU2S,FE;0) 298.15
+  +55651;  6000 N                                                       07LEE!
+PARAMETER L(LIQUID,CU2S,FES;0) 298.15
+  -19638;  6000 N                                                       07LEE!
+PARAMETER L(LIQUID,CU2S,FES;1) 298.15
+  -8035;  6000 N                                                        07LEE!
+PARAMETER L(LIQUID,CU2S,S;0) 298.15
+  +40406.6 -17.5576*T;  6000 N                                          07LEE!
+PARAMETER L(LIQUID,CU2S,S;1) 298.15
+  -100287 +35.0355*T;  6000 N                                           07LEE!
 
 PARAMETER L(LIQUID,FE,FEO;0) 298.15
   +109625.2 -20.050*T;  6000 N                                          96KOW!
@@ -11497,9 +11618,11 @@ PARAMETER L(LIQUID,CU,FE,MN;1) 298.15
   +82096 -40*T;  6000 N                                                 07WAN!
 PARAMETER L(LIQUID,CU,FE,MN;2) 298.15
   +25901.5 -20*T;  6000 N                                               07WAN!
-
 PARAMETER L(LIQUID,CU,FE,NI;0) 298.15
   -68786 +30.9*T; 6000 N                                                93SUN!
+
+PARAMETER L(LIQUID,CU2S,FES,S;0) 298.15
+  -160286;  6000 N                                                      07LEE!
 
 PARAMETER L(LIQUID,FE,MN,N;0) 298.15
   -15211 +18.43*T;  6000 N                                             93QIUB!
