@@ -759,21 +759,21 @@ $ NI
 FUNCTION GHSERNI  173
   -5179.159 +117.854*T -22.096*T*LN(T) -4.8407E-3*T**2;  1728 Y
   -27840.620 +279.134977*T -43.1*T*LN(T) +1127.54E28*T**(-9); 3000 N    91DIN!
-
 FUNCTION GBCCNI  298.15
   +8715.084 -3.556*T +GHSERNI#; 3000 N                                  91DIN!
-
 FUNCTION GBCTNI  298.15
   +10023 -4.556*T +GHSERNI#; 3000 N                                     91DIN!
-
 FUNCTION GHCPNI  298.15
   +1046 +1.2552*T +GHSERNI#; 3000 N                                     91DIN!
-
 FUNCTION GC15NI  298.15
   +5000 +GHSERNI#;  6000 N                                             02GHOA!
-
 FUNCTION GC36NI  298.15
   +5000 +GHSERNI#;  6000 N                                             02GHOA!
+FUNCTION GLIQNI 298.15
+  +16414.686 -9.397*T -382.318E-23*T**7 +GHSERNI#
+  +1.67910034E-6*(P-101325) +3.68203821E-7*T*(P-101325); 1728 Y
+  -9549.817 +268.597977*T -43.1*T*LN(T) +1.67910034E-6*(P-101325)
+  +3.68203821E-7*T*(P-101325); 6000 N                                   05GUO!
 
 $ ----------------------------------------------------------------------------
 $ O
@@ -786,14 +786,19 @@ FUNCTION GHSEROO  298.15
   +0.006781E-6*T**3 +262905*T**(-1);  3300 Y
   -13986.728 +31.259624*T -18.9536*T*LN(T) -0.425243E-3*T**2
   +0.010721E-6*T**3 +4383200*T**(-1);  6000 N                           09DIN!
-
- FUNCTION GLIQO 298.15 
+FUNCTION GGASO2 298.15
+  $ +2*GHSEROO# +R*T*LN(P/101325);  6000 N                                91DIN!
+  -6961.74451 -51.0057202*T -22.2710136*T*LN(T) -0.0101977469*T**2
+  +1.32369208E-6*T**3 -76729.7484*T**(-1) +R*T*LN(P/101325); 1000 Y
+  -13137.5203 +25.3200332*T -33.627603*T*LN(T) -0.00119159274*T**2
+  +1.35611111E-8*T**3 +525809.556*T**(-1) +R*T*LN(P/101325); 3300 Y 
+  -27973.4908 +62.5195726*T -37.9072074*T*LN(T) -8.50483772E-4*T**2
+  +2.14409777E-8*T**3 +8766421.4*T**(-1) +R*T*LN(P/101325);  6000 N     08KJE!
+FUNCTION GLIQO 298.15 
   -2648.9 +31.44*T +GHSEROO#; 6000 N                                    09DIN!
-
- FUNCTION GBCCO 298.15 
+FUNCTION GBCCO 298.15 
   +30000 +GHSEROO#; 6000 N                                              09DIN!
-
- FUNCTION GFCCO 298.15 
+FUNCTION GFCCO 298.15 
   +30000 +GHSEROO#; 6000 N                                              09DIN!
 
 $ ----------------------------------------------------------------------------
@@ -5711,7 +5716,7 @@ PARAMETER L(FCC_A1,CR,FE:N;1) 298.15
 PARAMETER L(FCC_A1,CR,FE:VA;0) 298.15
   +10833 -7.477*T;  6000 N                                             87ANDA!
 PARAMETER L(FCC_A1,CR,FE:VA;1) 298.15
-  +1410;  6000 N                                                       87ANDA!
+  -1410;  6000 N                                                       87ANDA!
 PARAMETER L(FCC_A1,CR,MG:VA;0) 298.15
   +80*T;  6000 N                                                        91ANS!
 PARAMETER L(FCC_A1,CR,MN:C;0) 298.15
@@ -7415,6 +7420,7 @@ FUNCTION GHGASAL2O 298.15
 FUNCTION GHGASAL2O2 298.15
   -3.94551E5 +2.89872E2*T;  6000 N                                      92TAY!
 
+
 PARAMETER G(GAS,AL;0) 298.15
   +2.07817E1 -2.06115E-6*T +1.90356E-9*T**2 +5.39334E4*T**(-2) 
   +GHGASAL# +R*T*LN(P/101325);  3000 Y
@@ -7600,7 +7606,7 @@ PARAMETER G(GAS,O;0) 298.15
   +252301.473 -3973170.33*T**(-1) -51.974853*T -17.2118798*T*LN(T)
   -5.41356254E-4*T**2 +7.64520703E-9*T**3 +R*T*LN(P/101325);  6000 N    96KOW!
 PARAMETER G(GAS,O2;0)  298.15
-  +2*GHSEROO# +R*T*LN(P/101325);  6000 N                                91DIN!
+  +GGASO2#;  6000 N                                                     91DIN!
 PARAMETER G(GAS,O3;0) 298.15
   +133772.042 -11328.9959*T**(-1) -84.8602165*T -19.8314069*T*LN(T)
   -0.0392015696*T**2 +7.90727187E-6*T**3 +R*T*LN(P/101325);  600 Y 
@@ -8968,7 +8974,8 @@ $ IONIC 2-SUBLATTICE LIQUID MODEL
 $ IT MAY COME IN HANDY TO INCLUDE THIS IN THE DATABASE
 
 PHASE IONIC_LIQ:Y % 2 1 1 !
-CONSTITUENT IONIC_LIQ : CO2+,CO3+,FE2+,MN2+,SI4+ : O2-,S,S2-,SI,SIO2,VA : !
+CONSTITUENT IONIC_LIQ : CO2+,CO3+,CR3+,FE2+,MN2+,NI2+,SI4+ 
+                      : FEO3/2,O2-,S,S2-,SI,SIO2,VA : !
 
 FUNCTION GCOOLIQ 298.15
   +42060 -20*T +GCOOS#;  6000 N                                         03CHE!
@@ -8985,6 +8992,17 @@ PARAMETER G(IONIC_LIQ,CO3+:O2-;0) 298.15
   -76314 +103.63*T +2*GCOOS# +GHSEROO#;  6000 N                         03CHE!
 PARAMETER G(IONIC_LIQ,CO3+:VA;0) 298.15
   +76314 +103.63*T +2*GLIQCO# +2*GCOOS# +GHSEROO# -3*GCOOLIQ#;  6000 N  03CHE!
+PARAMETER G(IONIC_LIQ,CR3+:O2-;0) 298.15
+  -1047074 +260.777*T -3.97112*T*LN(T) +2*GLIQCR# 
+  +1.5*GGASO2#;  6000 N                                                 08KJE!
+PARAMETER G(IONIC_LIQ,CR3+:VA;0) 298.15
+  +GLIQCR#;  6000 N                                                     08KJE!
+PARAMETER G(IONIC_LIQ,FE2+:O2-;0) 298.15
+  +4*GFEOLIQ#;  6000 N                                                  08KJE!
+PARAMETER G(IONIC_LIQ,FE2+:VA;0) 298.15
+  +GLIQFE#;  6000 N                                                     08KJE!
+PARAMETER G(IONIC_LIQ,FEO3/2;0) 298.15
+  -89819 +39.962*T +2.5*GFEOLIQ#;  6000 N                               08KJE!
 PARAMETER G(IONIC_LIQ,FE2+:S2-;0) 298.15
   -208450 -2.958*T +2*GLIQFE# +2*GLIQSS#;  6000 N                       07LEE!
 PARAMETER G(IONIC_LIQ,FE2+:VA;0) 298.15
@@ -8993,6 +9011,10 @@ PARAMETER G(IONIC_LIQ,MN2+:S2-;0) 298.15
   +52220 -27.88*T +GMNS#;  6000 N                                       15DIL!
 PARAMETER G(IONIC_LIQ,MN2+:VA;0) 298.15
   +GLIQMN#;  6000 N                                                     91DIN!
+PARAMETER G(IONIC_LIQ,NI2+:O2-;0) 298.15
+  -402345.6 +176.606*T -4.35796*T*LN(T) +2*GLIQNI# +GGASO2#;  6000 N   08KJE!
+PARAMETER G(IONIC_LIQ,NI2+:VA;0) 298.15
+  +GLIQNI#;  6000 N                                                     08KJE!
 PARAMETER G(IONIC_LIQ,S;0) 298.15
   +GLIQSS#;  6000 N                                                     91DIN!
 PARAMETER G(IONIC_LIQ,SI;0) 298.15
@@ -9008,6 +9030,43 @@ PARAMETER L(IONIC_LIQ,CO2+:O2-,VA;0) 298.15
 PARAMETER L(IONIC_LIQ,CO2+:O2-,VA;1) 298.15
   +54226 -20*T;  6000 N                                                 03CHE!
 
+PARAMETER L(IONIC_LIQ,CR3+:O2-,VA;0) 298.15
+  +280000 -99.3*T;  6000 N                                              08KJE!
+PARAMETER L(IONIC_LIQ,CR3+:02-,VA;1) 298.15
+  -146000;  6000 N                                                      08KJE!
+PARAMETER L(IONIC_LIQ,CR3+:02-,VA;2) 298.15
+  -65000;  6000 N                                                       08KJE!
+
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:02-;0) 298.15
+  -60000 +38.3*T;  6000 N                                               08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:02-;1) 298.15
+  +8650;  6000 N                                                        08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:02-;3) 298.15
+  -12975;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:VA;0) 298.15
+  -17737 +7.996546*T;  6000 N                                           08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:VA;1) 298.15
+  -1331;  6000 N                                                        08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:02-;0) 298.15
+  +60000 -49.1*T;  6000 N                                               08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:VA;0) 298.15
+  +318 -7.3318*T;  6000 N                                               08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:VA;1) 298.15
+  +16941 -6.3696*T;  6000 N                                             08KJE!
+
+PARAMETER L(IONIC_LIQ,FE2+:FEO3/2,O2-;0) 298.15
+  -26362;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,FE2+:FEO3/2,O2-;1) 298.15
+  +13353;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,FE2+:O2-,VA;0) 298.15
+  +176681 -16.368*T;  6000 N                                            08KJE!
+PARAMETER L(IONIC_LIQ,FE2+:O2-,VA;1) 298.15
+  -65655 +30.869*T;  6000 N                                             08KJE!
+
+PARAMETER L(IONIC_LIQ,FE2+,NI2+:VA;0) 298.15
+  -16911 +5.1622*T;  6000 N                                             08KJE!
+PARAMETER L(IONIC_LIQ,FE2+,NI2+:VA;1) 298.15
+  +10180 -4.146656*T;  6000 N                                           08KJE!
 PARAMETER L(IONIC_LIQ,FE2+:S,S2-;0) 298.15
   +96626 -43.614*T;  6000 N                                             07LEE!
 PARAMETER L(IONIC_LIQ,FE2+:S,S2-;1) 298.15
@@ -9033,9 +9092,43 @@ PARAMETER L(IONIC_LIQ,MN2+:S2-,VA;0) 298.15
 PARAMETER L(IONIC_LIQ,MN2+:S2-,VA;1) 298.15
   -11400;  6000 N                                                       15DIL!
 
+PARAMETER L(IONIC_LIQ,NI2+:O2-,VA;0) 298.15
+  +176711 -50.2286*T;  6000 N                                           08KJE!
+PARAMETER L(IONIC_LIQ,NI2+:O2-,VA;1) 298.15
+  +22914.8;  6000 N                                                     08KJE!
+PARAMETER L(IONIC_LIQ,NI2+:O2-,VA;2) 298.15
+  +42079.6;  6000 N                                                     08KJE!
+
 PARAMETER L(IONIC_LIQ,SI4+:SIO2,VA;0) 298.15
   +120000 +14.4*T;  6000 N                                              92HAL!
 
+
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;0) 298.15
+  -61730;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;1) 298.15
+  -8650;  6000 N                                                        08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;2) 298.15
+  +12975;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;0) 298.15
+  -340000;  6000 N                                                      08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;1) 298.15
+  +0;  6000 N                                                           08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;2) 298.15
+  -340000;  6000 N                                                      08KJE!
+
+PARAMETER L(IONIC_LIQ,CR3+,FE2+,NI2+:VA;0) 298.15
+  +36583;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+,NI2+:VA;1) 298.15
+  +13254;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+,NI2+:VA;2) 298.15
+  -10018;  6000 N                                                       08KJE!
+
+PARAMETER L(IONIC_LIQ,FE2+,NI2+:O2-,VA;0) 298.15
+  -69412.057;  6000 N                                                   08KJE!
+PARAMETER L(IONIC_LIQ,FE2+,NI2+:O2-,VA;1) 298.15
+  +71409.34;  6000 N                                                    08KJE!
+PARAMETER L(IONIC_LIQ,FE2+,NI2+:O2-,VA;2) 298.15
+  +10202.34;  6000 N                                                    08KJE!
 
 PARAMETER L(IONIC_LIQ,FE2+,MN2+:S,S2-;0) 298.15
   +300000;  6000 N                                                      15DIL!
@@ -10629,6 +10722,8 @@ FUNCTION GLIQAL2O3 298.15
   -1757702.05 +1344.84833*T -192.464*T*LN(T); 6000 N                    92TAY!
 FUNCTION GFEO 298.15
   -279318 +252.848*T -46.12826*T*LN(T) -5.7402984E-3*T**2;  6000 N      96KOW!
+FUNCTION GFEOLIQ 298.15
+  +34008 -20.969*T +GFEO#;  6000 N                                      96KOW!
   
 PARAMETER G(LIQUID,AL;0) 298.15
   +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
@@ -10670,7 +10765,7 @@ PARAMETER G(LIQUID,CU2S;0) 298.15
 PARAMETER G(LIQUID,FE;0) 298.15 
   +GLIQFE#; 6000 N                                                      91DIN!
 PARAMETER G(LIQUID,FEO,0) 298.15
-  +34008 -20.969*T +GFEO#;  6000 N                                      96KOW!
+  +GFEOLIQ#;  6000 N                                                    96KOW!
 PARAMETER G(LIQUID,FEO3/2,0) 298.15
   +39712 -20.007*T +0.5*GFE2O3#;  6000 N                                96KOW!
 PARAMETER G(LIQUID,FES;0) 298.15
@@ -10700,10 +10795,7 @@ PARAMETER G(LIQUID,NB;0) 298.15
   +29781.555 -10.816418*T -306.098E-25*T**7 +GHSERNB#; 2750 Y
   -7499.398 +260.756148*T -41.77*T*LN(T);  6000 N                       91DIN!
 PARAMETER G(LIQUID,NI;0) 173
-  +16414.686 -9.397*T -382.318E-23*T**7 +GHSERNI#
-  +1.67910034E-6*(P-101325) +3.68203821E-7*T*(P-101325); 1728 Y
-  -9549.817 +268.597977*T -43.1*T*LN(T) +1.67910034E-6*(P-101325)
-  +3.68203821E-7*T*(P-101325); 6000 N                                   05GUO!
+  +GLIQNI#;  6000 N                                                     05GUO!
 PARAMETER G(LIQUID,NIO;0) 298.15
   +54392 -24.413*T +GNIO#;  6000 N                                      96KOW!
 PARAMETER G(LIQUID,P;0) 250.00
