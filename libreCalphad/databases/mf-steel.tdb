@@ -345,6 +345,7 @@ DATABASE_INFO The following systems are available:'
   FE-NI-TI  De Keyzer (2009) EXCEPT ORDERED PHASES'
   FE-NI-V   Zhao (2014)'
   FE-NI-W   Guillermet (1986)'
+  FE-O-S    Shishin (2015)'
   FE-TI-V   Guo (2012)'
   MN-NI-SI  Hu (2011)'
   MO-TI-V   Hu (2016)'
@@ -6716,6 +6717,22 @@ PARAMETER L(FESI2_H,FE,SI:SI;0) 298.15
   -1000;  6000 N                                                        23WIT!
 
 $ ----------------------------------------------------------------------------
+$ FESO4
+$ FE (II) SULFATE, FERROUS SULFATE
+$ SPACE GROUP: Pnma
+$ PEARSON: oP24
+
+PHASE FESO4 % 3 1 1 4 !
+CONSTITUENT FESO4 : FE : S : O : !
+
+PARAMETER G(FESO4,FE:S:O;0) 298.15
+  -766593.6 +1296.4616*T -192.5487*T*LN(T) -0.01160265*T**2
+  +3.62620E-6*T**3 -2218465.7*T**(-1) -43771.4131*LN(T);  800 Y 
+  -995911.2 +927.0702*T -150.7843*T*LN(T) -0.00571347*T**2
+  +3366120.1*T**(-1);  2000 Y 
+  -1012032.9 +1085.46319*T -171.9552*T*LN(T);  6000 N                   15SHI!
+
+$ ----------------------------------------------------------------------------
 $ FEZRNB_TAU
 $ FEZRNB INTERMETALLIC TAU
 $ SPACE GROUP: Fd-3m
@@ -6780,6 +6797,20 @@ PARAMETER L(FEZR3_E1A,FE:FE,ZR;0) 298.15
 
 PARAMETER L(FEZR3_E1A,FE,ZR:ZR;0) 298.15
   +32200.0;  6000 N                                                      17LU!
+
+$ ----------------------------------------------------------------------------
+$ FE2SO43
+$ FE (III) SULFATE, FERRIC SULFATE
+
+PHASE FE2SO43 % 3 2 3 12 !
+CONSTITUENT FE2SO43 : FE : S : O : !
+
+PARAMETER G(FE2SO43,FE:S:O;0) 298.15
+  -2162375.9 +3389.5842*T -502.1294*T*LN(T) -0.03361654*T**2
+  +1.00286E-5*T**3 -5753633.2*T**(-1) -113714.9841*LN(T);  800 Y 
+  -2536943.7 +1911.1100*T -346.0460*T*LN(T) -0.01728174*T**2
+  +4786562.7*T**(-1) -61977.2609*LN(T) +12668.5367*T**(0.5);  2000 Y 
+  -2801987.7 +2867.9861*T -452.6104*T*LN(T);  6000 N                    15SHI!
 
 $ ----------------------------------------------------------------------------
 $ FE2TA3
@@ -7581,8 +7612,7 @@ PARAMETER G(GAS,H;0) 298.15
 PARAMETER G(GAS,H2;0) 298.15
   +2*GHSERHH# +RTLNP#;  6000 N                                          02ZIN!
 PARAMETER G(GAS,MN;0) 298.15
-  +280407 -169.513*T +15.309*T*LN(T) -0.001986*T**2 
-  +RTLNP#;  6000 N                                                      93SUN!
+  +280407 -169.513*T +15.309*T*LN(T) -0.001986*T**2 +RTLNP#;  6000 N    93SUN!
 PARAMETER G(GAS,N;0) 298.15
   +GHSERNN# +R*T*LN(P);  6000 N                                         91DIN!
 PARAMETER G(GAS,N2;0) 298.15 
@@ -7660,7 +7690,7 @@ PARAMETER G(GAS,TI;0) 298.15
   +8.4922648E-8*T**3 -4.78825328E6*T**(-1) +R*T*LN(P);  3900 Y
   +4.85410035E5 -190.892757*T -0.994064008*T*LN(T) -6.31737976E-3*T**2
   +1.55685245E-7*T**3 +2.25860688E6*T**(-1) +R*T*LN(P);  6000 N        96JONC!
-1
+
 PARAMETER G(GAS,V;0) 298.15
   +511797.664 -35.2535217*T -22.24944*T*LN(T) +6.1413E-4*T**2
   -8.62467667E-7*T**3 -163305.65*T**(-1) +RTLNP#;  600 Y 
@@ -17072,6 +17102,9 @@ NUMBER  SOURCE
 15LU   'Lu, Hai-Jin, et al. "Thermodynamic modeling of Cr-Nb and Zr-Cr with 
         extension to the ternary Zr-Nb-Cr system." Calphad 50 (2015): 
         134-143.'
+15SHI   'Shishin, Denis, et al. "Critical Assessment and Thermodynamic
+        Modeling of the Fe-O-S System." Journal of Phase Equilibria and
+        Diffusion 36 (2015): 224-240.'
 15ZHE   'Zheng, Weisen, et al. "Thermodynamic assessment of the Fe-Mn-Si 
         system and atomic mobility of its fcc phase." Journal of Alloys and 
         Compounds 632 (2015): 661-675.'
