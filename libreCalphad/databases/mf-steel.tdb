@@ -107,6 +107,7 @@ $ 2024-06-01 CR-ZR FROM LU 2015 AND LIU 2017, MINOR DISCREPANCIES IN LAVES
 $ 2024-06-01 FE-NB-ZR FROM LU 2017, ISSUE WITH LAVES_C36
 $ 2024-06-08 HF-V FROM SERVANT 2004 LAVES_C15/BCC_A2 INCORRECT
 $ 2024-06-09 SPINEL_H11 FROM KJELLQVIST 2008 CANNOT CHARGE BALANCE NI2+
+$ 2024-06012 CR-H FROM DOTTOR 2022 INCOMPATIBLE LIQUID MODEL
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -157,6 +158,7 @@ DATABASE_INFO The following systems are available:'
   CO-W      Guillermet (1989) and Markström (2005)'
   CR-CU     Cui (2017)'
   CR-FE     Andersson (1987), Lee (1993), and Lindholm (1997)'
+  CR-H      Dottor (2022) EXCEPT LIQUID'
   CR-MO     Andersson (1987), Gustafson (1988), Frisk (1991), Qiu (1992),
             Hu (2016), and Frichtl (2024)'
   CR-MG     Ansara (1991)'
@@ -2091,7 +2093,7 @@ PARAMETER BMAGN(BCC_A2,CR:C;0) 298.15
 PARAMETER TC(BCC_A2,CR:C;0) 298.15
   -311.50;  6000 N                                                     88ANDA!
 PARAMETER G(BCC_A2,CR:H;0) 298.15
-  +GHSERCR# +3*GHSERHH#;  6000 N                                        24FRI!
+  +120650 +196.20*T +GHSERCR# +3*GHSERHH#;  6000 N                      22DOT!
 PARAMETER G(BCC_A2,CR:N;0) 298.15
   +311870 +29.12*T +GHSERCR# +3*GHSERNN#; 6000 N                        91FRI!
 PARAMETER BMAGN(BCC_A2,CR:N;0) 298.15
@@ -2484,6 +2486,8 @@ PARAMETER L(BCC_A2,CR:B,VA;0) 298.15
   -28702 -13.9*T;  6000 N                                               02CAM!
 PARAMETER L(BCC_A2,CR:C,VA;0) 298.15
   -190*T;  6000 N                                                      87ANDB!
+PARAMETER L(BCC_A2,CR:H,VA;0) 298.15
+  -3728.0 -38.378*T;  6000 N                                            22DOT!
 PARAMETER L(BCC_A2,CR:N,VA;0) 298.15
   -200000;  6000 N                                                      91FRI!
 PARAMETER L(BCC_A2,CR:O,VA;0) 298.15
@@ -5248,7 +5252,7 @@ PARAMETER BMAGN(FCC_A1,CR:C;0) 298.15
 PARAMETER TC(FCC_A1,CR:C;0) 298.15
   +249;  6000 N                                                         22HAG!
 PARAMETER G(FCC_A1,CR:H;0) 298.15
-  +GHSERCR# +GHSERHH#;  6000 N                                          24FRI!
+  -7617.6 +60.127*T +GHSERCR# +GHSERHH#;  6000 N                        22DOT!
 PARAMETER G(FCC_A1,CR:N;0) 298.15
   -124460 +142.16*T -8.5*T*LN(T) +GHSERCR# +GHSERNN#;  6000 N           91FRI!
 PARAMETER BMAGN(FCC_A1,CR:N;0) 298.15
@@ -7912,7 +7916,7 @@ PARAMETER G(HCP_A3,CR:C;0) 298.15
   -18504 +9.4173*T -2.4997*T*LN(T) +1.386E-3*T**2 +GHSERCR# 
   +0.5*GHSERCC#;  6000 N                                               92LEEA!
 PARAMETER G(HCP_A3,CR:H;0) 298.15
-  +GHSERCR# +0.25*GHSERHH#;  6000 N                                     24FRI!
+  -10368 +63.176*T +GHSERCR# +0.25*GHSERHH#;  6000 N                    22DOT!
 PARAMETER G(HCP_A3,CR:N;0) 298.15
   -65760 +64.69*T -3.93*T*LN(T) +GHSERCR# +0.5*GHSERNN#; 6000 N         91FRI!
 $ ASSUME SAME CR-O AS FCC_A1, RELATIVE TO GCRHCP
@@ -17190,6 +17194,10 @@ NUMBER  SOURCE
 22DO    'Do, Hyeon-Seok, Won-Mi Choi, and Byeong-Joo Lee. "A thermodynamic 
         description for the Co-Cr-Fe-Mn-Ni system." Journal of Materials 
         Science (2022): 1-17.'
+22DOT   'Dottor, Maxime, Jean-Claude Crivello, and Jean-Marc Joubert. 
+        "Thermodynamic modeling of Cr and Cr-H systems up to high temperatures
+        and high pressures." International Journal of Hydrogen Energy 47.55 
+        (2022): 23293-23309.'
 22HAG   'Haglöf, Fredrik, Andreas Blomqvist, and Malin Selleby. 
         "Thermodynamic assessment of the CCrTi system—Supported by DFT 
         calculations." Calphad 77 (2022): 102405.'

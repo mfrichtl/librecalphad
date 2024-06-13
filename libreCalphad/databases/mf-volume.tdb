@@ -30,12 +30,13 @@ $ ----------------------------------------------------------------------------
 $ DATABASE_INFORMATION:
 DATABASE_INFO MOLAR VOLUMES ASSESSED FOR: '
 UNARY   Lu (2005), Hallstedt (2007), and Xiong (2019)
-CR-NI   Xiong (2019)
-FE-NI   Xiong (2019)
-NI-MO   Xiong (2019)
+CR-H    Dottor (2022)'
+CR-NI   Xiong (2019)'
+FE-NI   Xiong (2019)'
+NI-MO   Xiong (2019)'
 
-CEMENTITE_D011 Schneider (2007)
-M5C2    Schneider (2007)
+CEMENTITE_D011 Schneider (2007)'
+M5C2    Schneider (2007)'
 $ ----------------------------------------------------------------------------
 $ ASSUME INTERSTITIALS ARE ZERO VOLUME
 ZEROVOLUME_SPECIES B,C,H,N,O,VA
@@ -48,11 +49,25 @@ PARAMETER V0(BCC_A2,AL:*;0) 298.15
 PARAMETER VA(BCC_A2,AL:*;0) 298.15
   +6.91213E-5*T +1.622673333E-11*T**3 +0.413484*T**(-1);  6000 N        05LUA!
 
-PARAMETER V0(BCC_A2,CR:*;0)  298.15
-  +7.04033E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,CR:*;0)  298.15
-  +6.21989E-5*T -3.565205E-8*T**2 +1.45471E-11*T**3 
-  +2.883384*T**(-1);  6000 N                                            05LUA!
+PARAMETER V0(BCC_A2,CR:H;0) 298.15
+  +1.22833E-5;  6000 N                                                  22DOT!
+PARAMETER VA(BCC_A2,CR:H;0) 298.15
+  +2.0358E-5*T*EXP(-P/1E-12) +4.5466E-12*T**3*EXP(-P/1E-9);  6000 N     22D0T!
+PARAMETER VC(BCC_A2,CR:H;0) 298.15
+  +1.5202E-6;  6000 N                                                   22DOT!
+PARAMETER VK(BCC_A2,CR:H;0)  298.15
+  +4.9076E-12 +3.7849E-16*T*EXP(-P/1E-9);  6000 N                       22DOT!
+PARAMETER V0(BCC_A2,CR:VA;0)  298.15
+  $ +7.04033E-6;  6000 N                                                  05LUA!
+  +7.1846E-6;  6000 N                                                   22DOT!
+PARAMETER VA(BCC_A2,CR:VA;0)  298.15
+  $ +6.21989E-5*T -3.565205E-8*T**2 +1.45471E-11*T**3 
+  $ +2.883384*T**(-1);  6000 N                                            05LUA!
+  +2.0358E-5*T*EXP(-P/1E-12) +4.5466E-12*T**3*EXP(-P/1E-9);  6000 N     22DOT!
+PARAMETER VC(BCC_A2,CR:VA;0) 298.15
+  +1.5202E-6;  6000 N                                                   22DOT!
+PARAMETER VK(BCC_A2,CR:VA;0) 298.15
+  +4.9076E-12 +3.7849E-16*T*EXP(-P/1E-9);  6000 N                       22DOT!
 
 PARAMETER V0(BCC_A2,FE:*;0)  298.15
   +7.00790E-6;  6000 N                                                  05LUA!
@@ -141,7 +156,17 @@ PARAMETER V0(FCC_A1,CO:*;0)  298.15
 PARAMETER VA(FCC_A1,CO:*;0)  298.15
   +3.41220E-5*T +0.190015E-8*T**2;  6000 N                              05LUA!
 
-PARAMETER V0(FCC_A1,CR:*;0)  298.15
+PARAMETER V0(FCC_A1,CR:H;0) 298.15
+  +8.6038E-6;  6000 N                                                   22DOT!
+PARAMETER VA(FCC_A1,CR:H;0) 298.15
+  +2.7706E-5*T*EXP(-P/1E-12) +6.1163E-9*T**2*EXP(-P/1E-9) 
+  +7.6773E-12*T**3*EXP(-P/1E-19);  6000 N                               22DOT!
+PARAMETER VC(FCC_A1,CR:H;0) 298.15
+  +8.4338E-7;  6000 N                                                   22DOT!
+PARAMETER VK(FCC_A1,CR:H;0) 298.15
+  +4.3481E-12 +1.4166E-16*T*EXP(-P/1E-9) 
+  +1.3452E-18*T**2*EXP(-P/1E-9);  6000 N                                22DOT!
+PARAMETER V0(FCC_A1,CR:VA;0)  298.15
   +7.50E-6;  6000 N                                                     19XIO!
 
 PARAMETER V0(FCC_A1,CU:*;0)  298.15
@@ -200,15 +225,24 @@ PARAMETER V0(FCC_A1,MO,NI:*;0)  298.15
 $ ----------------------------------------------------------------------------
 $ HCP_A3
 $
-PARAMETER V0(HCP_A3,CD:*;0)  298.15
+PARAMETER V0(HCP_A3,CD:VA;0)  298.15
   +12.6828E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,CD:*;0)  298.15
+PARAMETER VA(HCP_A3,CD:VA;0)  298.15
   +7.38893E-5*T +3.18493E-8*T**2;  6000 N                               05LUA!
 
 PARAMETER V0(HCP_A3,CO:*;0)  298.15
   +12.6828E-6;  6000 N                                                  05LUA!
 PARAMETER VA(HCP_A3,CO:*;0)  298.15
   +3.56147E-5*T +8.31975E-9*T**2 +0.183866*T**(-1);  6000 N             05LUA!
+
+PARAMETER V0(HCP_A3,CR:H;0) 298.15
+  +8.4916E-6;  6000 N                                                   22DOT!
+PARAMETER VA(HCP_A3,CR:H;0) 298.15
+  +2.148E-5*T*EXP(-P/1E-12) +1.4263E-8*T**2*EXP(-P/1E-9);  6000 N       22DOT!
+PARAMETER VC(HCP_A3,CR:H;0) 298.15
+  +1.7374E-6;  6000 N                                                   22DOT!
+PARAMETER VK(HCP_A3,CR:H;0) 298.15
+  +5.4958E-12 +1.5275E-18*T**2*EXP(-P/1E-9);  6000 N                    22DOT!
 
 PARAMETER V0(HCP_A3,FE:*;0)  298.15
   +6.589E-6;  6000 N                                                    05LUB!
@@ -302,3 +336,7 @@ NUMBER  SOURCE
       (Fe3C) and Hägg carbide (Fe5C2)." Calphad 31.1 (2007): 141-147.'
 19XIO 'Xiong, Wen-Hao, et al. "Assessments of molar volumes of Co-, Ni-and Ti-
        related bcc and fcc phases." Calphad 66 (2019): 101629.'
+22DOT 'Dottor, Maxime, Jean-Claude Crivello, and Jean-Marc Joubert. 
+      "Thermodynamic modeling of Cr and Cr-H systems up to high temperatures
+      and high pressures." International Journal of Hydrogen Energy 47.55 
+      (2022): 23293-23309.'
