@@ -44,9 +44,9 @@ ZEROVOLUME_SPECIES B,C,H,N,O,VA
 $ ----------------------------------------------------------------------------
 $ BCC_A2
 $
-PARAMETER V0(BCC_A2,AL:*;0) 298.15
+PARAMETER V0(BCC_A2,AL:VA;0) 298.15
   +9.77430E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,AL:*;0) 298.15
+PARAMETER VA(BCC_A2,AL:VA;0) 298.15
   +6.91213E-5*T +1.622673333E-11*T**3 +0.413484*T**(-1);  6000 N        05LUA!
 
 PARAMETER V0(BCC_A2,CR:H;0) 298.15
@@ -69,67 +69,67 @@ PARAMETER VC(BCC_A2,CR:VA;0) 298.15
 PARAMETER VK(BCC_A2,CR:VA;0) 298.15
   +4.9076E-12 +3.7849E-16*T*EXP(-P/1E-9);  6000 N                       22DOT!
 
-PARAMETER V0(BCC_A2,FE:*;0)  298.15
+PARAMETER V0(BCC_A2,FE:VA;0)  298.15
   +7.00790E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,FE:*;0)  298.15
+PARAMETER VA(BCC_A2,FE:VA;0)  298.15
   +3.42756E-5*T +8.14005E-9*T**2 +0.291672*T**(-1);  6000 N             05LUA!
-PARAMETER VC(BCC_A2,FE:*;0)  298.15
+PARAMETER VC(BCC_A2,FE:VA;0)  298.15
   +1.1553E-6 +4.20E-11*T;  6000 N                                       05LUB!
-PARAMETER VK(BCC_A2,FE:*;0)  298.15
+PARAMETER VK(BCC_A2,FE:VA;0)  298.15
   +5.55E-12 +1.99E-15*T;  6000 N                                        05LUB!
 
-PARAMETER V0(BCC_A2,NI:*;0)  298.15
+PARAMETER V0(BCC_A2,NI:VA;0)  298.15
   +6.59E-6;  6000 N                                                     19XIO!
 
-PARAMETER V0(BCC_A2,MO:*;0)  298.15
+PARAMETER V0(BCC_A2,MO:VA;0)  298.15
   +9.34611E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,MO:*;0)  298.15
+PARAMETER VA(BCC_A2,MO:VA;0)  298.15
   +1.39658E-5*T +5.7715E-10*T**2 +3.525533E-2*T**3;  6000 N             05LUA!
 
-PARAMETER V0(BCC_A2,NB:*;0)  298.15
+PARAMETER V0(BCC_A2,NB:VA;0)  298.15
   +10.7515E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,NB:*;0)  298.15
+PARAMETER VA(BCC_A2,NB:VA;0)  298.15
   +2.12484E-5*T +2.2228E-9*T**2 +0.106961*T**(-1);  6000 N              05LUA!
 
-PARAMETER V0(BCC_A2,SI:*;0)  298.15
+PARAMETER V0(BCC_A2,SI:VA;0)  298.15
   +9.1E-6;  6000 N                                                      07HAL!
 
-PARAMETER V0(BCC_A2,TA:*;0)  298.15
+PARAMETER V0(BCC_A2,TA:VA;0)  298.15
   +10.7866E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,TA:*;0)  298.15
+PARAMETER VA(BCC_A2,TA:VA;0)  298.15
   +1.89542E-5*T +1.5484E-9*T**2 +0.036417*T**(-1);  6000 N              05LUA!
 
-PARAMETER V0(BCC_A2,TI:*;0)  298.15
+PARAMETER V0(BCC_A2,TI:VA;0)  298.15
   +10.5919E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,TI:*;0)  298.15
+PARAMETER VA(BCC_A2,TI:VA;0)  298.15
   +1.53848E-5*T +9.32835E-9*T**2;  6000 N                               05LUA!
 
-PARAMETER V0(BCC_A2,V:*;0)  298.15
+PARAMETER V0(BCC_A2,V:VA;0)  298.15
   +8.24808E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,V:*;0)  298.15
+PARAMETER VA(BCC_A2,V:VA;0)  298.15
   +2.94224E-5*T +1.9593E-12*T**3 +0.231646*T**(-1);  6000 N             05LUA!
 
-PARAMETER V0(BCC_A2,W:*;0)  298.15
+PARAMETER V0(BCC_A2,W:VA;0)  298.15
   +9.50328E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,W:*;0)  298.15
+PARAMETER VA(BCC_A2,W:VA;0)  298.15
   +1.36240E-5*T +4.932E-13*T**3 +0.055762*T**(-1);  6000 N              05LUA!
 
-PARAMETER V0(BCC_A2,ZR:*;0)  298.15
+PARAMETER V0(BCC_A2,ZR:VA;0)  298.15
   +13.8124E-6;  6000 N                                                  05LUA!
-PARAMETER VA(BCC_A2,ZR:*;0)  298.15
+PARAMETER VA(BCC_A2,ZR:VA;0)  298.15
   +1.94913E-5*T +3.59195E-9*T**2;  6000 N                               05LUA!
 
 
-PARAMETER V0(BCC_A2,FE,NI:*;0)  298.15
+PARAMETER V0(BCC_A2,FE,NI:VA;0)  298.15
   +0.606E-6;  6000 N                                                    19XIO!
 
-PARAMETER V0(BCC_A2,NI,MO:*;0)  298.15
+PARAMETER V0(BCC_A2,NI,MO:VA;0)  298.15
   +0.180E-6;  6000 N                                                    19XIO!
 
 $ ----------------------------------------------------------------------------
 $ CEMENTITE_D011
 $ 
-PARAMETER V0(CEMENTITE_D011,*:*;0)  298.15
+PARAMETER V0(CEMENTITE_D011,*:VA;0)  298.15
   +5.847E-6;  6000 N                                                    07SCH!
 
 $ ----------------------------------------------------------------------------
@@ -141,19 +141,19 @@ PARAMETER V0(DIAMOND_A4,SI;0)  298.15
 $ ----------------------------------------------------------------------------
 $ FCC_A1
 $ 
-PARAMETER V0(FCC_A1,AG:*;0)  298.15
+PARAMETER V0(FCC_A1,AG:VA;0)  298.15
   +10.1092E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,AG:*;0)  298.15
+PARAMETER VA(FCC_A1,AG:VA;0)  298.15
   +4.87439E-5*T +1.33148E-8*T**2 +0.076014*T**(-1);  6000 N             05LUA!
 
-PARAMETER V0(FCC_A1,AU:*;0)  298.15
+PARAMETER V0(FCC_A1,AU:VA;0)  298.15
   +10.0824E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,AU:*;0)  298.15
+PARAMETER VA(FCC_A1,AU:VA;0)  298.15
   +4.21579E-5*T +4.7670667E-12*T**3 +0.062982*T**(-1);  6000 N          05LUA!
 
-PARAMETER V0(FCC_A1,CO:*;0)  298.15
+PARAMETER V0(FCC_A1,CO:VA;0)  298.15
   +6.59035E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,CO:*;0)  298.15
+PARAMETER VA(FCC_A1,CO:VA;0)  298.15
   +3.41220E-5*T +0.190015E-8*T**2;  6000 N                              05LUA!
 
 PARAMETER V0(FCC_A1,CR:H;0) 298.15
@@ -169,57 +169,57 @@ PARAMETER VK(FCC_A1,CR:H;0) 298.15
 PARAMETER V0(FCC_A1,CR:VA;0)  298.15
   +7.50E-6;  6000 N                                                     19XIO!
 
-PARAMETER V0(FCC_A1,CU:*;0)  298.15
+PARAMETER V0(FCC_A1,CU:VA;0)  298.15
   +7.01070E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,CU:*;0)  298.15
+PARAMETER VA(FCC_A1,CU:VA;0)  298.15
   +4.31706E-5*T +1.20047E-8*T**2 +0.109757*T**(-1);  6000 N             05LUA!
 
-PARAMETER V0(FCC_A1,FE:*;0)  298.15
+PARAMETER V0(FCC_A1,FE:VA;0)  298.15
   +6.72092E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,FE:*;0)  298.15
+PARAMETER VA(FCC_A1,FE:VA;0)  298.15
   +6.97895E-5*T;  6000 N                                                05LUA!
-PARAMETER VC(FCC_A1,FE:*;0)  298.15
+PARAMETER VC(FCC_A1,FE:VA;0)  298.15
   +1.1553E-6 +4.20E-11*T;  6000 N                                       05LUB!
-PARAMETER VK(FCC_A1,FE:*;0)  298.15
+PARAMETER VK(FCC_A1,FE:VA;0)  298.15
   +6.90E-12 +1.63E-15*T;  6000 N                                        05LUB!
 
-PARAMETER V0(FCC_A1,IR:*;0)  298.15
+PARAMETER V0(FCC_A1,IR:VA;0)  298.15
   +8.47715E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,IR:*;0)  298.15
+PARAMETER VA(FCC_A1,IR:VA;0)  298.15
   +1.52021E-5*T +4.7619E-9*T**2;  6000 N                                05LUA!
 
-PARAMETER V0(FCC_A1,MO:*;0)  298.15
+PARAMETER V0(FCC_A1,MO:VA;0)  298.15
   +9.50E-6;  6000 N                                                     19XIO!
 
-PARAMETER V0(FCC_A1,NI:*;0)  298.15
+PARAMETER V0(FCC_A1,NI:VA;0)  298.15
   +6.52857E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,NI:*;0)  298.15
+PARAMETER VA(FCC_A1,NI:VA;0)  298.15
   +3.23156E-5*T +1.08201E-8*T**2 +0.139773*T**(-2);  6000 N             05LUA!
 
-PARAMETER V0(FCC_A1,PD:*;0)  298.15
+PARAMETER V0(FCC_A1,PD:VA;0)  298.15
   +8.77796E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,PD:*;0)  298.15
+PARAMETER VA(FCC_A1,PD:VA;0)  298.15
   +3.11002E-5*T +7.4407E-9*T**2;  6000 N                                05LUA!
 
-PARAMETER V0(FCC_A1,PT:*;0)  298.15
+PARAMETER V0(FCC_A1,PT:VA;0)  298.15
   +9.02143E-6;  6000 N                                                  05LUA!
-PARAMETER VA(FCC_A1,PT:*;0)  298.15
+PARAMETER VA(FCC_A1,PT:VA;0)  298.15
   +2.73653E-5*T  +0.1654E-12*T**2 +0.074902*T**(-1);  6000 N            05LUA!
 
-PARAMETER V0(FCC_A1,RH:*;0)  298.15
+PARAMETER V0(FCC_A1,RH:VA;0)  298.15
   +8.22292E-6;  6000  N                                                 05LUA!
-PARAMETER VA(FCC_A1,RH:*;0)  298.15
+PARAMETER VA(FCC_A1,RH:VA;0)  298.15
   +2.05705E-5*T +7.74705E-9*T**2 +0.071015*T**(-1);  6000 N             05LUA!
 
-PARAMETER V0(FCC_A1,SI:*;0)  298.15
+PARAMETER V0(FCC_A1,SI:VA;0)  298.15
   +9.2E-6;  6000 N                                                      07HAL!
 
 
-PARAMETER V0(FCC_A1,CR,NI:*;0)  298.15
+PARAMETER V0(FCC_A1,CR,NI:VA;0)  298.15
   -0.396E-6;  6000 N                                                    19XIO!
-PARAMETER V0(FCC_A1,FE,NI:*;0)  298.15
+PARAMETER V0(FCC_A1,FE,NI:VA;0)  298.15
   +0.621E-6;  6000 N                                                    19XIO!
-PARAMETER V0(FCC_A1,MO,NI:*;0)  298.15
+PARAMETER V0(FCC_A1,MO,NI:VA;0)  298.15
   -0.205;  6000 N                                                       19XIO!
 
 $ ----------------------------------------------------------------------------
@@ -230,9 +230,9 @@ PARAMETER V0(HCP_A3,CD:VA;0)  298.15
 PARAMETER VA(HCP_A3,CD:VA;0)  298.15
   +7.38893E-5*T +3.18493E-8*T**2;  6000 N                               05LUA!
 
-PARAMETER V0(HCP_A3,CO:*;0)  298.15
+PARAMETER V0(HCP_A3,CO:VA;0)  298.15
   +12.6828E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,CO:*;0)  298.15
+PARAMETER VA(HCP_A3,CO:VA;0)  298.15
   +3.56147E-5*T +8.31975E-9*T**2 +0.183866*T**(-1);  6000 N             05LUA!
 
 PARAMETER V0(HCP_A3,CR:H;0) 298.15
@@ -244,61 +244,61 @@ PARAMETER VC(HCP_A3,CR:H;0) 298.15
 PARAMETER VK(HCP_A3,CR:H;0) 298.15
   +5.4958E-12 +1.5275E-18*T**2*EXP(-P/1E-9);  6000 N                    22DOT!
 
-PARAMETER V0(HCP_A3,FE:*;0)  298.15
+PARAMETER V0(HCP_A3,FE:VA;0)  298.15
   +6.589E-6;  6000 N                                                    05LUB!
-PARAMETER VA(HCP_A3,FE:*;0)  298.15
+PARAMETER VA(HCP_A3,FE:VA;0)  298.15
   +7.0763E-5*T;  6000 N                                                 05LUB!
-PARAMETER VC(HCP_A3,FE:*;0)  298.15
+PARAMETER VC(HCP_A3,FE:VA;0)  298.15
   +1.1681E-6 +5.50E-11*T;  6000 N                                       05LUB!
-PARAMETER VK(HCP_A3,FE:*;0)  298.15
+PARAMETER VK(HCP_A3,FE:VA;0)  298.15
   +5.70E-12 +2.2413E-15*T;  6000 N                                      05LUB!
 
-PARAMETER V0(HCP_A3,HF:*;0)  298.15
+PARAMETER V0(HCP_A3,HF:VA;0)  298.15
   +13.3708E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,HF:*;0)  298.15
+PARAMETER VA(HCP_A3,HF:VA;0)  298.15
   +1.54634E-5*T +3.6072E-9*T**2;  6000 N                                05LUA!
 
-PARAMETER V0(HCP_A3,MG:*;0)  298.15
+PARAMETER V0(HCP_A3,MG:VA;0)  298.15
   +13.6883E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,MG:*;0)  298.15
+PARAMETER VA(HCP_A3,MG:VA;0)  298.15
   +6.33136E-5*T +2.64418E-8*T**2 +0.193125*T**(-1);  6000 N             05LUA!
 
-PARAMETER V0(HCP_A3,OS:*;0)  298.15
+PARAMETER V0(HCP_A3,OS:VA;0)  298.15
   +8.38059E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,OS:*;0)  298.15
+PARAMETER VA(HCP_A3,OS:VA;0)  298.15
   +1.70798E-5*T;  6000 N                                                05LUA!
 
-PARAMETER V0(HCP_A3,RE:*;0)  298.15
+PARAMETER V0(HCP_A3,RE:VA;0)  298.15
   +8.81352E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,RE:*;0)  298.15
+PARAMETER VA(HCP_A3,RE:VA;0)  298.15
   +1.71378E-5*T +2.17055E-9*T**2;  6000 N                               05LUA!
 
-PARAMETER V0(HCP_A3,RU:*;0)  298.15
+PARAMETER V0(HCP_A3,RU:VA;0)  298.15
   +8.13257E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,RU:*;0)  298.15
+PARAMETER VA(HCP_A3,RU:VA;0)  298.15
   +1.55596E-5*T +4.13795E-9*T**2 +1.08024333E-12*T**3;  6000 N          05LUA!
 
-PARAMETER V0(HCP_A3,SC:*;0)  298.15
+PARAMETER V0(HCP_A3,SC:VA;0)  298.15
   +14.9090E-6;  6000  N                                                 05LUA!
-PARAMETER VA(HCP_A3,SC:*;0)  298.15
+PARAMETER VA(HCP_A3,SC:VA;0)  298.15
   +3.01661E-5*T +4.0596667E-12*T**3;  6000 N                            05LUA!
 
-PARAMETER V0(HCP_A3,SI:*;0)  298.15
+PARAMETER V0(HCP_A3,SI:VA;0)  298.15
   +8.8E-6;  6000 N                                                      07HAL!
 
-PARAMETER V0(HCP_A3,TI:*;0)  298.15
+PARAMETER V0(HCP_A3,TI:VA;0)  298.15
   +10.5463E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,TI:*;0)  298.15
+PARAMETER VA(HCP_A3,TI:VA;0)  298.15
   +2.47929E-5*T +5.1783E-9*T**2 +0.144379*T**(-1);  6000 N              05LUA!
 
-PARAMETER V0(HCP_A3,ZN:*;0)  298.15
+PARAMETER V0(HCP_A3,ZN:VA;0)  298.15
   +8.92280E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,ZN:*;0)  298.15
+PARAMETER VA(HCP_A3,ZN:VA;0)  298.15
   +8.20010E-5*T +1.558555E-8*T**2 +0.103783*T**(-1);  6000 N            05LUA!
 
-PARAMETER V0(HCP_A3,ZR:*;0)  298.15
+PARAMETER V0(HCP_A3,ZR:VA;0)  298.15
   +13.9524E-6;  6000 N                                                  05LUA!
-PARAMETER VA(HCP_A3,ZR:*;0)  298.15
+PARAMETER VA(HCP_A3,ZR:VA;0)  298.15
   +1.46607E-5*T +4.8452E-9*T**2 +0.033091*T**(-1);  6000 N              05LUA!
 
 $ ----------------------------------------------------------------------------
