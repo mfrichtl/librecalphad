@@ -197,6 +197,7 @@ DATABASE_INFO The following systems are available:'
   FE-W      Gustafson (1987)'
   FE-ZR     Jiang (2022)'
   FES-S     Lee (2007)'
+  H-MN      Liang (2018)'
   HF-V      Servant (2004)'
   MG-MN     Groebner (2005)'
   MN-MO     Zheng (2017)'
@@ -695,25 +696,25 @@ FUNCTION GHSERMN  298.15
   -8115.28 +130.059*T -23.4582*T*LN(T) -7.34768E-3*T**2 
   +69827*T**(-1);  1519 Y
   -28733.41 +312.2648*T -48*T*LN(T) +1656.847E27*T**(-9);  2000 N       91DIN!
-
-FUNCTION GFCCMN   298.15
-  -3439.3 +131.884*T -24.5177*T*LN(T) -6E-3*T**2 +69600*T**(-1);  1519 Y
-  -26070.1 +309.6664*T -48*T*LN(T) +386.196E28*T**(-9);  2000 N         91DIN!
-
 FUNCTION GBCCMN   298.15
   -3235.3 +127.85*T -23.7*T*LN(T) -7.44271E-3*T**2 +60000*T**(-1);  1519 Y
   -23188.83 +307.7043*T -48*T*LN(T) +1265.152E27*T**(-9);  2000 N       91DIN!
-
-FUNCTION GLAVESMN  298.15
-  +21840 +3*GHSERMN#;  6000 N                                           12LIU!
-
-FUNCTION GLIQMN 298.15
-  +17859.91 -12.6208*T -441.929E-23*T**7 +GHSERMN#; 1519 Y
-  -9993.9 +299.036*T -48*T*LN(T);  6000 N                               91DIN!
-
+FUNCTION GCUBMN 298.15
+  -5800.4+135.995*T-24.8785*T*LN(T)-5.83359E-3*T**2+70269*T**(-1)
+  +4.13175064E-6*(P-101325) +6.98976519E-7*T*(P-101325);  1519 Y
+  -28290.76+311.2933*T-48*T*LN(T)+396.757E28*T**(-9)
+  +4.13175064E-6*(P-101325) +6.98976519E-7*T*(P-101325);  2000 N        05GUO!
+FUNCTION GFCCMN   298.15
+  -3439.3 +131.884*T -24.5177*T*LN(T) -6E-3*T**2 +69600*T**(-1);  1519 Y
+  -26070.1 +309.6664*T -48*T*LN(T) +386.196E28*T**(-9);  2000 N         91DIN!
 FUNCTION GHCPMN   298.15
   -4439.3 +133.007*T -24.5177*T*LN(T) -6E-3*T**2 +69600*T**(-1);  1519 Y
   -27070.1 +310.7894*T -48*T*LN(T) +386.196E28*T**(-9);  2000 N         91DIN!
+FUNCTION GLAVESMN  298.15
+  +21840 +3*GHSERMN#;  6000 N                                           12LIU!
+FUNCTION GLIQMN 298.15
+  +17859.91 -12.6208*T -441.929E-23*T**7 +GHSERMN#; 1519 Y
+  -9993.9 +299.036*T -48*T*LN(T);  6000 N                               91DIN!
 
 $ ----------------------------------------------------------------------------
 $ MO
@@ -2189,7 +2190,7 @@ PARAMETER G(BCC_A2,MN:C;0) 298.15
 PARAMETER G(BCC_A2,MN:N;0) 298.15
   -55600 +606.648*T -100.41*T*LN(T) +844897*T**(-1);  2500 N           93QIUA!
 PARAMETER G(BCC_A2,MN:H;0) 298.15
-  +GHSERMN# +3*GHSERHH#;  6000 N                                        24FRI!
+  +53827.98 +146.0576*T +GBCCMN# +3*GHSERHH#;  6000 N                   18LIA!
 PARAMETER G(BCC_A2,MN:O;0) 298.15
   +GBCCMN# +3*GHSEROO#;  6000 N                                         24FRI!
 PARAMETER G(BCC_A2,MN:VA;0) 298.15 
@@ -3856,31 +3857,39 @@ $ PEARSON: cI58
 $ SPACE GROUP: I-43m
 
 PHASE CBCC_A12 %B 2 1 1 !
-CONSTITUENT CBCC_A12 : AL,CO,CR,CU,FE,MG,MN,NB,NI,SI,SN,TI,V,ZR : C,N,VA : !
+CONSTITUENT CBCC_A12 : AL,CO,CR,CU,FE,MG,MN,NB,NI,SI,SN,TI,V,ZR : C,H,N,VA : !
 
 PARAMETER G(CBCC_A12,AL:C;0) 298.15
   +100000 +GHSERAL# +GHSERCC#;  6000 N                                 15KIMB!
+PARAMETER G(CBCC_A12,AL:H;0) 298.15
+  +GHSERAL# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,AL:N;0) 298.15
   +GHERSAL# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,AL:VA;0) 298.15 
+PARAMETER G(CBCC_A12,AL:VA;0) 298.15
   +10083.4 -4.813*T +GHSERAL#; 2900 N                                   91DIN!
 
 PARAMETER G(CBCC_A12,CO:C;0) 298.15
   +10000 +10*T +GHSERCO# +GHSERCC#;  6000 N                             23FRI!
+PARAMETER G(CBCC_A12,CO:H;0) 298.15
+  +GHSERCO# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CO:N;0) 298.15
   +GHERSCO# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,CO:VA;0) 298.15 
+PARAMETER G(CBCC_A12,CO:VA;0) 298.15
   +4155 +GHSERCO#; 6000 N                                               91DIN!
 
 PARAMETER G(CBCC_A12,CR:C;0) 298.15
   +5000 +GHSERCR# +GHSERCC#;  6000 N                                   93LEEC!
+PARAMETER G(CBCC_A12,CR:H;0) 298.15
+  +GHSERCR# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CR:N;0) 298.15
   +GHERSCR# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,CR:VA;0) 298.15 
+PARAMETER G(CBCC_A12,CR:VA;0) 298.15
   +11087 +2.7196*T +GHSERCR#; 6000 N                                    91DIN!
 
 PARAMETER G(CBCC_A12,CU:C;0) 298.15
   +10000 +10*T +GHSERCU# +GHSERCC#;  6000 N                             23FRI!
+PARAMETER G(CBCC_A12,CU:H;0) 298.15
+  +GHSERCU# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CU:N;0) 298.15
   +GHERSCU# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CU:VA;0) 298.15
@@ -3888,34 +3897,36 @@ PARAMETER G(CBCC_A12,CU:VA;0) 298.15
 
 PARAMETER G(CBCC_A12,FE:C;0) 298.15
   +50000 +GHSERFE# +GHSERCC#;  6000 N                                  15KIMA!
+PARAMETER G(CBCC_A12,FE:H;0) 298.15
+  +GHSERFE# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,FE:N;0) 298.15
   -30766 +375.42*T -37.6*T*LN(T) +GHERSFE# +GHSERNN#;  2500 N          93QIUB!
-PARAMETER G(CBCC_A12,FE:VA;0) 298.15 
+PARAMETER G(CBCC_A12,FE:VA;0) 298.15
   +4745 +GHSERFE#; 6000 N                                               91DIN!
 
 PARAMETER G(CBCC_A12,MG:C;0) 298.15
   +GHSERMG# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(CBCC_A12,MG:H;0) 298.15
+  +GHSERMG# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,MG:N;0) 298.15
   +GHERSMG# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,MG:VA;0) 298.15 
+PARAMETER G(CBCC_A12,MG:VA;0) 298.15
   +4602.4 -3.011*T +GHSERMG#; 2000 N                                    91DIN!
 
 PARAMETER G(CBCC_A12,MN:C;0) 298.15
   +27.46525*T +GHSERMN# +GHSERCC#;  6000 N                              10DJU!
+PARAMETER G(CBCC_A12,MN:H;0) 298.15
+  -15791.74 +57.167*T +GHSERMN# +GHSERHH#;  6000 N                      18LIA!
 PARAMETER G(CBCC_A12,MN:N;0) 298.15
   -53114 +299.266*T -50.216*T*LN(T) +358309*T**(-1);  6000 N           93QIUA!
-PARAMETER G(CBCC_A12,MN:VA;0) 298.15 
+PARAMETER G(CBCC_A12,MN:VA;0) 298.15
   +GHSERMN# +3.10379907E-6*(P-101325)
   +6.99576348E-7*T*(P-101325); 2000 N                                   05GUO!
-PARAMETER BMAGN(CBCC_A12,MN:VA;0) 298.15 
-  -0.66; 2000 N                                                         91DIN!
-PARAMETER NT(CBCC_A12,MN:VA;0) 298.15
-  +95;  6000 N                                                         89HUAB!
-PARAMETER TC(CBCC_A12,MN:VA;0) 298.15 
-  -285; 2000 N                                                          91DIN!
 
 PARAMETER G(CBCC_A12,NB:C;0) 298.15
   +GHSERNB# +GHSERCC#;  6000 N                                          23FRI!
+PARAMETER G(CBCC_A12,NB:H;0) 298.15
+  +GHSERNB# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NB:N;0) 298.15
   +GHERSNB# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NB:VA;0) 298.15
@@ -3923,45 +3934,58 @@ PARAMETER G(CBCC_A12,NB:VA;0) 298.15
 
 PARAMETER G(CBCC_A12,NI:C;0) 298.15
   +50000 +20*T;  6000 N                                                 23FRI!
+PARAMETER G(CBCC_A12,NI:H;0) 298.15
+  +GHSERNI# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NI:N;0) 298.15
   +GHERSNI# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,NI:VA;0) 298.15 
+PARAMETER G(CBCC_A12,NI:VA;0) 298.15
   +3556 +GHSERNI#; 3000 N                                               91DIN!
 
 PARAMETER G(CBCC_A12,SI:C;0) 298.15
   +GHSERSI# +GHSERCC#;  6000 N                                          23FRI!
+PARAMETER G(CBCC_A12,SI:H;0) 298.15
+  +GHSERSI# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,SI:N;0) 298.15
   +GHERSSI# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,SI:VA;0) 298.15 
+PARAMETER G(CBCC_A12,SI:VA;0) 298.15
   +50208 -20.377*T +GHSERSI#; 3600 N                                    91DIN!
 
 PARAMETER G(CBCC_A12,SN:C;0) 298.15
   +GHSERSN# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(CBCC_A12,SN:H;0) 298.15
+  +GHSERSN# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,SN:N;0) 298.15
   +GHERSSN# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,SN:VA;0) 100
+PARAMETER G(CBCC_A12,SN:VA;0) 298.15
   +2000 +GHSERSN#; 3000 N                                               91DIN!
 
 PARAMETER G(CBCC_A12,TI:C;0) 298.15
   +GHSERTI# +GHSERCC#;  6000 N                                          23FRI!
+PARAMETER G(CBCC_A12,TI:H;0) 298.15
+  +GHSERTI# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,TI:N;0) 298.15
   +GHERSTI# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,TI:VA;0) 298.15 
+PARAMETER G(CBCC_A12,TI:VA;0) 298.15
   +4602.2 +GHSERTI#; 4000 N                                             91DIN!
 
 PARAMETER G(CBCC_A12,V:C;0) 298.15
   +10000 +GHSERV# +GHSERCC#;  6000 N                                    91HUA!
+PARAMETER G(CBCC_A12,V:H;0) 298.15
+  +GHSERV# +GHSERHH#;  6000 N                                           24FRI!
 PARAMETER G(CBCC_A12,V:N;0) 298.15
   +GHERSV# +GHSERNN#;  6000 N                                           24FRI!
-PARAMETER G(CBCC_A12,V:VA;0) 298.15 
+PARAMETER G(CBCC_A12,V:VA;0) 298.15
   +9000 +GHSERV#; 4000 N                                                91DIN!
 
 PARAMETER G(CBCC_A12,ZR:C;0) 298.15
   +GHSERZR# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(CBCC_A12,ZR:H;0) 298.15
+  +GHSERZR# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,ZR:N;0) 298.15
   +GHSERZR# +GHSERNN#;  6000 N                                          24FRI!
-PARAMETER G(CBCC_A12,ZR:VA;0) 298.15 
+PARAMETER G(CBCC_A12,ZR:VA;0) 298.15
   +4602.2 +GHSERZR#; 2900 N                                             91DIN!
+
 
 PARAMETER L(CBCC_A12,AL,MN:VA;0) 298.15
   -63000 +21*T;  6000 N                                                  07DU!
@@ -4006,6 +4030,8 @@ PARAMETER L(CBCC_A12,MG,MN:VA;0) 298.15
 
 PARAMETER L(CBCC_A12,MN:C,VA;0) 298.15
   -52204;  6000 N                                                       10DJU!
+PARAMETER L(CBCC_A12,MN:H,VA;0) 298.15
+  +22056.92;  6000 N                                                    18LIA!
 PARAMETER L(CBCC_A12,MN:N,VA;0) 298.15
   -58869;  6000 N                                                      93QIUA!
 
@@ -4489,9 +4515,9 @@ $ PROTOTYPE: BETA-MN
 $ PEARSON: cP20
 $ SPACE GROUP: P4132
 
-
 PHASE CUB_A13 % 2 1 1 !
-CONSTITUENT CUB_A13 : AL,CO,CR,CU,FE,MG,MN,NB,NI,SI,SN,TI,V,ZR : B,C,N,VA : !
+CONSTITUENT CUB_A13 : AL,CO,CR,CU,FE,MG,MN,NB,NI,SI,SN,TI,V,ZR 
+                    : B,C,H,N,VA : !
 
 PARAMETER G(CUB_A13,AL:C;0) 298.15
   +100000 +GHSERAL# +GHSERCC#;  6000 N                                 15KIMB!
@@ -4537,13 +4563,12 @@ PARAMETER G(CUB_A13,MG:VA;0)   298.15
 
 PARAMETER G(CUB_A13,MN:C;0) 298.15
   +2607 +GHSERMN# +GHSERCC#;  6000 N                                    10DJU!
+PARAMETER G(CUB_A13,MN:H;0) 298.15
+  +12423.22 +44.1542*T +GHSERMN#;  6000  N                              18LIA!
 PARAMETER G(CUB_A13,MN:N;0) 298.15
   -67484 +299.266*T -50.216*T*LN(T) +359309*T**(-1);  6000 N           93QIUA!
 PARAMETER G(CUB_A13,MN:VA;0)   298.15
-  -5800.4+135.995*T-24.8785*T*LN(T)-5.83359E-3*T**2+70269*T**(-1)
-  +4.13175064E-6*(P-101325) +6.98976519E-7*T*(P-101325);  1519 Y
-  -28290.76+311.2933*T-48*T*LN(T)+396.757E28*T**(-9)
-  +4.13175064E-6*(P-101325) +6.98976519E-7*T*(P-101325);  2000 N        05GUO!
+  +GCUBMN#;  6000 N                                                     05GUO!
 
 PARAMETER G(CUB_A13,NB:N;0) 298.15
   +GHSERNB# +GHSERNN#;  6000 N                                          24FRI!
@@ -4650,6 +4675,8 @@ PARAMETER L(CUB_A13,MG,MN:VA;0) 298.15
 
 PARAMETER L(CUB_A13,MN:C,VA;0) 298.15
   -10175;  6000 N                                                       10DJU!
+PARAMETER L(CUB_A13,MN:H,VA;0) 298.15
+  -5000 +3.7*T;  6000 N                                                 18LIA!
 PARAMETER L(CUB_A13,MN:N,VA;0) 298.15
   -58869;  6000 N                                                      93QIUA!
 
@@ -5339,7 +5366,7 @@ PARAMETER G(FCC_A1,MN:B;0) 298.15
 PARAMETER G(FCC_A1,MN:C;0) 298.15
   +13.659*T +GHSERMN# +GHSERCC#;  6000 N                                10DJU!
 PARAMETER G(FCC_A1,MN:H;0) 298.15
-  +GHSERMN# +GHSERHH#;  6000 N                                          24FRI!
+  -7629.96 +41.3106*T +GFCCMN# +GHSERHH#;  6000 N                       24FRI!
 PARAMETER G(FCC_A1,MN:N;0) 298.15
   -75940 +292.226*T -50.294*T*LN(T) +265051*T**(-1); 6000 N            93QIUA!
 PARAMETER G(FCC_A1,MN:O;0) 298.15
@@ -5932,6 +5959,8 @@ PARAMETER L(FCC_A1,MG,MN:VA;0) 298.15
 
 PARAMETER L(FCC_A1,MN:C,VA;0) 298.15
   -41333;  6000 N                                                       10DJU!
+PARAMETER L(FCC_A1,MN:H,VA;0) 298.15
+  +17225.18 +4.517*T;  6000 N                                           18LIA!
 PARAMETER L(FC_A1,MN:N,VA;0) 298.15
   -69698 +11.5845*T;  6000 N                                           93QIUA!
 
@@ -11283,6 +11312,10 @@ PARAMETER L(LIQUID,MG,MN;0) 298.15
 PARAMETER L(LIQUID,MG,MN;1) 298.15
   -3470.8;  6000 N                                                      05GRO!
 
+PARAMETER L(LIQUID,MN,H;0) 298.15
+  -18190.66 +12.4588*T;  6000 N                                         18LIA!
+PARAMETER L(LIQUID,MN,H;1) 298.15
+  +1060.35;  6000 N                                                     18LIA!
 PARAMETER L(LIQUID,MN,MNS;0) 298.15
   +68500;  6000 N                                                       15DIL!
 PARAMETER L(LIQUID,MN,MNS;0) 298.15
@@ -13787,6 +13820,21 @@ PARAMETER BMAGN(FE3NISI_B21,FE,NI:NI:SI;0) 298.15
 PARAMETER TC(FE3NISI_B21,FE,NI:NI:SI;0) 298.15
   +683;  6000 N                                                         23WIT!
 
+$ ----------------------------------------------------------------------------
+$ EPS_MNH
+$ EPSILON MNH, HCP STRUCTURE
+$ SPACE GROUP: P6_3/mmc
+
+PHASE EPS_MNH % 2 0.5 0.5 !
+CONSTITUENT EPS_MNH : MN : H,VA : !
+
+PARAMETER G(EPS_MNH,MN:H;0) 298.15
+  -10041.37 +22.5112*T +0.5*GHCPMN# +0.5*GHSERHH#;  6000 N              18LIA!
+
+
+PARAMETER L(EPS_MNH,MN:H,VA;0) 298.15
+  -2448.01 +13.8714*T;  6000 N                                          81LIA!
+  
 $ ----------------------------------------------------------------------------
 $ MU_D85
 $ PROTOTYPE: W6FE7
@@ -17121,6 +17169,9 @@ NUMBER  SOURCE
         and Materials Transactions A 47 (2016): 6173-6186.'
 16HU    'Hu, Biao, et al. "CALPHAD-type thermodynamic assessment of the 
         Ti-Mo-Cr-V quaternary system." Calphad 55 (2016): 103-112.'
+18LIA   'Liang, Yongpeng, Shuhong Liu, and Yong Du. "Thermodynamic assessment
+        of the Mn-H and Mg-Mn-H systems." Journal of Phase Equilibria and 
+        Diffusion 39 (2018): 186-195.'        
 16LIU   Liu, Xuan L., et al. "Thermodynamic modeling of Al-Co-Cr, Al-Co-Ni, 
         Co-Cr-Ni ternary systems towards a description for Al-Co-Cr-Ni." 
         Calphad 52 (2016): 125-142.
