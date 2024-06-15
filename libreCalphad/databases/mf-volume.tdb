@@ -33,6 +33,7 @@ UNARY   Lu (2005), Hallstedt (2007), and Xiong (2019)
 CR-H    Dottor (2022)'
 CR-NI   Xiong (2019)'
 FE-NI   Xiong (2019)'
+H-NI    Bourgeois (2015)'
 NI-MO   Xiong (2019)'
 
 CEMENTITE_D011 Schneider (2007)'
@@ -191,10 +192,22 @@ PARAMETER VA(FCC_A1,IR:VA;0)  298.15
 PARAMETER V0(FCC_A1,MO:VA;0)  298.15
   +9.50E-6;  6000 N                                                     19XIO!
 
+PARAMETER V0(FCC_A1,NI:H;0) 298.15
+  +7.923E-6;  6000 N                                                    15BOU!
+PARAMETER VA(FCC_A1,NI:H;0) 298.15
+  +6.223E-5*T +6.708E-8*T**2;  6000 N                                   15BOU!
+PARAMETER VC(FCC_A1,NI:H;0) 298.15
+  +1.513E-6 +1.049E-10*T;  6000 N                                       15BOU!
+PARAMETER VK(FCC_A1,NI:H;0) 298.15
+  5.186E-12 +5.850E-15*T;  6000 N                                       15BOU!
 PARAMETER V0(FCC_A1,NI:VA;0)  298.15
-  +6.52857E-6;  6000 N                                                  05LUA!
+  +6.568E-6;  6000 N                                                    15BOU!
 PARAMETER VA(FCC_A1,NI:VA;0)  298.15
-  +3.23156E-5*T +1.08201E-8*T**2 +0.139773*T**(-2);  6000 N             05LUA!
+  +3.164E-5*T +8.215E-9*T**2;  6000 N                                   15BOU!
+PARAMETER VC(FCC_A1,NI:VA;0) 298.15
+  +1.315E-6 +1.035E-10*T;  6000 N                                       15BOU!
+PARAMETER VK(FCC_A1,NI:VA;0) 298.15
+  +4.646E-12 +1.846E-15*T;  6000 N                                      15BOU!
 
 PARAMETER V0(FCC_A1,PD:VA;0)  298.15
   +8.77796E-6;  6000 N                                                  05LUA!
@@ -313,6 +326,15 @@ PARAMETER VC(LIQUID,FE;0)  298.15
 PARAMETER VK(LIQUID,FE;0)  298.15
   +5.40E-12 +4.82E-15*T;  6000 N                                        05LUB!
 
+PARAMETER V0(LIQUID,NI;0) 298.15
+  +6.264E-6;  6000 N                                                    15BOU!
+PARAMETER VA(LIQUID,NI;0) 298.15
+  +1.067E-4*T;  6000 N                                                  15BOU!
+PARAMETER VC(LIQUID,NI;0) 298.15
+  +5.478E-7 +2.380E-10*T;  6000 N                                       15BOU!
+PARAMETER VK(LIQUID,NI;0) 298.15
+  +6.814E-12 +6.356E-15*T;  6000 N                                      15BOU!
+
 $ ----------------------------------------------------------------------------
 $ M5C2 - HAGG CARBIDE
 $
@@ -334,6 +356,8 @@ NUMBER  SOURCE
       (2007): 292-302.'
 07SCH 'Schneider, André, and Gerhard Inden. "Carbon diffusion in cementite 
       (Fe3C) and Hägg carbide (Fe5C2)." Calphad 31.1 (2007): 141-147.'
+15BOU 'Bourgeois, Natacha, et al. "Thermodynamic modeling of the Ni–H system."
+      The Journal of Physical Chemistry C 119.43 (2015): 24546-24557.'
 19XIO 'Xiong, Wen-Hao, et al. "Assessments of molar volumes of Co-, Ni-and Ti-
        related bcc and fcc phases." Calphad 66 (2019): 101629.'
 22DOT 'Dottor, Maxime, Jean-Claude Crivello, and Jean-Marc Joubert. 

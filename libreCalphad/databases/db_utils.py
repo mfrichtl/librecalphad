@@ -49,25 +49,38 @@ def check_endmembers(db, phase, ref='!'):
     constituent_dict = {}
     site_dict = {}
     current_endmembers = {}
-    endmember_params = False
-    multiline_constituent = False
-    endmember_line = ''
+    current_line = ''
+    complete_line = False
     out_string = ''
 
     with open(db) as f:
         for line in f.readlines():
-            line = line.strip('\n')
-            if endmember_params:
-                endmember_line += line
-                endmember_line += '\n'
-                if line.endswith('!'):  # Need to handle multiline endmember definitions
-                    endmember_params = False                
-                    current_endmembers[endmember] = endmember_line
+            line = line.strip('\n').rstrip()
+            if line.startswith('$') or line.startswith('\n'):  # comments and blank lines should not be processed
+                current_line = ''
+                complete_line = False
+                continue
+            if line.endswith('!'):
+                if complete_line:  # Should be a single line parameter
+                    current_line = line
+                else:  # should be a mult-line parameter
+                    current_line += line
+                complete_line = True
+            else:  # not a complete line
+                if complete_line:  # should be the first line of a multi-line parameter
+                    current_line = line
+                else:  # Should be a middle line  of a multi-line parameter
+                    current_line += line
+                current_line += '\n'
+                complete_line = False
+                continue  # go to next line
 
             # Need to make sure I understand the phase definition first
-            
-            if line.startswith(f'PHASE {phase}'):
-                splitted_line = line.split(' ')
+            # if 'CUB_A13' in current_line:
+            #     print(current_line)
+            if current_line.startswith(f'PHASE '):
+                print(current_line)
+                splitted_line = current_line.split(' ')
                 sl = 0
                 i = 0
                 for entry in splitted_line:
@@ -82,33 +95,28 @@ def check_endmembers(db, phase, ref='!'):
                     except:
                         continue
             # Next build the constituents on each sublattice
-            if line.startswith(f'CONSTITUENT {phase}') or multiline_constituent:  # get the constituent definitions
-                splitted_line = line.strip('').replace(' ', '').split(':')
+            if current_line.startswith(f'CONSTITUENT {phase}'):  # get the constituent definitions
+                splitted_line = current_line.strip('').replace(' ', '').split(':')
                 sl = len(constituent_dict.keys())
                 for i in splitted_line:
+                    i = i.strip('\n')
                     if len(i.split(',')) > 1:
-                        constituent_dict[sl] = i.split(',')
+                        constituent_dict[sl] = i.strip('\n').split(',')
                         sl += 1
                     elif len(i) <= 2 and i != '!':  # single component sublattice
                         constituent_dict[sl] = i
                         sl += 1
-                if splitted_line[-1] == '!':
-                    multiline_constituent = False
-                else:
-                    multiline_constituent = True
-                
 
             # Now figure out which endmembers are present
-            if line.startswith(f'PARAMETER G({phase}'):
-                endmember = line.split(',')[1].split(';')[0]
+            if current_line.startswith(f'PARAMETER G({phase}'):
+                endmember = current_line.split(',')[1].split(';')[0]
                 # Check endmember definition formatting
                 assert len(endmember.split(' ')) == 1, f"Improperly formatted endmember -- {endmember}"
                 # Check to make sure this is a valid endmember
                 for i in range(len(endmember.split(':'))):
                     component = endmember.split(':')[i]
-                    assert component in constituent_dict[i], f"Extra endmember identified, {':'.join(endmember)}."
-                endmember_line = ''
-                endmember_params = True
+                    assert component in constituent_dict[i], f"Extra endmember identified, {endmember} \n {current_line} \n {constituent_dict[i]}"
+                current_endmembers[endmember] = current_line
 
     # Next determine what endmembers need to be present
     required_endmembers = list(itertools.product(*list(constituent_dict.values())))
@@ -146,5 +154,6 @@ def check_endmembers(db, phase, ref='!'):
             out_string += next_line
         else:
             out_string += current_endmembers[endmember]
+            out_string += '\n'
     
     return out_string, missing_endmembers

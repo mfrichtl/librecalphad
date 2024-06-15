@@ -107,7 +107,8 @@ $ 2024-06-01 CR-ZR FROM LU 2015 AND LIU 2017, MINOR DISCREPANCIES IN LAVES
 $ 2024-06-01 FE-NB-ZR FROM LU 2017, ISSUE WITH LAVES_C36
 $ 2024-06-08 HF-V FROM SERVANT 2004 LAVES_C15/BCC_A2 INCORRECT
 $ 2024-06-09 SPINEL_H11 FROM KJELLQVIST 2008 CANNOT CHARGE BALANCE NI2+
-$ 2024-06012 CR-H FROM DOTTOR 2022 INCOMPATIBLE LIQUID MODEL
+$ 2024-060-12 CR-H FROM DOTTOR 2022 INCOMPATIBLE LIQUID 2SL MODEL
+$ 2024-06-15 H-NI FROM BOURGEOIS 2015 INCOMPATIBLE LIQUID 2SL MODEL
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -198,6 +199,7 @@ DATABASE_INFO The following systems are available:'
   FE-ZR     Jiang (2022)'
   FES-S     Lee (2007)'
   H-MN      Liang (2018)'
+  H-NI      Bourgeois (2015) EXCEPT LIQUID'
   HF-V      Servant (2004)'
   MG-MN     Groebner (2005)'
   MN-MO     Zheng (2017)'
@@ -770,6 +772,11 @@ FUNCTION GBCCNI  298.15
   +8715.084 -3.556*T +GHSERNI#; 3000 N                                  91DIN!
 FUNCTION GBCTNI  298.15
   +10023 -4.556*T +GHSERNI#; 3000 N                                     91DIN!
+FUNCTION GGASNI 298.15
+  +423857.257 -20850.19*T**(-1) -46.3052325*T -19.7929559*T*LN(T)
+  -0.00636921952*T**2 +1.3138806E-6*T**3;  900 Y
+  +419579.823 +355909.868*T**(-1) +12.8906679*T -28.794288*T*LN(T)
+  +0.0019259642*T**2 -9.77033733E-8*T**3;  3200 N                       96KOW!
 FUNCTION GHCPNI  298.15
   +1046 +1.2552*T +GHSERNI#; 3000 N                                     91DIN!
 FUNCTION GC15NI  298.15
@@ -1046,7 +1053,7 @@ PARAMETER G(ALCU_EPS,NI:AL;0) 298.15
 PARAMETER G(ALCU_EPS,NI:CU;0) 298.15
   +10000 +GHSERNI# +GHSERCU#;  6000 N                                   19WAN!
 PARAMETER G(ALCU_EPS,NI:NI;0) 298.15
-  +10000 +2*GHSERNI#;  6000 N                                           19WAN!
+  +10000 +2*GHSERNI# +RTLNP#;  6000 N                                   19WAN!
 
 
 PARAMETER L(ALCU_EPS,AL:CU,NI;0) 298.15
@@ -3539,7 +3546,7 @@ PARAMETER G(BCT_A5,AL;0) 298.15
 PARAMETER G(BCT_A5,BI;0) 298.15
   +4184.07 +GHSERBI#; 3000 N                                            91DIN!
 PARAMETER G(BCT_A5,NI;0) 298.15 
-  +GBCTNI#;  6000 N                                                     91DIN!
+  +GBCTNI# +RTLNP#;  6000 N                                             91DIN!
 PARAMETER G(BCT_A5,TI;0) 298.15 
   +4602.2 +GHSERTI#; 3000 N                                             98ANS!
 
@@ -3694,7 +3701,7 @@ PARAMETER TC(BCT_D26,NI:VA:W;0) 298.15
   +633;  6000 N                                                         17ISO!
 
 PARAMETER G(BCT_D26,NI:VA:VA;0) 298.15
-  +GBCTNI#;  6000 N                                                     17ISO!
+  +GBCTNI# +RTLNP#;  6000 N                                             17ISO!
 PARAMETER BMAGN(BCT_D26,NI:VA:VA;0) 298.15
   +0.52;  6000 N                                                        17ISO!
 PARAMETER TC(BCT_D26,NI:VA:VA;0) 298.15
@@ -3803,7 +3810,7 @@ PARAMETER G(BETA_2,FE:VA;0) 298.15
 PARAMETER G(BETA_2,NI:H;0) 298.15
   -7720 +65.4*T +GBCCNI# +0.5*GHSERHH#;  6000 N                         12KIM!
 PARAMETER G(BETA_2,NI:VA;0) 298.15
-  +GBCCNI#;  6000 N                                                     12KIM!
+  +GBCCNI# +RTLNP#;  6000 N                                             12KIM!
 
 PARAMETER G(BETA_2,V:H;0) 298.15
   -34680 +65.4*T +GHSERV# +0.5*GHSERHH#;  6000 N                        08UKI!
@@ -3935,11 +3942,11 @@ PARAMETER G(CBCC_A12,NB:VA;0) 298.15
 PARAMETER G(CBCC_A12,NI:C;0) 298.15
   +50000 +20*T;  6000 N                                                 23FRI!
 PARAMETER G(CBCC_A12,NI:H;0) 298.15
-  +GHSERNI# +GHSERHH#;  6000 N                                          24FRI!
+  +75000 +50*T +GHSERNI# +GHSERHH# +RTLNP#;  6000 N                     24FRI!
 PARAMETER G(CBCC_A12,NI:N;0) 298.15
   +GHERSNI# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NI:VA;0) 298.15
-  +3556 +GHSERNI#; 3000 N                                               91DIN!
+  +3556 +GHSERNI# +RTLNP#; 3000 N                                       91DIN!
 
 PARAMETER G(CBCC_A12,SI:C;0) 298.15
   +GHSERSI# +GHSERCC#;  6000 N                                          23FRI!
@@ -4564,7 +4571,7 @@ PARAMETER G(CUB_A13,MG:VA;0)   298.15
 PARAMETER G(CUB_A13,MN:C;0) 298.15
   +2607 +GHSERMN# +GHSERCC#;  6000 N                                    10DJU!
 PARAMETER G(CUB_A13,MN:H;0) 298.15
-  +12423.22 +44.1542*T +GHSERMN#;  6000  N                              18LIA!
+  +12423.22 +44.1542*T +GCUBMN# +GHSERHH#;  6000  N                     18LIA!
 PARAMETER G(CUB_A13,MN:N;0) 298.15
   -67484 +299.266*T -50.216*T*LN(T) +359309*T**(-1);  6000 N           93QIUA!
 PARAMETER G(CUB_A13,MN:VA;0)   298.15
@@ -4583,7 +4590,7 @@ PARAMETER G(CUB_A13,NI:C;0) 298.15
 PARAMETER G(CUB_A13,NI:N;0) 298.15
   +GHSERNI# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CUB_A13,NI:VA;0) 298.15 
-  +2092 +GHSERNI#; 3000 N                                               91DIN!
+  +2092 +GHSERNI# +RTLNP#; 3000 N                                       91DIN!
 
 PARAMETER G(CUB_A13,SI:N;0) 298.15
   +GHSERSI# +GHSERNN#;  6000 N                                          24FRI!
@@ -5413,7 +5420,7 @@ PARAMETER G(FCC_A1,NI:B;0) 298.15
 PARAMETER G(FCC_A1,NI:C;0) 298.15
   +62000 -7.6*T +GHSERNI# +GHSERCC#;  6000 N                           92LEEA!
 PARAMETER G(FCC_A1,NI:H;0) 298.15
-  +GHSERNI# +GHSERHH#;  6000 N                                          24FRI!
+  -9154 +69.77*T -5.824E-3*T**2 +GHSERNI# +GHSERHH#;  6000 N            15BOU!
 PARAMETER G(FCC_A1,NI:N;0) 298.15
   +GHSERNI# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,NI:O;0) 298.15
@@ -6053,6 +6060,10 @@ PARAMETER L(FCC_A1,NI:B,VA;0) 298.15
   +5119.116 -21.844*T;  6000 N                                          22OIK!
 PARAMETER L(FCC_A1,NI:C,VA;0) 298.15
   -17661 +10.27*T;  6000 N                                              22OIK!
+PARAMETER L(FCC_A1,NI:H,VA;0) 298.15
+  +14460 -4.452*T;  6000 N                                              15BOU!
+PARAMETER L(FCC_A1,NI:H,VA;1) 298.15
+  -701.0;  6000 N                                                       15BOU!
 PARAMETER L(FCC_A1,NI:O,VA;0) 298.15
   -165608 +32.24*T;  6000 N                                             08KJE!
 
@@ -7296,7 +7307,7 @@ PARAMETER G(GAMMA_D83,NI:CU:NI;0) 298.15
 PARAMETER G(GAMMA_D83,NI:NI:CU;0) 298.15
   +65000 +5*GHSERNI# +8*GHSERCU#;  6000 N                               19WAN!
 PARAMETER G(GAMMA_D83,NI:NI:NI;0) 298.15
-  +65000 +13*GHSERNI#;  6000 N                                          19WAN!
+  +65000 +13*GHSERNI# +RTLNP#;  6000 N                                  19WAN!
 
 
 PARAMETER L(GAMMA_D83,AL:AL:CU,NI;0) 298.15
@@ -7627,7 +7638,7 @@ PARAMETER G(GAS,CRO3;0) 298.15
   -329916.295 +22203712.8*T**(-1) +308.70837*T -83.060768*T*LN(T)
   -1.2094898E-5*T**2 +3.27007493E-10*T**3 +RTLNP#;  6000 N              96KOW!
 PARAMETER G(GAS,FE;0)  298.15
-  +405624.097 +112881.768*T**(-1) +36.7995658*T -33.007881*T*LN(T)
+  +405624.097 +112881.768*T**(-1) +36.7995658*T -33.007881*T*LN(T) 
   +0.0092758129*T**2 -1.3799585E-6*T**3 +RTLNP#;  950 Y 
   +414289.373 -996891.764*T**(-1) -53.3825193*T -19.9029533*T*LN(T)
   +1.3565310E-4*T**2 -1.38830908E-7*T**3 +RTLNP#;  2350 Y 
@@ -7658,10 +7669,7 @@ PARAMETER G(GAS,NCN;0) 298.15
   +436472.777 +229.071444*T -64.92062*T*LN(T) +5.641205E-4*T**2
   -2.29523833E-8*T**3 +4625265.5*T**(-1) +R*T*LN(P); 6000 N            96JONA!
 PARAMETER G(GAS,NI;0) 298.15
-  +423857.257 -20850.19*T**(-1) -46.3052325*T -19.7929559*T*LN(T)
-  -0.00636921952*T**2 +1.3138806E-6*T**3 +RTLNP#;  900 Y
-  +419579.823 +355909.868*T**(-1) +12.8906679*T -28.794288*T*LN(T)
-  +0.0019259642*T**2 -9.77033733E-8*T**3 +RTLNP#;  3200 N               96KOW!
+  +GGASNI# +R*T*LN(P) +6.5836E-6*P -6.5836E-1;  6000 N                  15BOU!
 PARAMETER G(GAS,NIO;0) 298.15
   +300793.836 +305432*T**(-1) +23.7887601*T -36.69368*T*LN(T)
   -1.6736E-4*T**2 -4.184E-8*T**3 +RTLNP#;  4000 N                       96KOW!
@@ -8058,7 +8066,7 @@ PARAMETER G(HCP_A3,NB:O;0) 298.15
 PARAMETER G(HCP_A3,NB:VA;0) 298.15
   +GHCPNB#;  6000 N                                                     91DIN!
 PARAMETER G(HCP_A3,NI:H;0) 298.15
-  +GHSERNI# +GHSERHH#;  6000 N                                          24FRI!
+  +75000 +75*T +GHSERNI# +GHSERHH# +RTLNP#;  6000 N                     24FRI!
 PARAMETER G(HCP_A3,NI:N;0) 298.15
   +GHSERNI# +GHSERNN#;  6000 N                                          24FRI!
 $ ESTIMATE SAME NI-O AS FCC_A1
@@ -8073,7 +8081,7 @@ PARAMETER BMAGN(HCP_A3,NI:C;0) 298.15
 PARAMETER TC(HCP_A3,NI:C;0) 298.15
   +633;  6000 N                                                        92LEEA!
 PARAMETER G(HCP_A3,NI:VA;0) 173
-  +GHCPNI#;  6000 N                                                     91DIN!
+  +GHCPNI# +RTLNP#;  6000 N                                             91DIN!
 PARAMETER TC(HCP_A3,NI:VA;0) 298.15 
   +633; 3000 N                                                          91DIN!
 PARAMETER BMAGN(HCP_A3,NI:VA;0) 298.15 
@@ -10138,7 +10146,7 @@ PARAMETER G(LAVES_C15,NI:MO;0) 298.15
 PARAMETER G(LAVES_C15,NI:NB;0) 298.15
   +2*GHSERNI# +GHSERNB#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NI:NI;0) 298.15
-  +3*GC15NI#;  6000 N                                                   09KEY!
+  +3*GC15NI# +RTLNP#;  6000 N                                           09KEY!
 PARAMETER G(LAVES_C15,NI:SI;0) 298.15
   +2*GHSERNI# +GHSERSI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NI:TA;0) 298.15
@@ -10602,7 +10610,7 @@ PARAMETER G(LAVES_C36,NI:MN;0) 298.15
 PARAMETER G(LAVES_C36,NI:NB;0) 298.15
   +2*GHSERNI# +GHSERNB#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,NI:NI;0) 298.15
-  +GC36NI#;  6000 N                                                     09KEY!
+  +GC36NI# +RTLNP#;  6000 N                                             09KEY!
 PARAMETER G(LAVES_C36,NI:TI;0) 298.15
   +2*GHSERNI# +GHSERTI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,NI:V;0) 298.15
@@ -12738,7 +12746,7 @@ PARAMETER G(MNNI_B2,MN:NI;0) 298.15
 PARAMETER G(MNNI_B2,VA:MN;0) 298.15
   +5000 +GHSERMN#;  6000 N                                              05GUO!
 PARAMETER G(MNNI_B2,VA:NI;0) 298.15
-  +5000 +GHSERNI#;  6000 N                                              05GUO!
+  +5000 +GHSERNI# +RTLNP#;  6000 N                                      05GUO!
 
 
 PARAMETER L(MNNI_B2,MN:MN,NI;0) 298.15
@@ -12765,7 +12773,7 @@ CONSTITUENT MNNI2 : MN,NI : NI : !
 PARAMETER G(MNNI2,MN:NI;0) 298.15
   -26389.3 -6.9016*T +GHSERMN# +2*GHSERNI#;  6000 N                     05GUO!
 PARAMETER G(MNNI2,NI:NI;0) 298.15
-  +15000 +3*GHSERNI#;  6000 N                                           05GUO!
+  +15000 +3*GHSERNI# +RTLNP#;  6000 N                                   05GUO!
 
 
 PARAMETER L(MNNI2,MN,NI:NI;0) 298.15
@@ -12789,7 +12797,7 @@ PARAMETER G(MNNI3_L12,MN:NI;0) 298.15
 PARAMETER G(MNNI3_L12,NI:MN;0) 298.15
   +34814.5 +5.4498*T;  6000 N                                           05GUO!
 PARAMETER G(MNNI3_L12,NI:NI;0) 298.15
-  +4*GHSERNI#;  6000  N                                                 05GUO!
+  +4*GHSERNI# +RTLNP#;  6000  N                                         05GUO!
 
 
 PARAMETER L(MNNI3_L12,MN:MN,NI;0) 298.15
@@ -13320,7 +13328,7 @@ PARAMETER G(M2SI_THETA,NI:FE:VA;0) 298.15
 PARAMETER G(M2SI_THETA,NI:NI:SI;0) 298.15
   -123726.8 -29.8534*T +2*GHSERNI# +GHSERSI#;  6000 N                   23WIT!
 PARAMETER G(M2SI_THETA,NI:NI:VA;0) 298.15
-  +15000 +2*GHSERNI#;  6000 N                                           23WIT!
+  +15000 +2*GHSERNI# +RTLNP#;  6000 N                                   23WIT!
 
 PARAMETER G(M2SI_THETA,NI:VA:SI;0) 298.15
   -78394.6 -6.6652*T +GHSERNI# +GHSERSI#;  6000 N                       23WIT!
@@ -13430,7 +13438,7 @@ PARAMETER G(NITI2_E93,NI:FE;0) 298.15
 PARAMETER G(NITI2_E93,NI:HF;0) 298.15
   +GHSERNI# +2*GHSERHF#;  6000 N                                        24FRI!
 PARAMETER G(NITI2_E93,NI:NI;0) 298.15
-  +3*GHSERNI#;  6000 N                                                  24FRI!
+  +3*GHSERNI# +RTLNP#;  6000 N                                          24FRI!
 PARAMETER G(NITI2_E93,NI:TI;0) 298.15
   -82542.654 +8.56035657*T +GHSERNI# +2*GHSERTI#;  6000  N              09KEY!
 
@@ -13532,7 +13540,7 @@ PARAMETER G(NI3SI_BETA2,FE:SI;0) 298.15
 PARAMETER G(NI3SI_BETA2,NI:FE;0) 298.15
   +20000 +3*GHSERNI# +GHSERFE#;  6000 N                                 23WIT!
 PARAMETER G(NI3SI_BETA2,NI:NI;0) 298.15
-  +20000 +4*GHSERNI#;  6000 N                                           23WIT!
+  +20000 +4*GHSERNI# +RTLNP#;  6000 N                                   23WIT!
 PARAMETER G(NI3SI_BETA2,NI:SI;0) 298.15
   -183388.3 -7.5724*T +3*GHSERNI# +GHSERSI#;  6000 N                    23WIT!
 
@@ -13558,7 +13566,7 @@ PARAMETER G(NI3SI_BETA3,FE:SI;0) 298.15
 PARAMETER G(NI3SI_BETA3,NI:FE;0) 298.15
   +20000 +3*GHSERNI# +GHSERFE#;  6000 N                                 23WIT!
 PARAMETER G(NI3SI_BETA3,NI:NI;0) 298.15
-  +20000 +4*GHSERNI#;  6000 N                                           23WIT!
+  +20000 +4*GHSERNI# +RTLNP#;  6000 N                                   23WIT!
 PARAMETER G(NI3SI_BETA3,NI:SI;0) 298.15
   -169744 -17.4*T +3*GHSERNI# +GHSERSI#;  6000 N                        23WIT!
 
@@ -13584,7 +13592,7 @@ PARAMETER G(NI3TI_D024,FE:TI;0) 298.15
 PARAMETER G(NI3TI_D024,NI:FE;0) 298.15
   +1.5*GHCPNI# +1.5*GHSERNI# + 0.5*GHCPFE# +0.5*GFCCFE#;  6000 N        09KEY!
 PARAMETER G(NI3TI_D024,NI:NI;0) 298.15
-  +10000 +2*GHCPNI# +2*GHSERNI#;  6000 N                                24FRI!
+  +10000 +2*GHCPNI# +2*GHSERNI# +RTLNP#;  6000 N                        24FRI!
 PARAMETER G(NI3TI_D024,NI:TI;0) 298.15
   -157744 +18.6544*T +1.5*GHCPNI# +1.5*GHSERNI# +0.5*GHSERTI#
   +0.5*GFCCTI#;  6000 N                                                 09KEY!
@@ -13623,7 +13631,7 @@ PARAMETER G(NI5SI3_GAMMA,FE:VA;0) 298.15
 PARAMETER G(NI5SI3_GAMMA,NI:SI;0) 298.15
   -350997.5 -14.6412*T +5*GHSERNI# +2*GHSERSI#;  6000 N                 23WIT!
 PARAMETER G(NI5SI3_GAMMA,NI:VA;0) 298.15
-  +10000 +5*GHSERNI#;  6000 N                                           23WIT!
+  +10000 +5*GHSERNI# +RTLNP#;  6000 N                                   23WIT!
 
 
 PARAMETER L(NI5SI3_GAMMA,FE:SI,VA;0) 298.15
@@ -13834,7 +13842,7 @@ PARAMETER G(EPS_MNH,MN:H;0) 298.15
 
 PARAMETER L(EPS_MNH,MN:H,VA;0) 298.15
   -2448.01 +13.8714*T;  6000 N                                          81LIA!
-  
+
 $ ----------------------------------------------------------------------------
 $ MU_D85
 $ PROTOTYPE: W6FE7
@@ -16473,7 +16481,7 @@ PARAMETER G(TETRA_L10,NI:MO;0) 298.15
 PARAMETER G(TETRA_L10,NI:NB;0) 298.15
   +0.5*GHSERNI# +0.5*GFCCNB#; 6000 N                                    24FRI!
 PARAMETER G(TETRA_L10,NI:NI;0) 298.15
-  +5000 +GHSERNI#;  6000 N                                              05GUO!
+  +5000 +GHSERNI# +RTLNP#;  6000 N                                      05GUO!
 PARAMETER G(TETRA_L10,NI:TI;0) 298.15
   +0.5*GHSERNI# +0.5*GFCCTI#;  6000 N                                   24FRI!
 
@@ -17133,6 +17141,9 @@ NUMBER  SOURCE
 15BIG   'Bigdeli, Sedigheh, Huahai Mao, and Malin Selleby. "On the third-
         generation Calphad databases: An updated description of Mn." physica 
         status solidi (b) 252.10 (2015): 2199-2208.'
+15BOU   'Bourgeois, Natacha, et al. "Thermodynamic modeling of the Ni–H 
+        system." The Journal of Physical Chemistry C 119.43 (2015): 
+        24546-24557.'
 15CHA   'Chaia, N., et al. "Thermodynamic modeling of the V-Cr-Si system." 
         Calphad 48 (2015): 166-174.'
 15DIL   'Dilner, David, Huahai Mao, and Malin Selleby. "Thermodynamic 
