@@ -131,6 +131,7 @@ DATABASE_INFO The following systems are available:'
   B-CR      Campbell (2002) and Pan (2010)'
   B-FE      Van Rompaey (2002) and Pan (2010)'
   B-MO      Pan (2010)'
+  B-MN      Sun (2010) EXCEPT BETA-B SOLUBILITY'
   B-NI      Sun (2009), Pan (2010), and Oikawa (2022)'
   C-CO      Guillermet (1988) and Kusoffsky (1997)'
   C-CR      Andersson (1987), Lee (1992), Qiu (1992), and Khvan (2012)'
@@ -1426,7 +1427,7 @@ $ SPACE GROUP: I4/mcm
 $ PEARSON: tI12
 
 PHASE AL2CU_C16 % 2 2 1 !
-CONSTITUENT AL2CU_C16 : AL,TA,ZR : AL,CU,FE,NI,SI,ZR : !
+CONSTITUENT AL2CU_C16 : AL,MN,TA,ZR : AL,B,CU,FE,NI,SI,ZR : !
 
 PARAMETER G(AL2CU_C16,AL:AL;0) 298.15
   +3*GBCCAL#;  6000  N                                                  91SAU!
@@ -1440,6 +1441,9 @@ PARAMETER G(AL2CU_C16,AL:SI;0) 298.15
   +15000 +2*GHSERAL# +GHSERSI#;  6000 N                                 24FRI!
 PARAMETER G(AL2CU_C16,AL:ZR;0) 298.15
   +2*GHSERAL# +GHSERZR#;  6000 N                                        24FRI!
+
+PARAMETER G(AL2CU_C16,MN:B;0) 298.15
+  -95100 -19.4406*T +2*GHSERMN# +GHSERBB#;  6000 N                      10SUN!
 
 PARAMETER G(AL2CU_C16,TA:AL;0) 298.15
   +2*GHSERTA# +GHSERAL#;  6000  N                                       24FRI!
@@ -2191,7 +2195,7 @@ PARAMETER G(BCC_A2,MG:VA;0) 298.15
   +3100 -2.1*T; 3000 N                                                  91DIN!
 
 PARAMETER G(BCC_A2,MN:B;0) 298.15
-  +GHSERMN# +3*GHSERBB#;  6000 N                                        23FRI!
+  +GHSERMN# +3*GHSERBB#;  6000 N                                        10SUN!
 PARAMETER G(BCC_A2,MN:C;0) 298.15
   +10000 +30*T +GHSERMN# +3*GHSERCC#;  6000 N                           10DJU!
 PARAMETER G(BCC_A2,MN:N;0) 298.15
@@ -3844,6 +3848,8 @@ PARAMETER L(BETA_2,V:H,VA;2) 298.15
 $ ----------------------------------------------------------------------------
 $ BETA_RHOMB_B
 $ BETA BORIDE
+$ SPACE GROUP: R-3m
+$ PEARSON: hR108
 
 PHASE BETA_RHOMBO_B % 2 93 12 !
 CONSTITUENT BETA_RHOMBO_B : B : B,C : !
@@ -3920,6 +3926,8 @@ PARAMETER G(CBCC_A12,MG:N;0) 298.15
 PARAMETER G(CBCC_A12,MG:VA;0) 298.15
   +4602.4 -3.011*T +GHSERMG#; 2000 N                                    91DIN!
 
+PARAMETER G(CBCC_A12,MN:B;0) 298.15
+  +GCUBMN# +GHSERBB#;  6000 N                                           10SUN!
 PARAMETER G(CBCC_A12,MN:C;0) 298.15
   +27.46525*T +GHSERMN# +GHSERCC#;  6000 N                              10DJU!
 PARAMETER G(CBCC_A12,MN:H;0) 298.15
@@ -4568,6 +4576,8 @@ PARAMETER G(CUB_A13,MG:N;0) 298.15
 PARAMETER G(CUB_A13,MG:VA;0)   298.15
   +5000 -3*T +GHSERMG#;  3000 N                                         91DIN!
 
+PARAMETER G(CUB_A13,MN:B;0) 298.15
+  +GHSERMN# +GHSERBB#;  6000 N                                          10SUN!
 PARAMETER G(CUB_A13,MN:C;0) 298.15
   +2607 +GHSERMN# +GHSERCC#;  6000 N                                    10DJU!
 PARAMETER G(CUB_A13,MN:H;0) 298.15
@@ -5369,7 +5379,7 @@ PARAMETER G(FCC_A1,MG:VA;0) 298.15
   +2600 -0.9*T +GHSERMG#; 3000 N                                        91DIN!
 
 PARAMETER G(FCC_A1,MN:B;0) 298.15
-  +GHSERMN# +GHSERBB#;  6000 N                                          24FRI!
+  +GHSERMN# +GHSERBB#;  6000 N                                          10SUN!
 PARAMETER G(FCC_A1,MN:C;0) 298.15
   +13.659*T +GHSERMN# +GHSERCC#;  6000 N                                10DJU!
 PARAMETER G(FCC_A1,MN:H;0) 298.15
@@ -10999,6 +11009,14 @@ PARAMETER L(LIQUID,B,FE;1) 298.15
   +6571;  6000 N                                                        02ROM!
 PARAMETER L(LIQUID,B,FE;2) 298.15
   +30933;  6000 N                                                       02ROM!
+PARAMETER L(LIQUID,B,MN;0) 298.15
+  -134141.3 -15.7142*T;  6000 N                                         10SUN!
+PARAMETER L(LIQUID,B,MN;1) 298.15
+  +32025.1 -21.7659*T;  6000 N                                          10SUN!
+PARAMETER L(LIQUID,B,MN;2) 298.15
+  +59907.4;  6000 N                                                     10SUN!
+PARAMETER L(LIQUID,B,MN;3) 298.15
+  -8723.6;  6000 N                                                      10SUN!
 PARAMETER L(LIQUID,B,NI;0) 298.15
   -157542.283 +53.0152309*T;  6000 N                                   09SUNB!
 PARAMETER L(LIQUID,B,NI;1) 298.15
@@ -11895,26 +11913,42 @@ $ PEARSON: hP3
 $ SPACE GROUP: P6/mmm
 
 PHASE MB2_C32 % 2 1 2 !
-CONSTITUENT MB2_C32 : AL,CR,MO : B : !
+CONSTITUENT MB2_C32 : AL,CR,MN,MO : B : !
 
 PARAMETER G(MB2_C32,AL:B;0) 298.15
   -23000 -3.05*T +GHSERAL# +2*GHSERBB#;  6000 N                         04MIR!
 PARAMETER G(MB2_C32,CR:B;0) 298.15
   -119061 +12.552*T +GHSERCR# +2*GHSERBB#;  6000 N                      02CAM!
+PARAMETER G(MB2_C32,MN:B;0) 298.15
+  -63300 -37.668*T +GHSERMN# +2*GHSERBB#;  6000 N                       10SUN!
 PARAMETER G(MB2_C32,MO:B;0) 298.15
   -143814 +6.66*T +1.14*GHSERMO# +1.86*GHSERBB#;  6000 N                10PAN!
 
 $ ----------------------------------------------------------------------------
-$ MB4
-$ CHROMIUM TETRABORIDE
+$ MB4_1
+$ PROTOTYPE: CRB4
+$ SPACE GROUP: Immm
+$ PEARSON: oP10
 
-PHASE MB4 % 2 0.2 0.8 !
-CONSTITUENT MB4 : CR,MO : B : !
+PHASE MB4_1 % 2 0.2 0.8 !
+CONSTITUENT MB4_1 : CR,MO : B : !
 
-PARAMETER G(MB4,CR:B;0) 298.15
+PARAMETER G(MB4_1,CR:B;0) 298.15
   -24957 +3.14*T +0.2*GHSERCR# +0.8*GHSERBB#;  6000 N                   02CAM!
-PARAMETER G(MB4,MO:B;0) 298.15
+PARAMETER G(MB4_1,MO:B;0) 298.15
   -33688 +4.5*T +0.2*GHSERMO# +0.8*GHSERBB#;  6000 N                    10PAN!
+
+$ ----------------------------------------------------------------------------
+$ MB4_2
+$ PROTOTYPE: NI3SN4
+$ SPACE GROUP: C2/m
+$ PEARSON: mC14
+
+PHASE MB4_2 % 2 0.2 0.8 !
+CONSTITUENT MB4_2 : MN : B : !
+
+PARAMETER G(MB4_2,MN:B;0) 298.15
+  -17744.3 -4.5934*T +0.2*GHSERMN# +0.8*GHSERBB#;  6000 N               10SUN!
 
 $ ----------------------------------------------------------------------------
 $ M2B_C16
@@ -12846,6 +12880,18 @@ PARAMETER G(MNTI_HT,MN:TI;0) 298.15
   -5540.0 -2.29*T +0.515*GHSERMN# +0.485*GHSERTI#;  6000 N              93SAU!
 
 $ ----------------------------------------------------------------------------
+$ MN2B_o
+$ PROTOTYPE: MN2B0.982
+$ SPACE GROUP: Fddd
+$ PEARSON: oF48
+
+PHASE MN2B_o % 2 0.670691 0.329309 !
+CONSTITUENT MN2B_o : MN : B : !
+
+PARAMETER G(MN2B_o,MN:B;0) 298.15
+  -31651.9 +6.17*T +0.670691*GHSERMN# +0.329309*GSHERBB#;  6000 N       10SUN!
+
+$ ----------------------------------------------------------------------------
 $ MN3N2_ETA
 $ PROTOTYPE: ETA MN3N2 MANGANESE NITRIDE
 $ SPACE GROUP: I4/mmm
@@ -13122,7 +13168,10 @@ $ SPACE GROUP: Pnma
 $ PEARSON: oP8
 
 PHASE MSI_B27 % 2 0.5 0.5 !
-CONSTITUENT MSI_B27 : TI : SI : !
+CONSTITUENT MSI_B27 : MN,TI : B,SI : !
+
+PARAMETER G(MSI_B27,MN:B;0) 298.15
+  -35800 -9.9995*T +0.5*GHSERMN# +0.5*GHSERBB#;  6000 N                 10SUN!
 
 PARAMETER G(MSI_B27,TI:SI;0) 298.15
   -68000.0 -0.04119*T +0.5*GHSERTI# +0.5*GHSERSI#;  6000 N              89VAH!
@@ -13355,6 +13404,18 @@ PARAMETER L(M2SI_THETA,NI:FE,NI:SI;0) 298.15
   -8265 +40.82*T;  6000 N                                               23WIT!
 PARAMETER L(M2SI_THETA,NI:NI,VA:SI;0) 298.15
   -32436.4 +23.2280*T;  6000 N                                          23WIT!
+
+$ ----------------------------------------------------------------------------
+$ M3B4
+$ PROTOTYPE TA3B4
+$ SPACE GROUP: Immm
+$ PEARSON: oI14
+
+PHASE M3B4 % 2 0.428571 0.571429 !
+CONSTITUENT M3B4 : MN : B : !
+
+PARAMETER G(M3B4,MN:B;0) 298.15
+  -38786.7 -6.9904*T +0.428571*GHSERMN# +0.571429*GHSERBB#;  6000 N     10SUN!
 
 $ ----------------------------------------------------------------------------
 $ M3SI_D03
@@ -17098,6 +17159,8 @@ NUMBER  SOURCE
 10PAN   'Li-Mei Pan. "Phase Equilibria and Elastic Moduli of Rapidly 
         Solidified Fe-Cr-Mo-B and Fe-Cr-Ni-B Alloys." PhD Thesis. University 
         of Surrey. (2010).'
+10SUN   'Sun, Weihua, et al. "Thermodynamic assessment of the Mn-B system." 
+        Journal of Phase Equilibria and Diffusion 31 (2010): 357-364.'
 11DJU   'Djurovic, Dejan, et al. "Thermodynamic assessment of the Fe-Mn-C 
         system." Calphad 35.4 (2011): 479-491.'
 11HU    'Hu, Biao, et al. "Experimental investigation and thermodynamic 
