@@ -55,10 +55,14 @@ def check_endmembers(db, phase, ref='!'):
 
     with open(db) as f:
         for line in f.readlines():
-            line = line.strip('\n').rstrip()
-            if line.startswith('$') or line.startswith('\n'):  # comments and blank lines should not be processed
+            line = line.rstrip()
+            if line.lstrip().startswith('$'):  # comments and blank lines should not be processed
                 current_line = ''
-                complete_line = False
+                continue
+            if line.endswith("'"):  # multi-line database info or reference
+                current_line = ''
+                continue
+            if line == '':
                 continue
             if line.endswith('!'):
                 if complete_line:  # Should be a single line parameter
@@ -74,12 +78,9 @@ def check_endmembers(db, phase, ref='!'):
                 current_line += '\n'
                 complete_line = False
                 continue  # go to next line
-
+            
             # Need to make sure I understand the phase definition first
-            # if 'CUB_A13' in current_line:
-            #     print(current_line)
-            if current_line.startswith(f'PHASE '):
-                print(current_line)
+            if current_line.startswith(f'PHASE {phase}'):
                 splitted_line = current_line.split(' ')
                 sl = 0
                 i = 0
@@ -96,7 +97,7 @@ def check_endmembers(db, phase, ref='!'):
                         continue
             # Next build the constituents on each sublattice
             if current_line.startswith(f'CONSTITUENT {phase}'):  # get the constituent definitions
-                splitted_line = current_line.strip('').replace(' ', '').split(':')
+                splitted_line = current_line.replace(' ', '').strip().split(':')
                 sl = len(constituent_dict.keys())
                 for i in splitted_line:
                     i = i.strip('\n')
@@ -104,7 +105,7 @@ def check_endmembers(db, phase, ref='!'):
                         constituent_dict[sl] = i.strip('\n').split(',')
                         sl += 1
                     elif len(i) <= 2 and i != '!':  # single component sublattice
-                        constituent_dict[sl] = i
+                        constituent_dict[sl] = [i]  # brackets needed for compatibility with product function below
                         sl += 1
 
             # Now figure out which endmembers are present
@@ -133,12 +134,15 @@ def check_endmembers(db, phase, ref='!'):
         if insert_blank_line:
             out_string += '\n'
         endmember = ':'.join(endmember)
-        out_string += f"PARAMETER G({phase},{endmember};0) 298.15\n"
-        if endmember not in current_endmembers.keys():
+        print(endmember)
+        if endmember not in list(current_endmembers.keys()):
+            
+            out_string += f"PARAMETER G({phase},{endmember};0) 298.15\n"
             missing_endmembers.append(endmember)
             next_line = ' '
             for i in site_dict.keys():
                 component = endmember.split(':')[i]
+                
                 if component == 'VA':
                     continue
                 if component in doubled_components:
