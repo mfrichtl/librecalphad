@@ -109,6 +109,7 @@ $ 2024-06-08 HF-V FROM SERVANT 2004 LAVES_C15/BCC_A2 INCORRECT
 $ 2024-06-09 SPINEL_H11 FROM KJELLQVIST 2008 CANNOT CHARGE BALANCE NI2+
 $ 2024-060-12 CR-H FROM DOTTOR 2022 INCOMPATIBLE LIQUID 2SL MODEL
 $ 2024-06-15 H-NI FROM BOURGEOIS 2015 INCOMPATIBLE LIQUID 2SL MODEL
+$ 2024-06-16 CR-CU SYSTEM HAS SPURIOUS ALM3 INTERMETALLIC
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -158,7 +159,7 @@ DATABASE_INFO The following systems are available:'
   CO-SI     Zhang (2006)'
   CO-V      Bratberg (2003)'
   CO-W      Guillermet (1989) and Markström (2005)'
-  CR-CU     Cui (2017)'
+  CR-CU     Cui (2017) and Liu (2017)'
   CR-FE     Andersson (1987), Lee (1993), and Lindholm (1997)'
   CR-H      Dottor (2022) EXCEPT LIQUID'
   CR-MO     Andersson (1987), Gustafson (1988), Frisk (1991), Qiu (1992),
@@ -1432,6 +1433,8 @@ CONSTITUENT AL2CU_C16 : AL,CR,FE,MN,MO,TA,ZR : AL,B,CU,FE,NI,SI,ZR : !
 
 PARAMETER G(AL2CU_C16,AL:AL;0) 298.15
   +3*GBCCAL#;  6000  N                                                  91SAU!
+PARAMETER G(AL2CU_C16,AL:B;0) 298.15
+  +2*GHSERAL# +GHSERBB#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,AL:CU;0) 298.15
   -47406.0 +6.75*T +2*GHSRAL# +GHSERCU#;  6000 N                        91SAU!
 PARAMETER G(AL2CU_C16,AL:FE;0) 298.15
@@ -1443,25 +1446,71 @@ PARAMETER G(AL2CU_C16,AL:SI;0) 298.15
 PARAMETER G(AL2CU_C16,AL:ZR;0) 298.15
   +2*GHSERAL# +GHSERZR#;  6000 N                                        24FRI!
 
+PARAMETER G(AL2CU_C16,CR:AL;0) 298.15
+  +2*GHSERCR# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,CR:B;0) 298.15
   -92544 +4.44*T +2*GHSERCR# +GHSERBB#;  6000 N                         02CAM!
+PARAMETER G(AL2CU_C16,CR:CU;0) 298.15
+  +2*GHSERCR# +GHSERCU#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,CR:FE;0) 298.15
+  +15000 +2*GHSERCR# +GHSERFE#;  6000 N                                 24FRI!
+PARAMETER G(AL2CU_C16,CR:NI;0) 298.15
+  +2*GHSERCR# +GHSERNI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,CR:SI;0) 298.15
+  +2*GHSERCR# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,CR:ZR;0) 298.15
+  +2*GHSERCR# +GHSERZR#;  6000 N                                        24FRI!
 
+PARAMETER G(AL2CU_C16,FE:AL;0) 298.15
+  +2*GHSERFE# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,FE:B;0) 298.15
-  -96087 +481.992*T -79.04999*T*LN(T) -0.007071*T**2 
+  -96087 +481.992*T -79.04999*T*LN(T) -0.007071*T**2
   +731991*T**(-1);  6000 N                                              02ROM!
-PARAMETER BMAGN(AL2CU_C16,FE:B;0) 298.15
-  +1.91;  6000 N                                                        02ROM!
-PARAMETER TC(AL2CU_C16,FE:B;0) 298.15
-  +1018;  6000 N                                                        02ROM!
+PARAMETER G(AL2CU_C16,FE:CU;0) 298.15
+  +2*GHSERFE# +GHSERCU#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,FE:FE;0) 298.15
+  +2*GHSERFE# +GHSERFE#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,FE:NI;0) 298.15
+  +2*GHSERFE# +GHSERNI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,FE:SI;0) 298.15
+  +2*GHSERFE# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,FE:ZR;0) 298.15
+  +2*GHSERFE# +GHSERZR#;  6000 N                                        24FRI!
 
+PARAMETER G(AL2CU_C16,MN:AL;0) 298.15
+  +2*GHSERMN# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,MN:B;0) 298.15
   -95100 -19.4406*T +2*GHSERMN# +GHSERBB#;  6000 N                      10SUN!
+PARAMETER G(AL2CU_C16,MN:CU;0) 298.15
+  +2*GHSERMN# +GHSERCU#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MN:FE;0) 298.15
+  +2*GHSERMN# +GHSERFE#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MN:NI;0) 298.15
+  +2*GHSERMN# +GHSERNI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MN:SI;0) 298.15
+  +2*GHSERMN# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MN:ZR;0) 298.15
+  +2*GHSERMN# +GHSERZR#;  6000 N                                        24FRI!
 
+PARAMETER G(AL2CU_C16,MO:AL;0) 298.15
+  +2*GHSERMO# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,MO:B;0) 298.15
   -122160 +15.12*T +2*GHSERMO# +2*GHSERBB#;  6000 N                     10PAN!
+PARAMETER G(AL2CU_C16,MO:CU;0) 298.15
+  +2*GHSERMO# +GHSERCU#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MO:FE;0) 298.15
+  +20000 +2*GHSERMO# +GHSERFE#;  6000 N                                 24FRI!
+PARAMETER G(AL2CU_C16,MO:NI;0) 298.15
+  +2*GHSERMO# +GHSERNI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MO:SI;0) 298.15
+  +2*GHSERMO# +GHSERSI#;  6000 N                                        24FRI!
+PARAMETER G(AL2CU_C16,MO:ZR;0) 298.15
+  +2*GHSERMO# +GHSERZR#;  6000 N                                        24FRI!
 
 PARAMETER G(AL2CU_C16,TA:AL;0) 298.15
   +2*GHSERTA# +GHSERAL#;  6000  N                                       24FRI!
+PARAMETER G(AL2CU_C16,TA:B;0) 298.15
+  +2*GHSERTA# +GHSERBB#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,TA:CU;0) 298.15
   +2*GHSERTA# +GHSERCU#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,TA:FE;0) 298.15
@@ -1475,6 +1524,8 @@ PARAMETER G(AL2CU_C16,TA:ZR;0) 298.15
 
 PARAMETER G(AL2CU_C16,ZR:AL;0) 298.15
   +2*GHSERZR# +GHSERAL#;  6000  N                                       24FRI!
+PARAMETER G(AL2CU_C16,ZR:B;0) 298.15
+  +2*GHSERZR# +GHSERBB#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,ZR:CU;0) 298.15
   +2*GHSERZR# +GHSERCU#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,ZR:FE;0) 298.15
@@ -4843,7 +4894,7 @@ PARAMETER G(CUZR2_C11B,CR:ZR;0) 298.15
 PARAMETER G(CUZR2_C11B,CU:AL;0) 298.15
   +GHSERCU# +2*GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(CUZR2_C11B,CU:CR;0) 298.15
-  +GHSERCU# +2*GHSERCR#;  6000 N                                        24FRI!
+  +15000 +GHSERCU# +2*GHSERCR#;  6000 N                                 24FRI!
 PARAMETER G(CUZR2_C11B,CU:MN;0) 298.15
   +GHSERCU# +2*GHSERMN#;  6000 N                                        24FRI!
 PARAMETER G(CUZR2_C11B,CU:ZR;0) 298.15
@@ -8394,7 +8445,7 @@ PARAMETER L(HCP_A3,CR:O,VA;0) 298.15
   -127500 +15*T;  6000 N                                                08KJE!
 
 PARAMETER L(HCP_A3,CR,CU:VA;0) 298.15
-  +75000;  6000 N                                                       24FRI!
+  +81000;  6000 N                                                      17LIUB!
 $ ESTIMATE SAME CR,FE:C AS FCC_A1
 PARAMETER L(HCP_A3,CR,FE:C;0) 298.15
   -52150.5 +4.31373*T;  6000 N                                          14KHV!
@@ -9973,7 +10024,7 @@ PARAMETER G(LAVES_C15,CU:FE;0) 298.15
 PARAMETER G(LAVES_C15,CU:HF;0) 298.15
   +2*GHSERCU# +GHSERHF#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CU:MN;0) 298.15
-  +2*GHSERCU# +GHSERMN#;  6000 N                                        24FRI!
+  +15000 +2*GHSERCU# +GHSERMN#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,CU:MO;0) 298.15
   +2*GHSERCU# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,CU:NB;0) 298.15
@@ -10100,7 +10151,7 @@ PARAMETER G(LAVES_C15,MN:CO;0) 298.15
 PARAMETER G(LAVES_C15,MN:CR;0) 298.15
   +10000 +2*GHSERMN# +GHSERCR#;  6000 N                                09CHEB!
 PARAMETER G(LAVES_C15,MN:CU;0) 298.15
-  +2*GHSERMN# +GHSERCU#;  6000 N                                        24FRI!
+  +15000 +2*GHSERMN# +GHSERCU#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,MN:FE;0) 298.15
   +2*GHSERMN# +GHSERFE#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,MN:HF;0) 298.15
@@ -10174,7 +10225,7 @@ PARAMETER G(LAVES_C15,NI:HF;0) 298.15
 PARAMETER G(LAVES_C15,NI:MN;0) 298.15
   +2*GHSERNI# +GHSERMN#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NI:MO;0) 298.15
-  +15000 +2*GHSERNI# +GHSERMO#;  6000 N                                 24FRI!
+  +45000 +2*GHSERNI# +GHSERMO#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,NI:NB;0) 298.15
   +2*GHSERNI# +GHSERNB#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NI:NI;0) 298.15
@@ -10538,7 +10589,7 @@ PARAMETER G(LAVES_C36,CU:FE;0) 298.15
 PARAMETER G(LAVES_C36,CU:HF;0) 298.15
   +2*GHSERCU# +GHSERHF#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,CU:MN;0) 298.15
-  +2*GHSERCU# +GHSERMN#;  6000 N                                        24FRI!
+  +15000 +2*GHSERCU# +GHSERMN#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C36,CU:NB;0) 298.15
   +2*GHSERCU# +GHSERNB#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,CU:NI;0) 298.15
@@ -10582,7 +10633,7 @@ PARAMETER G(LAVES_C36,MN:CO;0) 298.15
 PARAMETER G(LAVES_C36,MN:CR;0) 298.15
   +15000 +2*GHSERMN# +GHSERCR#;  6000 N                                09CHEB!
 PARAMETER G(LAVES_C36,MN:CU;0) 298.15
-  +2*GHSERMN# +GHSERCU#;  6000 N                                        24FRI!
+  +15000 +2*GHSERMN# +GHSERCU#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C36,MN:FE;0) 298.15
   +2*GHSERMN# +GHSERFE#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,MN:HF;0) 298.15
@@ -11160,9 +11211,11 @@ PARAMETER L(LIQUID,CR,CRO3/2;0) 298.15
 PARAMETER L(LIQUID,CR,CRO3/2;1) 298.15
   +55478;  6000 N                                                       96KOW!
 PARAMETER L(LIQUID,CR,CU;0) 298.15
-  +86088 -34.39*T;  6000 N                                              11ZHO!
+  +38795.8 -3.68*T;  6000 N                                            17LIUB!
 PARAMETER L(LIQUID,CR,CU;1) 298.15
-  -10674 +17.05*T;  6000 N                                              11ZHO!
+  +3760.0 +2.62*T;  6000 N                                             17LIUB!
+PARAMETER L(LIQUID,CR,CU;2) 298.15
+  +44731.3 -21.05*T;  6000 N                                           17LIUB!
 PARAMETER L(LIQUID,CR,FE;0) 298.15
   -17737 +7.996546*T;  6000 N                                          93LEEA!
 PARAMETER L(LIQUID,CR,FE;1) 298.15
