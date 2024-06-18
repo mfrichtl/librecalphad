@@ -2170,7 +2170,7 @@ PARAMETER TC(BCC_A2,CO:VA;0) 298.15
 PARAMETER G(BCC_A2,CR:B;0) 298.15
   -2657 +4.24*T +GHSERCR# +3*GHSERBB#;  6000 N                          02CAM!
 PARAMETER G(BCC_A2,CR:C;0) 298.15
-  +GHSERCR# +3*GHSERCC# +416000;  6000 N                               87ANDB!
+  +416000 +GHSERCR# +3*GHSERCC#;  6000 N                               87ANDB!
 PARAMETER BMAGN(BCC_A2,CR:C;0) 298.15
   -0.008;  6000 N                                                      88ANDA!
 PARAMETER TC(BCC_A2,CR:C;0) 298.15
@@ -4622,7 +4622,7 @@ PARAMETER G(CUB_A13,CO:VA;0) 298.15
 PARAMETER G(CUB_A13,CR:C;0) 298.15
   +5000 +GHSERCR# +GHSERCC#;  6000 N                                   93LEEC!
 PARAMETER G(CUB_A13,CR:N;0) 298.15
-  +GHSERCR# +GHSERNN#;  6000 N                                          24FRI!
+  +50000 +GHSERCR# +GHSERNN#;  6000 N                                   24FRI!
 PARAMETER G(CUB_A13,CR:VA;0) 298.15 
   +15899 +0.6276*T +GHSERCR#; 6000 N                                    91DIN!
 
@@ -5824,12 +5824,15 @@ PARAMETER TC(FCC_A1,CO,W:VA;0) 298.15
 
 PARAMETER L(FCC_A1,CR:B,VA;0) 298.15
   -5000;  6000 N                                                        02CAM!
+PARAMETER L(FCC_A1,CR:C,N;0) 298.15
+  -15000;  6000 N                                                       87HER!
 PARAMETER L(FCC_A1,CR:C,VA;0) 298.15
   -11977 +6.8194*T;  6000 N                                            92LEEA!
 PARAMETER L(FCC_A1,CR:N,VA;0) 298.15
   +20000;  6000 N                                                       91FRI!
 PARAMETER L(FCC_A1,CR:O,VA;0) 298.15
   -170000 +20*T;  6000 N                                                08KJE!
+
 PARAMETER L(FCC_A1,CR,CU:VA;0) 298.15
   +70672.86 -15.85*T;  6000 N                                          17CUIB!
 PARAMETER L(FCC_A1,CR,FE:C;0) 298.15
@@ -5930,7 +5933,7 @@ PARAMETER L(FCC_A1,FE:C,VA;0) 298.15
 PARAMETER L(FCC_A1,FE:C,N;0) 298.15
   +8218;  6000 N                                                        16GOE!
 PARAMETER L(FCC_A1,FE:N,VA;0) 298.15
-  -26150;  6000 N                                                       91FRI!
+  -26150;  6000 N                                                       87HER!
 PARAMETER L(FCC_A1,FE:O,VA;0) 298.15
   -168758 +19.17*T;  6000 N                                             08KJE!
 
@@ -8446,9 +8449,8 @@ PARAMETER L(HCP_A3,CR:O,VA;0) 298.15
 
 PARAMETER L(HCP_A3,CR,CU:VA;0) 298.15
   +81000;  6000 N                                                      17LIUB!
-$ ESTIMATE SAME CR,FE:C AS FCC_A1
 PARAMETER L(HCP_A3,CR,FE:C;0) 298.15
-  -52150.5 +4.31373*T;  6000 N                                          14KHV!
+  -307550 -237.5*T;  6000 N                                             87HER!
 PARAMETER L(HCP_A3,CR,FE:N;0) 298.15
   +12826 -19.48*T;  6000 N                                              90FRI!
 PARAMETER L(HCP_A3,CR,FE:VA;0) 298.15
@@ -8657,9 +8659,6 @@ PARAMETER L(HCP_A3,MN,V:VA;0) 298.15
 
 PARAMETER L(HCP_A3,MO:C,VA;0) 298.15
   +4150;  6000 N                                                       88ANDC!
-$ ESTIMATE SAME MO:N,VA AS FCC_A1
-PARAMETER L(HCP_A3,MO:N,VA;0) 298.15
-  -39423.75;  6000 N                                                    91FRI!
 
 $ ESTIMATE SAME MO,NI:VA AS FCC_A1
 PARAMETER L(HCP_A3,MO,NI:VA;0) 298.15
@@ -12145,16 +12144,37 @@ PARAMETER L(MC_ETA,MO:C,VA;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ MC_SHP
+$ PROTOTYPE: WC
+$ SPACE GROUP: P-6m2
+$ PEARSON: hP2
 
 PHASE MC_SHP % 2 1 1 !
-CONSTITUENT MC_SHP : MO,W : C : !
+CONSTITUENT MC_SHP : CR,FE,MO,W : C,N : !
+
+PARAMETER  G(MC_SHP,CR:C;0) 298.15
+  +GHSERCR# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(MC_SHP,CR:N;0) 298.15
+  -109470 +69.5*T;  6000 N                                              87HER!
+
+PARAMETER G(MC_SHP,FE:C;0) 298.15
+  +GHSERFE# +GHSERCC#;  6000 N                                          24FRI!
+PARAMETER G(MC_SHP,FE:N;0) 298.15
+  +2573560;  6000 N                                                     87HER!
 
 PARAMETER G(MC_SHP,MO:C;0) 298.15
   -32983 +2.5*T +GHSERMO# +GHSERCC#;  6000 N                           88ANDC!
+PARAMETER G(MC_SHP,MO:N;0) 298.15
+  +50000 +35*T +GHSERMO# +GHSERNN#; 6000 N                              24FRI!
+
 PARAMETER G(MC_SHP,W:C;0) 298.15
   -58192 +287.16*T -46.48*T*LN(T) -0.0021435*T**2 -9.2217E-8*T**3
   +590500*T**(-1);  6000 N                                              87GUS!
+PARAMETER G(MC_SHP,W:N;0) 298.15
+  +GHSERW# +GHSERNN#;  6000 N                                           24FRI!
 
+
+PARAMETER L(MC_SHP,CR,FE:N;0) 298.15
+  -2680400;  6000 N                                                     87HER!
 
 PARAMETER L(MC_SHP,MO,W:C;0) 298.15
   -2200;  6000 N                                                       88GUSC!
@@ -16876,6 +16896,9 @@ NUMBER  SOURCE
 87GUI   'Fernändez Guillermet, Armando. "Assessment of the thermodynamic 
         properties of the Ni-Co system." International Journal of Materials 
         Research 78.9 (1987): 639-647.'
+87HER   'Hertzman, Staffan. "An experimental and thermodynamic study of the 
+        Fe-Cr-CN system at 1273 K." Metallurgical Transactions A 18 (1987): 
+        1753-1766.'
 88ANDA  'Andersson, Jan-Olof. "A thermodynamic evaluation of the Fe-Cr-C 
         system." Metallurgical Transactions A 19 (1988): 627-636.'
 88ANDB  'Andersson, Jan-Olof, and Nils Lange. "An experimental study and a 
