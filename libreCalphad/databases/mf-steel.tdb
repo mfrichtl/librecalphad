@@ -110,6 +110,7 @@ $ 2024-06-09 SPINEL_H11 FROM KJELLQVIST 2008 CANNOT CHARGE BALANCE NI2+
 $ 2024-060-12 CR-H FROM DOTTOR 2022 INCOMPATIBLE LIQUID 2SL MODEL
 $ 2024-06-15 H-NI FROM BOURGEOIS 2015 INCOMPATIBLE LIQUID 2SL MODEL
 $ 2024-06-16 CR-CU SYSTEM HAS SPURIOUS ALM3 INTERMETALLIC
+$ 2024-06-19 AL-N FROM LUKAS 1992 ISSUE WITH ALN_B4/GAS EQUILIBRIUM
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -124,6 +125,7 @@ DATABASE_INFO The following systems are available:'
   AL-FE     Seierstein (1991), Sundman (2009), Lindwall (2015)'
   AL-MG     Chartrand (2006)'
   AL-MN     Du (2007)'
+  AL-N      Lukas (1992)'
   AL-NB     He (2015)'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
   AL-O      Taylor (1992) and Lindwall (2015)'
@@ -462,6 +464,7 @@ ELEMENT ZN   HCP_A3                    6.5390E+01  5.6568E+03  4.1631E+01 !
 ELEMENT ZR   HCP_A3                    9.1224E+01  5.5663E+03  3.9181E+01 !
 
 
+SPECIES AL2   AL2 !
 SPECIES AL3+  AL/+3 !
 SPECIES ALO   AL1O1 !
 SPECIES ALO3/2  AL1O1.5 !
@@ -502,6 +505,7 @@ SPECIES MNS   MN1S1 !
 SPECIES NCN   N1C1N1 !
 SPECIES N2    N2 !
 SPECIES NI2+  NI/+2 !
+SPECIES N3    N3 !
 SPECIES NI3+  NI/+3 !
 SPECIES NIO   NI1O1 !
 SPECIES O2    O2 !
@@ -1425,6 +1429,19 @@ PARAMETER L(ALM3_D019,TI:NB,TI;2) 298.15
   +40;  6000 N                                                         95SAUA!
 
 $ ----------------------------------------------------------------------------
+$ ALN_B4
+$ PROTOTYPE: ZNS, WURTZITE
+$ SPACE GROUP: P6_3mc
+$ PEARSON: hP4
+
+PHASE ALN_B4 % 2 1 1 !
+CONSTITUENT ALN_B4 : AL : N : !
+
+PARAMETER G(ALN_B4,AL:N;0) 298.15
+  -338005.5 +305.211 -46.94867*T*LN(T) -0.00189068*T**2 +874528*T**(-1)
+  +1.3756E-7*T**3;  6000 N                                              92LUK!
+
+$ ----------------------------------------------------------------------------
 $ AL2CU_C16
 $ PROTOTYPE: AL2CU
 $ SPACE GROUP: I4/mcm
@@ -2120,7 +2137,7 @@ PARAMETER G(BCC_A2,AL:C;0) 298.15
 PARAMETER G(BCC_A2,AL:H;0) 298.15
   +1203150 +733.3*T +GHSERAL# +1.5*GHSERHH#;  6000 N                    12KIM!
 PARAMETER G(BCC_A2,AL:N;0) 298.15
-  +GHSERAL# +3*GHSERNN#;  6000 N                                        23FRI!
+  +23000 +10*T +GHSERAL# +3*GHSERNN#;  6000 N                           92LUK!
 PARAMETER G(BCC_A2,AL:O;0) 298.15
   +GHSERAL# +3*GHSEROO#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,AL:VA;0) 298.15
@@ -5338,7 +5355,7 @@ PARAMETER G(FCC_A1,AL:B;0) 298.15
 PARAMETER G(FCC_A1,AL:C;0) 298.15
   +81000 +GHSERAL# +GHSERCC#;  6000 N                                   08CON!
 PARAMETER G(FCC_A1,AL:N;0) 298.15
-  +GHSERAL# +GHSERNN#;  6000 N                                          24FRI!
+  +80*T +GHSERAL# +GHSERNN#;  6000 N                                    92LUK!
 PARAMETER G(FCC_A1,AL:H;0) 298.15
   +GHSERAL# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,AL:O;0) 298.15
@@ -7600,7 +7617,7 @@ $ ----------------------------------------------------------------------------
 $ GAS
 
 PHASE GAS:G % 1 1 !
-CONSTITUENT GAS:G : AL,ALO,ALO2,AL2O2,C,C2,C3,C4,C5,CN,CNN,C2N,C2N2,C4N2,
+CONSTITUENT GAS:G : AL,AL2,ALO,ALO2,AL2O2,C,C2,C3,C4,C5,CN,CNN,C2N,C2N2,C4N2,
                     CR,CRO,CRO2,FE,FEO,H,H2,MN,N,N2,NCN,NI,NIO,O2,O3,SI,SI2,
                     SI3,SIO,SIO2,TI,V : !
 
@@ -7616,11 +7633,23 @@ FUNCTION GHGASAL2O2 298.15
   -3.94551E5 +2.89872E2*T;  6000 N                                      92TAY!
 
 
+$ PARAMETER G(GAS,AL;0) 298.15
+$   +2.07817E1 -2.06115E-6*T +1.90356E-9*T**2 +5.39334E4*T**(-2) 
+$   +GHGASAL# +RTLNP#;  3000 Y
+$   +3.68720E1 -6.15676E-3*T +6.67105E-7*T**2
+$   -3.24628E7*T**(-2) +GHGASAL# +RTLNP#;  6000 N                         92TAY!
 PARAMETER G(GAS,AL;0) 298.15
-  +2.07817E1 -2.06115E-6*T +1.90356E-9*T**2 +5.39334E4*T**(-2) 
-  +GHGASAL# +RTLNP#;  3000 Y
-  +3.68720E1 -6.15676E-3*T +6.67105E-7*T**2
-  -3.24628E7*T**(-2) +GHGASAL# +RTLNP#;  6000 N                         92TAY!
+  +323947.58 -25.1480948*T -20.859*T*LN(T) +4.5665E-5*T**2 -3.942E-9*T**3
+  -24275.5*T**(-1) +R*T*LN(P);  4300 Y 
+  +342014.234 -54.0526114*T -17.7891*T*LN(T) +6.822E-5*T**2 -1.9111E-8*T**3
+  -14782200*T**(-1) +R*T*LN(P);  8200 Y
+  +542396.07 -411.214335*T +22.2419*T*LN(T) -0.00349619*T**2 +4.0491E-8*T**3
+  -2.0366965E8*T**(-1) +R*T*LN(P);  10000 N                             92LUK!
+PARAMETER G(GAS,AL2;0) 298.15
+  +496408.232 +35.4797382*T -41.6397*T*LN(T) +0.00249636*T**2 -4.9050E-7*T**3
+  +85390.3*T**(-1) +R*T*LN(P); 900 Y 
+  +497613.221 +17.3681302*T -38.85476*T*LN(T) -2.249805E-4*T**2
+  -9.49003167E-9*T**3 -5287.23*T**(-1);  10000 N                        92LUK!
 PARAMETER G(GAS,ALO;0) 298.15
   +2.73772E1 +1.74138*T -8.08558E-6*T**2 -8.58097E4*T**(-2) 
   +GHGASALO# +RTLNP#; 800 Y
@@ -7777,7 +7806,14 @@ PARAMETER G(GAS,MN;0) 298.15
 PARAMETER G(GAS,N;0) 298.15
   +GHSERNN# +R*T*LN(P);  6000 N                                         91DIN!
 PARAMETER G(GAS,N2;0) 298.15 
-  +2*GHSERNN# +RTLNP#; 6000 N                                           96HUA!
+  +2*GHSERNN# +R*T*LN(P); 6000 N                                        92LUK!
+PARAMETER G(GAS,N3;0) 298.15
+  +403075.636 -14.3245228*T -29.5595416*T*LN(T) -0.02413122*T**2
+  +3.6156036E-6*T**3 +55714.144*T**(-1) +R*T*LN(P);  800 Y 
+  +388937.207 +158.809275*T -55.404528*T*LN(T) -0.0026570492*T**2
+  +1.9365644E-7*T**3 +1536448.48*T**(-1) +R*T*LN(P);  2000 Y 
+  +380898.006 +210.207464*T -62.295576*T*LN(T) +6.5726456E-6*T**2
+  -7.868012E-10*T**3 +3336949.2*T**(-1) +R*T*LN(P);  6000 N             92LUK!
 PARAMETER G(GAS,NCN;0) 298.15
   +461500.857 -11.6745659*T -29.78205*T*LN(T) -2.6290165E-2*T**2
   +4.23349667E-6*T**3 +44574*T**(-1) +R*T*LN(P); 800 Y
@@ -8014,7 +8050,7 @@ PARAMETER G(HCP_A3,AL:C;0) 298.15
 PARAMETER G(HCP_A3,AL:H;0) 298.15
   +GHSERAL# +0.25*GHSERHH#;  6000 N                                     24FRI!
 PARAMETER G(HCP_A3,AL:N;0) 298.15
-  +GHSERAL# +0.25*GHSERNN#;  6000 N                                     24FRI!
+  +80000*T +GHSERAL# +0.5*GHSERNN#;  6000 N                             92LUK!
 PARAMETER G(HCP_A3,AL:O;0) 298.15
   +GHSERAL# +0.25*GHSEROO#;  6000 N                                     24FRI!
 PARAMETER G(HCP_A3,AL:VA;0) 298.15
@@ -11074,6 +11110,8 @@ PARAMETER L(LIQUID,AL,MN;0) 298.15
   -70584.9 +28.22693*T;  6000 N                                          07DU!
 PARAMETER L(LIQUID,AL,MN;1) 298.15
   -13293.5 +9.82551*T;  6000 N                                           07DU!
+PARAMETER L(LIQUID,AL,N;0) 298.15
+  -336826.61 +103.22478*T;  6000 N                                      92LUK!
 PARAMETER L(LIQUID,AL,NB;0) 298.15
   -110320 +32.496*T;  6000 N                                             15HE!
 PARAMETER L(LIQUID,AL,NB;1) 298.15
@@ -17040,6 +17078,8 @@ NUMBER  SOURCE
 92LEEC  'Lee, Byeong-Joo. "A thermodynamic evaluation of the Fe-Cr-V 
         system/eine thermodynamische bewertung des systems Fe-Cr-V." 
         International Journal of Materials Research 83.5 (1992): 292-299.'
+92LUK   'Lukas, H. L. "System Al-N." COST 507: Thermochemical Database for
+        Light Metal Alloys, Volume 2. (1992): 65-68.'
 92MEY   'an Mey, Sabine. "Thermodynamic re-evaluation of the Cu-Ni system." 
         Calphad 16.3 (1992): 255-260.'
 92QIU  'Qiu, Caian. "An analysis of the Cr-Fe-Mo-C system and modification of 
