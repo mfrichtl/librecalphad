@@ -225,7 +225,7 @@ DATABASE_INFO The following systems are available:'
   MO-TI     Saunders (1995)'
   MO-V      Bratberg (2002)'
   N-NB      Huang (1996) and Khvan (2013)'
-  N-TI      Jonsson (1996) and Lee (2001) EXCEPT N-RICH NITRIDES'
+  N-TI      Jonsson (1996) and Lee (2001)'
   N-V       Du (2021) EXCEPT GAS PHASE'
   NB-TA     Servant (2004) and xiong (2004)'
   NB-TI     Saunders (1995) EXCEPT ORDERED B2 PHASE'
@@ -2974,6 +2974,12 @@ PARAMETER L(BCC_A2,NB:N,VA;0) 298.15
 PARAMETER L(BCC_A2,NB:N,VA;1) 298.15
   -1917408;  6000 N                                                     13KHV!
 
+PARAMETER L(BCC_A2,NB,SI:VA;0) 298.15
+  -155000;  6000 N                                                      02FER!
+PARAMETER L(BCC_A2,NB,SI:VA;1) 298.15
+  -15000;  6000 N                                                       02FER!
+PARAMETER L(BCC_A2,NB,SI:VA;2) 298.15
+  +48000;  6000 N                                                       02FER!
 PARAMETER L(BCC_A2,NB,TA:VA;0) 298.15
   +1298.03;  6000 N                                                     04XIO!
 PARAMETER L(BCC_A2,NB,TI:VA;0) 298.15
@@ -11670,6 +11676,12 @@ PARAMETER L(LIQUID,N,TI;1) 298.15
 PARAMETER L(LIQUID,N,V;0) 298.15
   -264845.009;  6000 N                                                  21DU !
 
+PARAMETER L(LIQUID,NB,SI;0) 298.15
+  -198000;  6000 N                                                      02FER!
+PARAMETER L(LIQUID,NB,SI;1) 298.15
+  -15000;  6000 N                                                       02FER!
+PARAMETER L(LIQUID,NB,SI;2) 298.15
+  +48000;  6000 N                                                       02FER!
 PARAMETER L(LIQUID,NB,TA;0) 298.15
   +0;  6000 N                                                           04XIO!
 PARAMETER L(LIQUID,NB,TI;0) 298.15
@@ -13484,11 +13496,11 @@ PARAMETER G(MSI2_C11B,W:SI;0) 298.15
 $ ----------------------------------------------------------------------------
 $ MSI2_C40
 $ PROTOTYPE: CRSI2
-$ SPACE GROUP: P6_222
+$ SPACE GROUP: P6_422
 $ PEARSON hP9
 
 PHASE MSI2_C40 % 2 1 2 !
-CONSTITUENT MSI2_C40 : CR,CU,MO,SI,TA,V : CR,CU,SI : !
+CONSTITUENT MSI2_C40 : CR,CU,MO,NB,SI,TA,V : CR,CU,SI : !
 
 PARAMETER G(MSI2_C40,CR:CR;0) 298.15
   +219200.00 +3*GHSERCR#;  6000 N                                      17CUIC!
@@ -13509,6 +13521,9 @@ PARAMETER G(MSI2_C40,MO:CR;0) 298.15
   +GHSERMO# +2*GSHERCR#;  6000 N                                        24FRI!
 PARAMETER G(MSI2_C40,MO:SI;0) 298.15
   -131448.4227 -5.55*T +GHSERMO# +2*GSHERSI#;  6000 N                   10GEN!
+
+PARAMETER G(MSI2_C40,NB:SI;0) 298.15
+  -166450 -9.45*T +GHSERNB# +2*GHSERSI#;  6000 N                        02FER!
 
 PARAMETER G(MSI2_C40,SI:CR;0) 298.15
   +224822.01 -27.60*T +GHSERSI# +2*GHSERCR#;  6000 N                   17CUIC!
@@ -13539,6 +13554,9 @@ PARAMETER L(MSI2_C40,CR,SI:CR;0) 298.15
 PARAMETER L(MSI2_C40,CR,SI:SI;0) 298.15
   +1535.45;  6000 N                                                    17CUIC!
 
+PARAMETER L(MSI2_C40,NB,SI:SI;0) 298.15
+  +50000;  6000 N                                                       24FRI!
+  
 PARAMETER L(MSI2_C40,SI,TA:SI;0) 298.15
   +60000;  6000 N                                                       24FRI!
 $ ----------------------------------------------------------------------------
@@ -13703,10 +13721,12 @@ $ SPACE GROUP: P4_2/N
 $ PEARSON: tP32
 
 PHASE M3SI % 2 3 1 !
-CONSTITUENT M3SI : CO,TA,TI : SI : !
+CONSTITUENT M3SI : CO,NB,TA,TI : SI : !
 
 PARAMETER G(M3SI,CO:SI;0) 298.15
   -57775.2 -39.98972*T +3*GHSERCO# +GHSERSI#;  6000 N                   06ZHA!
+PARAMETER G(M3SI,NB:SI;0) 298.15
+  -143400 -21*T +3*GHSERNB# +GHSERSI#;  6000 N                          02FER!
 PARAMETER G(M3SI,TA:SI;0) 298.15
   -154800 +29.32548*T +3*GHSERTA# +GHSERSI#;  6000 N                    89VAH!
 PARAMETER G(M3SI,TI:SI;0) 298.15
@@ -13965,6 +13985,18 @@ PARAMETER L(NI5SI3_GAMMA,NI:SI,VA;1) 298.15
   -86000;  6000 N                                                       23WIT!
 
 $ ----------------------------------------------------------------------------
+$ M5SI3_D81
+$ PROTOTYPE: CR5SI3
+$ SPACE GROUP: I4/mcm
+$ PEARSON: tI32
+
+PHASE M5SI3_D81 % 2 5 3 !
+CONSTITUENT M5SI3_D81 : NB : SI : !
+
+PARAMETER G(M5SI3_D81,NB:SI;0) 298.15
+  -501260 -25*T +5*GHSERNB# +3*GHSERSI#;  6000 N                        02FER!
+
+$ ----------------------------------------------------------------------------
 $ M5SI3_D88
 $ PROTOTPYE: MN5SI3
 $ SPACE GROUP: P6_3/mcm
@@ -14022,7 +14054,7 @@ $ SPACE GROUP: I4/mcm
 $ PEARSON: tI32
 
 PHASE M5SI3_D8M % 2 5 3 !
-CONSTITUENT M5SI3_D8M : CR,CU,FE,MO,TA,V,W : CU,SI : !
+CONSTITUENT M5SI3_D8M : CR,CU,FE,MO,NB,TA,V,W : CU,SI : !
 
 PARAMETER G(M5SI3_D8M,CR:CU;0) 298.15
  +110143 +5*GHSERCR# +3*GHSERCU#;  6000 N                               21ZHA!
@@ -14032,6 +14064,8 @@ PARAMETER G(M5SI3_D8M,FE:CU;0) 298.15
   +5*GHSERFE# +3*GHSERCU#;  6000 N                                      24FRI!
 PARAMETER G(M5SI3_D8M,MO:CU;0) 298.15
   +5*GHSERMO# +3*GHSERCU#;  6000 N                                      24FRI!
+PARAMETER G(M5SI3_D8M,NB:CU;0) 298.15
+  +5*GHSERNB# +3*GHSERCU#;  6000 N                                      24FRI!
 PARAMETER G(M5SI3_D8M,TA:CU;0) 298.15
   +5*GSHERTA# +3*GHSERCU#;  6000 N                                      24FRI!
 PARAMETER G(M5SI3_D8M,V:CU;0) 298.15
@@ -14049,12 +14083,15 @@ PARAMETER G(M5SI3_D8M,FE:SI;0) 298.15
   -259408.00 +41.84*T +5*GHSERFE# +3*GHSERSI#;  6000 N                 17CUID!
 PARAMETER G(M5SI3_D8M,MO:SI;0) 298.15
   -296067.2 -30.294*T +5*GHSERMO# +3*GHSERSI#;  6000 N                  89VAH!
+PARAMETER G(M5SI3_D8M,NB:SI;0) 298.15
+  -440500 -54*T +5*GHSERNB# +3*GSHERSI#;  6000 N                        02FER!
 PARAMETER G(M5SI3_D8M,TA:SI;0) 298.15
   -334400 -44.78936*T +5*GSHERTA# +3*GHSERSI#;  6000 N                  89VAH!
 PARAMETER G(M5SI3_D8M,V:SI;0) 298.15
   -443336.8 +53.40392*T +5*GHSERV# +3*GHSERSI#;  6000 N                 08ZHA!
 PARAMETER G(M5SI3_D8M,W:SI;0) 298.15
   -248312 +5.5788*T +5*GHSERW# +3*GHSERSI#;  6000 N                     89VAH!
+
 
 PARAMETER L(M5SI3_D8M,CR,FE:SI;0) 298.15
   -77973.31 +66.94*T;  6000 N                                          17CUID!
@@ -17364,6 +17401,9 @@ NUMBER  SOURCE
         Journal of Materials Research 87.9 (1996): 703-712.'
 96KAS   'B. Kasper. "Phase Equilibria in the B-C-N-Si System." PhD Thesis.
         Universitat Stuttgart (1996).'
+96ZEN   'Zeng, Kejun, and Rainer Schmid-Fetzer. "Critical assessment and 
+        thermodynamic modeling of the Ti-N system." International Journal of 
+        Materials Research 87.7 (1996): 540-554.'
 97ANS   'Ansara, Ibrahim, et al. "Thermodynamic assessment of the Al-Ni 
         system." Journal of Alloys and Compounds 247.1-2 (1997): 20-30.'
 97FEU   'Feufel, Harald, et al. "Investigation of the Al-Mg-Si system by 
