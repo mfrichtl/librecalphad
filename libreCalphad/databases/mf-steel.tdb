@@ -225,11 +225,12 @@ DATABASE_INFO The following systems are available:'
   MO-TI     Saunders (1995)'
   MO-V      Bratberg (2002)'
   N-NB      Huang (1996) and Khvan (2013)'
+  N-SI      Ma (2003) EXCEPT GAS PHASE'
   N-TI      Jonsson (1996) and Lee (2001)'
   N-V       Du (2021) EXCEPT GAS PHASE'
   NB-SI     Fernandes (2002)'
   NB-TA     Servant (2004) and xiong (2004)'
-  NB-TI     Saunders (1995) EXCEPT ORDERED B2 PHASE'
+  NB-TI     Saunders (1995)'
   NB-V      Kumar (1994) and Servant (2004)'
   NB-W      Huang (1997)'
   NB-ZR     Guillermet (1991)'
@@ -2448,7 +2449,7 @@ PARAMETER G(BCC_A2,SI:C;0) 298.15
 PARAMETER G(BCC_A2,SI:H;0) 298.15
   +GHSERSI# +3*GHSERHH#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,SI:N;0) 298.15
-  +GBCCSI# +3*GHSERNN#;  6000 N                                         23FRI!
+  +200*T +GBCCSI# +3*GHSERNN#;  6000 N                                  24FRI!
 PARAMETER G(BCC_A2,SI:O;0) 298.15
   +GHSERSI# +3*GHSEROO#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,SI:VA;0) 298.15 
@@ -4840,7 +4841,7 @@ PARAMETER G(CUB_A13,NI:VA;0) 298.15
   +2092 +GHSERNI# +RTLNP#; 3000 N                                       91DIN!
 
 PARAMETER G(CUB_A13,SI:N;0) 298.15
-  +GHSERSI# +GHSERNN#;  6000 N                                          24FRI!
+  +50*T +GHSERSI# +GHSERNN#;  6000 N                                    24FRI!
 PARAMETER G(CUB_A13,SI:VA;0) 298.15 
   +47279 -20.377*T +GHSERSI#; 3600 N                                    91DIN!
 
@@ -11687,12 +11688,14 @@ PARAMETER L(LIQUID,N,NB;0) 298.15
   -292101;  6000 N                                                      96HUA!
 PARAMETER L(LIQUID,N,NB;1) 298.15
   -105406;  6000 N                                                      96HUA!
+PARAMETER L(LIQUID,N,SI;0) 298.15
+  -87631.311 +22.359*T;  6000 N                                          03MA!
 PARAMETER L(LIQUID,N,TI;0) 298.15
   -376736;  6000 N                                                     96JONB!
 PARAMETER L(LIQUID,N,TI;1) 298.15
   -102480; 6000 N                                                      96JONB!
 PARAMETER L(LIQUID,N,V;0) 298.15
-  -264845.009;  6000 N                                                  21DU !
+  -264845.009;  6000 N                                                   21DU!
 
 PARAMETER L(LIQUID,NB,SI;0) 298.15
   -198000;  6000 N                                                      02FER!
@@ -15779,6 +15782,17 @@ PARAMETER L(SIGMA_H,NI:CR:CO,MN;0) 298.15
   -200000;  6000 N                                                       22DO!
 PARAMETER L(SIGMA_H,NI:CR:MN,NI;0) 298.15
   -600000;  6000 N                                                       22DO!
+
+$ ----------------------------------------------------------------------------
+$ SI3N4
+$ SPACE GROUP: P6_3/m
+
+PHASE SI3N4 % 2 3 4 !
+CONSTITUENT SI3N4 : SI : N : !
+
+PARAMETER G(SI3N4,SI:N;0) 298.15
+  -788513.009 +733.225*T -121.79*T*LN(T) -0.02065*T**2 +1666886.4*T**(-1)
+  +6.9938E-7*T**3;  6000 N                                               03MA!
 
 $ ----------------------------------------------------------------------------
 $ SPINEL_H11
