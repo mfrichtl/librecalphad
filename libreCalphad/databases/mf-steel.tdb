@@ -301,7 +301,7 @@ DATABASE_INFO The following systems are available:'
   C-N-TI    Jonsson (1996), Zeng (1996), Lee (2001), and Frisk (2004)'
   C-N-V     Frisk (2008)'
   C-NB-TA   Servant (2004)'
-  C-NB-TI   Lee (2001)'
+  C-NB-TI   Lee (2001) and Frisk (2008)'
   C-NB-V    Servant (2004)'
   C-NB-W    Huang (1997)'
   C-NI-SI   Du (1999)'
@@ -376,6 +376,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-FE-N    Hertzman (1987)'
   C-CR-FE-W    Gustafson (1988)'
   C-CR-MO-V    Bratberg (2005)'
+  C-N-NB-TI    Frisk (2008)'
   C-N-NB-V     Frisk (2008)'
   CO-CR-MN-NI  Do (2022)'
   CO-FE-NI-V   Choi (2019)'
@@ -6288,14 +6289,12 @@ PARAMETER L(FCC_A1,NB,TA:VA;1) 298.15
 PARAMETER L(FCC_A1,NB,TI:C;0) 298.15
   -33979;  6000 N                                                       01LEE!
 PARAMETER L(FCC_A1,NB,TI:N;0) 298.15
-  +0;  6000 N                                                           01LEE!
+  +10000;  6000 N                                                       08FRI!
 PARAMETER L(FCC_A1,NB,TI:VA;0) 298.15
   +13600;  6000 N                                                      95SAUA!
 PARAMETER L(FCC_A1,NB,V:C;0) 298.15
-  $ +29000;  6000 N                                                       08FRI!
   +35020.05 -6.364001*T -92.7480930E-6*T**2;  6000 N                   04SERB!
 PARAMETER L(FCC_A1,NB,V:C;1) 298.15
-  $ -5000;  6000 N                                                        08FRI!
   +1000.121 -2.99968*T +14.9564765E-6*T**2;  6000 N                    04SERB!
 PARAMETER L(FCC_A1,NB,V:N;0) 298.15
   +0;  6000 N                                                           08FRI!
@@ -6595,6 +6594,8 @@ PARAMETER L(FCC_A1,NB:C,N,VA;1) 298.15
 PARAMETER L(FCC_A1,NB:C,N,VA;2) 298.15
   -312985;  6000 N                                                      01LEE!
 
+PARAMETER L(FCC_A1,NB,TI:C,N;0) 298.15
+  +150000;  6000 N                                                      08FRI!
 PARAMETER L(FCC_A1,NB,TI:C,VA;0) 298.15
   +97661;  6000 N                                                       01LEE!
 PARAMETER L(FCC_A1,NB,TI:N,VA;0) 298.15
