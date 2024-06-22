@@ -251,7 +251,7 @@ DATABASE_INFO The following systems are available:'
   V-W       Bratberg (2005)'
   V-ZR      Servant (2004)'
   '
-  AL-C-FE   Connetable (2008)'
+  AL-C-FE   Connetable (2008) and Chin (2010)'
   AL-C-MN   Chin (2010) and Zheng (2018)'
   AL-CO-NB  He (2015)'
   AL-CR-MG  Cui (2017) EXCEPT MQM LIQUID'
@@ -4368,7 +4368,7 @@ PARAMETER TC(CEMENTITE_D011,FE:C;0) 0.01
   +485;  6000 N                                                         10HAL!
 
 PARAMETER G(CEMENTITE_D011,FE:N;0) 298.15
-  -20060 +538.7902*T -99.7371*T*LN(T) +226737*T**(-1);  6000  N         93DU !
+  -20060 +538.7902*T -99.7371*T*LN(T) +226737*T**(-1);  6000  N          93DU!
 
 PARAMETER G(CEMENTITE_D011,MN:C;0) 298.15
   -39644 +3.04*T +3*GHSERMN# +GHSERCC#;  6000 N                         10DJU!
@@ -5578,7 +5578,7 @@ PARAMETER TC(FCC_A1,FE:C;0) 298.15
 PARAMETER G(FCC_A1,FE:H;0) 298.15
   +25746.7209 +48.1250165*T +GFCCFE# +0.5*GHSERHH#;  6000 N             02ZIN!
 PARAMETER G(FCC_A1,FE:N;0) 298.15
-  -20277 +245.3931*T -21.2984*T*LN(T) +GHSERFE# +GHSERNN#;  6000 N      93DU !
+  -20277 +245.3931*T -21.2984*T*LN(T) +GHSERFE# +GHSERNN#;  6000 N       93DU!
 PARAMETER BMAGN(FCC_A1,FE:N;0) 298.15
   -2.1;  6000 N                                                         85GUS!
 PARAMETER NT(FCC_A1,FE:N;0) 298.15
@@ -7193,7 +7193,7 @@ CONSTITUENT FE4N_LP10 : FE,MN : C,N,VA : !
 PARAMETER G(FE4N_LP10,FE:C;0) 298.15
   +20000 +4*GHSERFE# +GHSERCC#;  6000 N                                 16GOE!
 PARAMETER G(FE4N_LP10,FE:N;0) 298.15
-  -38744 +73.52*T +4*GHSERFE# +GHSERNN#;  6000 N                        91FRI!
+  -37514 +72.6235*T +4*GHSERFE# +GHSERNN#;  6000 N                       93DU!
 PARAMETER G(FE4N_LP10,FE:VA;0) 298.15
   +12066 +3.691*T +4*GHSERFE#;  6000 N                                  16GOE!
 
@@ -7205,6 +7205,10 @@ PARAMETER G(FE4N_LP10,MN:VA;0) 298.15
   +20000 +4*GHSERMN#;  6000 N                                           24FRI!
 
 
+PARAMETER L(FE4N_LP10,FE:N,VA;0) 298.15
+  +64679 -21.9574*T;  6000 N                                             93DU!
+PARAMETER L(FE4N_LP10,FE:N,VA;1) 298.15
+  -27905 -3.409*T;  6000 N                                               93DU!
 PARAMETER L(FE4N_LP10,FE,MN:N;0) 298.15
   +36297 -28.8876*T;  6000 N                                           93QIUB!
 
@@ -8261,7 +8265,7 @@ PARAMETER G(HCP_A3,FE:C;0) 298.15
 PARAMETER G(HCP_A3,FE:H;0) 298.15
   +25500 +32.025*T +GHCPFE# +0.5*GHSERHH#;  6000 N                      02ZIN!
 PARAMETER G(HCP_A3,FE:N;0) 298.15
-  -13863 +40.2123*T +GHSERFE# +0.5*GHSERNN#;  6000 N                    93DU !
+  -13863 +40.2123*T +GHSERFE# +0.5*GHSERNN#;  6000 N                     93DU!
 $ ASSUME SAME FE-O AS FCC_A1
 PARAMETER G(HCP_A3,FE:O;0) 298.15
   +48.75*T +GHSERFE# +0.5*GHSEROO#;  6000 N                             08KJE!
@@ -8720,7 +8724,7 @@ PARAMETER L(HCP_A3,FE:C,N;0) 298.15
 PARAMETER L(HCP_A3,FE:C,N;1) 298.15
   -28839;  6000 N                                                       16GOE!
 PARAMETER L(HCP_A3,FE:C,VA;0) 298.15
-  -17335;  6000 N                                                      87ANDA!
+  -22126;  6000 N                                                        93DU!
 PARAMETER L(HCP_A3,FE:N,VA;0) 298.15
   +8186 -18.127*T;  6000 N                                              16GOE!
 PARAMETER L(HCP_A3,FE:N,VA;1) 298.15
