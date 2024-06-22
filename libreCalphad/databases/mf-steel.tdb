@@ -368,6 +368,7 @@ DATABASE_INFO The following systems are available:'
   MO-TI-V   Hu (2016)'
   N-NB-TI   Lee (2001)'
   N-NB-V    Frisk (2008)'
+  N-TI-V    Zeng (1999)'
 '
   AL-C-FE-MN   Chin (2010)'
   C-CO-FE-NI   Guillermet (1988)'
@@ -2843,9 +2844,9 @@ PARAMETER L(BCC_A2,FE,P:VA;0) 298.15
 PARAMETER L(BCC_A2,FE,S:VA;0) 298.15
   -119675 -18.7201*T;  6000 N                                           07LEE!
 PARAMETER L(BCC_A2,FE,SI:C;0) 298.15
-  +1000000 -100*T;  6000 N                                              98MIE!
+  +1000000 -100*T;  6000 N                                            98MIEAA!
 PARAMETER L(BCC_A2,FE,SI:C;1) 298.15
-  -900000;  6000 N                                                      98MIE!
+  -900000;  6000 N                                                    98MIEAA!
 PARAMETER L(BCC_A2,FE,SI:VA;0) 298.15
   -154013.56 +32.29*T;  6000 N                                         17CUIA!
 PARAMETER L(BCC_A2,FE,SI:VA;1) 298.15
@@ -3046,6 +3047,8 @@ PARAMETER L(BCC_A2,TI:C,VA;0) 298.15
 PARAMETER L(BCC_A2,TI:N,VA;0) 298.15
   -984397;  6000 N                                                     96JONB!
 
+PARAMETER L(BCC_A2,TI,V:N;0) 298.15
+  +90000;  6000 N                                                       98ZEN!
 PARAMETER L(BCC_A2,TI,V:VA;0) 298.15
   +6523.17;  6000 N                                                    02GHOA!
 PARAMETER L(BCC_A2,TI,V:VA;1) 298.15
@@ -3194,7 +3197,7 @@ PARAMETER L(BCC_A2,CU,FE,MN:VA;2) 298.15
 PARAMETER L(BCC_A2,FE,MO,NI:VA;0) 298.15
   -35743;  6000 N                                                       92FRI!
 PARAMETER L(BCC_A2,FE,MO,SI:VA;0) 298.15
-  +0;  6000 N                                                           98MIE!
+  +0;  6000 N                                                          98MIEB!
 PARAMETER L(BCC_A2,FE,MO,W:VA;0) 298.15
   +3000;  6000 N                                                       88GUSD!
 
@@ -6172,9 +6175,9 @@ PARAMETER L(FCC_A1,FE,P:VA;0) 298.15
 PARAMETER L(FCC_A1,FE,S:VA;0) 298.15
   -108733 -18*T;  6000 N                                                07LEE!
 PARAMETER L(FCC_A1,FE,SI:C;0) 298.15
-  +226100 -34.25*T;  6000 N                                             98MIE!
+  +226100 -34.25*T;  6000 N                                            98MIEA!
 PARAMETER L(FCC_A1,FE,SI:C;1) 298.15
-  -202400;  6000 N                                                      98MIE!
+  -202400;  6000 N                                                     98MIEA!
 PARAMETER L(FCC_A1,FE,SI:VA;0) 298.15
   -115254.05 -2.19*T;  6000 N                                          17CUIA!
 PARAMETER L(FCC_A1,FE,SI:VA;1) 298.15
@@ -6544,7 +6547,7 @@ PARAMETER L(FCC_A1,FE,MO,NI:VA;1) 298.15
 PARAMETER L(FCC_A1,FE,MO,NI:VA;2) 298.15
   +77975;  6000 N                                                       92FRI!
 PARAMETER L(FCC_A1,FE,MO,SI:VA;0) 298.15
-  +0;  6000 N                                                           98MIE!
+  +0;  6000 N                                                          98MIEB!
 
 PARAMETER L(FCC_A1,FE,NB:C,VA;0) 298.15
   -40000;  6000 N                                                      90HUAA!
@@ -8778,9 +8781,9 @@ PARAMETER L(HCP_A3,FE,S:VA;0) 298.15
   -108733 -18*T;  6000 N                                                24FRI!
 $ SAME FE,SI:C AS FCC_A1
 PARAMETER L(HCP_A3,FE,SI:C;0) 298.15
-  +169575 -25.6875*T;  6000 N                                           98MIE!
+  +169575 -25.6875*T;  6000 N                                          98MIEA!
 PARAMETER L(HCP_A3,FE,SI:C;1) 298.15
-  -15180;  6000 N                                                       98MIE!
+  -15180;  6000 N                                                      98MIEA!
 PARAMETER L(HCP_A3,FE,SI:VA;0) 298.15
   -106149 +41.116*T; 6000 N                                             15ZHE!
 PARAMETER L(HCP_A3,FE,SI:VA;1) 298.15
@@ -8969,7 +8972,10 @@ PARAMETER L(HCP_A3,TI:N,VA;0) 298.15
 
 PARAMETER L(HCP_A3,TI,V:C;0) 298.15
   -43582.86 +8.744*T;  6000 N                                           15ZHA!
-
+PARAMETER L(HCP_A3,TI,V:N;0) 298.15
+  +10000;  6000 N                                                       98ZEN!
+PARAMETER L(HCP_A3,TI,V:N;1) 298.15
+  +10000;  6000 N                                                       98ZEN!
 PARAMETER L(HCP_A3,TI,V:VA;0) 298.15
   +13233;  6000 N                                                      02GHOA!
 
@@ -11637,9 +11643,9 @@ PARAMETER L(LIQUID,MN,NB;0) 298.15
 PARAMETER L(LIQUID,MN,NB;1) 298.15
   +12376.04;  6000 N                                                    12LIU!
 PARAMETER L(LIQUID,MN,MO;0) 298.15
-  -12*T;  6000 N                                                        98MIE!
+  -12*T;  6000 N                                                       98MIEB!
 PARAMETER L(LIQUID,MN,MO;1) 298.15
-  -7*T;  6000 N                                                         98MIE!
+  -7*T;  6000 N                                                        98MIEB!
 PARAMETER L(LIQUID,MN,NI;0) 298.15
   -45032.1 +2.7764*T -1.5850E-5*(P-101325);  6000 N                     05GUO!
 PARAMETER L(LIQUID,MN,NI;1) 298.15
@@ -12122,7 +12128,7 @@ PARAMETER L(LIQUID,FE,MN,TI;2) 298.15
 PARAMETER L(LIQUID,FE,MO,NI;0) 298.15
   +50000;  6000 N                                                       92FRI!
 PARAMETER L(LIQUID,FE,MO,SI;0) 298.15
-  +110000;  6000 N                                                      98MIE!
+  +110000;  6000 N                                                     98MIEB!
 
 PARAMETER L(LIQUID,FE,N,NB;0) 298.15
   -160000;  6000 N                                                      01LEE!
@@ -17272,20 +17278,25 @@ $ SPACE GROUP: P4_2/mnm
 $ PEARSON: tP6
 
 PHASE TI2N_C4 % 2 2 1 !
-CONSTITUENT TI2N_C4 : TI : C,N : !
+CONSTITUENT TI2N_C4 : TI,V : C,N : !
 
 PARAMETER G(TI2N_C4,TI:C;0) 298.15
   -17349 +GHSERTI# +GFCCTIC#;  6000 N                                  96JONA!
 PARAMETER G(TI2N_C4,TI:N;0) 298.15
   -67116 +26.53956*T +GHSERTI# +GFCCTIN#;  6000 N                       01LEE!
-$ PARAMETER G(TI2N_C4,TI:N;0) 298.15
-$   -63220.14 +22.42085*T +GHSERTI# +GFCCTIN#;  6000 N                   96JONB!
 
-$ PARAMETER L(TI2N_C4,TI:C,N;0) 298.15
-$   -39646;  6000 N                                                      96JONA!
+PARAMETER G(TI2N_C4,V:C;0) 298.15
+  +2*GHSERV# +GHSERCC#;  6000 N                                         24FRI!
+PARAMETER G(TI2N_C4,V:N;0) 298.15
+  -100000 +20*T +2*GHSERV# +GHSERNN#;  6000 N                           98ZEN!
+
+
 PARAMETER L(TI2N_C4,TI:C,N;0) 298.15
   -25000;  6000 N                                                       01LEE!
 
+PARAMETER L(TI2N_C4,TI,V:N;0) 298.15
+  -60000;  6000 N                                                       98ZEN!
+  
 $ ----------------------------------------------------------------------------
 $ TI3N2_ETA
 $ HIGH-TEMPERATURE TITANIUM NITRIDE, ETA-NITRIDE FROM 96ZEN
@@ -17626,23 +17637,26 @@ NUMBER  SOURCE
 97LIN   'Lindholm, M. "A thermodynamic description of the Fe-Cr-Si system with
         emphasis on the equilibria of the sigma (Σ) phase." Journal of phase
         equilibria 18.5 (1997): 432-440.'
+98ANS   'I. Ansara, A. T. Dinsdale, M. H. Rand, "COST 507 Thermochemical 
+        Database for Light Metal Alloys, Volume 2" (1998)'
+98DUM   'Dumitrescu, L. F. S., M. Hillert, and N. Sounders. "Comparison of 
+        Fe-Ti Assessments." Journal of phase equilibria 19.5 (1998): 441.'
 98JON   'Jonsson, Stefan. "Assessment of the Fe-Ti-C system, calculation of 
         the Fe-TiN system, and prediction of the solubility limit of Ti (C, N)
         in liquid Fe." Metallurgical and Materials Transactions B 29 (1998): 
         371-384.'
 98KOR   'J. Korb and K. Hack, Ni-V system in COST507 Thermochemical Database
         for Light Metal Alloys 2 (1998)'
-98MIE   'Miettinen, Jyrki. "Approximate thermodynamic solution phase data for 
-        steels." Calphad 22.2 (1998): 275-300.'
-98ANS   'I. Ansara, A. T. Dinsdale, M. H. Rand, "COST 507 Thermochemical 
-        Database for Light Metal Alloys, Volume 2" (1998)'
-98DUM   'Dumitrescu, L. F. S., M. Hillert, and N. Sounders. "Comparison of 
-        Fe-Ti Assessments." Journal of phase equilibria 19.5 (1998): 441.'
-98MIE   'Miettinen, Jyrki. "Reassessed thermodynamic solution phase data for 
+98MIEA  'Miettinen, Jyrki. "Reassessed thermodynamic solution phase data for 
         ternary Fe-Si-C system." Calphad 22.2 (1998): 231-256.'
+98MIEB  'Miettinen, Jyrki. "Approximate thermodynamic solution phase data for 
+        steels." Calphad 22.2 (1998): 275-300.'
 98ZAJ   'Zajac, S., and B. Jansson. "Thermodynamics of the Fe-Nb-CN system and 
         the solubility of niobium carbonitrides in austenite." Metallurgical 
         and materials transactions B 29 (1998): 163-176.'
+98ZEN   'Zeng, K., and R. Schmid-Fetzer. "Thermodynamic assessment and 
+        applications of Ti-VN system." Materials science and technology 14.11
+        (1998): 1083-1091.'
 99DAV   'Davydov, Albert, and Ursula R. Kattner. "Thermodynamic assessment of
         the Co-Mo system." Journal of phase equilibria 20.1 (1999): 5-16.'
 99DUM   'Dumitrescu, L. FS, Mats Hillert, and B. Sundmann. "A reassessment of 
