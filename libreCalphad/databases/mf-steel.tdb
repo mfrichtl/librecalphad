@@ -241,7 +241,7 @@ DATABASE_INFO The following systems are available:'
   NI-W      Gustafson (1988), Turchi (2006), and Isomäki (2017)'
   O-SI      Hallstedt (1992) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
   SI-TA     Vahlas (1989)'
-  SI-TI     Vahlas (1989)'
+  SI-TI     Seifert (1996)'
   SI-V      Zhang (2008)'
   SI-W      Vahlas (1989) and Frichtl (2024)'
   TA-V      Danon (2004) and Servant (2004)'
@@ -3026,7 +3026,11 @@ PARAMETER L(BCC_A2,SI:C,VA;0) 298.15
   +0;  6000 N                                                           91LAC!
 
 PARAMETER L(BCC_A2,SI,TI:VA;0) 298.15
-  -248595.5 +45.06770*T;  6000 N                                        89VAH!
+  -262502.74 +38.81506*T;  6000 N                                       96SEI!
+PARAMETER L(BCC_A2,SI,TI:VA;1) 298.15
+  -26753.36 +2.14028*T;  6000 N                                         96SEI!
+PARAMETER L(BCC_A2,SI,TI:VA;2) 298.15
+  +76881.70 -6.15055*T;  6000 N                                         96SEI!
 PARAMETER L(BCC_A2,SI,V:VA;0) 298.15
   -205373.1 +61.02211*T;  6000 N                                        08ZHA!
 PARAMETER L(BCC_A2,SI,W:VA;0) 298.15
@@ -8932,6 +8936,13 @@ PARAMETER L(HCP_A3,NI,W:VA;0) 298.15
 PARAMETER L(HCP_A3,NI,W:VA;1) 298.15
   -52900;  6000 N                                                      88GUSA!
 
+PARAMETER L(HCP_A3,SI,TI:VA;0) 298.15
+  -302072.20 +77.76859*T;  6000 N                                       96SEI!
+PARAMETER L(HCP_A3,SI,TI:VA;1) 298.15
+  -26753.36 +2.14028*T;  6000 N                                         96SEI!
+PARAMETER L(HCP_A3,SI,TI:VA;2) 298.15
+  +76881.70 -6.15055*T;  6000 N                                         96SEI!
+
 PARAMETER L(HCP_A3,TA:C,VA;0) 298.15
   -6917.554;  6000 N                                                    96FRI!
 
@@ -11750,13 +11761,11 @@ PARAMETER L(LIQUID,SI,TA;0) 298.15
 PARAMETER L(LIQUID,SI,TA;1) 298.15
   +31092.5;  6000 N                                                     89VAH!
 PARAMETER L(LIQUID,SI,TI;0) 298.15
-  -231214.1 +12.49618*T;  6000 N                                        89VAH!
+  -242611.79 +17.57906*T;  6000 N                                       96SEI!
 PARAMETER L(LIQUID,SI,TI;1) 298.15
-  +42498.6;  6000 N                                                     89VAH!
+  -26753.36 +2.14028*T;  6000 N                                         96SEI!
 PARAMETER L(LIQUID,SI,TI;2) 298.15
-  +58469.4;  6000 N                                                     89VAH!
-PARAMETER L(LIQUID,SI,TI;3) 298.15
-  -25331.5;  6000 N                                                     89VAH!
+  +76881.70 -6.15055*T;  6000 N                                         96SEI!
 PARAMETER L(LIQUID,SI,V;0) 298.15
   -190326.8 +44.06262*T;  6000 N                                        08ZHA!
 PARAMETER L(LIQUID,SI,V;1) 298.15
@@ -13445,14 +13454,14 @@ PARAMETER G(MSI_B27,FE:B;0) 298.15
   -46807.5 +162.1495*T -25.0000005*T*LN(T) -0.0024999995*T**2
   +265000*T**(-1);  6000 N                                              02ROM!
 PARAMETER BMAGN(MSI_B27,FE:B;0) 298.15
-  +0.515;  6000 N                                                        02ROM!
+  +0.515;  6000 N                                                       02ROM!
 PARAMETER TC(MSI_B27,FE:B;0) 298.15
   +300;  6000 N                                                         02ROM!
 PARAMETER G(MSI_B27,MN:B;0) 298.15
   -35800 -9.9995*T +0.5*GHSERMN# +0.5*GHSERBB#;  6000 N                 10SUN!
 
 PARAMETER G(MSI_B27,TI:SI;0) 298.15
-  -68000.0 -0.04119*T +0.5*GHSERTI# +0.5*GHSERSI#;  6000 N              89VAH!
+  -78444.48 +4.87173*T +0.5*GHSERTI# +0.5*GHSERSI#;  6000 N             96SEI!
 
 $ ----------------------------------------------------------------------------
 PHASE MB_B33 %B 2 1 1 !
@@ -13590,7 +13599,7 @@ PHASE MSI2_C54 % 2 1 2 !
 CONSTITUENT MSI2_C54 : TI : SI : !
 
 PARAMETER G(MSI2_C54,TI:SI;0) 298.15
-  -170901 +6.71175*T +GHSERTI# +2*GHSERSI#;  6000 N                     89VAH!
+  -58539.95 +2.46700*T +GHSERTI# +2*GHSERSI#;  6000 N                   96SEI!
 
 $ ----------------------------------------------------------------------------
 $ M2SI_C23
@@ -13751,7 +13760,7 @@ PARAMETER G(M3SI,NB:SI;0) 298.15
 PARAMETER G(M3SI,TA:SI;0) 298.15
   -154800 +29.32548*T +3*GHSERTA# +GHSERSI#;  6000 N                    89VAH!
 PARAMETER G(M3SI,TI:SI;0) 298.15
-  -266260.8 +46.05724*T +3*GHSERTI# +GHSERSI#;  6000 N                  89VAH!
+  -50000.0 +1.09749*T +3*GHSERTI# +GHSERSI#;  6000 N                    96SEI!
 
 $ ----------------------------------------------------------------------------
 $ NICR3B6
@@ -14055,7 +14064,7 @@ PARAMETER G(M5SI3_D88,MN:SI;0) 298.15
 PARAMETER G(M5SI3_D88,TI:AL;0) 298.15
   +5*GHSERTI# +3*GHSERSI#;  6000 N                                      24FRI!
 PARAMETER G(M5SI3_D88,TI:SI;0) 298.15
-  -579276 -2.53552*T +5*GHSERTI# +3*GHSERSI#;  6000 N                   89VAH!
+  -579282.48 +2.34256*T +5*GHSERTI# +3*GHSERSI#;  6000 N                96SEI!
 
 
 PARAMETER L(M5SI3_D88,FE,MN:SI;0) 298.15
@@ -14144,7 +14153,7 @@ PHASE M5SI4 % 2 5 4 !
 CONSTITUENT M5SI4 : TI : SI : !
 
 PARAMETER G(M5SI4,TI:SI;0) 298.15
-  -639000 -7.12476*T +5*GHSERTI# +4*GHSERSI#;  6000 N                   89VAH!
+  -79000.0 +2.97694*T +5*GHSERTI# +4*GHSERSI#;  6000 N                  96SEI!
 
 $ ----------------------------------------------------------------------------
 $ V6SI5
@@ -17433,6 +17442,9 @@ NUMBER  SOURCE
         Journal of Materials Research 87.9 (1996): 703-712.'
 96KAS   'B. Kasper. "Phase Equilibria in the B-C-N-Si System." PhD Thesis.
         Universitat Stuttgart (1996).'
+96SEI   'Seifert, H. J., H. L. Lukas, and G. Petzow. "Thermodynamic 
+        optimization of the Ti-Si system." Zeitschrift fuer Metallkunde 87 
+        (1996).'
 96ZEN   'Zeng, Kejun, and Rainer Schmid-Fetzer. "Critical assessment and 
         thermodynamic modeling of the Ti-N system." International Journal of 
         Materials Research 87.7 (1996): 540-554.'
@@ -17526,7 +17538,9 @@ NUMBER  SOURCE
         assessment of the Co-O system." Journal of Phase Equilibria 24 
         (2003): 212-227.'
 03FRI   'Frisk, Karin. "A revised thermodynamic description of the Ti-C 
-        system." Calphad 27.4 (2003): 367-373.'                 
+        system." Calphad 27.4 (2003): 367-373.'
+03MA    'Ma, Xiaoyan, et al. "Thermodynamic assessment of the Si–N system." 
+        Calphad 27.4 (2003): 383-388.'              
 03MIE   'Miettinen, Jyrki. "Thermodynamic description of the Cu-Al-Mn system
         in the copper-rich corner." Calphad 27.1 (2003): 103-114.'
 04BRA   'Bratberg, Johan, and Karin Frisk. "An experimental and theoretical 
