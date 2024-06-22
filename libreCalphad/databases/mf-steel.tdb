@@ -227,6 +227,7 @@ DATABASE_INFO The following systems are available:'
   N-NB      Huang (1996) and Khvan (2013)'
   N-TI      Jonsson (1996) and Lee (2001)'
   N-V       Du (2021) EXCEPT GAS PHASE'
+  NB-SI     Fernandes (2002)'
   NB-TA     Servant (2004) and xiong (2004)'
   NB-TI     Saunders (1995) EXCEPT ORDERED B2 PHASE'
   NB-V      Kumar (1994) and Servant (2004)'
@@ -296,7 +297,7 @@ DATABASE_INFO The following systems are available:'
   C-MO-V    Bratberg (2002)'
   C-MO-W    Gustafson (1988)'
   C-N-NB    Lee (2001) and Frisk (2008)'
-  C-N-TI    Jonsson (1996), Lee (2001), and Frisk (2004)'
+  C-N-TI    Jonsson (1996), Zeng (1996), Lee (2001), and Frisk (2004)'
   C-N-V     Frisk (2008)'
   C-NB-TA   Servant (2004)'
   C-NB-TI   Lee (2001)'
@@ -3367,6 +3368,11 @@ PARAMETER G(BCC_B2,MO:MO:VA;0) 298.15
 PARAMETER G(BCC_B2,MO:TI:VA;0) 298.15
   +5000;  6000 N                                                       95SAUB!
 
+PARAMETER G(BCC_B2,NB:NB:VA;0) 298.15
+  +0;  6000 N                                                          95SAUA!
+PARAMETER G(BCC_B2,NB:TI:VA;0) 298.15
+  +5500;  6000 N                                                       95SAUA!
+
 PARAMETER G(BCC_B2,NI:AL:VA;0) 298.15
   -49978 +7.5795*T;  6000 N                                             99DUP!
 PARAMETER G(BCC_B2,NI:CO:VA;0) 298.15
@@ -3404,6 +3410,8 @@ PARAMETER TC(BCC_B2,TI:FE:VA;0) 298.15
   -1325;  6000 N                                                        99KUM!
 PARAMETER G(BCC_B2,TI:MO:VA;0) 298.15
   +5000;  6000 N                                                       95SAUB!
+PARAMETER G(BCC_B2,TI:NB:VA;0) 298.15
+  +5500;  6000 N                                                       95SAUA!
 PARAMETER G(BCC_B2,TI:TI:VA;0) 298.15
   +0;  6000 N                                                          95SAUB!
 
@@ -3606,6 +3614,14 @@ PARAMETER L(BCC_B2,MO,TI:MO:VA;0) 298.15
 PARAMETER L(BCC_B2,MO,TI:TI:VA;0) 298.15
   -5000;  6000 N                                                       95SAUB!
 
+PARAMETER L(BCC_B2,NB:NB,TI:VA;0) 298.15
+  -5500;  6000  N                                                      95SAUA!
+
+PARAMETER L(BCC_B2,NB,TI:NB:VA;0) 298.15
+  -5500;  6000 N                                                       95SAUA!
+PARAMETER L(BCC_B2,NB,TI:TI:VA;0) 298.15
+  -5500;  6000 N                                                       95SAUA!
+
 PARAMETER L(BCC_B2,NI:AL,FE:VA;0) 298.15
   -29728.16;  6000 N                                                    09ZHA!
 PARAMETER L(BCC_B2,NI:AL,CU:VA;0) 298.15
@@ -3669,6 +3685,8 @@ PARAMETER L(BCC_B2,TI:FE,V:VA;0) 298.15
   +43130 -11.936*T;  6000 N                                             12GUO!
 PARAMETER L(BCC_B2,TI:MO,TI:VA;0) 298.15
   -5000;  6000 N                                                       95SAUB!
+PARAMETER L(BCC_B2,TI:NB,TI:VA;0) 298.15
+  -5500;  6000  N                                                      95SAUA!
 PARAMETER L(BCC_B2,TI:NI,TI:VA;0) 298.15
   +60723.7 -15.4024*T;  6000 N                                          09KEY!
 
@@ -3798,7 +3816,7 @@ PARAMETER G(BCT_D022,NB:MO;0) 298.15
 PARAMETER G(BCT_D022,NB:NB;0) 298.15
   +40000 +3*GHSERNB# +GHSERNB#;  6000 N                                  15HE!
 PARAMETER G(BCT_D022,NB:TI;0) 298.15
-  +3*GHSERNB# +GHSERNB#;  6000 N                                        24FRI!
+  +15000 +3*GHSERNB# +GHSERNB#;  6000 N                                 24FRI!
 PARAMETER G(BCT_D022,NB:V;0) 298.15
   +3*GHSERNB# +GHSERV#;  6000 N                                         24FRI!
 
@@ -10363,7 +10381,7 @@ PARAMETER G(LAVES_C15,NB:SI;0) 298.15
 PARAMETER G(LAVES_C15,NB:TA;0) 298.15
   +2*GHSERNB# +GHSERTA#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C15,NB:TI;0) 298.15
-  +2*GHSERNB# +GHSERTI#;  6000 N                                        24FRI!
+  +15000 +2*GHSERNB# +GHSERTI#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,NB:V;0) 298.15
   +15000 +2*GHSERNB# +GHSERV#;  6000 N                                  24FRI!
 PARAMETER G(LAVES_C15,NB:ZR;0) 298.15
@@ -10454,7 +10472,7 @@ PARAMETER G(LAVES_C15,TI:MN;0) 298.15
 PARAMETER G(LAVES_C15,TI:MO;0) 298.15
   +15000 +2*GHSERTI# +GHSERMO#;  6000 N                                  16HU!
 PARAMETER G(LAVES_C15,TI:NB;0) 298.15
-  +2*GHSERTI# +GHSERNB#;  6000 N                                        24FRI!
+  +15000 +2*GHSERTI# +GHSERNB#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C15,TI:NI;0) 298.15
   +2*GHSERTI# +GC15NI#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C15,TI:SI;0) 298.15
@@ -10831,7 +10849,7 @@ PARAMETER G(LAVES_C36,NB:NB;0) 298.15
 PARAMETER G(LAVES_C36,NB:NI;0) 298.15
   +2*GHSERNB# +GHSERNI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,NB:TI;0) 298.15
-  +2*GHSERNB# +GHSERTI#;  6000 N                                        24FRI!
+  +15000 +2*GHSERNB# +GHSERTI#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C36,NB:V;0) 298.15
   +2*GHSERNB# +GHSERV#;  6000 N                                         24FRI!
 PARAMETER G(LAVES_C36,NB:ZR;0) 298.15
@@ -10877,7 +10895,7 @@ PARAMETER G(LAVES_C36,TI:HF;0) 298.15
 PARAMETER G(LAVES_C36,TI:MN;0) 298.15
   +15000 +2*GHSERTI# +GHSERMN#;  6000 N                                09CHEB!
 PARAMETER G(LAVES_C36,TI:NB;0) 298.15
-  +2*GHSERTI# +GHSERNB#;  6000 N                                        24FRI!
+  +15000 +2*GHSERTI# +GHSERNB#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C36,TI:NI;0) 298.15
   +2*GHSERTI# +GHSERNI#;  6000 N                                        24FRI!
 PARAMETER G(LAVES_C36,TI:TI;0) 298.15
@@ -13556,7 +13574,7 @@ PARAMETER L(MSI2_C40,CR,SI:SI;0) 298.15
 
 PARAMETER L(MSI2_C40,NB,SI:SI;0) 298.15
   +50000;  6000 N                                                       24FRI!
-  
+
 PARAMETER L(MSI2_C40,SI,TA:SI;0) 298.15
   +60000;  6000 N                                                       24FRI!
 $ ----------------------------------------------------------------------------
@@ -17472,6 +17490,8 @@ NUMBER  SOURCE
 02CAM   'Campbell, Carelyn E., and Ursula R. Kattner. "Assessment of the Cr-B
         system and extrapolation to the Ni-Al-Cr-B quaternary system." Calphad
         26.3 (2002): 477-490.'
+02FER   'Fernandes, P. B., et al. "Thermodynamic modeling of the Nb–Si 
+        system." Intermetallics 10.10 (2002): 993-999.'
 02GHOA  'Ghosh, G. "Thermodynamic and kinetic modeling of the Cr-Ti-V system." 
         Journal of phase equilibria 23.4 (2002): 310.'
 02GHOB  'Ghosh, G., and G. B. Olson. "Precipitation of paraequilibrium 
