@@ -175,7 +175,7 @@ DATABASE_INFO The following systems are available:'
   CR-NB     Lu (2015)'
   CR-NI     Lee (1992) and Tang (2016)'
   CR-O      Taylor (1990), Kowalski (1996), and Kjellqvist (2008)'
-  CR-SI     Chen (2009) and Cui (2017)'
+  CR-SI     Du (2000) and Chen (2009)'
   CR-TI     Ghosh (2002)'
   CR-V      Ghosh (2002)'
   CR-W      Gustafson (1988)'
@@ -329,7 +329,7 @@ DATABASE_INFO The following systems are available:'
   CR-FE-N   Hertzman (1977) and Frisk (1990)'
   CR-FE-NI  Hillert (1990) and Lee (1993)'
   CR-FE-O   Kjellqvist (2008)'
-  CR-FE-SI  Cui (2017)'
+  CR-FE-SI  Lindholm (1997), Miettinen (1998), and Cui (2017)'
   CR-FE-V   Lee (1992)'
   CR-FE-W   Gustafson (1988)'
   CR-MN-NI  Do (2022)'
@@ -1215,9 +1215,9 @@ PARAMETER G(ALM3_A15,CO:V:VA;0) 298.15
   -52000 +9*T +GHSERCO# +3*GHSERV#;  6000 N                             03BRA!
 
 PARAMETER G(ALM3_A15,CR:CR:C;0) 298.15
-  +4*GHSERCR# +3*GHSERCC#;  6000 N                                       00DU!
+  +4*GHSERCR# +3*GHSERCC#;  6000 N                                      00DUA!
 PARAMETER G(ALM3_A15,CR:CR:VA;0) 298.15
-  +20000 +10*T +4*GHSERCR#;   6000 N                                     13HU!
+  +20000 +10*T +4*GHSERCR#;   6000 N                                    00DUB!
 PARAMETER G(ALM3_A15,CR:CU:VA;0) 298.15
   +38008 +GHSERCR# +3*GHSERCU#;  6000 N                                 21ZHA!
 PARAMETER G(ALM3_A15,CR:FE:VA;0) 298.15
@@ -1227,9 +1227,9 @@ PARAMETER G(ALM3_A15,CR:MO:VA;0) 298.15
 PARAMETER G(ALM3_A15,CR:NB:VA;0) 298.15
   +GHSERCR# +3*GHSERNB#;  6000 N                                        23FRI!
 PARAMETER G(ALM3_A15,CR:SI:C;0) 298.15
-  -40000 +3*GHSERCR# +GHSERSI# +3*GHSERCC#;  6000 N                      00DU!
+  +40000 +3*GHSERSI# +GHSERCR# +3*GHSERCC#;  6000 N                     00DUA!
 PARAMETER G(ALM3_A15,CR:SI:VA;0) 298.15
-  +561830.45 -61.08*T +GHSERCR# +3*GHSERSI#;  6000 N                     13HU!
+  +561830.369 -61.07749*T +GHSERCR# +3*GHSERSI#;  6000 N               09CHEA!
 PARAMETER G(ALM3_A15,CR:V:VA;0) 298.15
   +GHSERCR# +3*GHSERV#;  6000 N                                         23FRI!
 
@@ -1281,9 +1281,9 @@ PARAMETER G(ALM3_A15,NB:V:VA;0) 298.15
   +GHSERNB# +3*GHSERV#;  6000 N                                         23FRI!
 
 PARAMETER G(ALM3_A15,SI:CR:C;0) 298.15
-  +40000 +3*GHSERSI# +GHSERCR# +3*GHSERCC#;  6000 N                      00DU!
+  -40000 +3*GHSERCR# +GHSERSI# +3*GHSERCC#;  6000 N                     00DUA!
 PARAMETER G(ALM3_A15,SI:CR:VA;0) 298.15
-  -120883.71 +2.72*T +GHSERSI# +3*GHSERCR#;  6000 N                    17CUIC!
+  -125904.402 +5.14171*T +GHSERSI# +3*GHSERCR#;  6000 N                09CHEA!
 PARAMETER G(ALM3_A15,SI:CU:VA;0) 298.15
   +46009 +26*T +GHSERSI# +3*GHSERCU#;  6000 N                           21ZHA!
 PARAMETER G(ALM3_A15,SI:FE:VA;0) 298.15
@@ -1295,7 +1295,7 @@ PARAMETER G(ALM3_A15,SI:NB:VA;0) 298.15
 PARAMETER G(ALM3_A15,SI:SI:C;0) 298.15
   +3*GHSERSI# +GHSERSI# +3*GSHERCC#;  6000 N                             13DU!
 PARAMETER G(ALM3_A15,SI:SI:VA;0) 298.15
-  +415925.96 -65.94*T +4*GHSERSI#;  6000 N                               13HU!
+  +415925.967 -65.93578*T;  6000 N                                     09CHEA!
 PARAMETER G(ALM3_A15,SI:V:VA;0) 298.15
   -177099.2 +25.88756*T +GHSERSI# +3*GHSERV#;  6000 N                   08ZHA!
 
@@ -1338,10 +1338,7 @@ PARAMETER L(ALM3_A15,AL,SI:CR;1) 298.15
   +28962.01;  6000 N                                                     13HU!
 
 PARAMETER L(ALM3_A15,CR:CR,SI;0) 298.15
-  -376560;  6000 N                                                     17CUIC!
-
-PARAMETER L(ALM3_A15,CR,SI:CR;0) 298.15
-  -376560;  6000 N                                                     17CUIC!
+  -391881.445;  6000 N                                                 09CHEA!
 
 PARAMETER L(ALM3_A15,CR,MO:SI;0) 298.15
   +6380 -10*T;  6000 N                                                   23WU!
@@ -1352,7 +1349,7 @@ PARAMETER L(ALM3_A15,FE:CR,SI;0) 298.15
 PARAMETER L(ALM3_A15,SI:CR,FE;0) 298.15
   +18368.00;  6000 N                                                   17CUID!
 PARAMETER L(ALM3_A15,SI:CR,SI;0) 298.15
-  -376560;  6000 N                                                     17CUIC!
+  -391881.445;  6000 N                                                 09CHEA!
 PARAMETER L(ALM3_A15,SI:SI,V;0) 298.15
   -155633.6;  6000 N                                                    08ZHA!
 
@@ -2741,9 +2738,9 @@ PARAMETER TC(BCC_A2,CR,NI:VA;0) 298.15
 PARAMETER TC(BCC_A2,CR,NI:VA;1) 298.15
   +617;  6000 N                                                        88GUSA!
 PARAMETER L(BCC_A2,CR,SI:VA;0) 298.15
-  -77728.33 -2.38*T;  6000 N                                           17CUIC!
+  -77309.9324 -2.38320*T;  6000 N                                      09CHEA!
 PARAMETER L(BCC_A2,CR,SI:VA;1) 298.15
-  +53247.56 -13.59*T;  6000 N                                          17CUIC!
+  -53247.5616 +13.58981*T;  6000 N                                     09CHEA!
 PARAMETER L(BCC_A2,CR,TI:VA;0) 298.15
   -2247.87 +9.14144*T;  6000 N                                         02GHOA!
 PARAMETER L(BCC_A2,CR,TI:VA;1) 298.15
@@ -3141,11 +3138,13 @@ PARAMETER L(BCC_A2,CR,FE,MN:VA;0) 298.15
 PARAMETER L(BCC_A2,CR,FE,NI:VA;0) 298.15
   -2673 +2.04145*T;  6000 N                                            93LEEA!
 PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
-  -59914.88 +4.18*T;  6000 N                                           17CUID!
-PARAMETER L(BCC_A2,CR,FE,SI:VA;1) 298.15
-  -66944.00 +4.18*T;  6000 N                                           17CUID!
-PARAMETER L(BCC_A2,CR,FE,SI:VA;2) 298.15
-  -48701.76 +8.37*T;  6000 N                                           17CUID!
+  -54000;  6000 N                                                       97LIN!
+$ PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
+$   -59914.88 +4.18*T;  6000 N                                           17CUID!
+$ PARAMETER L(BCC_A2,CR,FE,SI:VA;1) 298.15
+$   -66944.00 +4.18*T;  6000 N                                           17CUID!
+$ PARAMETER L(BCC_A2,CR,FE,SI:VA;2) 298.15
+$   -48701.76 +8.37*T;  6000 N                                           17CUID!
 PARAMETER L(BCC_A2,CR,FE,V:VA;0) 298.15
   +14881;  6000 N                                                      92LEEC!
 PARAMETER L(BCC_A2,CR,FE,V:VA;1) 298.15
@@ -6492,6 +6491,8 @@ PARAMETER TC(FCC_A1,CR,FE,NI:VA;1) 298.15
   +10199.2;  6000 N                                                     21XIA!
 PARAMETER TC(FCC_A1,CR,FE,NI:VA;2) 298.15
   -2253.8;  6000 N                                                      21XIA!
+PARAMETER L(FCC_A1,CR,FE,SI:VA;0) 298.15
+  -54000;  6000 N                                                      98MIEC!
 
 PARAMETER L(FCC_A1,CR,MN,NI:VA;0) 298.15
   +50000;  6000 N                                                        22DO!
@@ -11902,11 +11903,11 @@ PARAMETER L(LIQUID,C,CR,FE;1) 298.15
 PARAMETER L(LIQUID,C,CR,FE;2) 298.15
   +62630;  6000 N                                                       14KHV!
 PARAMETER L(LIQUID,C,CR,SI;0) 298.15
-  -248421; 6000 N                                                        00DU!
+  -248421; 6000 N                                                       00DUA!
 PARAMETER L(LIQUID,C,CR,SI;1) 298.15
-  +40606;  6000 N                                                        00DU!
+  +40606;  6000 N                                                       00DUA!
 PARAMETER L(LIQUID,C,CR,SI;2) 298.15  
-  -30000;  6000 N                                                        00DU!
+  -30000;  6000 N                                                       00DUA!
 PARAMETER L(LIQUID,C,CR,TI;0) 298.15
   -614000;  6000 N                                                      22HAG!
 PARAMETER L(LIQUID,C,CR,TI;1) 298.15
@@ -12063,7 +12064,7 @@ PARAMETER L(LIQUID,CR,FE,NI;1) 298.15
 PARAMETER L(LIQUID,CR,FE,NI;2) 298.15
   -10018;  6000 N                                                      93LEEA!
 PARAMETER L(LIQUID,CR,FE,SI;0) 298.15
-  -53600 -13.3*T;  6000 N                                               97LIN!
+  +60000 -50*T;  6000 N                                                98MIEC!
 PARAMETER L(LIQUID,CR,FE,V;0) 298.15
   +14881;  6000 N                                                      92LEEC!
 PARAMETER L(LIQUID,CR,FE,V;1) 298.15
@@ -17651,6 +17652,9 @@ NUMBER  SOURCE
         ternary Fe-Si-C system." Calphad 22.2 (1998): 231-256.'
 98MIEB  'Miettinen, Jyrki. "Approximate thermodynamic solution phase data for 
         steels." Calphad 22.2 (1998): 275-300.'
+98MIEC  'Miettinen, Jyrki. "Thermodynamic description of solution phases of 
+        systems Fe-Cr-Si and Fe-Ni-Si with low silicon contents and with 
+        application to stainless steels." Calphad 23.2 (1999): 249-262.'
 98ZAJ   'Zajac, S., and B. Jansson. "Thermodynamics of the Fe-Nb-CN system and 
         the solubility of niobium carbonitrides in austenite." Metallurgical 
         and materials transactions B 29 (1998): 163-176.'
@@ -17676,6 +17680,10 @@ NUMBER  SOURCE
         Investigation and Thermodynamic Description of the Constitution of the
         Ternary System Cr-Si-C." Journal of the American Ceramic Society 83.8
         (2000): 2067-2073.'
+00DUB   'Du, Yong, and Julius C. Schuster. "Experimental reinvestigation of 
+        the CrSi-Si partial system and update of the thermodynamic description 
+        of the entire Cr-Si system." Journal of phase equilibria 21.3 (2000): 
+        281-286.'
 00YAN   'Yan, Xinyan, and Y. A. Chang. "A thermodynamic analysis of the Cu-Si
         system." Journal of Alloys and Compounds 308.1-2 (2000): 221-229.'
 01CHE   'Chen, Qing, and Bo Sundman. "Modeling of thermodynamic properties for 
