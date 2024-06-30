@@ -283,7 +283,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-SI   Du (2000)'
   C-CR-TI   Haglöf (2022)'
   C-CR-V    Bratberg (2005)'
-  C-CR-W    gustafson (1988)'
+  C-CR-W    Gustafson (1988)'
   C-CU-FE   Chen (2019)'
   C-FE-MN   Huang (1990), Huang (1991), and Djurovic (2011)'
   C-FE-MO   Andersson (1988) and Hillert (1992)'
@@ -4126,7 +4126,7 @@ PARAMETER G(CBCC_A12,CU:VA;0) 298.15
 PARAMETER G(CBCC_A12,FE:B;0) 298.15
   +2000 +GHSERFE# +GHSERBB#;  6000 N                                    16REP!
 PARAMETER G(CBCC_A12,FE:C;0) 298.15
-  +50000 +GHSERFE# +GHSERCC#;  6000 N                                  15KIMA!
+  +80000 +GHSERFE# +GHSERCC#;  6000 N                                  15KIMA!
 PARAMETER G(CBCC_A12,FE:H;0) 298.15
   +GHSERFE# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,FE:N;0) 298.15
@@ -8729,7 +8729,7 @@ PARAMETER L(HCP_A3,FE:C,N;0) 298.15
 PARAMETER L(HCP_A3,FE:C,N;1) 298.15
   -28839;  6000 N                                                       16GOE!
 PARAMETER L(HCP_A3,FE:C,VA;0) 298.15
-  -22126;  6000 N                                                        93DU!
+  -17335;  6000 N                                                       85GUS!
 PARAMETER L(HCP_A3,FE:N,VA;0) 298.15
   +8186 -18.127*T;  6000 N                                              16GOE!
 PARAMETER L(HCP_A3,FE:N,VA;1) 298.15
