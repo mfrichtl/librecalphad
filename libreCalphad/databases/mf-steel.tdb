@@ -12508,8 +12508,8 @@ PARAMETER G(M3C2_D510,W:C;0) 298.15
 
 
 $ WANT TO RESTRICT FE SOLUBILITY IN CR3C2
-$ PARAMETER L(M3C2_D510,CR,FE:C;0) 298.15
-$   +100*T;  6000 N                                                       24FRI!
+PARAMETER L(M3C2_D510,CR,FE:C;0) 298.15
+  +100*T;  6000 N                                                       24FRI!
 PARAMETER L(M3C2_D510,CR,MO:C;0) 298.15
   +40000;  6000 N                                                       92QIU!
 PARAMETER L(M3C2_D510,CR,TI:C;0) 298.15
@@ -15193,6 +15193,9 @@ PARAMETER G(SIC_B3,SI:C;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ SIGMA_D8B
+$ PROTOTYPE: CRFE
+$ SPACE GROUP: P4_2/mnm
+$ PEARSON: tP30
 
 PHASE SIGMA_D8B % 3 8 4 18 !
 CONSTITUENT SIGMA_D8B : CO,FE,MN,NI : CR,MO,V,W 
@@ -15709,6 +15712,9 @@ $ ----------------------------------------------------------------------------
 $ SIGMA2_D8B
 $ SIGMA PHASE WITH 10:4:16 SUBLATTICE
 $ ACCORDING TO JACOB2017 THIS IS A BETTER MODEL
+$ PROTOTYPE: CRFE
+$ SPACE GROUP: P4_2/mnm
+$ PEARSON: tP30
 
 PHASE SIGMA2_D8B % 3 10 4 16 !
 CONSTITUENT SIGMA2_D8B : AL,CO,FE,NB,V : NB,V : AL,CO,FE,NB,V : !
@@ -15835,6 +15841,9 @@ PARAMETER L(SIGMA2_D8B,NB:NB:AL,NB;0) 298.15
 $ ----------------------------------------------------------------------------
 $ SIGMA_H
 $ HIGH-TEMPERATURE SIGMA PHASE
+$ PROTOTYPE: CRFE
+$ SPACE GROUP: P4_2/mnm
+$ PEARSON: tP30
 
 PHASE SIGMA_H % 3 8 4 18 !
 CONSTITUENT SIGMA_H : CO,FE,MN,NI : CR : AL,CO,CR,FE,MN,NI,TI : !
