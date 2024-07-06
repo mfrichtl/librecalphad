@@ -258,7 +258,7 @@ DATABASE_INFO The following systems are available:'
   AL-CR-MN  Cui (2017) EXCEPT MQM LIQUID'
   AL-CR-SI  Hu (2013)'
   AL-CU-NI  Wang (2019)'
-  AL-FE-MN  Zheng (2018) *'
+  AL-FE-MN  Zheng (2018)'
   AL-FE-O   Lindwall (2015)'
   AL-FE-NI  Zhang (2009)'
   AL-FE-SI  Liu (1999)'
@@ -272,7 +272,7 @@ DATABASE_INFO The following systems are available:'
   B-FE-MO   Pan (2010)'
   B-FE-NI   Pan (2010)'
   B-MO-NI   Pan (2010)'
-  C-CO-CR   Kusoffsky (1997)'
+  C-CO-CR   Kusoffsky (1997), Kaplan (2014), and Frichtl (2024)'
   C-CO-FE   Guillermet (1988)'
   C-CO-NI   Guillermet (1988)'
   C-CO-W    Guillermet (1989) and Markström (2005)'
@@ -313,7 +313,7 @@ DATABASE_INFO The following systems are available:'
   CO-CR-MN  Do (2022)'
   CO-CR-NI  Liu (2016)'
   CO-CR-V   Choi (2019)'
-  CO-CR-W   Wang (2021) *'
+  CO-CR-W   Markström (2005) and Wang (2021)'
   CO-FE-MN  Pendem (2022)'
   CO-FE-N   Guillermet (1992)'
   CO-FE-NI  Guillermet (1988) and Xia (2021)'
@@ -4402,6 +4402,10 @@ PARAMETER G(CEMENTITE_D011,V:C;0) 298.15
 PARAMETER G(CEMENTITE_D011,W:C;0) 298.15
   +54150 +3*GHSERW# +GHSERCC#;  6000 N                                  87GUS!
 
+$ WANT TO SUPRESS CEMENTITE_D011 IN C-CO-CR SYSTEM
+PARAMETER L(CEMENTITE_D011,CO,CR:C;0) 298.15
+  +50000;  6000 N                                                       24FRI!
+
 PARAMETER L(CEMENTITE_D011,CR,FE:C;0) 298.15
   +14586 -9.18*T;  6000 N                                               14KHV!
 PARAMETER L(CEMENTITE_D011,CR,MN:C;0) 298.15
@@ -5914,7 +5918,7 @@ PARAMETER L(FCC_A1,CO:N,VA;0) 298.15
   -6500;  6000 N                                                       92GUIA!
 
 PARAMETER L(FCC_A1,CO,CR:C;0) 298.15
-  +1500 -9.592*T;  6000 N                                               97KUS!
+  +0;  6000 N                                                           14KAP!
 PARAMETER L(FCC_A1,CO,CR:VA;0) 298.15
   +1500 -9.592*T;  6000 N                                               97KUS!
 PARAMETER TC(FCC_A1,CO,CR:VA;0) 298.15
@@ -11920,11 +11924,11 @@ PARAMETER L(LIQUID,B,FE,MN;2) 298.15
   +14520.3 -59.97*T;  6000 N                                            16REP!
 
 PARAMETER L(LIQUID,C,CO,CR;0) 298.15
-  -302180;  6000 N                                                      97KUS!
+  -258600;  6000 N                                                      14KAP!
 PARAMETER L(LIQUID,C,CO,CR;1) 298.15
-  +35575;  6000 N                                                       97KUS!
+  +8060;  6000 N                                                        14KAP!
 PARAMETER L(LIQUID,C,CO,CR;2) 298.15
-  +35575;  6000 N                                                       97KUS!
+  +33500;  6000 N                                                       14KAP!
 PARAMETER L(LIQUID,C,CO,FE;0) 298.15
   +11646 -5.657*T;  6000 N                                             88GUIA!
 PARAMETER L(LIQUID,C,CO,NI;0) 298.15
@@ -12488,8 +12492,11 @@ $ ----------------------------------------------------------------------------
 $ M3C2_D510
 
 PHASE M3C2_D510 % 2 3 2 !
-CONSTITUENT M3C2_D510 : CR,FE,MN,MO,TI,V,W : C : !
+CONSTITUENT M3C2_D510 : CO,CR,FE,MN,MO,TI,V,W : C : !
 
+PARAMETER G(M3C2_D510,CO:C;0) 298.15
+  +12784 +158.83*T -26.514*T*LN(T) -0.47E-5*T**2 
+  +259220*T**(-1);  6000 N                                              14KAP!
 PARAMETER G(M3C2_D510,CR:C;0) 298.15
   -100823.8 +530.66989*T -89.6694*T*LN(T) -0.0301188*T**2;  6000 N     87ANDB!
 PARAMETER G(M3C2_D510,FE:C;0) 298.15
@@ -12507,6 +12514,8 @@ PARAMETER G(M3C2_D510,W:C;0) 298.15
   -18100 +3*GHSERW# +2*GHSERCC#;  6000 N                               88GUSB!
 
 
+PARAMETER L(M3C2_D510,CO,CR:C;0) 298.15
+  -0.86*T;  6000 N                                                      14KAP!
 $ WANT TO RESTRICT FE SOLUBILITY IN CR3C2
 PARAMETER L(M3C2_D510,CR,FE:C;0) 298.15
   +100*T;  6000 N                                                       24FRI!
@@ -12651,7 +12660,9 @@ PARAMETER G(M7C3_D101,W:C;0) 298.15
   
 
 PARAMETER L(M7C3_D101,CO,CR:C;0) 298.15
-  -96092;  6000 N                                                       97KUS!
+  +33988 -19.2*T;  6000 N                                               14KAP!
+PARAMETER L(M7C3_D101,CO,CR:C;1) 298.15
+  +23050 -11.7*T;  6000 N                                               14KAP!
 
 PARAMETER L(M7C3_D101,CR,FE:C;0) 298.15
   $ -4520 -10*T;  6000 N                                                 92LEEA!
@@ -17808,6 +17819,8 @@ NUMBER  SOURCE
 13STE   'Stein, Frank, Cuiyun He, and Nathalie Dupin. "Melting behaviour and 
         homogeneity range of B2 CoAl and updated thermodynamic description of
         the Al-Co system." Intermetallics 39 (2013): 58-68.'
+14KAP   'Kaplan, Bartek, et al. "Thermodynamic analysis of the Co–Cr–C 
+        system." Calphad 46 (2014): 226-236.'
 14KHV   'Khvan, Alexandra V., Bengt Hallstedt, and Christoph Broeckmann. "A 
         thermodynamic evaluation of the Fe-Cr-C system." Calphad 46 (2014): 
         24-33.'
