@@ -9,31 +9,40 @@ $ COPYRIGHT AND LICENSE INFORMATION
 $
 $ This file is part of LibreCalphad.
 $
-$ LibreCalphad is free software: you can redistribute it and/or modify it 
-$ under the terms of the GNU General Public License as published by the Free 
-$ Software Foundation, either version 3 of the License, or (at your option) 
-$ any later version.
-$
-$ LibreCalphad is distributed in the hope that it will be useful, but WITHOUT 
-$ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
-$ FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
-$ more details.
-$
-$ You should have received a copy of the GNU General Public License along with
-$ LibreCalphad. If not, see <https://www.gnu.org/licenses/>.
+$ Copyright (c) 2024 Matthew Frichtl
+
+$ Permission is hereby granted, free of charge, to any person obtaining a copy 
+$ of this software and associated documentation files (the "Software"), to deal 
+$ in the Software without restriction, including without limitation the rights 
+$ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+$ copies of the Software, and to permit persons to whom the Software is 
+$ furnished to do so, subject to the following conditions:
+
+$ The above copyright notice and this permission notice shall be included in all
+$ copies or substantial portions of the Software.
+
+$ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+$ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+$ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+$ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+$ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+$ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+$ SOFTWARE.
 $ 
 $ ----------------------------------------------------------------------------
 $
-$ NOTES:
+$ NOTES/ISSUES:
 $ CU - INCORPORATED ONE EINSTEIN TEMPERATURE ASSESSMENT FROM KHVAN 2024.
-#
+$
 $
 DATABASE_INFO The following systems are available:'
   C     Naraghi (2014)'
   CU    Khvan (2024)'
-  FE    Gustafson (1985), Dinsdale (1991), and Chen (2001)'
+  FE    Gustafson (1985), Dinsdale (1991), Chen (2001), and Bigdeli (2016)'
+  MN    Bigdeli (2015) and Bigdeli (2016)'
 
   C-FE  Hallstedt (2010) and Naraghi (2014)'
+'
 !
 $ ----------------------------------------------------------------------------
 $ SINGLE-ELEMENT REFERENCES FROM SGTE UNARY DATABASE 5.0
@@ -152,25 +161,32 @@ $ FE
 FUNCTION GMDOBCCFE 0
   -R*LN(3.22)*T 
   +R*LN(3.22)*0.38438376*1043*2.702702703*GMDODBCC#**(-1);  6000 N      01CHE!
-
 FUNCTION GHSERFE 0
   -8.41026596E3 -3.2390815E-3*T**2 -3.3191338E-14*T**5; 1811 Y
   -3.32084173E4 +1.6540504E2*T -2.10474823E1*T*LN(T) 
   -2.7818280E18*T**(-5) +4.2811788E37*T**(-11);  6000 N                 01CHE!
-
 FUNCTION GMDOFCCFE 0
-  -R*LN(1.70)*T +R*LN(1.70)*0.38438376*67*4*GMDODFCC#**(-1);  6000 N    01CHE!
-
+  -R*LN(1.70)*T +R*LN(1.70)*0.38438376*67*4*GMDODNONBCC#**(-1);  6000 N 01CHE!
 FUNCTION GFCCFE  0
   -2.61500904E3 -2.7933375E-3*T**2 -2.1239087E-14*T**5;  1811 Y
   -3.23895438E4 +1.6831394E2*T -2.09834791E1*T*LN(T)
   +9.2444598E18*T**(-5) -1.4750509E37*T**(-11);  6000 N                 01CHE!
-
 FUNCTION GLIQFE 0
   +7.10320801E3 -1.9730116E-3*T**2;  6000 N                             01CHE!
-
 FUNCTION GMDOLIQFE 0
   -R*LN(2.70)*T +R*LN(2.70)*0.38438376*200*4*GMDODLIQ#**(-1);  6000 N   01CHE!
+
+$ ----------------------------------------------------------------------------
+$ MN
+
+FUNCTION GMDOBCCMN 0
+  -R*LN(1.27)*T
+  +R*LN(1.27)*0.38438376*580*2.702702703*GMDODBCC#**(-1);  6000 N       15BIG!
+FUNCTION GMDOCBCCMN 0
+  -R*LN(1.22)*T +R*LN(1.22)*0.38438376*95*4*GMDODNONBCC#**(-1);  6000 N 15BIG!
+FUNCTION GMDOFCCMN 0
+  -R*LN(1.62)*T 
+  +R*LN(1.62)*0.38438376*540*4*GMDODNONBCC#**(-1);  6000 N              15BIG!
 
 $ ----------------------------------------------------------------------------
 $                           TYPE DEFINTIIONS
@@ -183,9 +199,14 @@ $ MAGNETIC MODELS
 $ BCC
 TYPE_DEFINITION A GES AMEND_PHASE_DESCRIPTION @ MAGNETIC 0 0.37 !
 
+FUNCTION GMDODBCC 0
+  +0.33471979 +0.49649686*2.702702703 -0.49649686;  6000 N              01CHE!
+
 $ NON-BCC
 TYPE_DEFINITION B GES AMEND_PHASE_DESCRIPTION @ MAGNETIC 0 0.25 !
 
+FUNCTION GMDODNONBCC 0
+  +0.33471979 +0.49649686*4 -0.49649686;  6000 N                        01CHE!
 $ ----------------------------------------------------------------------------
 $                           END-MEMBER DEFINITIONS
 $ ----------------------------------------------------------------------------
@@ -197,11 +218,8 @@ $ PEARSON: cl2
 $ SPACE GROUP: Im-3m
 
 PHASE BCC_A2 %A 2 1 3 !
-CONSTITUENT BCC_A2 : FE
+CONSTITUENT BCC_A2 : FE,MN
                    : C,VA : !
-
-FUNCTION GMDODBCC 0
-  +0.33471979 +0.49649686*2.702702703 -0.49649686;  6000 N              01CHE!
 
 PARAMETER G(BCC_A2,FE:C;0) 0
   +162505 +184.465*T;  6000 N                                           14NAR!
@@ -209,7 +227,6 @@ PARAMETER BMAGN(BCC_A2,FE:C;0) 0
   +2.22;  6000 N                                                        85GUS!
 PARAMETER TC(BCC_A2,FE:C;0) 0
   +1043;  6000 N                                                        85GUS!
-
 PARAMETER G(BCC_A2,FE:VA;0) 0
   +GHSERFE# +GMDOBCCFE#; 6000 N                                         01CHE!
 PARAMETER BMAGN(BCC_A2,FE:VA;0) 0
@@ -218,10 +235,41 @@ PARAMETER TC(BCC_A2,FE:VA;0) 0
   +1043; 6000 N                                                         91DIN!
 PARAMETER THETA(BCC_A2,FE:VA;0) 0
   +LN(309);  6000 N                                                     01CHE!
+PARAMETER G(BCC_A2,MN:VA;0) 0
+  -4.6926774E3 -6.8464920E-3*T**2 -3.2311349E-15*T**5 +GMDOBCCMN#;  1519 Y 
+  -1.8620432E4 +1.2731728E2*T +2.0301009E1*T -2.0301009E1*T*LN(T)
+  -2.2035000E18*T**(-5) +5.1886000E36*T**(-11) +GMDOBCCMN#;  6000 N     15BIG!
+PARAMETER BMAGN(BCC_A2,MN:VA;0) 0
+  +0.27;  6000 N                                                        15BIG!
+PARAMETER NT(BCC_A2,MN:VA;0) 0
+  +580;  6000 N                                                         15BIG!
+PARAMETER THETA(BCC_A2,MN:VA;0) 0
+  +LN(265);  6000 N                                                     15BIG!
 
 
 PARAMETER L(BCC_A2,FE:C,VA;0) 0
   +150000 -290*T;  6000 N                                               14NAR!
+
+$ ----------------------------------------------------------------------------
+$ CBCC_A12
+$ PROTOTYPE: ALPHA-MN
+$ PEARSON: cI58
+$ SPACE GROUP: I-43m
+
+PHASE CBCC_A12 %B 2 1 1 !
+CONSTITUENT CBCC_A12 : MN : VA : !
+
+PARAMETER G(CBCC_A12,MN:VA;0) 0
+  -8.6217070E3 -5.4695069E-3*T**2 +3.6645644E-8*T**3 
+  -2.5888450E-14*T**5 +GMDOCBCCMN#;  1519 Y 
+  -2.5954328E4 +1.3073341E2*T +2.01788630E1*T -2.01788630E1*T*LN(T)
+  -7.41738730E17*T**(-5) +3.57220000E36*T**(-11) +GMDOCBCCMN#;  6000 N  15BIG!
+PARAMETER BMAGN(CBCC_A12,MN:VA;0) 0
+  +0.22;  6000 N                                                        15BIG!
+PARAMETER NT(CBCC_A12,MN:VA;0) 0
+  +95;  6000 N                                                          15BIG!
+PARAMETER THETA(CBCC_A12,MN:VA;0) 0
+  +LN(287.6);  6000 N                                                   15BIG!
 
 $ ----------------------------------------------------------------------------
 $ CEMENTITE_D011
@@ -242,9 +290,28 @@ PARAMETER BMAGN(CEMENTITE_D011,FE:C;0) 0
 PARAMETER TC(CEMENTITE_D011,FE:C;0) 0
   +485;  6000 N                                                         10HAL!
 
+$ ----------------------------------------------------------------------------
+$ CUB_A13
+$ PROTOTYPE: BETA-MN
+$ PEARSON: cP20
+$ SPACE GROUP: P4132
+
+PHASE CUB_A13 % 2 1 1 !
+CONSTITUENT CUB_A13 : MN : VA : !
+
+PARAMETER G(CUB_A13,MN:VA;0) 0
+  -6.1814708E3 -5.7218755E-3*T**2 +8.9632678E-12*T**3 
+  -1.9360399E-14*T**5;  1519 Y 
+  -2.446516E4 +1.36701980E2*T +2.10957190E1*T -2.10957190E1*T*LN(T)
+  -3.96700000E17*T**(-5) +2.99530000E36*T**(-11);  6000 N               15BIG!
+PARAMETER THETA(CUB_A13,MN:VA;0) 0
+  +LN(247.8);  6000 N                                                   15BIG!
 
 $ ----------------------------------------------------------------------------
 $ DIAMOND_A4
+$ PROTOTYPE: C (DIAMOND)
+$ SPACE GROUP: Fd-3m
+$ PEARSON: cF8
 
 PHASE DIAMOND_A4 % 1 1 !
 CONSTITUENT DIAMOND_A4 : AL,B,C,CR,FE,MN,NI,SI,TI : !
@@ -296,7 +363,7 @@ $ PEARSON: cF4
 $ SPACE GROUP: Fm-3m
 
 PHASE FCC_A1 %B 2 1 1 !
-CONSTITUENT FCC_A1 : CU, FE
+CONSTITUENT FCC_A1 : CU,FE,MN
                    : C,VA : !
 
 
@@ -304,7 +371,6 @@ PARAMETER G(FCC_A1,CU:VA;0) 0
   +GHSERFE#;  6000 N                                                    14KHA!
 PARAMETER THETA(FCC_A1,CU:VA;0) 0
   +LN(222.155096410218);  6000 N                                        24KHA!
-
 PARAMETER G(FCC_A1,FE:C;0) 0
   +72729 -15.212*T +GFCCFE# +GHSERCC#;  6000 N                          14NAR!
 PARAMETER BMAGN(FCC_A1,FE:C;0) 0
@@ -314,8 +380,6 @@ PARAMETER NT(FCC_A1,FE:C;0) 0
 PARAMETER TC(FCC_A1,FE:C;0) 0
   -201;  6000 N                                                         85GUS!
 
-FUNCTION GMDODFCC 0
-  +0.33471979 +0.49649686*4 -0.49649686;  6000 N                        01CHE!
 PARAMETER G(FCC_A1,FE:VA;0) 0
   +GFCCFE# +GMDOFCCFE#; 6000 N                                          01CHE!
 PARAMETER BMAGN(FCC_A1,FE:VA;0) 0
@@ -326,7 +390,17 @@ PARAMETER NT(FCC_A1,FE:VA;0) 0
   +67;  6000 N                                                          91DIN!
 PARAMETER THETA(FCC_A1,FE:VA;0) 0
   +LN(309);  6000 N                                                     01CHE!
-
+PARAMETER G(FCC_A1,MN:VA;0) 0
+  -5.3563280E3 -4.4627084E-3*T**2 -3.7906096E-10*T**4 
+  +8.1018765E-14*T**5 +GMDOFCCMN#;  1519 Y 
+  -2.2440424E4 +1.3525456E2*T +2.0797951E1*T -2.0797951E1*T*LN(T)
+  -1.8964000E18*T**(-5) +5.2080000E36*T**(-11) +GMDOFCCMN#;  6000 N     15BIG!
+PARAMETER BMAGN(FCC_A1,MN:VA;0) 0
+  +0.62;   6000 N                                                       15BIG!
+PARAMETER NT(FCC_A1,MN:VA;0) 0
+  +540;  6000 N                                                         15BIG!
+PARAMETER THETA(FCC_A1,MN:VA;0) 0
+  +LN(257.5);  6000 N                                                   15BIG!
 
 PARAMETER L(FCC_A1,FE:C,VA;0) 0
   -30532;  6000 N                                                       14NAR!
@@ -343,10 +417,36 @@ PARAMETER THETA(GRAPHITE_A9,C;0) 0
   +LN(2219.2);  298.15 N                                                14NAR!
 
 $ ----------------------------------------------------------------------------
+$ HCP_A3
+$ PROTOTYPE: MG
+$ PEARSON: hP2
+$ SPACE GROUP: P63/mmc
+
+PHASE HCP_A3 %B 2 1 .5 !
+CONSTITUENT HCP_A3 : FE,MN : VA : !
+
+PARAMETER G(HCP_A3,FE:VA;0) 0
+  -3307.07993 -0.00431797569*T**2 -2.1239086E-14*T**5; 1811 Y 
+  -24924.6659 +161.764208*T -21.0325858*T*LN(T) -4.71013343E18*T**(-5)
+  +4.55313396E37*T**(-11);  6000 N                                      16BIG!
+PARAMETER BMAGN(HCP_A3,FE:VA;0) 0
+  +0.1;  6000 N                                                         16BIG!
+PARAMETER NT(HCP_A3,FE:VA;0) 0
+  +100;  6000 N                                                         16BIG!
+PARAMETER THETA(HCP_A3,FE:VA;0) 0
+  +LN(281);  6000 N                                                     16BIG!
+PARAMETER G(HCP_A3,MN:VA;0) 0
+  -9755.88935 -0.00699764166*T**2 +4.12888434E-15*T**5;  1519 Y 
+  -25379.5810 +154.288908*T -21.0957581*T*LN(T) -1.10430000E18*T**(-5) 
+  +3.3993E36*T**(-11);  6000 N                                          16BIG!
+PARAMETER THETA(HCP_A3,MN:VA;0) 0
+  +LN(438);  6000 N                                                     16BIG!
+
+$ ----------------------------------------------------------------------------
 $ LIQUID
 
 PHASE LIQUID %B 1 1 !
-CONSTITUENT LIQUID:L : C,CU,FE : ! 
+CONSTITUENT LIQUID:L : C,CU,FE,MN : ! 
 
 
 FUNCTION GMDODLIQ 0
@@ -358,7 +458,6 @@ PARAMETER GD(LIQUID,CU;0) 0
   +2.04096194E4 -13.6045657*T;  6000 N                                  24KHA!
 PARAMETER THETA(LIQUID,CU;0) 0
   +LN(222.155096410218);  6000 N                                        24KHA!
-
 PARAMETER G(LIQUID,FE;0) 0 
   +GLIQFE# +GMDOLIQFE#; 6000 N                                          01CHE!
 PARAMETER BMAGN(LIQUID,FE;0) 0
@@ -369,6 +468,13 @@ PARAMETER TC(LIQUID,FE;0) 0
   +200;  6000 N                                                         01CHE!
 PARAMETER THETA(LIQUID,FE;0) 0
   +5.501258211;  6000 n                                                 01CHE!
+PARAMETER G(LIQUID,MN;0) 0
+  +1.32568283E4 -1.75574940E-3*T**2;   6000 N                           15BIG!
+PARAMETER GD(LIQUID,MN;0) 0
+  +5.04936966E4 -8.314*T -1.07778322*T*LN(T);  6000 N                   15BIG!
+PARAMETER THETA(LIQUID,MN;0) 0
+  +LN(119);  6000 N                                                     15BIG!
+
 
 PARAMETER L(LIQUID,C,FE;0) 0
   -102958 +18.236*T;  6000 N                                            14NAR!
@@ -408,6 +514,13 @@ NUMBER  SOURCE
 15ZHE   'Zheng, Weisen, et al. "Thermodynamic assessment of the Fe-Mn-Si 
         system and atomic mobility of its fcc phase." Journal of Alloys and 
         Compounds 632 (2015): 661-675.'
+15BIG   'Bigdeli, Sedigheh, Huahai Mao, and Malin Selleby. "On the third‐
+        generation Calphad databases: An updated description of Mn." physica 
+        status solidi (b) 252.10 (2015): 2199-2208.'
+16BIG   'Bigdeli, Sedigheh, et al. "New description of metastable hcp phase 
+        for unaries Fe and Mn: Coupling between first‐principles calculations 
+        and CALPHAD modeling." physica status solidi (b) 253.9 (2016): 
+        1830-1836.'
 23WIT   'Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
         modelling of the ternary system Fe-Ni-Si with re-modelling of the 
         constituent binary systems." Journal of Alloys and Compounds 935 
