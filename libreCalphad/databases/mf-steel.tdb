@@ -213,7 +213,7 @@ DATABASE_INFO The following systems are available:'
   MN-N      Qiu (1993)'
   MN-NB     Liu (2012)'
   MN-NI     Liu (2010)'
-  MN-S      Dilner (2015) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
+  MN-S      Dilner (2015)'
   MN-SI     Zheng (2015) and Zheng (2017)'
   MN-TI     Saunders (1993)'
   MN-V      Huang (1991)'
@@ -229,7 +229,7 @@ DATABASE_INFO The following systems are available:'
   N-TI      Jonsson (1996) and Lee (2001)'
   N-V       Du (2021) EXCEPT GAS PHASE'
   NB-SI     Fernandes (2002)'
-  NB-TA     Servant (2004) and xiong (2004)'
+  NB-TA     Servant (2004) and Xiong (2004)'
   NB-TI     Saunders (1995)'
   NB-V      Kumar (1994) and Servant (2004)'
   NB-W      Huang (1997)'
@@ -239,7 +239,7 @@ DATABASE_INFO The following systems are available:'
   NI-TI     Bellen (1996) and De Keyzer (2009) ORDERING INCORRECT'
   NI-V      Korb (1998)'
   NI-W      Gustafson (1988), Turchi (2006), and Isomäki (2017)'
-  O-SI      Hallstedt (1992) W/ ASSOCIATE LIQUID MODEL VICE IONIC'
+  O-SI      Hallstedt (1992)'
   SI-TA     Vahlas (1989)'
   SI-TI     Seifert (1996)'
   SI-V      Zhang (2008)'
@@ -1733,7 +1733,7 @@ $ ----------------------------------------------------------------------------
 $ AL4MN_ZETA
 $ PROTOTYPE: ?
 $ PEARSON: hP227
-$ SPACE GROUP: P63/m
+$ SPACE GROUP: P6_3/m
 
 PHASE AL4MN_ZETA % 2 4 1 !
 CONSTITUENT AL4MN_ZETA : AL : FE,MN : !
@@ -9406,7 +9406,7 @@ PARAMETER G(IONIC_LIQ,MN2+:S2-;0) 298.15
 PARAMETER G(IONIC_LIQ,MN2+:VA;0) 298.15
   +GLIQMN#;  6000 N                                                     91DIN!
 PARAMETER G(IONIC_LIQ,NI2+:O2-;0) 298.15
-  -402345.6 +176.606*T -4.35796*T*LN(T) +2*GLIQNI# +GGASO2#;  6000 N   08KJE!
+  -402345.6 +176.606*T -4.35796*T*LN(T) +2*GLIQNI# +GGASO2#;  6000 N    08KJE!
 PARAMETER G(IONIC_LIQ,NI2+:VA;0) 298.15
   +GLIQNI#;  6000 N                                                     08KJE!
 PARAMETER G(IONIC_LIQ,S;0) 298.15
