@@ -197,7 +197,7 @@ DATABASE_INFO The following systems are available:'
   FE-O      Sundman (1991), Kowalski (1996), and Kjellqvist (2008)'
   FE-P      Cao (2012)'
   FE-S      Lee (2007)'
-  FE-SI     Cui (2017) and Witusiewicz (2023) EXCEPT ORDERING'
+  FE-SI     Cui (2017) and Witusiewicz (2023)'
   FE-TA     Witusiewicz (2011)'
   FE-TI     Dumitrescu (1998), Kumar (1999), Frisk (2008), De Keyzer (2009), 
             and Guo (2012)'
@@ -3351,11 +3351,11 @@ PARAMETER G(BCC_B2,FE:MN:VA;0) 298.15
 PARAMETER G(BCC_B2,FE:NI:VA;0) 298.15
   -2083.274;  6000 N                                                   09ZHAA!
 PARAMETER G(BCC_B2,FE:SI:VA;0) 298.15
-  -10675.2;  6000 N                                                     23WIT!
+  -10675.2;  6000 N                                                    17CUIA!
 PARAMETER BMAGN(BCC_B2,FE:SI:VA;0) 298.15
-  -0.75;  6000 N                                                        23WIT!
+  -0.75;  6000 N                                                       17CUIA!
 PARAMETER TC(BCC_B2,FE:SI:VA;0) 298.15  
-  -210;  6000 N                                                         23WIT!
+  -210;  6000 N                                                        17CUIA!
 PARAMETER G(BCC_B2,FE:TI:VA;0) 298.15
   -33946.4 -46.6850*T +8.663*T*LN(T) -0.01853*T**2
   +5.56492656E-6*T**3;  6000 N                                          12GUO!
@@ -3405,11 +3405,11 @@ $   +0;  6000 N                                                           19WAN!
 PARAMETER G(BCC_B2,SI:CR:VA;0) 298.15
   -20307.044 +5.44*T;  6000 N                                          17CUID!
 PARAMETER G(BCC_B2,SI:FE:VA;0) 298.15
-  -10675.2;  6000 N                                                     23WIT!
+  -10675.2;  6000 N                                                    17CUIA!
 PARAMETER BMAGN(BCC_B2,SI:FE:VA;0) 298.15
-  -0.75;  6000 N                                                        23WIT!
+  -0.75;  6000 N                                                       17CUIA!
 PARAMETER TC(BCC_B2,SI:FE:VA;0) 298.15
-  -210;  6000 N                                                         23WIT!
+  -210;  6000 N                                                        17CUIA!
 PARAMETER G(BCC_B2,SI:MN:VA;0) 298.15
   +0;  6000 N                                                           24FRI!
 PARAMETER G(BCC_B2,SI:SI:VA;0) 298.15
@@ -3554,11 +3554,11 @@ PARAMETER BMAGN(BCC_B2,FE:CO,FE:VA;0) 298.15
 PARAMETER TC(BCC_B2,FE:CO,FE:VA;0) 298.15
   -370;  6000 N                                                         02OHN!
 PARAMETER L(BCC_B2,FE:FE,SI:VA;0) 298.15
-  +10675.2;  6000 N                                                     23WIT!
+  +10675.2;  6000 N                                                    17CUIA!
 PARAMETER BMAGN(BCC_B2,FE:FE,SI:VA;0) 298.15
-  +0.75;  6000 N                                                        23WIT!
+  +0.75;  6000 N                                                       17CUIA!
 PARAMETER TC(BCC_B2,FE:FE,SI:VA;0) 298.15
-  +210;  6000 N                                                         23WIT!
+  +210;  6000 N                                                        17CUIA!
 PARAMETER L(BCC_B2,FE:FE,TI:VA;0) 298.15
   -10971;  6000  N                                                      99KUM!
 PARAMETER L(BCC_B2,FE:FE,TI:VA;1) 298.15
@@ -3579,11 +3579,11 @@ PARAMETER L(BCC_B2,FE,NI:AL:VA;0) 298.15
 PARAMETER L(BCC_B2,FE,NI:TI:VA;0) 298.15
   +11774;  6000  N                                                      09KEY!
 PARAMETER L(BCC_B2,FE,SI:FE:VA;0) 298.15
-  +10675.2;  6000 N                                                     23WIT!
+  +10675.2;  6000 N                                                    17CUIA!
 PARAMETER BMAGN(BCC_B2,FE,SI:FE:VA;0) 298.15
-  +0.75;  6000 N                                                        23WIT!
+  +0.75;  6000 N                                                       17CUIA!
 PARAMETER TC(BCC_B2,FE,SI:FE:VA;0) 298.15
-  +210;  6000 N                                                         23WIT!
+  +210;  6000 N                                                        17CUIA!
 PARAMETER L(BCC_B2,FE,SI:NI:VA;0) 298.15
   -25*T;  6000 N                                                        23WIT!
 PARAMETER L(BCC_B2,FE,SI:SI:VA;0) 298.15
@@ -3675,11 +3675,11 @@ $ PARAMETER L(BCC_B2,NI,VA:NI:VA;0) 298.15
 $   -131120 -9.48*T;  6000 N                                              19WAN!
 
 PARAMETER L(BCC_B2,SI:FE,SI:VA;0) 298.15
-  +10675.2;  6000 N                                                     23WIT!
+  +10675.2;  6000 N                                                    17CUIA!
 PARAMETER BMAGN(BCC_B2,SI:FE,SI:VA;0) 298.15
-  +0.75;  6000 N                                                        23WIT!
+  +0.75;  6000 N                                                       17CUIA!
 PARAMETER TC(BCC_B2,SI:FE,SI:VA;0) 298.15
-  +210;  6000 N                                                         23WIT!
+  +210;  6000 N                                                        17CUIA!
 
 PARAMETER L(BCC_B2,TI:AL,TI:VA;0) 298.15
   -21406;  6000 N                                                       08WIT!
