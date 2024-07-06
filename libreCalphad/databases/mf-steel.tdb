@@ -14262,7 +14262,7 @@ PARAMETER G(MU_D85,CO:TA:W;0) 298.15
 PARAMETER G(MU_D85,CO:W:CO;0) 298.15
   +59040 +7*GFCCCO# +2*GHSERW# +4*GBCCCO#;  6000 N                      05MAR!
 PARAMETER G(MU_D85,CO:W:CR;0) 298.15
-  +7*GFCCCO# +2*GHSERW# +4*GHSERCR#;  6000 N                            23FRI!
+  +7*GFCCCO# +2*GHSERW# +4*GHSERCR#;  6000 N                            15KAP!
 PARAMETER G(MU_D85,CO:W:FE;0) 298.15
   +7*GFCCCO# +2*GHSERW# +4*GHSERFE#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,CO:W:MO;0) 298.15
@@ -14311,9 +14311,9 @@ PARAMETER G(MU_D85,CR:TA:W;0) 298.15
   +7*GFCCCR# +2*GHSERTA# +4*GHSERW#;  6000 N                            23FRI!
 
 PARAMETER G(MU_D85,CR:W:CO;0) 298.15
-  +7*GFCCCR# +2*GHSERW# +4*GHSERCO#;  6000 N                            23FRI!
+  -15000 -5*T +7*GFCCCR# +2*GHSERW# +4*GBCCCO#;  6000 N                 15KAP!
 PARAMETER G(MU_D85,CR:W:CR;0) 298.15
-  -2310 +7*GFCCCR# +2*GHSERW# +4*GHSERCR#;  6000 N                     88GUSF!
+  +137000 -100*T +7*GFCCCR# +2*GHSERW# +4*GHSERCR#;  6000 N             15KAP!
 PARAMETER G(MU_D85,CR:W:FE;0) 298.15
   +28700 +7*GFCCCR# +2*GHSERW# +4*GHSERFE#;  6000 N                    88GUSF!
 PARAMETER G(MU_D85,CR:W:MO;0) 298.15
@@ -14325,7 +14325,7 @@ PARAMETER G(MU_D85,CR:W:NI;0) 298.15
 PARAMETER G(MU_D85,CR:W:TA;0) 298.15
   +7*GFCCCR# +2*GHSERW# +4*GHSERTA#;  6000 N                            23FRI!
 PARAMETER G(MU_D85,CR:W:W;0) 298.15
-  +35260 -29*T +7*GFCCCR# +2*GHSERW# +4*GHSERW#;  6000 N               88GUSF!
+  +7*GFCCCR# +2*GHSERW# +4*GHSERW#;  6000 N                            15KAP!
 
 PARAMETER G(MU_D85,FE:MO:CO;0) 298.15
   +7*GFCCFE# +2*GHSERMO# +4*GHSERCO#;  6000 N                           23FRI!
@@ -14531,6 +14531,11 @@ PARAMETER G(MU_D85,TA:W:TA;0) 298.15
 PARAMETER G(MU_D85,TA:W:W;0) 298.15
   +7*GFCCTA# +2*GHSERW# +4*GHSERW#;  6000 N                             23FRI!
 
+
+PARAMETER L(MU_D85,CO,CR:W:W;0) 298.15
+  -10000 -50*T;  6000 N                                                 15KAP!
+PARAMETER L(MU_D85,CO,CR:W:CO,W;0) 298.15
+  -530000;  6000 N                                                      15KAP!
 
 PARAMETER L(MU_D85,CO,MO:MO:CO;0) 298.15
   -70203.8 +170.256*T;  6000 N                                          99DAV!
@@ -15123,6 +15128,43 @@ PARAMETER G(R_COCRMO,NI:MO:MO;0) 298.15
   -18000 +27*GHSERNI# +26*GHSERMO#;  6000 N                             92FRI!
 PARAMETER G(R_COCRMO,NI:MO:NI;0) 298.15
   +100000 +27*GFCCFE# +14*GHSERMO# +12*GBCCNI#;  6000 N                 92FRI!
+
+$ ----------------------------------------------------------------------------
+$ R_COCRW
+$ PROTOTPYE: R-(CO,CR,W)
+
+PHASE R_COCRW % 3 27 18 8 !
+CONSTITUENT R_COCRW : CO,CR : CO,CR,W : W : !
+
+FUNCTION GMAGRCO 298.15
+  -8342.5 +6.5*T;  1283 Y 
+  +0;  6000 N                                                           15KAP!
+FUNCTION GMAGRCR 298.15
+  -8.7 +0.023*T;  370 Y 
+  +0;  6000 N                                                           15KAP!
+
+PARAMETER G(R_COCRW,CO:CO:W;0) 298.15
+  +287100 +45*GHSERCO# +45*GMAGRCO# +8*GHSERW#;  6000 N                 15KAP!
+PARAMETER G(R_COCRW,CO:CR:W;0) 298.15
+  +178800 -400*T +27*GHSERCO# +27*GMAGRCO# +18*GHSERCR# +18*GMAGRCR#
+   +8*GHSERW#;  6000 N                                                  15KAP!
+PARAMETER G(R_COCRW,CO:W:W;0) 298.15
+  -24800 +28*GHSERCO# +27*GMAGRCO# +18*GHSERW# +8*GHSERW#;  6000 N      15KAP!
+
+PARAMETER G(R_COCRW,CR:CO:W;0) 298.15
+  +711700 +27*GHSERCR# +27*GMAGRCR# +18*GHSERCO# +18*GMAGRCO# 
+  +8*GHSERW#;  6000 N                                                   15KAP!
+PARAMETER G(R_COCRW,CR:CR:W;0) 298.15
+  +788700 -300*T +45*GHSERCR# +45*GMAGRCR# *8*GHSERW#;  6000 N          15KAP!
+PARAMETER G(R_COCRW,CR:W:W;0) 298.15
+  +526400 -50*T +27*GHSERCR# +27*GMAGRCR# +18*GHSERW# 
+  +8*GHSERW#;  6000 N                                                   15KAP!
+
+
+PARAMETER L(R_COCRW,CO,CR:CR:W;0) 298.15
+  -795000 +399*T;  6000 N                                               15KAP!
+PARAMETER L(R_COCRW,CO,CR:W:W;0) 298.15
+  -600000 -100*T;  6000 N                                               15KAP!
 
 $ ----------------------------------------------------------------------------
 $ R_MNNISI
