@@ -13860,10 +13860,9 @@ PARAMETER G(MSI2_C40,V:AL;0) 298.15
   +75000 +GHSERV# +2*GHSERAL#;  6000 N                                  17KRO!
 PARAMETER G(MSI2_C40,V:CR;0) 298.15
   +GHSERV# +2*GHSERCR#;  6000 N                                         24FRI!
-
-$ PARAMETER G(MSI2_C40,V:SI;0) 298.15
-$   -162308.4 +408.29196*T +145*T -67.8*T*LN(T) -0.0075*T**2 +330000*T**(-1)
-$   +GHSERV# +2*GHSERSI#;  6000 N                                         08ZHA!
+PARAMETER G(MSI2_C40,V:SI;0) 298.15
+  -162308.4 +408.29196*T -67.8*T*LN(T) -0.0075*T**2 
+  +330000*T**(-1); 6000 N                                               08ZHA!
 
 
 PARAMETER L(MSI2_C40,CR,MO:SI;0) 298.15
@@ -13885,7 +13884,7 @@ PARAMETER L(MSI2_C40,V:AL,SI;0) 298.15
   -99368.4 +105.2631*T;  6000 N                                         17KRO!
 PARAMETER L(MSI2_C40,V:AL,SI;1) 298.15
   +359258.4 -138.756*T;  6000 N                                         17KRO!
-  
+
 $ ----------------------------------------------------------------------------
 $ MSI2_C54
 $ PROTOTYPE: TISI2
