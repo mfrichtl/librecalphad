@@ -6,7 +6,7 @@ from pymatgen.core import Composition
 
 def DG(db, components, phases, conditions, calc_opts={}):
     """
-    Function to calculate the Gibbs free energy difference between two phases.
+    Function to calculate the Gibbs energy difference between two phases.
 
     Parameters: db, pycalphad Database
                     The Database to use for calculations
@@ -20,7 +20,7 @@ def DG(db, components, phases, conditions, calc_opts={}):
                     Dictionary containing keyword arguments for passing to pycalphad's calculate function.
 
     Returns: delta_g, float, J/mol
-                Float of the molar Gibbs free energy difference, phases[0] - phases[1].
+                Float of the molar Gibbs energy difference, phases[0] - phases[1].
                 Returns np.nan if there is a calculation error.
     """
     
@@ -175,19 +175,22 @@ def trim_conditions(components, conditions, max_num_conditions=1000, solute_thre
 def convert_conditions(conditions):
     # Convert a conditions dictionary from strings to pycalphad.variables objects to prepare for calculations.
 
-    converted_conditions = {}
-    for key, value in conditions.items():
-        if key == 'N':
-            converted_conditions[v.N] = value
-        elif key == 'P':
-            converted_conditions[v.P] = value
-        elif key == 'T':
-            converted_conditions[v.T] = value
-        elif key.startswith('X'):
-            converted_conditions[v.X(key.split('_')[1])] = value
-        else:
-            raise NotImplementedError(f"Cannot identify pycalphad variable type for, {key} : {value}.")
-    return converted_conditions
+    if type(list(conditions.keys())[0]) == v.StateVariable or type(list(conditions.keys())[0]) == v.MoleFraction:  # already the correct type of variables
+        return conditions
+    else:
+        converted_conditions = {}
+        for key, value in conditions.items():
+            if key == 'N':
+                converted_conditions[v.N] = value
+            elif key == 'P':
+                converted_conditions[v.P] = value
+            elif key == 'T':
+                converted_conditions[v.T] = value
+            elif key.startswith('X'):
+                converted_conditions[v.X(key.split('_')[1])] = value
+            else:
+                raise NotImplementedError(f"Cannot identify pycalphad variable type for, {key} : {value}.")
+        return converted_conditions
 
 
 def get_components_from_conditions(conditions, dependent_component):

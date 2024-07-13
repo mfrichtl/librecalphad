@@ -3,6 +3,7 @@ requires = [
     "pycalphad",
     "setuptools",
     "pymatgen",
+    "pytest",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -13,8 +14,8 @@ authors=[
     {name = 'Matt Frichtl'},
 ]
 description='Open-source Calphad databases and property models.'
-license={text = 'GNU GPL v3'}
-#provides='calphad-opendb'
+license={text = 'MIT'}
+#provides='libreCalphad'
 classifiers=[
     # How mature is this project? Common values are
     #   3 - Alpha
