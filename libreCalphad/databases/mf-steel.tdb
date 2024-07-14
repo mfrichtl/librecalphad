@@ -1841,6 +1841,8 @@ PARAMETER L(AL2CU_C16,ZR:FE,ZR;0) 298.15
 $ ----------------------------------------------------------------------------
 $ AL2FE
 $ PROTOTYPE: AL2FE
+$ SPACE GROUP: P1
+$ PEARSON: aP18
 
 PHASE AL2FE % 2 2 1 !
 CONSTITUENT AL2FE : AL : FE,MN,NI : !
@@ -2243,6 +2245,8 @@ PARAMETER G(AL5CR,SI:CR;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ AL5FE2
+$ SPACE GROUP: Cmcm
+$ PEARSON: oC?
 
 PHASE AL5FE2 % 2 5 2 !
 CONSTITUENT AL5FE2 : AL : FE,MN,NI : !
@@ -2593,6 +2597,8 @@ PARAMETER G(AL13CO4,AL:CO;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ AL13FE4
+$ SPACE GROUP: C2/m
+$ PEARSON: mC102
 
 PHASE AL13FE4 % 3 0.6275 0.235 0.1375 !
 CONSTITUENT AL13FE4 : AL : FE,MN,NI : AL,VA : !
@@ -4339,11 +4345,50 @@ CONSTITUENT BCC_D03 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
                     : B,C,H,N,O,VA :  !
 
+FUNCTION AD03ALFE 298.15
+  +3900;  6000 N                                                       09SUNA!
+FUNCTION AD03FEAL 298.15
+  -70 +0.5*T;  6000 N                                                  09SUNA!
+FUNCTION BM0ALFE 298.15
+  -0.3;  6000 N                                                        09SUNA!
+FUNCTION UBALFE1 298.15
+  -4023 -1.14*T;  6000 N                                               09SUNA!
+FUNCTION UBALFE2 298.15
+  -1973 -2*T;  6000 N                                                  09SUNA!
+FUNCTION UBMALFE 298.15
+  -1.36;  6000 N                                                       09SUNA!
+FUNCTION UTCALFE 298.15
+  -125;  6000 N                                                        09SUNA!
+
 PARAMETER G(BCC_D03,AL:AL:AL:AL:VA;0) 298.15
-  +0;  6000 N                                                           09SUN!
+  +0;  6000 N                                                          09SUNA!
+PARAMETER G(BCC_D03,AL:AL:AL:FE:VA;0) 298.15
+  +2*UBALFE1# +UBALFE2# +AD03ALFE#;  6000 N                            09SUNA!
+PARAMETER BMAGN(BCC_D03,AL:AL:AL:FE:VA;0) 298.15
+  +UBMALFE# -3*BM0ALFE#;  6000 N                                       09SUNA!
+PARAMETER TC(BCC_D03,AL:AL:AL:FE:VA;0) 298.15
+  +4*UTCALFE#;  6000 N                                                 09SUNA!
+PARAMETER G(BCC_D03,AL:AL:FE:FE:VA;0) 298.15
+  +4*UBALFE1#;  6000 N                                                 09SUNA!
+PARAMETER BMAGN(BCC_D03,AL:AL:FE:FE:VA;0) 298.15
+  +2*UBMALFE# -4*BM0ALFE#;  6000 N                                     09SUNA!
+PARAMETER TC(BCC_D03,AL:AL:FE:FE:VA;0) 298.15
+  +6*UTCALFE#;  6000 N                                                 09SUNA!
+PARAMETER G(BCC_D03,AL:FE:AL:FE:VA;0) 298.15
+  +2*UBALFE1# +2*UBALFE2#;  6000 N                                     09SUNA!
+PARAMETER BMAGN(BCC_D03,AL:FE:AL:FE:VA;0) 298.15
+  +UBMALFE# -4*BM0ALFE#;  6000 N                                       09SUNA!
+PARAMETER TC(BCC_D03,AL:FE:AL:FE:VA;0) 298.15
+  +5*UTCALFE#;  6000 N                                                 09SUNA!
+PARAMETER G(BCC_D03,AL:FE:FE:FE:VA;0) 298.15
+  +2*UBALFE1# +UBALFE2# +AD03FEAL#;  6000 N                            09SUNA!
+PARAMETER BMAGN(BCC_D03,AL:FE:FE:FE:VA;0) 298.15
+  +UBMALFE# -3*BM0ALFE#;  6000 N                                       09SUNA!
+PARAMETER TC(BCC_D03,AL:FE:FE:FE:VA;0) 298.15
+  +4*UTCALFE#;  6000 N                                                 09SUNA!
 
 PARAMETER G(BCC_D03,FE:FE:FE:FE:VA;0) 298.15
-  +0;  6000 N                                                           24FRI!
+  +0;  6000 N                                                          09SUNA!
 PARAMETER G(BCC_D03,FE:FE:FE:SI:VA;0) 298.15
   -3350.0;  6000 N                                                     17CUIA!
 PARAMETER BMAGN(BCC_D03,FE:FE:FE:SI:VA;0) 298.15
@@ -4353,7 +4398,49 @@ PARAMETER TC(BCC_D03,FE:FE:FE:SI:VA;0) 298.15
 
 PARAMETER G(BCC_D03,SI:SI:SI:SI:VA;0) 298.15
   +0;  6000 N                                                           24FRI!
-  
+
+
+PARAMETER L(BCC_D03,AL,FE:AL:AL:AL:VA;1) 298.15
+  -634 +0.68*T;  6000 N                                                09SUNA!
+PARAMETER L(BCC_D03,AL,FE:AL:AL:AL:VA;2) 298.15
+  -190;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:AL:AL:AL:VA;1) 298.15
+  -0.8;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:AL:AL:AL:VA;2) 298.15
+  +0.2;  6000 N                                                        09SUNA!
+PARAMETER L(BCC_D03,AL,FE:AL:AL:FE:VA;1) 298.15
+  -634 +0.68*T;  6000 N                                                09SUNA!
+PARAMETER L(BCC_D03,AL,FE:AL:AL:FE:VA;2) 298.15
+  -190;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:AL:AL:FE:VA;1) 298.15
+  -0.8;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:AL:AL:FE:VA;2) 298.15
+  +0.2;  6000 N                                                        09SUNA!
+PARAMETER L(BCC_D03,AL,FE:AL:FE:FE:VA;1) 298.15
+  -634 +0.68*T;  6000 N                                                09SUNA!
+PARAMETER L(BCC_D03,AL,FE:AL:FE:FE:VA;2) 298.15
+  -190;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:AL:FE:FE:VA;1) 298.15
+  -0.8;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:AL:FE:FE:VA;2) 298.15
+  +0.2;  6000 N                                                        09SUNA!
+PARAMETER L(BCC_D03,AL,FE:FE:AL:FE:VA;1) 298.15
+  -634 +0.68*T;  6000 N                                                09SUNA!
+PARAMETER L(BCC_D03,AL,FE:FE:AL:FE:VA;2) 298.15
+  -190;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:FE:AL:FE:VA;1) 298.15
+  -0.8;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:FE:AL:FE:VA;2) 298.15
+  +0.2;  6000 N                                                        09SUNA!
+PARAMETER L(BCC_D03,AL,FE:FE:FE:FE:VA;1) 298.15
+  -634 +0.68*T;  6000 N                                                09SUNA!
+PARAMETER L(BCC_D03,AL,FE:FE:FE:FE:VA;2) 298.15
+  -190;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:FE:FE:FE:VA;1) 298.15
+  -0.8;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_D03,AL,FE:FE:FE:FE:VA;2) 298.15
+  +0.2;  6000 N                                                        09SUNA!
+
 $ ----------------------------------------------------------------------------
 $ BCT_A5
 PHASE BCT_A5 % 1 1 !
