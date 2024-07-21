@@ -3187,15 +3187,15 @@ PARAMETER L(BCC_A2,CO,CR:VA;0) 298.15
 PARAMETER L(BCC_A2,CO,CR:VA;1) 298.15
   -9092.2;  6000 N                                                      19WAN!
 PARAMETER L(BCC_A2,CO,FE:VA;0) 298.15
-  -26222.7 +125.000*T -15.5020*T*LN(T) -632250*T**(-1);  6000 N         02OHN!
+  -20205 +14.8*T +0.9845*T*LN(T) -7.64344E-3*T**2;  6000  N             17WAN!
 PARAMETER L(BCC_A2,CO,FE:VA;2) 298.15
-  +2686.79 +632250*T**(-1);  6000 N                                     02OHN!
+  +1316;  6000 N                                                        17WAN!
+PARAMETER BMAGN(BCC_A2,CO,FE:VA;0) 298.15
+  +1.5;   6000 N                                                        17WAN!
+PARAMETER BMAGN(BCC_A2,CO,FE:VA;1) 298.15
+  -0.6;  6000 N                                                         17WAN!
 PARAMETER TC(BCC_A2,CO,FE:VA;0) 298.15
   +590;  6000 N                                                         02OHN!
-PARAMETER BMAGN(BCC_A2,CO,FE:VA;0) 298.15
-  +1.406;  6000 N                                                       02OHN!
-PARAMETER BMAGN(BCC_A2,CO,FE:VA;1) 298.15
-  -0.6617;  6000 N                                                      02OHN!
 PARAMETER L(BCC_A2,CO,MN:VA;0) 298.15
   -23945;  6000 N                                                      89HUAB!
 PARAMETER BMAGN(BCC_A2,CO,MN:VA;0) 298.15
@@ -3923,9 +3923,9 @@ PARAMETER TC(BCC_B2,CO:AL;0) 298.15
 PARAMETER G(BCC_B2,CO:CO:VA;0) 298.15
   +0;  6000 N                                                           02OHN!
 PARAMETER G(BCC_B2,CO:FE:VA;0) 298.15
-  -1621.23;  6000 N                                                     02OHN!
+  -1245 -1.89*T;  6000 N                                                17WAN!
 PARAMETER BMAGN(BCC_B2,CO:FE:VA;0) 298.15
-  +0.1;  6000 N                                                         02OHN!
+  +0.14;  6000 N                                                        17WAN!
 PARAMETER TC(BCC_B2,CO:FE:VA;0) 298.15
   +370;  6000 N                                                         02OHN!
 PARAMETER G(BCC_B2,CO:NI:VA;0) 298.15
@@ -3956,9 +3956,9 @@ PARAMETER BMAGN(BCC_B2,FE:AL:VA;0) 298.15
 PARAMETER TC(BCC_B2,FE:AL:VA;0) 298.15
   +4*UTCALFE#;  6000 N                                                 09SUNA!
 PARAMETER G(BCC_B2,FE:CO:VA;0) 298.15
-  -1621.23;  6000 N                                                     02OHN!
+  -1245 -1.89*T;  6000 N                                                17WAN!
 PARAMETER BMAGN(BCC_B2,FE:CO:VA;0) 298.15
-  +0.1;  6000 N                                                         02OHN!
+  +0.14;  6000 N                                                        17WAN!
 PARAMETER TC(BCC_B2,FE:CO:VA;0) 298.15
   +370;  6000 N                                                         02OHN!
 PARAMETER G(BCC_B2,FE:CR:VA;0) 298.15
@@ -4177,7 +4177,7 @@ PARAMETER BMAGN(BCC_B2,CO,FE:CO:VA;0) 298.15
 PARAMETER TC(BCC_B2,CO,FE:CO:VA;0) 298.15
   -370;  6000 N                                                         02OHN!
 PARAMETER L(BCC_B2,CO,FE:FE:VA;0) 298.15
-  +1497.58;  6000 N                                                     02OHN!
+  -872;  6000  N                                                        17WAN!
 PARAMETER L(BCC_B2,CO,FE:FE:VA;1) 298.15
   -123.653;  6000 N                                                     02OHN!
 PARAMETER BMAGN(BCC_B2,CO,FE:FE:VA;0) 298.15
@@ -4216,7 +4216,7 @@ PARAMETER BMAGN(BCC_B2,FE:AL,FE:VA;2) 298.15
 PARAMETER L(BCC_B2,FE:AL,NI:VA;0) 298.15
   -57636.58;  6000 N                                                   09ZHAA!
 PARAMETER L(BCC_B2,FE:CO,FE:VA;0) 298.15
-  +1497.58;  6000 N                                                     02OHN!
+  -872;  6000  N                                                        17WAN!
 PARAMETER L(BCC_B2,FE:CO,FE:VA;1) 298.15
   -123.653;  6000 N                                                     02OHN!
 PARAMETER BMAGN(BCC_B2,FE:CO,FE:VA;0) 298.15
@@ -6569,17 +6569,17 @@ PARAMETER L(FCC_A1,CO,FE:C;1) 298.15
 PARAMETER L(FCC_A1,CO,FE:N;0) 298.15
   -16043;  6000 N                                                      92GUIB!
 PARAMETER L(FCC_A1,CO,FE:VA;0) 298.15
-  -8968.75;  6000 N                                                     02OHN!
+  -9112 +3.30*T;  6000 N                                                17WAN!
 PARAMETER L(FCC_A1,CO,FE:VA;2) 298.15
-  +3528.80;  6000 N                                                     02OHN!
+  +1667;  6000 N                                                        17WAN!
+PARAMETER BMAGN(FCC_A1,CO,FE:VA;0) 298.15
+  +8.9;  6000 N                                                         17WAN!
+PARAMETER BMAGN(FCC_A1,CO,FE:VA;1) 298.15
+  -3.9;  6000 N                                                         17WAN!
 PARAMETER TC(FCC_A1,CO,FE:VA;0) 298.15
   +283;  6000 N                                                         02OHN!
 PARAMETER TC(FCC_A1,CO,FE:VA;1) 298.15
   +879;  6000 N                                                         02OHN!
-PARAMETER BMAGN(FCC_A1,CO,FE:VA;0) 298.15
-  +8.407;  6000 N                                                       02OHN!
-PARAMETER BMAGN(FCC_A1,CO,FE:VA;1) 298.15
-  -3.644;  6000 N                                                       02OHN!
 PARAMETER L(FCC_A1,CO,MO:VA;0) 298.15
   -29557.1 +10.953*T;  6000 N                                           99DAV!
 PARAMETER L(FCC_A1,CO,MO:VA;1) 298.15
@@ -9239,15 +9239,17 @@ PARAMETER L(HCP_A3,CO,FE:C;1) 298.15
 PARAMETER L(FCC_A1,CO,FE:N;0) 298.15
   -16043;  6000 N                                                      92GUIB!
 PARAMETER L(HCP_A3,CO,FE:VA;0) 298.15
-  +5000;  6000 N                                                        02OHN!
+  -8500 +7*T;  6000 N                                                   17WAN!
+PARAMETER L(HCP_A3,CO,FE:VA;1) 298.15
+  -800;  6000 N                                                         17WAN!
+PARAMETER BMAGN(HCP_A3,CO,FE:VA;0) 298.15
+  -0.78;  6000 N                                                        17WAN!
+PARAMETER BMAGN(HCP_A3,CO,FE:VA;1) 298.15
+  +1.54;  6000  N                                                       17WAN!
 PARAMETER TC(HCP_A3,CO,FE:VA;0) 298.15
   -253;  6000 N                                                         02OHN!
 PARAMETER TC(HCP_A3,CO,FE:VA;1) 298.15
   +1494;  6000 N                                                        02OHN!
-PARAMETER BMAGN(HCP_A3,CO,FE:VA;0) 298.15
-  +5.41;  6000 N                                                        02OHN!
-PARAMETER BMAGN(HCP_A3,CO,FE:VA;1) 298.15
-  -0.24;  6000 N                                                        02OHN!
 PARAMETER L(HCP_A3,CO,MN:VA;0) 298.15
   -21000;  6000 N                                                      89HUAB!
 PARAMETER L(HCP_A3,CO,MN:VA;1) 298.15
@@ -12087,9 +12089,11 @@ PARAMETER L(LIQUID,CO,CR;0) 298.15
 PARAMETER L(LIQUID,CO,CR;1) 298.15
   -1458.5;  6000 N                                                      19WAN!
 PARAMETER L(LIQUID,CO,FE;0) 298.15
-  -9753.82;  6000 N                                                     02OHN!
+  -9939 +3.29*T;  6000 N                                                17WAN!
+PARAMETER L(LIQUID,CO,FE;1) 298.15
+  -1713 +0.91*T;  6000 N                                                17WAN!
 PARAMETER L(LIQUID,CO,FE;2) 298.15
-  +2757.96;  6000 N                                                     02OHN!
+  +1271;   6000 N                                                       17WAN!
 PARAMETER L(LIQUID,CO,H;0) 298.15
   +500 +16*T;  6000 N                                                   12KIM!
 PARAMETER L(LIQUID,CO,MN;0) 298.15
