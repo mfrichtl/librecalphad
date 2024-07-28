@@ -32,7 +32,9 @@ $
 $ ----------------------------------------------------------------------------
 $
 $ NOTES/ISSUES:
-$ CU - INCORPORATED ONE EINSTEIN TEMPERATURE ASSESSMENT FROM KHVAN 2024.
+$ CU - INCORPORATED ONE EINSTEIN TEMPERATURE ASSESSMENT FROM KHVAN 2024,
+$      SOME ISSUES WITH HIGHER-TEMPERATURE HEAT CAPACITY OF FCC_A1, VALUES
+$      USED COME DIRECTLY FROM THE SUPPLEMENTARY DATABASE.
 $
 $
 DATABASE_INFO The following systems are available:'
@@ -152,8 +154,8 @@ $ CU
 
 FUNCTION GHSERCU  0
   -7822.89422 -2.5000000006212E-9*T**2 -8.49824692E-7*T**3;  1357.77 Y 
-  -3279.032857 +10.35631956*T -2.0566206*T*LN(T) -1.022463333E17*T**(-5)
-  +1.654507576E34*T**(-11);  6000 N                                     24KHA!
+  -3279.032857 +10.35631956*T -2.0566206*T*LN(T) -3.06739E+18*T**(-5)
+  +2.18395E+36*T**(-11);  6000 N                                        24KHA!
 
 $ ----------------------------------------------------------------------------
 $ FE
@@ -218,9 +220,13 @@ $ PEARSON: cl2
 $ SPACE GROUP: Im-3m
 
 PHASE BCC_A2 %A 2 1 3 !
-CONSTITUENT BCC_A2 : FE,MN
+CONSTITUENT BCC_A2 : CU,FE,MN
                    : C,VA : !
 
+PARAMETER G(BCC_A2,CU:VA;0) 0
+  +4017 +GHSERCU#;  6000 N                                              24KHA!
+PARAMETER THETA(BCC_A2,CU:VA;0) 0
+  +LN(211.2541946);  6000 N                                             24KHA!
 PARAMETER G(BCC_A2,FE:C;0) 0
   +162505 +184.465*T;  6000 N                                           14NAR!
 PARAMETER BMAGN(BCC_A2,FE:C;0) 0
@@ -368,7 +374,7 @@ CONSTITUENT FCC_A1 : CU,FE,MN
 
 
 PARAMETER G(FCC_A1,CU:VA;0) 0
-  +GHSERFE#;  6000 N                                                    14KHA!
+  +GHSERCU#;  6000 N                                                    24KHA!
 PARAMETER THETA(FCC_A1,CU:VA;0) 0
   +LN(222.155096410218);  6000 N                                        24KHA!
 PARAMETER G(FCC_A1,FE:C;0) 0
@@ -379,7 +385,6 @@ PARAMETER NT(FCC_A1,FE:C;0) 0
   +67;  6000 N                                                          14NAR!
 PARAMETER TC(FCC_A1,FE:C;0) 0
   -201;  6000 N                                                         85GUS!
-
 PARAMETER G(FCC_A1,FE:VA;0) 0
   +GFCCFE# +GMDOFCCFE#; 6000 N                                          01CHE!
 PARAMETER BMAGN(FCC_A1,FE:VA;0) 0
@@ -425,6 +430,10 @@ $ SPACE GROUP: P63/mmc
 PHASE HCP_A3 %B 2 1 .5 !
 CONSTITUENT HCP_A3 : FE,MN : VA : !
 
+PARAMETER G(HCP_A3,CU:VA;0) 0
+  +600 +GHSERCU#;  6000 N                                               24KHA!
+PARAMETER THETA(HCP_A3,CU:VA;0) 0
+  +LN(223.943521);  6000 N                                              24KHA!
 PARAMETER G(HCP_A3,FE:VA;0) 0
   -3307.07993 -0.00431797569*T**2 -2.1239086E-14*T**5; 1811 Y 
   -24924.6659 +161.764208*T -21.0325858*T*LN(T) -4.71013343E18*T**(-5)
