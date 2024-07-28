@@ -636,6 +636,8 @@ FUNCTION GSIGMACO 298.15
   +4700 +0.25*T +GFCCCO#;  6000 N                                       20OST!
 FUNCTION GSIGMACO1 298.15
   +2258 -0.25*T;  6000 N                                                20OST!
+FUNCTION GSIGMACO2 298.15
+  +6958 +GHSERCO#;  6000 N                                              19WAN!
 
 $ ----------------------------------------------------------------------------
 $ CR
@@ -663,6 +665,8 @@ FUNCTION GSIGMACR1 298.15
   -909;  6000 N                                                         20OST!
 FUNCTION GSIGMACR2 298.15
   -700;  6000 N                                                         20OST!
+FUNCTION GSIGMACR3 298.15
+  +12291 +GHSERCR#;  6000 N                                             19WAN!
 
 $ ----------------------------------------------------------------------------
 $ CU
@@ -1659,7 +1663,7 @@ PARAMETER G(ALM3_D019,AL:TI;0) 298.15
 PARAMETER G(ALM3_D019,CO:CO;0) 298.15
   +2000 +4*GHSERCO#;  6000 N                                            20OST!
 PARAMETER G(ALM3_D019,CO:CR;0) 298.15
-  +5000 +GBCCCO# +3*GHSERCR#;  6000 N                                   14WAN!
+  +5000 +3*GBCCCO# +GHSERCR#;  6000 N                                   14WAN!
 PARAMETER G(ALM3_D019,CO:MO;0) 298.15
   -47009.6 +19.016*T +3*GHSERCO# +GHSERMO#;  6000 N                     20OST!
 PARAMETER G(ALM3_D019,CO:NB;0) 298.15
@@ -17073,7 +17077,7 @@ $ PROTOTYPE: SIGMA-CRFE
 $ SPACE GROUP: P4_2/mnm
 $ PEARSON: tP30
 
-PHASE SIGMA2_D8B % 3 10 4 16 !
+PHASE SIGMA2_D8B %B 3 10 4 16 !
 CONSTITUENT SIGMA2_D8B : AL,CO,CR,FE,MO,NB,V 
                        : CO,CR,FE,MO,NB,V 
                        : AL,CO,CR,FE,MO,NB,V : !
@@ -17172,10 +17176,13 @@ PARAMETER G(SIGMA2_D8B,AL:V:V;0) 298.15
 PARAMETER G(SIGMA2_D8B,CO:CO:AL;0) 298.15
   +10*GHSERCO# +4*GHSERCO# +16*GHSERAL#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CO:CO:CO;0) 298.15
-  +30*GSIGMACO#;  6000 N                                                19WAN!
+  +30*GSIGMACO2#;  6000 N                                               19WAN!
+PARAMETER BMAGN(SIGMA2_D8B,CO:CO:CO;0) 298.15
+  +1.66;  6000 N                                                        19WAN!
+PARAMETER TC(SIGMA2_D8B,CO:CO:CO;0) 298.15
+  +1400;  6000 N                                                        19WAN!
 PARAMETER G(SIGMA2_D8B,CO:CO:CR;0) 298.15
-  -150300 -149.9686*T +14*GSIGMACO# +14*GSIGMACO1# 
-  +16*GSIGMACR1# +16*GSIGMACR2#;  6000 N                                19WAN!
+  -150300 -149.9686*T +GSIGMACO2# +16*GSIGMACR3#;  6000 N               19WAN!
 PARAMETER G(SIGMA2_D8B,CO:CO:FE;0) 298.15
   +10*GHSERCO# +4*GHSERCO# +16*GHSERFE#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CO:CO:MO;0) 298.15
@@ -17188,11 +17195,9 @@ PARAMETER G(SIGMA2_D8B,CO:CO:V;0) 298.15
 PARAMETER G(SIGMA2_D8B,CO:CR:AL;0) 298.15
   +10*GHSERCO# +4*GHSERCR# +16*GHSERAL#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CO:CR:CO;0) 298.15
-  +14040 +4*GSIGMACR0# +26*GSIGMACO# +26*GSIGMACO1#
-  +4*GSIGMACR2#;  6000 N                                                20OST!
+  +14040 +26*GSIGMACO2# +4*GSIGMACR3#;  6000 N                          19WAN!
 PARAMETER G(SIGMA2_D8B,CO:CR:CR;0) 298.15
-  -298659 -51.588*T +20*GSIGMACR0# +10*GSIGMACO# +10*GSIGMACO1#
-  +20*GSIGMACR2#;  6000 N                                               19WAN!
+  -298659 -51.588*T +10*GSIGMACO2# +20*GSIGMACR3#;  6000 N              19WAN!
 PARAMETER G(SIGMA2_D8B,CO:CR:FE;0) 298.15
   +10*GHSERCO# +4*GHSERCR# +16*GHSERFE#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CO:CR:MO;0) 298.15
@@ -17265,10 +17270,9 @@ PARAMETER G(SIGMA2_D8B,CO:V:V;0) 298.15
 PARAMETER G(SIGMA2_D8B,CR:CO:AL;0) 298.15
   +10*GHSERCR# +4*GHSERCO# +16*GHSERAL#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CR:CO:CO;0) 298.15
-  +10*GSIGMACR0# +10*GSIGMACR2# +20*GSIGMACO# +20*GSIGMACO1#;  6000 N   20OST!
+  +20*GSIGMACO2# +10*GSIGMACR3#;  6000 N                                19WAN!
 PARAMETER G(SIGMA2_D8B,CR:CO:CR;0) 298.15
-  +126570 +26*GSIGMACR0# +26*GSIGMACR2# +4*GSIGMACO# 
-  +4*GSIGMACO1#;  6000 N                                                20OST!
+  +126570 +26*GSIGMACR3# +4*GSIGMACO2#;  6000 N                         19WAN!
 PARAMETER G(SIGMA2_D8B,CR:CO:FE;0) 298.15
   +10*GHSERCR# +4*GHSERCO# +16*GHSERFE#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CR:CO:MO;0) 298.15
@@ -17281,10 +17285,9 @@ PARAMETER G(SIGMA2_D8B,CR:CO:V;0) 298.15
 PARAMETER G(SIGMA2_D8B,CR:CR:AL;0) 298.15
   +10*GHSERCR# +4*GHSERCR# +16*GHSERAL#;  6000 N                        24FRI!
 PARAMETER G(SIGMA2_D8B,CR:CR:CO;0) 298.15
-  -130290 +14*GSIGMACR0# +14*GSIGMACR2# +16*GSIGMACO# 
-  +16*GSIGMACO1#;  6000 N                                               20OST!
+  -130290 +16*GSIGMACO2# +14*GSIGMACR3#;  6000 N                        19WAN!
 PARAMETER G(SIGMA2_D8B,CR:CR:CR;0) 298.15
-  +30*GSIGMACR0#;  6000 N                                               20OST!
+  +30*GSIGMACR3#;  6000 N                                               19WAN!
 PARAMETER G(SIGMA2_D8B,CR:CR:FE;0) 298.15
   +123500 -110*T +10*GHSERCR# +4*GHSERCR# +16*GHSERFE# +14*GSIGMACR2#
   +16*GSIGMAFE1#;  6000 N                                               20OST!
@@ -17724,7 +17727,7 @@ PARAMETER G(SIGMA2_D8B,V:V:V;0) 298.15
 PARAMETER L(SIGMA2_D8B,AL,CO:NB:NB;0) 298.15
   -400000 -90*T;  6000 N                                                 15HE!
 PARAMETER L(SIGMA2_D8B,CO,CR:CR:CR;0) 298.15
-  -589595.8;  6000 N                                                    20OST!
+  -295397.4;  6000 N                                                    19WAN!
 PARAMETER L(SIGMA2_D8B,CO,CR:CR:MO;0) 298.15
   -242920 -135.94*T;  6000 N                                            20OST!
 PARAMETER L(SIGMA2_D8B,CO,CR:MO:MO;0) 298.15
