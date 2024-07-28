@@ -1673,6 +1673,8 @@ PARAMETER G(ALM3_D019,CO:TI;0) 298.15
 PARAMETER G(ALM3_D019,CO:W;0) 298.15
   -17930 +2.40*T +3*GHSERCO# +GHSERW#;  6000 N                          05MAR!
 
+PARAMETER G(ALM3_D019,MO:CO;0) 298.15
+  +20000 +3*GHSERMO# +GHSERCO#;  6000 N                                 24FRI!
 PARAMETER G(ALM3_D019,MO:MO;0) 298.15
   +3*GHCPMO# +GHCPMO#;  6000 N                                         95SAUB!
 PARAMETER G(ALM3_D019,MO:NB;0) 298.15
@@ -1709,19 +1711,8 @@ PARAMETER G(ALM3_D019,V:TI;0) 298.15
 
 PARAMETER L(ALM3_D019,AL,TI:AL;0) 298.15
   -269912 +86.338*T;  6000 N                                            08WIT!
-
-PARAMETER L(ALM3_D019,CO:CO,MO;0) 298.15
-  +50000;  6000 N                                                       20OST!
-PARAMETER L(ALM3_D019,CO:CR,MO;0) 298.15
-  -37100;  6000 N                                                       20OST!
-
-PARAMETER L(ALM3_D019,NB:NB,TI;0) 298.15
-  +4924;  6000 N                                                       95SAUA!
-PARAMETER L(ALM3_D019,NB:NB,TI;1) 298.15
-  +468;  6000 N                                                        95SAUA!
-PARAMETER L(ALM3_D019,NB:NB,TI;2) 298.15
-  +40;  6000 N                                                         95SAUA!
-
+PARAMETER L(ALM3_D019,CO,MO:MO;0) 298.15
+  +75000;  6000 N                                                       24FRI!
 PARAMETER L(ALM3_D019,NB,TI:NB;0) 298.15
   +30248;  6000 N                                                      95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:NB;1) 298.15
@@ -1734,7 +1725,19 @@ PARAMETER L(ALM3_D019,NB,TI:TI;1) 298.15
   -4220;  6000 N                                                       95SAUA!
 PARAMETER L(ALM3_D019,NB,TI:TI;2) 298.15
   +3164;  6000 N                                                       95SAUA!
+PARAMETER L(ALM3_D019,TI,V:AL;0) 298.15
+  -9400 -15*T;  6000 N                                                   24LI!
 
+PARAMETER L(ALM3_D019,CO:CO,MO;0) 298.15
+  +50000;  6000 N                                                       20OST!
+PARAMETER L(ALM3_D019,CO:CR,MO;0) 298.15
+  -37100;  6000 N                                                       20OST!
+PARAMETER L(ALM3_D019,NB:NB,TI;0) 298.15
+  +4924;  6000 N                                                       95SAUA!
+PARAMETER L(ALM3_D019,NB:NB,TI;1) 298.15
+  +468;  6000 N                                                        95SAUA!
+PARAMETER L(ALM3_D019,NB:NB,TI;2) 298.15
+  +40;  6000 N                                                         95SAUA!
 PARAMETER L(ALM3_D019,TI:AL,TI;0) 298.15
   -13704 +5.318*T;  6000 N                                              08WIT!
 PARAMETER L(ALM3_D019,TI:NB,TI;0) 298.15
@@ -1743,9 +1746,6 @@ PARAMETER L(ALM3_D019,TI:NB,TI;1) 298.15
   -468;  6000 N                                                        95SAUA!
 PARAMETER L(ALM3_D019,TI:NB,TI;2) 298.15
   +40;  6000 N                                                         95SAUA!
-
-PARAMETER L(ALM3_D019,TI,V:AL;0) 298.15
-  -9400 -15*T;  6000 N                                                   24LI!
 
 
 PARAMETER L(ALM3_D019,AL,TI,V:AL;0) 298.15
@@ -9383,9 +9383,9 @@ PARAMETER TC(HCP_A3,CO,MN:VA;0) 298.15
 PARAMETER TC(HCP_A3,CO,MN:VA;1) 298.15
   +3657;  6000 N                                                       89HUAB!
 PARAMETER L(HCP_A3,CO,MO:VA;0) 298.15
-  -28215.7 +20.755*T;  6000 N                                           20OST!
+  -29315.7 +23.755*T;  6000 N                                           99DAV!
 PARAMETER L(HCP_A3,CO,MO:VA;1) 298.15
-  -26375.9 -3.936*T;  6000 N                                            20OST!
+  -27975.9 -1.936*T;  6000 N                                            99DAV!
 PARAMETER L(HCP_A3,CO,MO:VA;2) 298.15
   +24698.3;  6000 N                                                     99DAV!
 PARAMETER TC(HCP_A3,CO,MN:VA;0) 298.15
@@ -15472,7 +15472,7 @@ PARAMETER G(MU2_D85,CO:CO:CO:CO;0) 298.15
 PARAMETER G(MU2_D85,CO:CO:CO:CR;0) 298.15
   -150000 +7*GMU4CO# +6*GMU4CR#;  6000 N                                20OST!
 PARAMETER G(MU2_D85,CO:CO:CO:MO;0) 298.15
-  +GHSERCO# +2*GHSERCO# +4*GHSERCO# +6*GHSERMO#;  6000 N                20OST!
+  +GHSERCO# +2*GHSERCO# +4*GHSERCO# +6*GHSERMO#;  6000 N                24FRI!
 
 PARAMETER G(MU2_D85,CO:CO:MO:CO;0) 298.15
   -130245.8 +57.602*T +GHSERCO# +2*GHSERCO# +4*GHSERMO# 
