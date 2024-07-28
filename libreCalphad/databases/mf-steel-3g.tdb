@@ -428,7 +428,7 @@ $ PEARSON: hP2
 $ SPACE GROUP: P63/mmc
 
 PHASE HCP_A3 %B 2 1 .5 !
-CONSTITUENT HCP_A3 : FE,MN : VA : !
+CONSTITUENT HCP_A3 : CU,FE,MN : VA : !
 
 PARAMETER G(HCP_A3,CU:VA;0) 0
   +600 +GHSERCU#;  6000 N                                               24KHA!
