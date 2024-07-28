@@ -11796,7 +11796,7 @@ PARAMETER G(LAVES_C36,NB:NI;0) 298.15
 PARAMETER G(LAVES_C36,NB:TI;0) 298.15
   +15000 +2*GHSERNB# +GHSERTI#;  6000 N                                 24FRI!
 PARAMETER G(LAVES_C36,NB:V;0) 298.15
-  +2*GHSERNB# +GHSERV#;  6000 N                                         24FRI!
+  +15000 +2*GHSERNB# +GHSERV#;  6000 N                                  24FRI!
 PARAMETER G(LAVES_C36,NB:ZR;0) 298.15
   +9098.6 +2*GHSERNB# +GHSERZR#;  6000 N                                 17LU!
 
