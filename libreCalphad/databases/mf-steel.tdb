@@ -128,7 +128,7 @@ DATABASE_INFO The following systems are available:'
   AL-FE     Seierstein (1991), Sundman (2009), Lindwall (2015)'
   AL-MG     Chartrand (2006)'
   AL-MN     Du (2007)'
-  AL-MO     Cupid (2010)'
+  AL-MO     Dupin (2001), Cupid (2010), and Peng (2016)'
   AL-N      Lukas (1992)'
   AL-NB     He (2015)'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
@@ -261,6 +261,7 @@ DATABASE_INFO The following systems are available:'
   AL-CO-NB  He (2015)'
   AL-CR-MG  Cui (2017) EXCEPT MQM LIQUID'
   AL-CR-MN  Cui (2017) EXCEPT MQM LIQUID'
+  AL-CR-NI  Dupin (2001) and Peng (2016)
   AL-CR-SI  Hu (2013)'
   AL-CU-NI  Wang (2019)'
   AL-FE-MN  Zheng (2018)'
@@ -3749,7 +3750,8 @@ PARAMETER L(BCC_A2,AL,CR,MN:VA;1) 298.15
   -80307.70 -12.55*T;  6000 N                                          17CUIF!
 PARAMETER L(BCC_A2,AL,CR,MN:VA;2) 298.15
   -58296.93 -8.37*T;  6000 N                                           17CUIF!
-
+PARAMETER L(BCC_A2,AL,CR,NI:VA;0) 298.15
+  +42500;  6000 N                                                       01DUP!
 PARAMETER L(BCC_A2,AL,CR,SI:VA;0) 298.15
   +99307.14;  6000 N                                                     13HU!
 PARAMETER L(BCC_A2,AL,CR,SI:VA;1) 298.15
@@ -7222,6 +7224,8 @@ PARAMETER L(FCC_A1,AL,CO,NB:VA;1) 298.15
 PARAMETER L(FCC_A1,AL,CO,NB:VA;2) 298.15
   +0;  6000 N                                                            15HE!
 
+PARAMETER L(FCC_A1,AL,CR,NI:VA;0) 298.15
+  +42500;  6000 N                                                       16PEN!
 PARAMETER L(FCC_A1,AL,CR,SI:VA;0) 298.15
   +89999.34;  6000 N                                                     13HU!
 
@@ -7517,6 +7521,19 @@ CONSTITUENT FCC_L12 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
                     : B,C,H,N,O,VA :  !
 
+FUNCTION U1ALCRNI 298.15
+  +6650;  6000 N                                                        01DUP!
+FUNCTION U2ALCRNI 298.15
+  +0;  6000 N                                                           01DUP!
+FUNCTION U3ALCRNI 298.15
+  +0;  6000 N                                                           01DUP!
+FUNCTION ALCRNI2 298.15
+  +U1ALCRNI# +2*U1ALNI# +2*U1CRNI# +U1ALCRNI#;  6000 N                  01DUP!
+FUNCTION ALCR2NI 298.15
+  +2*UA1LCR# +U1ALNI# +2*U1CRNI# +U2ALCRNI#;  6000 N                    01DUP!
+FUNCTION AL2CRNI 298.15
+  +2*U1ALCR# +2*U1ALNI# +U1CRNI# +U3ALCRNI#;  6000 N                    01DUP!
+
 FUNCTION UALCU 298.15
   -2800;  6000 N                                                        19WAN!
 FUNCTION UALCU3 298.15
@@ -7575,6 +7592,23 @@ FUNCTION UALNI3 298.15
 FUNCTION UAL3NI 298.15
   +3*UA1LN#;  6000  N                                                   19WAN!
 
+FUNCTION U1CRNI 298.15
+  -1980;  6000 N                                                        01DUP!
+FUNCTION U3CRNI 298.15
+  +0;  6000 N                                                           01DUP!
+FUNCTION U4CRNI 298.15
+  +0; 6000 N                                                            01DUP!
+FUNCTION L04CRNI 298.15
+  +U3CRNI#;  6000 N                                                     01DUP!
+FUNCTION L14CRNI 298.15
+  +U4CRNI#;  6000 N                                                     01DUP!
+FUNCTION CRNI3 298.15
+  +3*U1CRNI#;  6000 N                                                   01DUP!
+FUNCTION CR2NI2 298.15
+  +4*U1CRNI#;  6000 N                                                   01DUP!
+FUNCTION CR3NI 298.15
+  +3*U1CRNI#;  6000 N                                                   01DUP!
+
 FUNCTION UCUNI 298.15
   +0;  6000 N                                                           19WAN!
 FUNCTION UCU3NI 298.15
@@ -7604,6 +7638,9 @@ PARAMETER G(FCC_L12,AL:NI:VA;0) 298.15
 
 PARAMETER G(FCC_L12,CO:NI:VA;0) 298.15
   +0;  6000 N                                                           16LIU!
+
+PARAMETER G(FCC_L12,CR:NI:VA;0) 298.15
+  +CR3NI#;  6000 N                                                      01DUP!
 
 PARAMETER G(FCC_L12,CU:AL:VA;0) 298.15
   +UALCU3#;  6000 N                                                     19WAN!
@@ -7636,6 +7673,8 @@ PARAMETER G(FCC_L12,NI:AL:VA;0) 298.15
   +UALNI3#;  6000 N                                                     19WAN!
 PARAMETER G(FCC_L12,NI:CO:VA;0) 298.15
   +0;  6000 N                                                           16LIU!
+PARAMETER G(FCC_L12,NI:CR:VA;0) 298.15
+  +CRNI3#;  6000 N                                                      01DUP!
 PARAMETER G(FCC_L12,NI:CU:VA;0) 298.15
   +UCUNI3#;  6000 N                                                     19WAN!
 PARAMETER G(FCC_L12,NI:FE:VA;0) 298.15
@@ -7660,18 +7699,10 @@ PARAMETER G(FCC_L12,SI:NI:VA;0) 298.15
 PARAMETER G(FCC_L12,SI:SI:VA;0) 298.15
   +100 +GHSERSI#;  6000 N                                               23WIT!
 
-
-PARAMETER L(FCC_L12,AL:AL,NI:VA;0) 298.15
-  +0;  6000 N                                                           01DUP!
-PARAMETER L(FCC_L12,AL:AL,CU:VA;0) 298.15
-  +0;  6000 N                                                           19WAN!
-PARAMETER L(FCC_L12,AL:AL,CU:VA;1) 298.15
-  +0;  6000 N                                                           19WAN!
-PARAMETER L(FCC_L12,AL:AL,NI:VA;0) 298.15
-  +0;  6000 N                                                           19WAN!
-PARAMETER L(FCC_L12,AL:AL,NI:VA;1) 298.15
-  $ +7204 -3.743*T;  6000 N                                               01DUP!
-  +L14ALNI#;  6000 N                                                    19WAN!
+PARAMETER L(FCC_L12,AL,CR:NI:VA;0) 298.15
+  +1.5*ALCR2NI# +1.5*AL2CRNI# -1.5*AL3NI# -1.5*CR3NI#;  6000 N          01DUP!
+PARAMETER L(FCC_L12,AL,CR:NI:VA;1) 298.15
+  -1.5*ALCR2NI# +1.5*AL2CRNI# -0.5*AL3NI# +0.5*CR3NI#;  6000 N          01DUP!
 
 PARAMETER L(FCC_L12,AL,CU:AL:VA;0) 298.15
   +6*UALCU#;  6000  N                                                   19WAN!
@@ -7706,6 +7737,10 @@ PARAMETER L(FCC_L12,AL,NI:AL:VA;0) 298.15
 PARAMETER L(FCC_L12,AL,NI:AL:VA;1) 298.15
   $ +21612.4276 -11.2302*T;  6000 N                                       01DUP!
   +0.5*UALNI3# -1.5*UAL2NI2# +1.5*AL3NI#;  6000 N                       19WAN!
+PARAMETER L(FCC_L12,AL,NI:CR:VA;0) 298.15
+  +1.5*ALCRNI2# +1.5*AL2CRNI# -1.5*AL3CR# -1.5*CRNI3#;  6000 N          01DUP!
+PARAMETER L(FCC_L12,AL,NI:CR:VA;1) 298.15
+  -1.5*ALCRNI2# +1.5*AL2CRNI# -0.5*AL3CR# +0.5*CRNI3#;  6000 N          01DUP!
 PARAMETER L(FCC_L12,AL,NI:CU:VA;0) 298.15
   -1.5*UAL3CU# -1.5*UCUNI3# +1.5*UALCUNI2# +1.5*UAL2CUNI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,AL,NI:CU:VA;1) 298.15
@@ -7719,6 +7754,19 @@ PARAMETER L(FCC_L12,AL,NI:NI:VA;0) 298.15
 PARAMETER L(FCC_L12,AL,NI:NI:VA;1) 298.15
   -1.5*UALNI3# +1.5*UAL2NI2# -0.5*UAL3NI#;  6000 N                      19WAN!
   $ +21612.4276 -11.2302*T;  6000 N                                       01DUP!
+
+PARAMETER L(FCC_L12,CR,NI:AL:VA;0) 298.15
+  +1.5*ALCRNI2# +1.5*ALCR2NI# -1.5*AL3CR# -1.5*ALNI3#; 6000 N           01DUP!
+PARAMETER L(FCC_L12,CR,NI:AL:VA;1) 298.15
+  -1.5*ALCRNI2# +1.5*ALCR2NI# -0.5*ALCR3# +0.5*ALNI3#;  6000 N          01DUP!
+PARAMETER L(FCC_L12,CR,NI:CR:VA;0) 298.15
+  -1.5*CRNI3# +1.5*CR2NI2# +1.5*CR3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,CR,NI:CR:VA;1) 298.15
+  +0.5*CRNI3# -1.5*CR2NI2# +1.5*CR3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,CR,NI:NI:VA;0) 298.15
+  +1.5*CRNI3# +1.5*CR2NI2# -1.5*CR3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,CR,NI:NI:VA;1) 298.15
+  -1.5*CRNI3# +1.5*CR2NI2# -0.5*CR3NI#;  6000 N                         01DUP!
 
 PARAMETER L(FCC_L12,CU,NI:AL:VA;0) 298.15
   -1.5*UALCU3# -1.5*UALNI3# +1.5*UALCUNI2# +1.5*UALCU2NI#;  6000 N      19WAN!
@@ -7763,6 +7811,17 @@ PARAMETER L(FCC_L12,NI,SI:NI:VA;0) 298.15
 PARAMETER L(FCC_L12,NI,SI:SI:VA;0) 298.15
   +50000;  6000 N                                                       23WIT!
 
+PARAMETER L(FCC_L12,AL:AL,NI:VA;0) 298.15
+  +0;  6000 N                                                           01DUP!
+PARAMETER L(FCC_L12,AL:AL,CU:VA;0) 298.15
+  +0;  6000 N                                                           19WAN!
+PARAMETER L(FCC_L12,AL:AL,CU:VA;1) 298.15
+  +0;  6000 N                                                           19WAN!
+PARAMETER L(FCC_L12,AL:AL,NI:VA;0) 298.15
+  +0;  6000 N                                                           19WAN!
+PARAMETER L(FCC_L12,AL:AL,NI:VA;1) 298.15
+  $ +7204 -3.743*T;  6000 N                                               01DUP!
+  +L14ALNI#;  6000 N                                                    19WAN!
 PARAMETER L(FCC_L12,AL:AL,MO:VA;0) 298.15
   +L04ALMO#;  6000 N                                                    01DUP!
 PARAMETER L(FCC_L12,AL:AL,MO:VA;1) 298.15
@@ -7840,6 +7899,17 @@ PARAMETER L(FCC_L12,NI,SI:MN,NI:VA;0) 298.15
   -5121.751;  6000 N                                                     11HU!
 PARAMETER L(FCC_L12,NI,SI:MN,SI:VA;0) 298.15
   -2560.876;  6000 N                                                     11HU!
+
+
+PARAMETER L(FCC_L12,AL,CR,NI:AL:VA;0) 298.15
+  -1.5*ALCRNI2# -1.5*ALCR2NI# +ALCR3# +ALNI3# +6*AL2CRNI# -1.5*AL2CR2#
+  -1.5*AL2NI2# -1.5*AL3CR# -1.5*AL3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,AL,CR,NI:CR:VA;0) 298.15
+  -1.5*ALCRNI2# +6*ALCR2NI# -1.5*ALCR3# -1.5*AL2CRNI# -1.5*AL2CR2#
+  +AL3CR# +CRNI3# -1.5*CR2NI2# -1.5*CR3NI#;  6000 N                     01DUP!
+PARAMETER L(FCC_L12,AL,CR,NI:NI:VA;0) 298.15
+  +6*ALCRNI2# -1.5*ALCR2NI# -1.5*ALNI3# -1.5*AL2CRNI# -1.5*AL2NI2#
+  +AL3NI# -1.5*CRNI3# -1.5*CR2NI2# +CR3NI#;  6000 N                     01DUP!
 
 $ ----------------------------------------------------------------------------
 $ FESI2_L
@@ -12813,6 +12883,13 @@ PARAMETER L(LIQUID,AL,CO,NB;1) 298.15
   +97700 -58.7*T;  6000 N                                                15HE!
 PARAMETER L(LIQUID,AL,CO,NB;2) 298.15
   +77700 -58.7*T;  6000 N                                                15HE!
+
+PARAMETER L(LIQUID,AL,CR,NI;0) 298.15
+  +38000;  6000 N                                                       16PEN!
+PARAMETER L(LIQUID,AL,CR,NI;1) 298.15
+  +6000;  6000 N                                                        16PEN!
+PARAMETER L(LIQUID,AL,CR,NI;2) 298.15
+  +16000;  6000 N                                                       16PEN!
 
 PARAMETER L(LIQUID,AL,CR,SI;0) 298.15
   -29999.59 +130*T;  6000 N                                              13HU!
