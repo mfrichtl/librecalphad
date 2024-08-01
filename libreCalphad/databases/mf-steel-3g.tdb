@@ -35,7 +35,7 @@ $ NOTES/ISSUES:
 $ CU - INCORPORATED ONE EINSTEIN TEMPERATURE ASSESSMENT FROM KHVAN 2024,
 $      SOME ISSUES WITH HIGHER-TEMPERATURE HEAT CAPACITY OF FCC_A1, VALUES
 $      USED COME DIRECTLY FROM THE SUPPLEMENTARY DATABASE.
-$
+$ FE-MN - ASSESSMENT FROM BIGDELI HAS LOTS OF ISSUES.
 $
 DATABASE_INFO The following systems are available:'
   C     Naraghi (2014)'
@@ -44,6 +44,7 @@ DATABASE_INFO The following systems are available:'
   MN    Bigdeli (2015) and Bigdeli (2016)'
 
   C-FE  Hallstedt (2010) and Naraghi (2014)'
+  FE-MN Bigdeli (2019)'
 '
 !
 $ ----------------------------------------------------------------------------
@@ -164,9 +165,9 @@ FUNCTION GMDOBCCFE 0
   -R*LN(3.22)*T 
   +R*LN(3.22)*0.38438376*1043*2.702702703*GMDODBCC#**(-1);  6000 N      01CHE!
 FUNCTION GHSERFE 0
-  -8.41026596E3 -3.2390815E-3*T**2 -3.3191338E-14*T**5; 1811 Y
+  -8.41026596E3 -3.2390815E-3*T**2 -3.3191338E-14*T**5 +GMDOBCCFE#; 1811 Y
   -3.32084173E4 +1.6540504E2*T -2.10474823E1*T*LN(T) 
-  -2.7818280E18*T**(-5) +4.2811788E37*T**(-11);  6000 N                 01CHE!
+  -2.7818280E18*T**(-5) +4.2811788E37*T**(-11) +GMDOBCCFE#;  6000 N     01CHE!
 FUNCTION GMDOFCCFE 0
   -R*LN(1.70)*T +R*LN(1.70)*0.38438376*67*4*GMDODNONBCC#**(-1);  6000 N 01CHE!
 FUNCTION GFCCFE  0
@@ -234,7 +235,7 @@ PARAMETER BMAGN(BCC_A2,FE:C;0) 0
 PARAMETER TC(BCC_A2,FE:C;0) 0
   +1043;  6000 N                                                        85GUS!
 PARAMETER G(BCC_A2,FE:VA;0) 0
-  +GHSERFE# +GMDOBCCFE#; 6000 N                                         01CHE!
+  +GHSERFE#; 6000 N                                                     01CHE!
 PARAMETER BMAGN(BCC_A2,FE:VA;0) 0
   +2.22; 6000 N                                                         91DIN!
 PARAMETER TC(BCC_A2,FE:VA;0) 0
@@ -256,6 +257,17 @@ PARAMETER THETA(BCC_A2,MN:VA;0) 0
 PARAMETER L(BCC_A2,FE:C,VA;0) 0
   +150000 -290*T;  6000 N                                               14NAR!
 
+PARAMETER L(BCC_A2,FE,MN:VA;0) 0
+  +3224 -0.5*T;  6000 N                                                 19BIG!
+PARAMETER L(BCC_A2,FE,MN:VA;1) 0
+  +623 +0.34*T;  6000 N                                                 19BIG!
+PARAMETER BMAGN(BCC_A2,FE,MN:VA;0) 0
+  +1.06;  6000 N                                                        19BIG!
+PARAMETER NT(BCC_A2,FE,MN:VA;0) 0
+  -703;  6000 N                                                         19BIG!
+PARAMETER TC(BCC_A2,FE,MN:VA;0) 0
+  +703;  6000 N                                                         19BIG!
+
 $ ----------------------------------------------------------------------------
 $ CBCC_A12
 $ PROTOTYPE: ALPHA-MN
@@ -263,8 +275,10 @@ $ PEARSON: cI58
 $ SPACE GROUP: I-43m
 
 PHASE CBCC_A12 %B 2 1 1 !
-CONSTITUENT CBCC_A12 : MN : VA : !
+CONSTITUENT CBCC_A12 : FE,MN : VA : !
 
+PARAMETER G(CBCC_A12,FE:VA;0) 0
+  +4745 +GHSERFE#;  6000 N                                              91DIN!
 PARAMETER G(CBCC_A12,MN:VA;0) 0
   -8.6217070E3 -5.4695069E-3*T**2 +3.6645644E-8*T**3 
   -2.5888450E-14*T**5 +GMDOCBCCMN#;  1519 Y 
@@ -276,6 +290,14 @@ PARAMETER NT(CBCC_A12,MN:VA;0) 0
   +95;  6000 N                                                          15BIG!
 PARAMETER THETA(CBCC_A12,MN:VA;0) 0
   +LN(287.6);  6000 N                                                   15BIG!
+
+
+PARAMETER L(CBCC_A12,FE,MN:VA;0) 0
+  -7187;  6000 N                                                        19BIG!
+PARAMETER NT(CBCC_A12,FE,MN:VA;0) 0
+  -2353;  6000 N                                                        19BIG!
+PARAMETER NT(CBCC_A12,FE,MN:VA;1) 0
+  -4034;  6000 N                                                        19BIG!
 
 $ ----------------------------------------------------------------------------
 $ CEMENTITE_D011
@@ -303,8 +325,10 @@ $ PEARSON: cP20
 $ SPACE GROUP: P4132
 
 PHASE CUB_A13 % 2 1 1 !
-CONSTITUENT CUB_A13 : MN : VA : !
+CONSTITUENT CUB_A13 : FE,MN : VA : !
 
+PARAMETER G(CUB_A13,FE:VA;0) 0
+  +3745 +GHSERFE#;  6000 N                                              91DIN!
 PARAMETER G(CUB_A13,MN:VA;0) 0
   -6.1814708E3 -5.7218755E-3*T**2 +8.9632678E-12*T**3 
   -1.9360399E-14*T**5;  1519 Y 
@@ -312,6 +336,10 @@ PARAMETER G(CUB_A13,MN:VA;0) 0
   -3.96700000E17*T**(-5) +2.99530000E36*T**(-11);  6000 N               15BIG!
 PARAMETER THETA(CUB_A13,MN:VA;0) 0
   +LN(247.8);  6000 N                                                   15BIG!
+
+
+PARAMETER L(CUB_A13,FE,MN:VA;0) 0
+  -7460 +1.8*T;  6000 N                                                 15BIG!
 
 $ ----------------------------------------------------------------------------
 $ DIAMOND_A4
@@ -407,8 +435,26 @@ PARAMETER NT(FCC_A1,MN:VA;0) 0
 PARAMETER THETA(FCC_A1,MN:VA;0) 0
   +LN(257.5);  6000 N                                                   15BIG!
 
+
 PARAMETER L(FCC_A1,FE:C,VA;0) 0
   -30532;  6000 N                                                       14NAR!
+
+PARAMETER L(FCC_A1,FE,MN:VA;0) 0
+  -6028 +4.4*T;  6000 N                                                 19BIG!
+PARAMETER L(FCC_A1,FE,MN:VA;1) 0
+  -6276 +4.1*T;  6000 N                                                 19BIG!
+PARAMETER BMAGN(FCC_A1,FE,MN:VA;0) 0
+  +2.13;  6000 N                                                        19BIG!
+PARAMETER BMAGN(FCC_A1,FE,MN:VA;1) 0
+  +6.33;  6000 N                                                        19BIG!
+PARAMETER BMAGN(FCC_A1,FE,MN:VA;2) 0
+  +9.43;  6000 N                                                        19BIG!
+PARAMETER NT(FCC_A1,FE,MN:VA;0) 0
+  +822;  6000 N                                                         19BIG!
+PARAMETER NT(FCC_A1,FE,MN:VA;1) 0
+  +987;  6000 N                                                         19BIG!
+PARAMETER NT(FCC_A1,FE,MN:VA;2) 0
+  -1459;  6000 N                                                        19BIG!
 
 $ ----------------------------------------------------------------------------
 $ GRAPHITE_A9
@@ -451,6 +497,12 @@ PARAMETER G(HCP_A3,MN:VA;0) 0
 PARAMETER THETA(HCP_A3,MN:VA;0) 0
   +LN(438);  6000 N                                                     16BIG!
 
+
+PARAMETER L(HCP_A3,FE,MN:VA;0) 0
+  -8949 +24.2*T;  6000 N                                                19BIG!
+PARAMETER L(HCP_A3,FE,MN:VA;1) 0
+  -16682;  6000 N                                                       19BIG!
+
 $ ----------------------------------------------------------------------------
 $ LIQUID
 
@@ -492,6 +544,11 @@ PARAMETER L(LIQUID,C,FE;1) 298.15
 PARAMETER L(LIQUID,C,FE;2) 298.15
   +111085 -50.533*T;  6000 N                                            14NAR!
 
+PARAMETER L(LIQUID,FE,MN;0) 0
+  -3235 +1.7*T;  6000 N                                                 19BIG!
+PARAMETER L(LIQUID,FE,MN;1) 0
+  +1238;  6000 N                                                        19BIG!
+
 $ ----------------------------------------------------------------------------
 $ REFERENCES
 
@@ -530,6 +587,9 @@ NUMBER  SOURCE
         for unaries Fe and Mn: Coupling between first‐principles calculations 
         and CALPHAD modeling." physica status solidi (b) 253.9 (2016): 
         1830-1836.'
+19BIG   'Bigdeli, Sedigheh, and Malin Selleby. "A thermodynamic assessment of 
+        the binary Fe-Mn system for the third generation of Calphad 
+        databases." Calphad 64 (2019): 185-195.'
 23WIT   'Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
         modelling of the ternary system Fe-Ni-Si with re-modelling of the 
         constituent binary systems." Journal of Alloys and Compounds 935 
