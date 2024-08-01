@@ -134,9 +134,7 @@ def check_endmembers(db, phase, ref='!'):
         if insert_blank_line:
             out_string += '\n'
         endmember = ':'.join(endmember)
-        print(endmember)
         if endmember not in list(current_endmembers.keys()):
-            
             out_string += f"PARAMETER G({phase},{endmember};0) 298.15\n"
             missing_endmembers.append(endmember)
             next_line = ' '
