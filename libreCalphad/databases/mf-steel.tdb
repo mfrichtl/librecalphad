@@ -975,6 +975,8 @@ FUNCTION GHSERSN  100.00
 $ ----------------------------------------------------------------------------
 $ TA
 
+FUNCTION GFCCTA 298.15
+  +16000 +1.7*T +GHSERTA#;  6000 N                                      91DIN!
 FUNCTION GHSERTA  298.15
   -7285.889 +119.139857*T -23.7592624*T*LN(T) -2.623033E-3*T**2
   +0.170109E-6*T**3 -3293*T**(-1);  1300 Y
@@ -1732,7 +1734,7 @@ PARAMETER G(AL2CU_C16,AL:AL;0) 298.15
 PARAMETER G(AL2CU_C16,AL:B;0) 298.15
   +2*GHSERAL# +GHSERBB#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,AL:CU;0) 298.15
-  -47406.0 +6.75*T +2*GHSRAL# +GHSERCU#;  6000 N                       91SAUA!
+  -47406.0 +6.75*T +2*GHSERAL# +GHSERCU#;  6000 N                      91SAUA!
 PARAMETER G(AL2CU_C16,AL:FE;0) 298.15
   +2*GHSERAL# +GHSERFE#;  6000 N                                        24FRI!
 PARAMETER G(AL2CU_C16,AL:NI;0) 298.15
@@ -6561,7 +6563,7 @@ PARAMETER G(FCC_A1,TA:N;0) 298.15
 PARAMETER G(FCC_A1,TA:O;0) 298.15
   +GHSERTA# +GHSEROO#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,TA:VA;0) 298.15
-  +16000 +1.7*T +GHSERTA#;  6000 N                                      91DIN!
+  +GFCCTA#;  6000 N                                                     91DIN!
 
 FUNCTION GFCCTIC 298.15
   -194244 +264.40*T -42.248*T*LN(T) -4.4617E-3*T**2
@@ -7559,6 +7561,13 @@ CONSTITUENT FCC_L12 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                       P,S,SI,SN,TA,TI,V,W,ZR
                     : B,C,H,N,O,VA :  !
 
+FUNCTION U1ALCR 298.15
+  -830;  6000 N                                                         01DUP!
+FUNCTION AL3CR 298.15
+  +3*U1ALCR#;  6000 N                                                   01DUP!
+FUNCTION ALCR3 298.15
+  +3*U1ALCR#;  6000 N                                                   01DUP!
+
 FUNCTION U1ALCRNI 298.15
   +6650;  6000 N                                                        01DUP!
 FUNCTION U2ALCRNI 298.15
@@ -7568,7 +7577,7 @@ FUNCTION U3ALCRNI 298.15
 FUNCTION ALCRNI2 298.15
   +U1ALCRNI# +2*U1ALNI# +2*U1CRNI# +U1ALCRNI#;  6000 N                  01DUP!
 FUNCTION ALCR2NI 298.15
-  +2*UA1LCR# +U1ALNI# +2*U1CRNI# +U2ALCRNI#;  6000 N                    01DUP!
+  +2*U1ALCR# +U1ALNI# +2*U1CRNI# +U2ALCRNI#;  6000 N                    01DUP!
 FUNCTION AL2CRNI 298.15
   +2*U1ALCR# +2*U1ALNI# +U1CRNI# +U3ALCRNI#;  6000 N                    01DUP!
 
@@ -7594,11 +7603,11 @@ FUNCTION UALFE 298.15
   -9076.626 +8.0940*T;  6000 N                                          19ZHA!
 
 FUNCTION UALFENI2 298.15
-  +UALFE# +2*UA1LN# +0.6666667*UFENI3# +4806.877;  6000 N              09ZHAA!
+  +UALFE# +2*U1ALNI# +0.6666667*UFENI3# +4806.877;  6000 N             09ZHAA!
 FUNCTION UALFE2NI 298.15
-  +2*UALFE# +UA1LN# +0.6666667*UFENI3# +4806.877;  6000 N              09ZHAA!
+  +2*UALFE# +U1ALNI# +0.6666667*UFENI3# +4806.877;  6000 N             09ZHAA!
 FUNCTION UAL2FENI 298.15
-  +2*UALFE# +2*UA1LN# +0.3333333*UFENI3# +4806.877;  6000 N            09ZHAA!
+  +2*UALFE# +2*U1ALNI# +0.3333333*UFENI3# +4806.877;  6000 N           09ZHAA!
 
 FUNCTION U1ALMO 298.15 
   +0;  6000 N                                                           01DUP!
@@ -7638,10 +7647,12 @@ FUNCTION U1ALNI 298.15
   +2*0.3333333*UALNI#;  6000 N                                          19WAN!
 FUNCTION UAL2NI2 298.15
   +4*UALNI#;  6000 N                                                    19WAN!
-FUNCTION UALNI3 298.15
-  +3*UA1LNI#;  6000 N                                                   19WAN!
-FUNCTION UAL3NI 298.15
-  +3*UA1LN#;  6000  N                                                   19WAN!
+FUNCTION ALNI3 298.15
+  +3*U1ALNI#;  6000 N                                                   19WAN!
+FUNCTION AL2NI2 298.15
+  +4*U1ALNI#;  6000 N                                                   01DUP!
+FUNCTION AL3NI 298.15
+  +3*U1ALNI#;  6000  N                                                  19WAN!
 
 FUNCTION U1CRNI 298.15
   -1980;  6000 N                                                        01DUP!
@@ -7671,10 +7682,17 @@ FUNCTION UCUNI3 298.15
 
 FUNCTION UFE3NI 298.15
   +9171;  6000 N                                                        01SER!
-
-FUNCTION UNI3FE 298.15
+FUNCTION UFENI3 298.15
   -14400 +12.55471*T;  6000 N                                           01SER!
 
+FUNCTION U1MONI 298.15
+  +0;  6000 N                                                           01DUP!
+FUNCTION MONI3 298.15
+  +3*U1MONI#;  6000 N                                                   01DUP!
+FUNCTION MO2NI2 298.15
+  +4*U1MONI#;  6000 N                                                   01DUP!
+FUNCTION MO3NI 298.15
+  +3*U1MONI#;  6000 N                                                   01DUP!
 
 PARAMETER G(FCC_L12,AL:AL:VA;0) 298.15
   +0; 6000 N                                                            19WAN!
@@ -7685,7 +7703,7 @@ PARAMETER G(FCC_L12,AL:FE:VA;0) 298.15
 PARAMETER G(FCC_L12,AL:MO:VA;0) 298.15
   +AL3MO#;  6000 N                                                      01DUP!
 PARAMETER G(FCC_L12,AL:NI:VA;0) 298.15
-  +UAL3NI#;  6000 N                                                     19WAN!
+  +AL3NI#;  6000 N                                                     19WAN!
 
 PARAMETER G(FCC_L12,CO:NI:VA;0) 298.15
   +0;  6000 N                                                           16LIU!
@@ -7719,9 +7737,11 @@ PARAMETER G(FCC_L12,FE:SI:VA;0) 298.15
 
 PARAMETER G(FCC_L12,MO:AL:VA;0) 298.15
   +ALMO3#;  6000 N                                                      01DUP!
+PARAMETER G(FCC_L12,MO:NI:VA;0) 298.15
+  +MO3NI#;  6000 N                                                      01DUP!
 
 PARAMETER G(FCC_L12,NI:AL:VA;0) 298.15
-  +UALNI3#;  6000 N                                                     19WAN!
+  +ALNI3#;  6000 N                                                      19WAN!
 PARAMETER G(FCC_L12,NI:CO:VA;0) 298.15
   +0;  6000 N                                                           16LIU!
 PARAMETER G(FCC_L12,NI:CR:VA;0) 298.15
@@ -7734,6 +7754,8 @@ PARAMETER BMAGN(FCC_L12,NI:FE:VA;0) 298.15
   +0.1;  6000 N                                                         23WIT!
 PARAMETER TC(FCC_L12,NI:FE:VA;0) 298.15
   +250;  6000 N                                                         23WIT!
+PARAMETER G(FCC_L12,NI:MO:VA;0) 298.15
+  +MONI3#;  6000 N                                                      01DUP!
 PARAMETER G(FCC_L12,NI:NI:VA;0) 298.15
   +100 +GHSERNI#;  6000 N                                               23WIT!
 PARAMETER BMAGN(FCC_L12,NI:NI:VA;0) 298.15
@@ -7751,9 +7773,9 @@ PARAMETER G(FCC_L12,SI:SI:VA;0) 298.15
   +100 +GHSERSI#;  6000 N                                               23WIT!
 
 PARAMETER L(FCC_L12,AL,CR:NI:VA;0) 298.15
-  +1.5*ALCR2NI# +1.5*AL2CRNI# -1.5*AL3NI# -1.5*CR3NI#;  6000 N          01DUP!
+  +1.5*ALCR2NI# +1.5*AL2CRNI# -1.5*AL3NI# -1.5*CR3NI#;  6000 N         01DUP!
 PARAMETER L(FCC_L12,AL,CR:NI:VA;1) 298.15
-  -1.5*ALCR2NI# +1.5*AL2CRNI# -0.5*AL3NI# +0.5*CR3NI#;  6000 N          01DUP!
+  -1.5*ALCR2NI# +1.5*AL2CRNI# -0.5*AL3NI# +0.5*CR3NI#;  6000 N         01DUP!
 
 PARAMETER L(FCC_L12,AL,CU:AL:VA;0) 298.15
   +6*UALCU#;  6000  N                                                   19WAN!
@@ -7764,9 +7786,9 @@ PARAMETER L(FCC_L12,AL,CU:CU:VA;0) 298.15
 PARAMETER L(FCC_L12,AL,CU:CU:VA;1) 298.15
   +0;  6000 N                                                           19WAN!
 PARAMETER L(FCC_L12,AL,CU:NI:VA;0) 298.15
-  -1.5*UAL3NI# -1.5*UCU3NI# +1.5*UALCU2NI# +1.5*UAL2CUNI#;  6000 N      19WAN!
+  -1.5*AL3NI# -1.5*UCU3NI# +1.5*UALCU2NI# +1.5*UAL2CUNI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,AL,CU:NI:VA;1) 298.15
-  -0.5*UAL3NI# +0.5*UCU3NI# -1.5*UALCU2NI# +1.5*UAL2CUNI#;  6000 N      19WAN!
+  -0.5*AL3NI# +0.5*UCU3NI# -1.5*UALCU2NI# +1.5*UAL2CUNI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,AL,FE:AL:VA;0) 298.15
   +6*UALFE#;  6000 N                                                   09ZHAA!
 PARAMETER L(FCC_L12,AL,FE:FE:VA;0) 298.15
@@ -7782,16 +7804,16 @@ PARAMETER L(FCC_L12,AL,MO:AL:VA;1) 298.15
 PARAMETER L(FCC_L12,AL,MO:MO:VA;0) 298.15
   +1.5*ALMO3# +1.5*AL2MO2# -1.5*AL3MO#;  6000 N                         01DUP!
 PARAMETER L(FCC_L12,AL,MO:MO:VA;1) 298.15
-  -1.5*ALMO# +1.5*AL2MO2# -0.5*AL3MO#;  6000 N                          01DUP!
+  -1.5*ALMO3# +1.5*AL2MO2# -0.5*AL3MO#;  6000 N                         01DUP!
 PARAMETER L(FCC_L12,AL,MO:NI:VA;0) 298.15
-  +1.5*ALMO2NI# +1.5*AL2MONI# -1.5*AL3NI# -1.5*MO3NI#;  6000 N          01DUP!
+  +1.5*ALMO2NI# +1.5*AL2MONI# -1.5*AL3NI# -1.5*MO3NI#;  6000 N         01DUP!
 PARAMETER L(FCC_L12,AL,MO:NI:VA;1) 298.15
-  -1.5*ALMO2NI# +1.5*AL2MONI# -0.5*AL3NI# +0.5*MO3NI#;  6000 N          01DUP!
+  -1.5*ALMO2NI# +1.5*AL2MONI# -0.5*AL3NI# +0.5*MO3NI#;  6000 N         01DUP!
 PARAMETER L(FCC_L12,AL,NI:AL:VA;0) 298.15
-  -1.5*UALNI3# +1.5*UAL2NI2# +1.5*AL3NI#;  6000 N                       19WAN!
+  -1.5*ALNI3# +1.5*UAL2NI2# +1.5*AL3NI#;  6000 N                      19WAN!
 PARAMETER L(FCC_L12,AL,NI:AL:VA;1) 298.15
   $ +21612.4276 -11.2302*T;  6000 N                                       01DUP!
-  +0.5*UALNI3# -1.5*UAL2NI2# +1.5*AL3NI#;  6000 N                       19WAN!
+  +0.5*ALNI3# -1.5*UAL2NI2# +1.5*AL3NI#;  6000 N                       19WAN!
 PARAMETER L(FCC_L12,AL,NI:CR:VA;0) 298.15
   +1.5*ALCRNI2# +1.5*AL2CRNI# -1.5*AL3CR# -1.5*CRNI3#;  6000 N          01DUP!
 PARAMETER L(FCC_L12,AL,NI:CR:VA;1) 298.15
@@ -7809,9 +7831,9 @@ PARAMETER L(FCC_L12,AL,NI:MO:VA;0) 298.15
 PARAMETER L(FCC_L12,AL,NI:MO:VA;1) 298.15
   -1.5*ALMONI2# +1.5*AL2MONI# -0.5*AL3MO# +0.5*MONI3#;  6000 N          01DUP!
 PARAMETER L(FCC_L12,AL,NI:NI:VA;0) 298.15
-  +1.5*UALNI3# +1.5*UAL2NI2# -1.5*UAL3NI#;  6000 N                      19WAN!
+  +1.5*ALNI3# +1.5*UAL2NI2# -1.5*AL3NI#;  6000 N                      19WAN!
 PARAMETER L(FCC_L12,AL,NI:NI:VA;1) 298.15
-  -1.5*UALNI3# +1.5*UAL2NI2# -0.5*UAL3NI#;  6000 N                      19WAN!
+  -1.5*ALNI3# +1.5*UAL2NI2# -0.5*AL3NI#;  6000 N                      19WAN!
   $ +21612.4276 -11.2302*T;  6000 N                                       01DUP!
 
 PARAMETER L(FCC_L12,CR,NI:AL:VA;0) 298.15
@@ -7828,9 +7850,9 @@ PARAMETER L(FCC_L12,CR,NI:NI:VA;1) 298.15
   -1.5*CRNI3# +1.5*CR2NI2# -0.5*CR3NI#;  6000 N                         01DUP!
 
 PARAMETER L(FCC_L12,CU,NI:AL:VA;0) 298.15
-  -1.5*UALCU3# -1.5*UALNI3# +1.5*UALCUNI2# +1.5*UALCU2NI#;  6000 N      19WAN!
+  -1.5*UALCU3# -1.5*ALNI3# +1.5*UALCUNI2# +1.5*UALCU2NI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,CU,NI:AL:VA;1) 298.15
-  -0.5*UALCU3# +0.5*UALNI3# -1.5*UALCUNI2# +1.5*UALCU2NI#;  6000 N      19WAN!
+  -0.5*UALCU3# +0.5*ALNI3# -1.5*UALCUNI2# +1.5*UALCU2NI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,CU,NI:CU:VA;0) 298.15
   +1.5*UCUNI3# +1.5*UCU2NI2# +1.5*UCU3NI#;  6000 N                      19WAN!
 PARAMETER L(FCC_L12,CU,NI:CU:VA;1) 298.15
@@ -7841,9 +7863,9 @@ PARAMETER L(FCC_L12,CU,NI:NI:VA;1) 298.15
   -1.5*UCUNI3# +1.5*UCU2NI2# -0.5*UCU3NI#;  6000 N                      19WAN!
 
 PARAMETER L(FCC_L12,FE,NI:AL:VA;0) 298.15
-  -4.5*UALFE# -1.5*UALNI3# +1.5*UALFENI2# +1.5*UALFE2NI#;  6000 N      09ZHAA!
+  -4.5*UALFE# -1.5*ALNI3# +1.5*UALFENI2# +1.5*UALFE2NI#;  6000 N      09ZHAA!
 PARAMETER L(FCC_L12,FE,NI:AL:VA;1) 298.15
-  -1.5*UALFE# +0.5*UALNI3# -1.5*UALFENI# +1.5*UALFE2NI#;  6000 N       09ZHAA!
+  -1.5*UALFE# +0.5*ALNI3# -1.5*UALFENI2# +1.5*UALFE2NI#;  6000 N      09ZHAA!
 PARAMETER L(FCC_L12,FE,NI:FE:VA;0) 298.15
   -609.3;  6000 N                                                       23WIT!
 PARAMETER L(FCC_L12,FE,NI:FE:VA;1) 298.15
@@ -7864,6 +7886,14 @@ PARAMETER L(FCC_L12,MO,NI:AL:VA;0) 298.15
   +1.5*ALMONI2# +1.5*ALMO2NI# -1.5*ALMO3# -1.5*ALNI3#;  6000 N          01DUP!
 PARAMETER L(FCC_L12,MO,NI:AL:VA;1) 298.15
   -1.5*ALMONI2# +1.5*ALMO2NI# -0.5*ALMO3# +0.5*ALNI3#;  6000 N          01DUP!
+PARAMETER L(FCC_L12,MO,NI:MO:VA;0) 298.15
+  -1.5*MONI3# +1.5*MO2NI2# +1.5*MO3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,MO,NI:MO:VA;1) 298.15
+  +0.5*MONI3# -1.5*MO2NI2# +1.5*MO3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,MO,NI:NI:VA;0) 298.15
+  +1.5*MONI3# +1.5*MO2NI2# -1.5*MO3NI#;  6000 N                         01DUP!
+PARAMETER L(FCC_L12,MO,NI:NI:VA;1) 298.15
+  -1.5*MONI3# +1.5*MO2NI2# -0.5*MO3NI#;  6000 N                         01DUP!
 
 PARAMETER L(FCC_L12,NI,SI:MN:VA;0) 298.15
   -104576.464 -0.230*T;  6000 N                                          11HU!
@@ -7926,17 +7956,17 @@ PARAMETER L(FCC_L12,SI:NI,SI:VA;0) 298.15
 
 
 PARAMETER L(FCC_L12,AL,CU,NI:AL:VA;0) 298.15
-  +UALCU3# -1.5*UAL2CU2# -1.5*UAL3CU# +UALNI3# -1.5*UAL2NI2#
-  -1.5*UAL3NI# -1.5*UALCUNI2# -1.5*UALCU2NI# +6*UAL2CUNI#;  6000 N      19WAN!
+  +UALCU3# -1.5*UAL2CU2# -1.5*UAL3CU# +ALNI3# -1.5*UAL2NI2#
+  -1.5*AL3NI# -1.5*UALCUNI2# -1.5*UALCU2NI# +6*UAL2CUNI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,AL,CU,NI:CU:VA;0) 298.15
   -1.5*UALCU3# -1.5*UAL2CU2# +UAL3CU# +UCUNI3# -1.5*UCU2NI2#
   -1.5*UCU3NI# -1.5*UALCUNI2# +6*UALCU2NI# -1.5*UAL2CUNI#;  6000 N      19WAN!
 PARAMETER L(FCC_L12,AL,CU,NI:NI:VA;0) 298.15
-  -1.5*UALNI3# -1.5*UAL2NI2# +UAL3NI# +UCU3NI# -1.5*UCU2NI2#
+  -1.5*ALNI3# -1.5*UAL2NI2# +AL3NI# +UCU3NI# -1.5*UCU2NI2#
   -1.5*UCUNI3# +6*UALCUNI2# -1.5*UALCU2NI# -1.5*UAL2CUNI#;  6000 N      19WAN!
 
 PARAMETER L(FCC_L12,AL,FE,NI:AL:VA;0) 298.15
-  +3*UALFE# -6*UALFE# -4.5*UALFE# +UALNI3# -1.5*UAL2NI2# -1.5*UAL3NI#
+  +3*UALFE# -6*UALFE# -4.5*UALFE# +ALNI3# -1.5*UAL2NI2# -1.5*AL3NI#
   -1.5*UALFENI2# -1.5*UALFE2NI# +6*UAL2FENI#;  6000 N                  09ZHAA!
 $ PARAMETER L(FCC_L12,AL,FE,NI:FE:VA;0) 298.15
 $   -4.5*UALFE# -6*UALFE# +3*UALFE# +UFENI3# -1.5*UFE2  
@@ -8843,19 +8873,19 @@ PARAMETER G(GAS,ALO2;0) 298.15
   +5.03724E1 +2.04591E-2*T -9.82200E-6*T**2 -5.92765E5*T**(-1)
   +GHGASALO2# +RTLNP#;  950 Y 
   +6.32050E1 -9.19061E-4*T +2.52894E-7*T**2 -2.09178E6*T**(-1)
-  +GHGASLALO2# +RTLNP#;  3550 Y
+  +GHGASALO2# +RTLNP#;  3550 Y
   +5.11648E1 +3.43337E-3*T -1.83885E-7*T**2 +2.42915E7*T**(-1)
   +GHGASALO2# +RTLNP#;  6000 N                                          92TAY!
 PARAMETER G(GAS,AL2O;0) 298.15
   +4.92582E1 +2.41228E-2*T -1.28758E-5*T**2 -2.61852E5*T**(-1)
   +GHGASAL2O# +RTLNP#;  800 Y
   +6.21617E1 +7.45798E-5*T -7.19397E-9*T**2 -1.47791E6*T**(-1)
-  +GHGASLAL2O# +RTLNP#;  6000 N                                         92TAY!
+  +GHGASAL2O# +RTLNP#;  6000 N                                          92TAY!
 PARAMETER G(GAS,AL2O2;0) 298.15
   +7.60489E1 +1.11959E-2*T -4.86054E-6*T**2 -1.04799E6*T**(-1)
   +GHGASAL2O2# +RTLNP#;  1150 Y
   +8.31292E1 +4.75089E-6*T -4.17203E-10*T**2 -1.89179E6*T**(-1)
-  +GHGASLAL2O2# +RTLNP#;  6000 N                                        92TAY!
+  +GHGASAL2O2# +RTLNP#;  6000 N                                         92TAY!
 PARAMETER G(GAS,C;0) 298.15
   +7.10394885E5 -17.1679458*T -21.05667*T*LN(T) +2.5592375E-4*T**2
   -3.89869667E-8*T**3 +3749.6235*T**(-1) +R*T*LN(P); 2950 Y
@@ -10459,7 +10489,7 @@ CONSTITUENT IONIC_LIQ : CO2+,CO3+,CR3+,FE2+,MN2+,NI2+,SI4+
 
 FUNCTION GCOOLIQ 298.15
   +42060 -20*T +GCOOS#;  6000 N                                         03CHE!
-FUNCTION  GSIO2LIQ 298.15
+FUNCTION GSIO2LIQ 298.15
   -923689.98 +316.24766*T -52.17*T*LN(T) -0.012002*T**2 
   +665550*T**(-1); 2980 Y
   -957614.21 +580.01419*T -87.428*T*LN(T);  4000 N                      92HAL!
@@ -13992,7 +14022,7 @@ PARAMETER G(M23C6_D84,CO:V:C;0) 298.15
   +20*GHSERCO# +3*GHSERV# +6*GHSERCC#;  6000 N                          23FRI!
 
 PARAMETER G(M23C6_D84,CO:W:B;0) 298.15
-  +20*GHSERCO# +3*GHSERS# +6*GHSERBB#;  6000 N                          24FRI!
+  +20*GHSERCO# +3*GHSERW# +6*GHSERBB#;  6000 N                          24FRI!
 PARAMETER G(M23C6_D84,CO:W:C;0) 298.15
   +20*GHSERCO# +3*GHSERW# +6*GHSERCC#;  6000 N                          24FRI!
 
@@ -14032,7 +14062,7 @@ PARAMETER G(M23C6_D84,CR:V:C;0) 298.15
   +0.8695652*GCR23C6# +0.1304348*GV23C6#;  6000 N                      92LEEB!
 
 PARAMETER G(M23C6_D84,CR:W:B;0) 298.15
-  +20*GHSERCR# +3*GHSERS# +6*GHSERBB#;  6000 N                          24FRI!
+  +20*GHSERCR# +3*GHSERW# +6*GHSERBB#;  6000 N                          24FRI!
 PARAMETER G(M23C6_D84,CR:W:C;0) 298.15
   +18850 -75.4*T +0.8695652*GCR23C6# +3*GHSERW# 
   +0.7826090*GHSERCC#;  6000 N                                         88GUSB!
@@ -14074,7 +14104,7 @@ PARAMETER G(M23C6_D84,FE:V:C;0) 298.15
   +0.869565*GFE23C6# +0.130435*GV23C6#;  6000 N                         91HUA!
 
 PARAMETER G(M23C6_D84,FE:W:B;0) 298.15
-  +20*GHSERFE# +3*GHSERS# +6*GHSERBB#;  6000 N                          24FRI!
+  +20*GHSERFE# +3*GHSERW# +6*GHSERBB#;  6000 N                          24FRI!
 PARAMETER G(M23C6_D84,FE:W:C;0) 298.15
   -103240 +38.4*T +0.8695652*GFE23C6# +3*GHSERW# 
   +0.7826090*GHSERCC#;  6000 N                                         88GUSB!
@@ -14115,7 +14145,7 @@ PARAMETER G(M23C6_D84,MN:V:C;0) 298.15
   +0.869565*GMN23C6# +0.130435*GV23C6#;  6000 N                         91HUA!
 
 PARAMETER G(M23C6_D84,MN:W:B;0) 298.15
-  +20*GHSERMN# +3*GHSERS# +6*GHSERBB#;  6000 N                          24FRI!
+  +20*GHSERMN# +3*GHSERW# +6*GHSERBB#;  6000 N                          24FRI!
 PARAMETER G(M23C6_D84,MN:W:C;0) 298.15
   +20*GHSERMN# +3*GHSERW# +6*GHSERCC#;  6000 N                          24FRI!
 
@@ -14155,7 +14185,7 @@ PARAMETER G(M23C6_D84,NI:V:C;0) 298.15
   +20*GHSERNI# +3*GHSERV# +6*GHSERCC#;  6000 N                          23FRI!
 
 PARAMETER G(M23C6_D84,NI:W:B;0) 298.15
-  +20*GHSERNI# +3*GHSERS# +6*GHSERBB#;  6000 N                          24FRI!
+  +20*GHSERNI# +3*GHSERW# +6*GHSERBB#;  6000 N                          24FRI!
 PARAMETER G(M23C6_D84,NI:W:C;0) 298.15
   +20*GHSERNI# +3*GHSERW# +6*GHSERCC#;  6000 N                          24FRI!
 
@@ -14195,7 +14225,7 @@ PARAMETER G(M23C6_D84,V:V:C;0) 298.15
   +GV23C6#;  6000 N                                                     91HUA!
 
 PARAMETER G(M23C6_D84,V:W:B;0) 298.15
-  +20*GHSERV# +3*GHSERS# +6*GHSERBB#;  6000 N                           24FRI!
+  +20*GHSERV# +3*GHSERW# +6*GHSERBB#;  6000 N                           24FRI!
 PARAMETER G(M23C6_D84,V:W:C;0) 298.15
   +20*GHSERV# +3*GHSERW# +6*GHSERCC#;  6000 N                           24FRI!
 
@@ -14646,7 +14676,7 @@ PARAMETER G(MSI_B20,MO:AL;0) 298.15
 PARAMETER G(MSI_B20,MO:FE;0) 298.15
   +0.5*GHSERMO# +0.5*GHSERFE#;  6000 N                                  24FRI!
 PARAMETER G(MSI_B20,MO:SI;0) 298.15
-  +5000 +0.5*GHSERMO# +0.5*GHSERS#;  6000 N                              23WU!
+  +5000 +0.5*GHSERMO# +0.5*GHSERSI#;  6000 N                             23WU!
 
 PARAMETER G(MSI_B20,NI:AL;0) 298.15
   +0.5*GHSERNI# +0.5*GHSERAL#;  6000 N                                   04DU!
@@ -14670,7 +14700,7 @@ PARAMETER G(MSI_B20,V:AL;0) 298.15
 PARAMETER G(MSI_B20,V:FE;0) 298.15
   +0.5*GHSERV# +0.5*GHSERFE#;  6000 N                                   24FRI!
 PARAMETER G(MSI_B20,V:SI;0) 298.15
-  +2500 +0.5*GHSERV# +0.5*GHSERS#;  6000 N                              24CHA!
+  +2500 +0.5*GHSERV# +0.5*GHSERSI#;  6000 N                             24CHA!
 
 
 PARAMETER L(MSI_B20,CO:CO,SI;0) 298.15
@@ -15127,7 +15157,7 @@ CONSTITUENT NI2SI_DELTA : FE,NI :  NI : !
 PARAMETER G(NI2SI_DELTA,FE:SI;0) 298.15
   -76500 +2*GHSERFE# +GHSERSI#;  6000 N                                 23WIT!
 PARAMETER G(NI2SI_DELTA,NI:SI;0) 298.15
-  -146504.61 -15.0958*T +2*GHSRNI# +GHSERSI#;  6000 N                   23WIT!
+  -146504.61 -15.0958*T +2*GHSERNI# +GHSERSI#;  6000 N                  23WIT!
 
 
 PARAMETER L(NI2SI_DELTA,FE,NI:SI;0) 298.15
@@ -15430,7 +15460,7 @@ PARAMETER G(M5SI3_D8M,TA:SI;0) 298.15
   -334400 -44.78936*T +5*GHSERTA# +3*GHSERSI#;  6000 N                  89VAH!
 
 PARAMETER G(M5SI3_D81,V:AL;0) 298.15
-  +80000 +5*GHESRV# +3*GHSERAL#;  6000 N                                17KRO!
+  +80000 +5*GHSERV# +3*GHSERAL#;  6000 N                                17KRO!
 PARAMETER G(M5SI3_D8M,V:CU;0) 298.15
   +40000 +5*GHSERV# +3*GHSERCU#;  6000 N                                24FRI!
 PARAMETER G(M5SI3_D8M,V:SI;0) 298.15

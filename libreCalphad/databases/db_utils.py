@@ -159,3 +159,39 @@ def check_endmembers(db, phase, ref='!'):
             out_string += '\n'
     
     return out_string, missing_endmembers
+
+def find_missing_functions(db_file):
+    """
+    Function to find missing function definitions in a database file. This is particularly useful for catching typos.
+
+    Parameters : db_file, string
+                String pointer to the database file.
+    
+    Returns : missing_funcs, list
+                A list of the missing function definitions.
+    """
+    func_defs = []
+    duplicate_funcs = []
+    missing_funcs = []
+
+    with open(db_file) as f:
+        for line in f.readlines():
+            if 'FUNCTION' in line:  # function definitions
+                this_func = line.split(' ')[1]
+                if this_func in func_defs:
+                    duplicate_funcs.append(this_func)
+                else:
+                    func_defs.append(this_func)
+
+    with open(db_file) as f:
+        for line in f.readlines():
+            for term in line.split(' '):
+                if term.endswith('#'):
+                    split_term = term[1:].split('*')
+                    if len(split_term) > 1:
+                        func = split_term[-1][:-1]
+                    else:
+                        func = split_term[0][:-1]
+                    if func not in func_defs and func not in missing_funcs:
+                        missing_funcs.append(func)
+    return missing_funcs
