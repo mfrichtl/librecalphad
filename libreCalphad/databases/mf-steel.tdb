@@ -48,7 +48,6 @@ $            ORDERED FETI PHASES NOT QUITE RIGHT.
 $ 2023-11-30 ORDERED FCC PHASES INCORPORATED, BUT PYCALPHAD DOES NOT PROPERLY
 $            PARTITION THE PROPERTIES BETWEEN SUBLATTICES, SO THEIR PHASE
 $            STABILITIES WILL BE WRONG.
-$ 2023-12-02 GAS PHASE NOT QUITE WORKING CORRECTLY
 $ 2023-12-14 ORDERED FE-SI, NI-SI, AND FE-NI-SI SYSTEMS FROM WITUSIEWICZ 2023
 $            MAY NOT BE CORRECT.
 $ 2023-12-17 MO-N HCP-LIQUID (WITHOUT GAS) REGIONS INCORRECT, BUT CLOSE.
@@ -200,7 +199,7 @@ DATABASE_INFO The following systems are available:'
   FE-NB     Lee (2001), Liu (2012), Khvan (2013), and Lu (2017)'
   FE-NI     Zhang (2009), Cacciamani (2010), Xiong (2011), and Ohnuma (2019)'
   FE-O      Sundman (1991), Kowalski (1996), and Kjellqvist (2008)'
-  FE-P      Cao (2012)'
+  FE-P      Cao (2012) and Bernhard (2020)'
   FE-S      Lee (2007)'
   FE-SI     Cui (2017) and Witusiewicz (2023)'
   FE-TA     Witusiewicz (2011)'
@@ -298,6 +297,7 @@ DATABASE_INFO The following systems are available:'
   C-FE-MO   Andersson (1988) and Hillert (1992)'
   C-FE-NB   Huang (1990)'
   C-FE-NI   Gustafson (1987) and Jacob (2023)'
+  C-FE-P    Bernhard (2020)'
   C-FE-SI   Lacaze (1991), Miettinen (1998), and Zheng (2017)'
   C-FE-TI   Jonsson (1998)'
   C-FE-V    Huang (1991)'
@@ -2982,7 +2982,7 @@ PARAMETER TC(BCC_A2,NI:VA;0) 298.15
 PARAMETER G(BCC_A2,P:B;0) 298.15
   +GHSERPP# +3*GHSERBB#;  6000 N                                        23FRI!
 PARAMETER G(BCC_A2,P:C;0) 298.15
-  +GHSERPP# +3*GHSERCC#; 6000 N                                         23FRI!
+  +783810 +GHSERPP# +3*GHSERCC#; 6000 N                                 20BER!
 PARAMETER G(BCC_A2,P:H;0) 298.15
   +GHSERPP# +3*GHSERHH#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,P:N;0) 298.15
@@ -3421,7 +3421,14 @@ PARAMETER BMAGN(BCC_A2,FE,NI:VA;3) 173
 PARAMETER TC(BCC_A2,FE,NI:VA;0) 173
   +385.8;  6000 N                                                       11XIO!
 PARAMETER L(BCC_A2,FE,P:VA;0) 298.15
-  -172000 +4.7*T;  6000 N                                               12CAO!
+  $ -172000 +4.7*T;  6000 N                                               12CAO!
+  -187234 +13.598*T;  6000 N                                            20BER!
+PARAMETER L(BCC_A2,FE,P:VA;1) 298.15
+  +0;  6000 N                                                           20BER!
+PARAMETER L(BCC_A2,FE,P:VA;2) 298.15
+  +627.6 +11.0876*T;  6000 N                                            20BER!
+PARAMETER TC(BCC_A2,FE,P:VA;0) 298.15
+  -500;  6000 N                                                         20BER!
 PARAMETER L(BCC_A2,FE,S:VA;0) 298.15
   -119675 -18.7201*T;  6000 N                                           07LEE!
 PARAMETER L(BCC_A2,FE,SI:C;0) 298.15
@@ -6427,7 +6434,7 @@ PARAMETER TC(FCC_A1,NI:VA;0) 298.15
 PARAMETER G(FCC_A1,P:B;0) 298.15
   +GHSERPP# +GHSERCC#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,P:C;0) 298.15
-  +GHSERPP# +GHSERCC#;  6000 N                                          24FRI!
+  +238068 +GHSERPP# +GHSERCC#;  6000 N                                  20BER!
 PARAMETER G(FCC_A1,P:H;0) 298.15
   +GHSERPP# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(FCC_A1,P:N;0) 298.15
@@ -6907,7 +6914,8 @@ PARAMETER TC(FCC_A1,FE,NI:VA;4) 173
 PARAMETER TC(FCC_A1,FE,NI:VA;5) 173
   -5671.0;  6000 N                                                      11XIO!
 PARAMETER L(FCC_A1,FE,P:VA;0) 298.15
-  -156000 +6*T;  6000 N                                                 12CAO!
+  $ -156000 +6*T;  6000 N                                                 12CAO!
+  -150414.8 +12.2591*T;  6000 N                                         20BER!
 PARAMETER L(FCC_A1,FE,S:VA;0) 298.15
   -108733 -18*T;  6000 N                                                07LEE!
 PARAMETER L(FCC_A1,FE,SI:C;0) 298.15
@@ -7071,7 +7079,6 @@ PARAMETER L(FCC_A1,NI,SI:VA;2) 298.15
   -29213.4 +49.998*T;  6000 N                                           23WIT!
 PARAMETER TC(FCC_A1,NI,SI:VA;0) 298.15
   -3872;  6000 N                                                        23WIT!
-
 PARAMETER L(FCC_A1,NI,TI:VA;0) 298.15
   -98143 +6.706*T;  6000 N                                              09KEY!
 PARAMETER L(FCC_A1,NI,TI:VA;1) 298.15
@@ -7082,14 +7089,12 @@ PARAMETER TC(FCC_A1,NI,TI:VA;1) 298.15
   -3000;  6000 N                                                        09KEY!
 PARAMETER TC(FCC_A1,NI,TI:VA;2) 298.15
   +1300;  6000 N                                                        09KEY!
-
 PARAMETER L(FCC_A1,NI,V:VA;0) 298.15
   -36365.6 +3.75677*T;  6000 N                                          98KOR!
 PARAMETER L(FCC_A1,NI,V:VA;1) 298.15
   +11860.7 -9.0302*T;  6000 N                                           98KOR!
 PARAMETER L(FCC_A1,NI,V:VA;2) 298.15
   -10647.5 +7.00954*T;  6000 N                                          98KOR!
-
 PARAMETER L(FCC_A1,NI,W:VA;0) 298.15
   +2556 +11.6*T;  6000 N                                               88GUSA!
 PARAMETER L(FCC_A1,NI,W:VA;1) 298.15
@@ -7333,6 +7338,9 @@ PARAMETER L(FCC_A1,FE,NI,W:VA;1) 298.15
   +50436;  6000 N                                                       86GUI!
 PARAMETER L(FCC_A1,FE,NI,W:VA;2) 298.15
   +0;  6000 N                                                           86GUI!
+
+PARAMETER L(FCC_A1,FE,P:C,VA;0) 298.15
+  -223844 -15.2716*T;  6000 N                                           20BER!
 
 PARAMETER L(FCC_A1,FE,TI:C,VA;0) 298.15
   +0;  6000  N                                                          98JON!
@@ -10140,7 +10148,9 @@ PARAMETER L(HCP_A3,FE,TI:C,VA;1) 298.15
 PARAMETER L(HCP_A3,FE,TI:C,VA;2) 298.15
   -238919.25 -29.805*T;  6000 N                                         08FRI!
 
-$ ESTIMATE SAME FE,V:X,VA AS FCC_A1
+$ ESTIMATE SAME FE,Y:X,VA AS FCC_A1
+PARAMETER L(HCP_A3,FE,P:C,VA;0) 298.15
+  -223844 -15.2716*T;  6000 N                                           20BER!
 PARAMETER L(HCP_A3,FE,V:C,VA;0) 298.15
   -30000;  6000 N                                                       91HUA!
 PARAMETER L(HCP_A3,FE,V:N,VA;0) 298.15
