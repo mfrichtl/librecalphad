@@ -3967,6 +3967,13 @@ CONSTITUENT BCC_B2 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
                      P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA :  !
 
+FUNCTION B2ALCO 298.15
+  -138247 +29.92*T;  6000 N                                             13STE!
+FUNCTION LB2ALCO 298.15
+  +43040 -27.4*T;  6000 N                                               13STE!
+FUNCTION UBALCO 298.15
+  +0.125*B2ALCO# -0.125*LB2ALCO#;  6000 N                               13STE!
+
 FUNCTION B2ALNI 298.15
   -152397.3 +26.40575*T;  6000 N                                        19WAN!
 FUNCTION LB2ALNI 298.15
@@ -3977,7 +3984,7 @@ FUNCTION UBALNI 298.15
 PARAMETER G(BCC_B2,AL:AL:VA;0) 298.15
   +0;  6000 N                                                          09SUNA!
 PARAMETER G(BCC_B2,AL:CO:VA;0) 298.15
-  -90643.5 +28.66*T;  6000 N                                            13STE!
+  +4*UBALCO#;  6000 N                                                   13STE!
 PARAMETER TC(BCC_B2,AL:CO:VA;0) 298.15
   -1400;  6000 N                                                        13STE!
 PARAMETER G(BCC_B2,AL:CR:VA;0) 298.15
@@ -4004,7 +4011,7 @@ $ PARAMETER G(BCC_B2,AL:VA:VA;0) 298.15
   $ +0;  6000 N                                                           13STE!
 
 PARAMETER G(BCC_B2,CO:AL;0) 298.15
-  -90643.5 +28.66*T;  6000 N                                            13STE!
+  +4*UBALCO#;  6000 N                                                   13STE!
 PARAMETER TC(BCC_B2,CO:AL;0) 298.15
   -1400;  6000 N                                                        13STE!
 PARAMETER G(BCC_B2,CO:CO:VA;0) 298.15
@@ -4184,34 +4191,6 @@ $   +0;  6000 N                                                           19WAN!
 $ PARAMETER G(BCC_B2,VA:VA:VA;0) 298.15
 $   +0;  6000 N                                                           13STE!
 
-
-PARAMETER L(BCC_B2,AL:AL,FE:VA;0) 298.15
-  +4*UBALFE1# +2*UBALFE2# +2*AD03ALFE#;  6000 N                        09SUNA!
-PARAMETER L(BCC_B2,AL:AL,FE:VA;1) 298.15
-  -1268 +1.36*T;  6000 N                                               09SUNA!
-PARAMETER L(BCC_B2,AL:AL,FE:VA;2) 298.15
-  -380;  6000 N                                                        09SUNA!
-PARAMETER BMAGN(BCC_B2,AL:AL,FE:VA;1) 298.15
-  -1.6;  6000 N                                                        09SUNA!
-PARAMETER BMAGN(BCC_B2,AL:AL,FE:VA;2) 298.15
-  +0.4;  6000 N                                                        09SUNA!
-PARAMETER L(BCC_B2,AL:AL,TI:VA;0) 298.15
-  +6155;  6000 N                                                        08WIT!
-PARAMETER L(BCC_B2,AL:AL,TI:VA;1) 298.15
-  +6292;  6000 N                                                        08WIT!
-$ PARAMETER L(BCC_B2,AL:CO,VA:VA;0) 298.15
-$   -56770 -18*T;  6000 N                                                 13STE!
-PARAMETER L(BCC_B2,AL:CU,NI:VA;0) 298.15
-  -10809.388 +14.287*T;  6000 N                                         19WAN!
-PARAMETER L(BCC_B2,AL:CU,NI:VA;1) 298.15
-  +19880.444 -6.651*T;  6000 N                                          19WAN!
-PARAMETER L(BCC_B2,AL:CU,NI:VA;2) 298.15
-  +6118.873 -4.706*T;  6000 N                                           19WAN!
-PARAMETER L(BCC_B2,AL:FE,NI:VA;0) 298.15
-  -26029.79;  6000 N                                                   09ZHAA!
-$PARAMETER L(BCC_B2,AL:NI,VA:VA;0) 298.15
-$   -131120 -9.48*T;  6000 N                                              19WAN!
-
 PARAMETER L(BCC_B2,AL,CU:NI:VA;0) 298.15
   +1852.464 -12.932*T;  6000 N                                          19WAN!
 PARAMETER L(BCC_B2,AL,CU:NI:VA;1) 298.15
@@ -4227,16 +4206,6 @@ PARAMETER L(BCC_B2,AL,FE:AL:VA;2) 298.15
 PARAMETER BMAGN(BCC_B2,AL,FE:AL:VA;1) 298.15
   -1.6;  6000 N                                                        09SUNA!
 PARAMETER BMAGN(BCC_B2,AL,FE:AL:VA;2) 298.15
-  +0.4;  6000 N                                                        09SUNA!
-PARAMETER L(BCC_B2,AL,FE:AL,FE:VA;0) 298.15
-  -4*AD03ALFE# -4*AD03FEAL#;  6000 N                                   09SUNA!
-PARAMETER L(BCC_B2,AL,FE:AL,FE:VA;1) 298.15
-  -1268 +1.36*T;  6000 N                                               09SUNA!
-PARAMETER L(BCC_B2,AL,FE:AL,FE:VA;2) 298.15
-  -380;  6000 N                                                        09SUNA!
-PARAMETER BMAGN(BCC_B2,AL,FE:AL,FE:VA;1) 298.15
-  -1.6;  6000 N                                                        09SUNA!
-PARAMETER BMAGN(BCC_B2,AL,FE:AL,FE:VA;2) 298.15
   +0.4;  6000 N                                                        09SUNA!
 PARAMETER L(BCC_B2,AL,FE:FE:VA;0) 298.15
   +4*UBALFE1# +2*UBALFE2# +2*AD03ALFE#;  6000 N                        09SUNA!
@@ -4270,6 +4239,36 @@ PARAMETER L(BCC_B2,AL,TI:TI:VA;1) 298.15
   -1080;  6000 N                                                        08WIT!
 PARAMETER L(BCC_B2,AL,V:TI:VA;0) 298.15
   +3366 -5*T;  6000 N                                                    24LI!
+
+PARAMETER L(BCC_B2,TI,V:FE:VA;0) 298.15
+  +10000 -1.000*T;  6000 N                                              12GUO!
+
+PARAMETER L(BCC_B2,AL:AL,FE:VA;0) 298.15
+  +4*UBALFE1# +2*UBALFE2# +2*AD03ALFE#;  6000 N                        09SUNA!
+PARAMETER L(BCC_B2,AL:AL,FE:VA;1) 298.15
+  -1268 +1.36*T;  6000 N                                               09SUNA!
+PARAMETER L(BCC_B2,AL:AL,FE:VA;2) 298.15
+  -380;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_B2,AL:AL,FE:VA;1) 298.15
+  -1.6;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_B2,AL:AL,FE:VA;2) 298.15
+  +0.4;  6000 N                                                        09SUNA!
+PARAMETER L(BCC_B2,AL:AL,TI:VA;0) 298.15
+  +6155;  6000 N                                                        08WIT!
+PARAMETER L(BCC_B2,AL:AL,TI:VA;1) 298.15
+  +6292;  6000 N                                                        08WIT!
+$ PARAMETER L(BCC_B2,AL:CO,VA:VA;0) 298.15
+$   -56770 -18*T;  6000 N                                                 13STE!
+PARAMETER L(BCC_B2,AL:CU,NI:VA;0) 298.15
+  -10809.388 +14.287*T;  6000 N                                         19WAN!
+PARAMETER L(BCC_B2,AL:CU,NI:VA;1) 298.15
+  +19880.444 -6.651*T;  6000 N                                          19WAN!
+PARAMETER L(BCC_B2,AL:CU,NI:VA;2) 298.15
+  +6118.873 -4.706*T;  6000 N                                           19WAN!
+PARAMETER L(BCC_B2,AL:FE,NI:VA;0) 298.15
+  -26029.79;  6000 N                                                   09ZHAA!
+$PARAMETER L(BCC_B2,AL:NI,VA:VA;0) 298.15
+$   -131120 -9.48*T;  6000 N                                              19WAN!
 
 PARAMETER L(BCC_B2,CO:CO,FE:VA;0) 298.15
   +1744.89;  6000 N                                                     02OHN!
@@ -4389,6 +4388,21 @@ PARAMETER L(BCC_B2,FE,TI:V:VA;0) 298.15
 PARAMETER L(BCC_B2,FE,V:TI:VA;0) 298.15
   +43130 -11.936*T;  6000 N                                             12GUO!
 
+PARAMETER L(BCC_B2,MN,SI:NI:VA;0) 298.15
+  -182448.464 +110*T;  6000 N                                            11HU!
+PARAMETER L(BCC_B2,MN,TI:FE:VA;0) 298.15
+  +11480;  6000 N                                                       21ZHA!
+
+PARAMETER L(BCC_B2,MO,TI:MO:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
+PARAMETER L(BCC_B2,MO,TI:TI:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
+
+PARAMETER L(BCC_B2,NB,TI:NB:VA;0) 298.15
+  -5500;  6000 N                                                       95SAUA!
+PARAMETER L(BCC_B2,NB,TI:TI:VA;0) 298.15
+  -5500;  6000 N                                                       95SAUA!
+
 PARAMETER L(BCC_B2,MN:AL,FE:VA;0) 298.15
   -4184;  6000 N                                                       15KIMA!
 PARAMETER L(BCC_B2,MN:FE,TI:VA;0) 298.15
@@ -4396,28 +4410,27 @@ PARAMETER L(BCC_B2,MN:FE,TI:VA;0) 298.15
 PARAMETER L(BCC_B2,MN:NI,SI:VA;0) 298.15
   -45888.881;  6000 N                                                    11HU!
 
-PARAMETER L(BCC_B2,MN,SI:NI:VA;0) 298.15
-  -182448.464 +110*T;  6000 N                                            11HU!
-
-PARAMETER L(BCC_B2,MN,TI:FE:VA;0) 298.15
-  +11480;  6000 N                                                       21ZHA!
-
-PARAMETER L(BCC_B2,MO:MO,TI:VA;0) 298.15
-  -5000;  6000 N                                                       95SAUB!
-
-PARAMETER L(BCC_B2,MO,TI:MO:VA;0) 298.15
-  -5000;  6000 N                                                       95SAUB!
-PARAMETER L(BCC_B2,MO,TI:TI:VA;0) 298.15
-  -5000;  6000 N                                                       95SAUB!
+PARAMETER L(BCC_B2,NI,SI:FE:VA;0) 298.15
+  +25*T;  6000 N                                                        23WIT!
+PARAMETER L(BCC_B2,NI,SI:MN:VA;0) 298.15
+  -45888.881;  6000 N                                                    11HU!
+PARAMETER L(BCC_B2,NI,TI:NI:VA;0) 298.15
+  -55288.8 +25.4416*T;  6000 N                                          09KEY!
+PARAMETER L(BCC_B2,NI,TI:NI:VA;1) 298.15
+  +0;  6000 N                                                           09KEY!
+PARAMETER L(BCC_B2,NI,TI:NI:VA;2) 298.15
+  +6010.11 +3.95974*T;  6000 N                                          09KEY!
+PARAMETER L(BCC_B2,NI,TI:TI:VA;0) 298.15
+  +60723.7 -15.4024*T;  6000 N                                          09KEY!
+$ PARAMETER L(BCC_B2,NI,VA:AL:VA;0) 298.15
+$   -131120 -9.48*T;  6000 N                                              19WAN!
+$ PARAMETER L(BCC_B2,NI,VA:NI:VA;0) 298.15
+$   -131120 -9.48*T;  6000 N                                              19WAN!
 
 PARAMETER L(BCC_B2,NB:NB,TI:VA;0) 298.15
   -5500;  6000  N                                                      95SAUA!
-
-PARAMETER L(BCC_B2,NB,TI:NB:VA;0) 298.15
-  -5500;  6000 N                                                       95SAUA!
-PARAMETER L(BCC_B2,NB,TI:TI:VA;0) 298.15
-  -5500;  6000 N                                                       95SAUA!
-
+PARAMETER L(BCC_B2,MO:MO,TI:VA;0) 298.15
+  -5000;  6000 N                                                       95SAUB!
 PARAMETER L(BCC_B2,NI:AL,FE:VA;0) 298.15
   -29728.16;  6000 N                                                   09ZHAA!
 PARAMETER L(BCC_B2,NI:AL,CU:VA;0) 298.15
@@ -4437,23 +4450,6 @@ PARAMETER L(BCC_B2,NI:NI,TI:VA;1) 298.15
 PARAMETER L(BCC_B2,NI:NI,TI:VA;2) 298.15
   +6010.11 +3.95974*T;  6000 N                                          09KEY!
 $ PARAMETER L(BCC_B2,NI:NI,VA:VA;0) 298.15
-$   -131120 -9.48*T;  6000 N                                              19WAN!
-
-PARAMETER L(BCC_B2,NI,SI:FE:VA;0) 298.15
-  +25*T;  6000 N                                                        23WIT!
-PARAMETER L(BCC_B2,NI,SI:MN:VA;0) 298.15
-  -45888.881;  6000 N                                                    11HU!
-PARAMETER L(BCC_B2,NI,TI:NI:VA;0) 298.15
-  -55288.8 +25.4416*T;  6000 N                                          09KEY!
-PARAMETER L(BCC_B2,NI,TI:NI:VA;1) 298.15
-  +0;  6000 N                                                           09KEY!
-PARAMETER L(BCC_B2,NI,TI:NI:VA;2) 298.15
-  +6010.11 +3.95974*T;  6000 N                                          09KEY!
-PARAMETER L(BCC_B2,NI,TI:TI:VA;0) 298.15
-  +60723.7 -15.4024*T;  6000 N                                          09KEY!
-$ PARAMETER L(BCC_B2,NI,VA:AL:VA;0) 298.15
-$   -131120 -9.48*T;  6000 N                                              19WAN!
-$ PARAMETER L(BCC_B2,NI,VA:NI:VA;0) 298.15
 $   -131120 -9.48*T;  6000 N                                              19WAN!
 
 PARAMETER L(BCC_B2,SI:FE,SI:VA;0) 298.15
@@ -4488,12 +4484,20 @@ PARAMETER L(BCC_B2,TI:NB,TI:VA;0) 298.15
 PARAMETER L(BCC_B2,TI:NI,TI:VA;0) 298.15
   +60723.7 -15.4024*T;  6000 N                                          09KEY!
 
-PARAMETER L(BCC_B2,TI,V:FE:VA;0) 298.15
-  +10000 -1.000*T;  6000 N                                              12GUO!
-
 PARAMETER L(BCC_B2,V:FE,TI:VA;0) 298.15
   +22808;  6000 N                                                       12GUO!
 
+
+PARAMETER L(BCC_B2,AL,FE:AL,FE:VA;0) 298.15
+  -4*AD03ALFE# -4*AD03FEAL#;  6000 N                                   09SUNA!
+PARAMETER L(BCC_B2,AL,FE:AL,FE:VA;1) 298.15
+  -1268 +1.36*T;  6000 N                                               09SUNA!
+PARAMETER L(BCC_B2,AL,FE:AL,FE:VA;2) 298.15
+  -380;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_B2,AL,FE:AL,FE:VA;1) 298.15
+  -1.6;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_B2,AL,FE:AL,FE:VA;2) 298.15
+  +0.4;  6000 N                                                        09SUNA!
 
 PARAMETER L(BCC_B2,FE,SI:NI,SI:VA;0) 298.15
   +63200 -400*T;  6000 N                                                23WIT!
@@ -5885,19 +5889,19 @@ PARAMETER G(CUZR2_C11B,SI:ZR;0) 298.15
   +GHSERSI# +2*GHSERZR#;  6000 N                                        24FRI!
 
 
-PARAMETER L(CUZR2_C11B,AL:AL,CR;0) 298.15
-  -38108.20;  6000 N                                                   17CUIE!
-PARAMETER L(CUZR2_C11B,AL:CR,MN;0) 298.15
-  -204597.60 +83.68*T;  6000 N                                         17CUIF!
-PARAMETER L(CUZR2_C11B,AL:CR,MN;1) 298.15
-  -882.82 +8.37*T;  6000 N                                             17CUIF!
-
 PARAMETER L(CUZR2_C11B,AL,CR:AL;0) 298.15
   -8922.60;  6000 N                                                    17CUIE!
 PARAMETER L(CUZR2_C11B,AL,CR:CR;0) 298.15
   -8922.60;  6000 N                                                    17CUIE!
 PARAMETER L(CUZR2_C11B,AL,CR:MN;0) 298.15
   -8922.60;  6000 N                                                    17CUIE!
+
+PARAMETER L(CUZR2_C11B,AL:AL,CR;0) 298.15
+  -38108.20;  6000 N                                                   17CUIE!
+PARAMETER L(CUZR2_C11B,AL:CR,MN;0) 298.15
+  -204597.60 +83.68*T;  6000 N                                         17CUIF!
+PARAMETER L(CUZR2_C11B,AL:CR,MN;1) 298.15
+  -882.82 +8.37*T;  6000 N                                             17CUIF!
 
 PARAMETER L(CUZR2_C11B,CR:AL,CR;0) 298.15
   -38108.20;  6000 N                                                   17CUIE!
