@@ -3317,6 +3317,8 @@ PARAMETER TC(BCC_A2,CR,NI:VA;0) 298.15
   +2373;  6000 N                                                       88GUSA!
 PARAMETER TC(BCC_A2,CR,NI:VA;1) 298.15
   +617;  6000 N                                                        88GUSA!
+PARAMETER L(BCC_A2,CR,P:VA;0) 298.15
+  -70000;  6000 N                                                       99MIE!
 PARAMETER L(BCC_A2,CR,SI:VA;0) 298.15
   -77309.9324 -2.38320*T;  6000 N                                      09CHEA!
 PARAMETER L(BCC_A2,CR,SI:VA;1) 298.15
@@ -3759,11 +3761,12 @@ PARAMETER L(BCC_A2,CR,CU,FE:VA;1) 298.15
   -16736;  6000 N                                                      17CUIB!
 PARAMETER L(BCC_A2,CR,CU,FE:VA;2) 298.15
   -37656;  6000 N                                                      17CUIB!
-
 PARAMETER L(BCC_A2,CR,FE,MN:VA;0) 298.15
   -5996;  6000 N                                                       93LEEB!
 PARAMETER L(BCC_A2,CR,FE,NI:VA;0) 298.15
   -2673 +2.04145*T;  6000 N                                            93LEEA!
+PARAMETER L(BCC_A2,CR,FE,P:VA;0) 298.15
+  -70000;  6000 N                                                       99MIE!
 PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
   -54000;  6000 N                                                       97LIN!
 $ PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
@@ -3778,14 +3781,12 @@ PARAMETER L(BCC_A2,CR,FE,V:VA;1) 298.15
   +17968;  6000 N                                                      92LEEC!
 PARAMETER L(BCC_A2,CR,FE,V:VA;2) 298.15
   -7692;  6000 N                                                       92LEEC!
-
 PARAMETER L(BCC_A2,CR,NB,ZR:VA;0) 298.15
   +54600.0;  6000 N                                                      15LU!
 PARAMETER L(BCC_A2,CR,NB,ZR:VA;1) 298.15
   -18200.0;  6000 N                                                      15LU!
 PARAMETER L(BCC_A2,CR,NB,ZR:VA;2) 298.15
   +69500.0;  6000 N                                                      15LU!
-
 PARAMETER L(BCC_A2,CR,TI,V:VA;0) 298.15
   -31683.57 +77.85716*T;  6000 N                                       02GHOA!
 PARAMETER L(BCC_A2,CR,TI,V:VA;1) 298.15
@@ -3793,19 +3794,16 @@ PARAMETER L(BCC_A2,CR,TI,V:VA;1) 298.15
 PARAMETER L(BCC_A2,CR,TI,V:VA;2) 298.15
   $ +96150.43 -50.14293*T;  6000 N                                       02GHOA!
   +83000 -50*T;  6000 N                                                  16HU!
-
 PARAMETER L(BCC_A2,CR,MN,NI:VA;0) 298.15
   +80000;  6000 N                                                        22DO!
 PARAMETER L(BCC_A2,CR,MN,TI:VA;0) 298.15
   +30000;  6000 N                                                      09CHEB!
-
 PARAMETER L(BCC_A2,CR,NI,W:VA;0) 298.15
   +4102;  6000 N                                                       88GUSA!
 PARAMETER L(BCC_A2,CR,NI,W:VA;1) 298.15
   -122160;  6000 N                                                     88GUSA!
 PARAMETER L(BCC_A2,CR,NI,W:VA;2) 298.15
   +4102;  6000 N                                                       88GUSA!
-
 PARAMETER L(BCC_A2,CR,MO,SI:VA;0) 298.15
   -49000;  6000 N                                                        23WU!
 PARAMETER L(BCC_A2,CR,MO,TI:VA;0) 298.15
@@ -6783,6 +6781,8 @@ PARAMETER BMAGN(FCC_A1,CR,NI:VA;0) 298.15
   -1.91;  6000 N                                                       88GUSA!
 PARAMETER TC(FCC_A1,CR,NI:VA;0) 298.15
   -3605;  6000 N                                                       88GUSA!
+PARAMETER L(FCC_A1,CR,P:VA;0) 298.15
+  -70000;  6000 N                                                       99MIE!
 PARAMETER L(FCC_A1,CR,SI:VA;0) 298.15
   +0;  6000 N                                                          17CUIC!
 PARAMETER L(FCC_A1,CR,TI:C;0) 298.15
@@ -8070,12 +8070,13 @@ PARAMETER G(FE2TA3,TA:FE,TA;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ FE3P
+$ TODO: SEPARATE THESE INTO SECTIONS
 
 PHASE FE3P % 2 0.75 0.25 !
-CONSTITUENT FE3P : FE : P : !
+CONSTITUENT FE3P : CR,FE : P : !
 
 PHASE FE2P % 2 0.667 0.333 !
-CONSTITUENT FE2P : FE : P : !
+CONSTITUENT FE2P : CR,FE : P : !
 
 PHASE FEP1 % 2 0.5 0.5 !
 CONSTITUENT FEP1 : FE : P : !
@@ -8086,12 +8087,26 @@ CONSTITUENT FEP2 : FE : P : !
 PHASE FEP4 % 2 0.2 0.8 !
 CONSTITUENT FEP4 : FE : P : !
 
+PARAMETER G(FE3P,CR:P;0) 298.15
+  -44022.75 -12.34975*T +1.98795*T*LN(T) +0.75*GHSERCR# 
+  +0.25*GHSERPP#;  6000 N                                               99MIE!
 PARAMETER G(FE3P,FE:P;0) 298.15
   -49167.25125 +157.35*T -27.725*T*LN(T) -0.0014625*T**2 
   +134875*T**(-1);  6000 N                                              12CAO!
 
+
+PARAMETER L(FE3P,CR,FE:P;0) 298.15
+  -13250 +5*T;  6000 N                                                  99MIE!
+
+
+PARAMETER G(FE2P,CR:P;0) 298.15
+  -53176.666667 +1.666667*T +0.667*GHSERCR# +0.333*GHSERPP#;  6000 N    99MIE!
 PARAMETER G(FE2P,FE:P;0) 298.15
   -59047.3333 +121.523*T -22.2233*T*LN(T) -0.0047833333*T**2;  6000 N   12CAO!
+
+
+PARAMETER L(FE2P,CR,FE:P;0) 298.15
+  -13833.33333;  6000 N                                                 99MIE!
 
 PARAMETER G(FEP1,FE:P;0) 298.15
   -77409.25 -21.125*T*LN(T) -0.005225*T**2 +119.58*T;  6000 N           12CAO!
@@ -9629,6 +9644,9 @@ PARAMETER BMAGN(HCP_A3,CR,NI:VA;0) 298.15
   -1.91;  6000 N                                                       88GUSA!
 PARAMETER TC(HCP_A3,CR,NI:VA;0) 298.15
   -3605;  6000 N                                                       88GUSA!
+$ ESTIMATE SAME CR,P:VA AS FCC_A1
+PARAMETER L(HCP_A3,CR,P:VA;0) 298.15
+  -70000;  6000 N                                                       99MIE!
 PARAMETER L(HCP_A3,CR,TI:VA;0) 298.15
   +23900;  6000 N                                                      02GHOA!
 PARAMETER L(HCP_A3,CR,V:C;0) 298.15
@@ -12509,6 +12527,12 @@ PARAMETER L(LIQUID,CR,NI;0) 298.15
   -13300 +2.7*T;  6000 N                                                16TAN!
 PARAMETER L(LIQUID,CR,NI;1) 298.15
   +2900 +1*T;  6000 N                                                   16TAN!
+PARAMETER L(LIQUID,CR,P;0) 298.15
+  -200000;  6000 N                                                      99MIE!
+PARAMETER L(LIQUID,CR,P;1) 298.15
+  +79000;  6000 N                                                       99MIE!
+PARAMETER L(LIQUID,CR,P;2) 298.15
+  -65000;  6000 N                                                       99MIE!
 PARAMETER L(LIQUID,CR,SI;0) 298.15
   -128000 +21.23883*T;  6000 N                                         09CHEA!
 PARAMETER L(LIQUID,CR,SI;1) 298.15
@@ -13157,6 +13181,12 @@ PARAMETER L(LIQUID,CR,FE,NI;1) 298.15
   +13254;  6000 N                                                      93LEEA!
 PARAMETER L(LIQUID,CR,FE,NI;2) 298.15
   -10018;  6000 N                                                      93LEEA!
+PARAMETER L(LIQUID,CR,FE,P;0) 298.15
+  +80000;  6000 N                                                       99MIE!
+PARAMETER L(LIQUID,CR,FE,P;1) 298.15
+  +80000;  6000 N                                                       99MIE!
+PARAMETER L(LIQUID,CR,FE,P;2) 298.15
+  -350000;  6000 N                                                      99MIE!
 PARAMETER L(LIQUID,CR,FE,SI;0) 298.15
   +60000 -50*T;  6000 N                                                98MIEC!
 PARAMETER L(LIQUID,CR,FE,V;0) 298.15
@@ -13165,27 +13195,22 @@ PARAMETER L(LIQUID,CR,FE,V;1) 298.15
   +17968;  6000 N                                                      92LEEC!
 PARAMETER L(LIQUID,CR,FE,V;2) 298.15
   -7692;  6000 N                                                       92LEEC!
-
 PARAMETER L(LIQUID,CR,MN,NI;0) 298.15
   +40000;  6000 N                                                        22DO!
 PARAMETER L(LIQUID,CR,MN,NI;1) 298.15
   +40000;  6000 N                                                        22DO!
 PARAMETER L(LIQUID,CR,MN,NI;2) 298.15
   +65000;  6000 N                                                        22DO!
-
 PARAMETER L(LIQUID,CR,MO,SI;0) 298.15
   +287000;  6000 N                                                       23WU!
 PARAMETER L(LIQUID,CR,MO,SI;1) 298.15
   -119000;  6000 N                                                       23WU!
 PARAMETER L(LIQUID,CR,MO,SI;2) 298.15
   -30000;  6000 N                                                        23WU!
-
 PARAMETER L(LIQUID,CR,NB,ZR;0) 298.15
   +16800.0;  6000 N                                                      15LU!
-
 PARAMETER L(LIQUID,CR,NI,W;0) 298.15
   +41500;  6000 N                                                      88GUSA!
-
 PARAMETER L(LIQUID,CR,SI,V;0) 298.15
   +0;  6000 N                                                           15CHA!
 PARAMETER L(LIQUID,CR,SI,V;1) 298.15
@@ -19945,6 +19970,8 @@ NUMBER  SOURCE
 99LIU   'Liu, Zi-Kui, and Y. Austin Chang. "Thermodynamic assessment of the 
         Al-Fe-Si system." Metallurgical and Materials Transactions A 30 
         F(1999): 1081-1095.'
+99MIE   'Miettinen, Jyrki. "Thermodynamic description of Cr-P and Fe-Cr-P 
+        systems at low phosphorus contents." Calphad 23.1 (1999): 141-154.'
 00DU    'Du, Yong, Julius C. Schuster, and Loic Perring. "Experimental 
         Investigation and Thermodynamic Description of the Constitution of the
         Ternary System Cr-Si-C." Journal of the American Ceramic Society 83.8
@@ -20304,6 +20331,8 @@ NUMBER  SOURCE
 19WAN   'Wang, Peisheng, et al. "Thermodynamic analysis of the topologically 
         close packed σ phase in the CoCr system." Intermetallics 105 (2019): 
         13-20.'
+20BER   'Bernhard, Michael, et al. "Critical evaluation and thermodynamic 
+        modeling of the Fe–P and Fe–C–P system." Calphad 70 (2020): 101795.'
 21DU    'Du, Yong, Rainer Schmid-Fetzer, and Hiroshi Ohtani. "Thermodynamic 
         assessment of the V-N system." International Journal of Materials 
         Research 88.7 (2021): 545-556.'
