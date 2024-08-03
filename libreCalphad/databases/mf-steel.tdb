@@ -243,6 +243,7 @@ DATABASE_INFO The following systems are available:'
   NB-W      Huang (1997)'
   NB-ZR     Guillermet (1991)'
   NI-O      Kowalski (1996) and Kjellqvist (2008)'
+  NI-P      Miettinen (2014)'
   NI-SI     Witusiewicz (2023)'
   NI-TI     Bellen (1996) and De Keyzer (2009) ORDERING INCORRECT'
   NI-V      Korb (1998)'
@@ -375,6 +376,7 @@ DATABASE_INFO The following systems are available:'
   FE-NB-V   Khvan (2013)'
   FE-N-TI   Jonsson (1998)'
   FE-NI-O   Kjellqvist (2008)'
+  FE-NI-P   Miettinen (2014)'
   FE-NI-SI  Witusiewicz (2023)'
   FE-NI-TI  De Keyzer (2009) EXCEPT ORDERED PHASES'
   FE-NI-V   Zhao (2014)'
@@ -903,6 +905,15 @@ FUNCTION GHSERPP   250.00
   -74639.613 +1012.76962*T -149.4495562*T*LN(T) +67.272364E-3*T**2
   -6.651929E-6*T**3 +12495943*T**(-1);  1500 Y
   +20244.681 +140.579181*T -26.326*T*LN(T);  3000 N                     91DIN!
+
+FUNCTION GREDP 250
+  -25976.559 +148.672002*T -25.55*T*LN(T) +3.4121E-3*T**2 -2.418867E-6*T**3
+  +160095*T**(-1);   500 Y
+  -21723.721 +77.671737*T -14.368*T*LN(T) -9.57685E-3*T**2 +0.393917E-6*T**3
+  -141375*T**(-1);   852.35 Y
+  -119408.413 +1026.02962*T -149.4495562*T*LN(T) +67.272364E-3*T**2
+  -6.651929E-6*T**3 +12495943*T**(-1);  1500 Y
+  -24524.119 +153.839181*T -26.326*T*LN(T);  3000 N                     91DIN!
 
 $ ----------------------------------------------------------------------------
 $ S
@@ -1880,7 +1891,7 @@ PARAMETER G(AL3M_D022,AL:NB;0) 298.15
 PARAMETER G(AL3M_D022,AL:TI;0) 298.15
   -143733 +35.088*T +3*GHSERAL# +GHSERTI#;  6000 N                      08WIT!
 PARAMETER G(AL3M_D022,AL:V;0) 298.15
-  -108189.52 +20.5856*T +3*GHSERAL# +GHERSV#;  6000 N                   17KRO!
+  -108189.52 +20.5856*T +3*GHSERAL# +GHSERSV#;  6000 N                   17KRO!
 
 PARAMETER G(AL3M_D022,CO:AL;0) 298.15
   +3*GHSERCO# +GHSERAL#;  6000 N                                        24FRI!
@@ -1960,7 +1971,7 @@ PARAMETER G(AL3M_D022,TI:MO;0) 298.15
 PARAMETER G(AL3M_D022,TI:NB;0) 298.15
   +3*GFCCTI# +GFCCNB#;  6000 N                                         95SAUA!
 PARAMETER G(AL3M_D022,TI:TI;0) 298.15
-  +80000 +3*GHSERTI# +GHERTI#;  6000 N                                  08WIT!
+  +80000 +3*GHSERTI# +GHSERTI#;  6000 N                                  08WIT!
 PARAMETER G(AL3M_D022,TI:V;0) 298.15
   +10000 +3*GHSERTI# +GHSERV#;  6000 N                                   24LI!
 
@@ -3611,6 +3622,8 @@ PARAMETER L(BCC_A2,NI:H,VA;0) 298.15
 PARAMETER L(BCC_A2,NI:O,VA;0) 298.15
   -400000 +50*T;  6000 N                                                08KJE!
 
+PARAMETER L(BCC_A2,NI,P:VA;0) 298.15
+  -171000 +19*T;  6000 N                                               14MIED!
 PARAMETER L(BCC_A2,NI,SI:VA;0) 298.15
   -120000;  6000 N                                                      23WIT!
 PARAMETER L(BCC_A2,NI,TI:VA;0) 298.15
@@ -3861,6 +3874,8 @@ PARAMETER L(BCC_A2,FE,NB,ZR:VA;1) 298.15
 PARAMETER L(BCC_A2,FE,NB,ZR:VA;2) 298.15
   -130000.0;  6000 N                                                     17LU!
 
+PARAMETER L(BCC_A2,FE,NI,P:VA;0) 298.15
+  -90000;  6000 N                                                      14MIED!
 PARAMETER L(BCC_A2,FE,NI,SI:VA;0) 298.15
   -259000 +924*T -174*T*LN(T) +0.46*T**2 -1.74E-4*T**3
   +2.6E-18*T**7;  6000 N                                                23WIT!
@@ -4804,7 +4819,7 @@ PARAMETER G(CBCC_A12,AL:C;0) 298.15
 PARAMETER G(CBCC_A12,AL:H;0) 298.15
   +GHSERAL# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,AL:N;0) 298.15
-  +GHERSAL# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERAL# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,AL:VA;0) 298.15
   +10083.4 -4.813*T +GHSERAL#; 2900 N                                   91DIN!
 
@@ -4813,7 +4828,7 @@ PARAMETER G(CBCC_A12,CO:C;0) 298.15
 PARAMETER G(CBCC_A12,CO:H;0) 298.15
   +GHSERCO# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CO:N;0) 298.15
-  +GHERSCO# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERCO# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CO:VA;0) 298.15
   +4155 +GHSERCO#; 6000 N                                               91DIN!
 
@@ -4822,7 +4837,7 @@ PARAMETER G(CBCC_A12,CR:C;0) 298.15
 PARAMETER G(CBCC_A12,CR:H;0) 298.15
   +GHSERCR# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CR:N;0) 298.15
-  +GHERSCR# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERCR# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CR:VA;0) 298.15
   +11087 +2.7196*T +GHSERCR#; 6000 N                                    91DIN!
 
@@ -4831,7 +4846,7 @@ PARAMETER G(CBCC_A12,CU:C;0) 298.15
 PARAMETER G(CBCC_A12,CU:H;0) 298.15
   +GHSERCU# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CU:N;0) 298.15
-  +GHERSCU# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERCU# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,CU:VA;0) 298.15
   +3556 +GHSERCU#;  6000 N                                              03MIE!
 
@@ -4842,7 +4857,7 @@ PARAMETER G(CBCC_A12,FE:C;0) 298.15
 PARAMETER G(CBCC_A12,FE:H;0) 298.15
   +GHSERFE# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,FE:N;0) 298.15
-  -30766 +375.42*T -37.6*T*LN(T) +GHERSFE# +GHSERNN#;  2500 N          93QIUB!
+  -30766 +375.42*T -37.6*T*LN(T) +GHSERFE# +GHSERNN#;  2500 N          93QIUB!
 PARAMETER G(CBCC_A12,FE:VA;0) 298.15
   +4745 +GHSERFE#; 6000 N                                               91DIN!
 
@@ -4851,7 +4866,7 @@ PARAMETER G(CBCC_A12,MG:C;0) 298.15
 PARAMETER G(CBCC_A12,MG:H;0) 298.15
   +GHSERMG# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,MG:N;0) 298.15
-  +GHERSMG# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERMG# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,MG:VA;0) 298.15
   +4602.4 -3.011*T +GHSERMG#; 2000 N                                    91DIN!
 
@@ -4872,7 +4887,7 @@ PARAMETER G(CBCC_A12,NB:C;0) 298.15
 PARAMETER G(CBCC_A12,NB:H;0) 298.15
   +GHSERNB# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NB:N;0) 298.15
-  +GHERSNB# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERNB# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NB:VA;0) 298.15
   +17600 +GHSERNB#;  6000 N                                             12LIU!
 
@@ -4881,7 +4896,7 @@ PARAMETER G(CBCC_A12,NI:C;0) 298.15
 PARAMETER G(CBCC_A12,NI:H;0) 298.15
   +75000 +50*T +GHSERNI# +GHSERHH# +RTLNP#;  6000 N                     24FRI!
 PARAMETER G(CBCC_A12,NI:N;0) 298.15
-  +GHERSNI# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERNI# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,NI:VA;0) 298.15
   +3556 +GHSERNI# +RTLNP#; 3000 N                                       91DIN!
 
@@ -4899,7 +4914,7 @@ PARAMETER G(CBCC_A12,SI:C;0) 298.15
 PARAMETER G(CBCC_A12,SI:H;0) 298.15
   +GHSERSI# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,SI:N;0) 298.15
-  +GHERSSI# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERSI# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,SI:VA;0) 298.15
   +50208 -20.377*T +GHSERSI#; 3600 N                                    91DIN!
 
@@ -4908,7 +4923,7 @@ PARAMETER G(CBCC_A12,SN:C;0) 298.15
 PARAMETER G(CBCC_A12,SN:H;0) 298.15
   +GHSERSN# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,SN:N;0) 298.15
-  +GHERSSN# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERSN# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,SN:VA;0) 298.15
   +2000 +GHSERSN#; 3000 N                                               91DIN!
 
@@ -4917,7 +4932,7 @@ PARAMETER G(CBCC_A12,TI:C;0) 298.15
 PARAMETER G(CBCC_A12,TI:H;0) 298.15
   +GHSERTI# +GHSERHH#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,TI:N;0) 298.15
-  +GHERSTI# +GHSERNN#;  6000 N                                          24FRI!
+  +GHSERTI# +GHSERNN#;  6000 N                                          24FRI!
 PARAMETER G(CBCC_A12,TI:VA;0) 298.15
   +4602.2 +GHSERTI#; 4000 N                                             91DIN!
 
@@ -4926,7 +4941,7 @@ PARAMETER G(CBCC_A12,V:C;0) 298.15
 PARAMETER G(CBCC_A12,V:H;0) 298.15
   +GHSERV# +GHSERHH#;  6000 N                                           24FRI!
 PARAMETER G(CBCC_A12,V:N;0) 298.15
-  +GHERSV# +GHSERNN#;  6000 N                                           24FRI!
+  +GHSERV# +GHSERNN#;  6000 N                                           24FRI!
 PARAMETER G(CBCC_A12,V:VA;0) 298.15
   +9000 +GHSERV#; 4000 N                                                91DIN!
 
@@ -7119,6 +7134,8 @@ PARAMETER L(FCC_A1,NI:H,VA;1) 298.15
 PARAMETER L(FCC_A1,NI:O,VA;0) 298.15
   -165608 +32.24*T;  6000 N                                             08KJE!
 
+PARAMETER L(FCC_A1,NI,P:VA;0) 298.15
+  -171000 +19*T;  6000 N                                               14MIED!
 PARAMETER L(FCC_A1,NI,SI:VA;0) 298.15
   -95699.9 -33.365*T;  6000 N                                           23WIT!
 PARAMETER L(FCC_A1,NI,SI:VA;1) 298.15
@@ -7379,6 +7396,8 @@ PARAMETER L(FCC_A1,FE,MO,SI:VA;0) 298.15
 PARAMETER L(FCC_A1,FE,NB:C,VA;0) 298.15
   -40000;  6000 N                                                      90HUAA!
 
+PARAMETER L(FCC_A1,FE,NI,P:VA;0) 298.15
+  -32000;  6000 N                                                      14MIED!
 PARAMETER L(FCC_A1,FE,NI,SI:VA;0) 298.15
   -347000 +75*T;  6000 N                                                23WIT!
 PARAMETER L(FCC_A1,FE,NI,SI:VA;1) 298.15
@@ -8148,7 +8167,7 @@ $ ----------------------------------------------------------------------------
 $ FE2P
 
 PHASE FE2P % 2 2 1 !
-CONSTITUENT FE2P : CR,CU,FE,MN : P : !
+CONSTITUENT FE2P : CR,CU,FE,MN,NI : P : !
 
 PARAMETER G(FE2P,CR:P;0) 298.15
   -159300 +5*T +2*GHSERCR# +GHSERPP#;  6000 N                           99MIE!
@@ -8159,21 +8178,25 @@ PARAMETER G(FE2P,FE:P;0) 298.15
 PARAMETER G(FE2P,MN:P;0) 298.15
   -164079 -39.2175*T +6.6209*T*LN(T) +0.002264*T**2 +2*GHSERMN# 
   +GHSERPP#;  6000 N                                                    21ZAI!
+PARAMETER G(FE2P,NI:P;0) 298.15
+  -175320 +5.05*T +2*GHSERNI# +GREDP#;  6000 N                         14MIED!
 
 
 PARAMETER L(FE2P,CR,FE:P;0) 298.15
   -32000;  6000 N                                                      14MIEC!
 PARAMETER L(FE2P,CR,FE:P;1) 298.15
   +15000;  6000 N                                                      14MIEC!
-PARAMETER L(F2P,FE,MN:P;0) 298.15
+PARAMETER L(FE2P,FE,MN:P;0) 298.15
   -85000 +50*T;  6000 N                                                14MIEA!
+PARAMETER L(FE2P,FE,NI:P;0) 298.15
+  +12000 +10*T;  6000 N                                                14MIED!
 
 $ ----------------------------------------------------------------------------
 $ FE3P
 $ TODO: SEPARATE THESE INTO SECTIONS
 
 PHASE FE3P % 2 3 1 !
-CONSTITUENT FE3P : CR,FE,MN : P : !
+CONSTITUENT FE3P : CR,FE,MN,NI : P : !
 
 PHASE FEP2 % 2 0.333 0.667 !
 CONSTITUENT FEP2 : FE : P : !
@@ -8188,6 +8211,8 @@ PARAMETER G(FE3P,FE:P;0) 298.15
   +539500*T**(-1);  6000 N                                              12CAO!
 PARAMETER G(FE3P,MN:P;0) 298.15
   -160000 +20*T +3*GHSERMN# +GHSERPP#;  6000 N                         14MIEA!
+PARAMETER G(FE3P,NI:P;0) 298.15
+  -203560 +18.82*T +3*GHSERNI# +GREDP#;  6000 N                        14MIED!
 
 
 PARAMETER L(FE3P,CR,FE:P;0) 298.15
@@ -8196,6 +8221,8 @@ PARAMETER L(FE3P,CR,FE:P;1) 298.15
   -5000 +10*T;  6000 N                                                 14MIEC!
 PARAMETER L(FE3P,FE,MN:P;0) 298.15
   -50000 +20*T;  6000 N                                                14MIEA!
+PARAMETER L(FE3P,FE,NI:P;0) 298.15
+  +48500 -16*T;  6000 N                                                14MIED!
 
 PARAMETER G(FEP2,FE:P;0) 298.15
   +0.333*GHSERFE# +0.667*GHSERPP# -76666 +16.33*T;  6000 N              12CAO!
@@ -9978,6 +10005,9 @@ $ ESTIMATE SAME NI:O,VA AS FCC_A1
 PARAMETER L(HCP_A3,NI:O,VA;0) 298.15
   -124206 +24.18*T;  6000 N                                             08KJE!
 
+$ ESTIMATE SAME NI,P;VA AS FCC_A1
+PARAMETER L(HCP_A3,NI,P:VA;0) 298.15
+  -171000 +19*T;  6000 N                                               14MIED!
 $ ESTIMATE SAME NI,SI:VA AS FCC_A1
 PARAMETER L(HCP_A3,NI,SI:VA;0) 298.15
   -95699.9 -33.365*T;  6000 N                                           23WIT!
@@ -10227,6 +10257,9 @@ PARAMETER L(HCP_A3,FE,NB:C,VA;0) 298.15
 PARAMETER L(HCP_A3,FE,NB:N,VA;0) 298.15
   -10000;  6000 N                                                       98ZAJ!
 
+$ ESTIMATE SAME FE,NI,P:VA AS FCC_A1
+PARAMETER L(HCP_A3,FE,NI,P:VA;0) 298.15
+  -32000;  6000 N                                                      14MIED!
 $ ESTIMATE SAME FE,NI,SI:VA AS FCC_A1
 PARAMETER L(HCP_A3,FE,NI,SI:VA;0) 298.15
   -347000 +75*T;  6000 N                                                23WIT!
@@ -12923,6 +12956,12 @@ PARAMETER L(LIQUID,NB,ZR;1) 298.15
 
 PARAMETER L(LIQUID,NI,NIO;0) 298.15
   +165532.6 -63.7325*T;  6000 N                                         96KOW!
+PARAMETER L(LIQUID,NI,P;0) 298.15
+  -326000 +78*T;  6000 N                                               14MIED!
+PARAMETER L(LIQUID,NI,P;1) 298.15
+  +0;  6000 N                                                          14MIED!
+PARAMETER L(LIQUID,NI,P;2) 298.15
+  +83500 -27*T;  6000 N                                                14MIED!
 PARAMETER L(LIQUID,NI,SI;0) 298.15
   -215947 +14.7505*T;  6000 N                                           23WIT!
 PARAMETER L(LIQUID,NI,SI;1) 298.15
@@ -13380,16 +13419,20 @@ PARAMETER L(LIQUID,FE,N,V;1) 298.15
 PARAMETER L(LIQUID,FE,NV,V;2) 298.15
   +104000;  6000 N                                                      03OHT!
 
+PARAMETER L(LIQUID,FE,NI,P;0) 298.15
+  +128000;  6000 N                                                     14MIED!
+PARAMETER L(LIQUID,FE,NI,P;1) 298.15
+  +150000;  6000 N                                                     14MIED!
+PARAMETER L(LIQUID,FE,NI,P;2) 298.15
+  +100000 -70*T;  6000 N                                               14MIED!
 PARAMETER L(LIQUID,FE,NI,SI;0) 298.15
   +100000 -150*T;  6000 N                                               23WIT!
 PARAMETER L(LIQUID,FE,NI,SI;1) 298.15
   +125000 -150*T;  6000 N                                               23WIT!
 PARAMETER L(LIQUID,FE,NI,SI;2) 298.15
   +50000 -150*T;  6000 N                                                23WIT!
-
 PARAMETER L(LIQUID,FE,NI,TI;0) 298.15
   +17749;  6000 N                                                       09KEY!
-
 PARAMETER L(LIQUID,FE,NI,W;0) 298.15
   +14621;  6000 N                                                       86GUI!
 PARAMETER L(LIQUID,FE,NI,W;1) 298.15
@@ -14882,7 +14925,7 @@ PARAMETER G(M2SI_THETA,FE:FE:VA;0) 298.15
   +15000 +2*GHSERFE#;  6000 N                                           23WIT!
 
 PARAMETER G(M2SI_THETA,FE:NI:SI;0) 298.15
-  -64835 -5.2*T +GHSERFE# +GHSERNI# +GHERSI#;  6000 N                   23WIT!
+  -64835 -5.2*T +GHSERFE# +GHSERNI# +GHSERSI#;  6000 N                   23WIT!
 PARAMETER BMAGN(M2SI_THETA,FE:NI:SI;0) 298.15
   +0.985;  6000 N                                                       23WIT!
 PARAMETER TC(M2SI_THETA,FE:NI:SI;0) 298.15
@@ -14896,7 +14939,7 @@ PARAMETER G(M2SI_THETA,FE:VA:VA;0) 298.15
   +15000 +GHSERFE#;  6000 N                                             23WIT!
 
 PARAMETER G(M2SI_THETA,NI:FE:SI;0) 298.15
-  -64835 -5.2*T +GHSERNI# +GHSERFE# +GHERSI#;  6000 N                   23WIT!
+  -64835 -5.2*T +GHSERNI# +GHSERFE# +GHSERSI#;  6000 N                   23WIT!
 PARAMETER BMAGN(M2SI_THETA,NI:FE:SI;0) 298.15
   +0.985;  6000 N                                                       23WIT!
 PARAMETER TC(M2SI_THETA,NI:FE:SI;0) 298.15
@@ -15215,6 +15258,42 @@ PARAMETER G(NI3TI_D024,NI,TI:TI;0) 298.15
 
 PARAMETER G(NI3TI_D024,TI:NI,TI;0) 298.15
   +20000;  6000 N                                                       99KUM!
+
+$ ----------------------------------------------------------------------------
+$ NI5P2_H
+
+PHASE NI5P2_H % 2 5 2 !
+CONSTITUENT NI5P2_H : NI : P : !
+
+PARAMETER G(NI5P2_H,NI:P;0) 298.15
+  -355430 +0.7*T +2*GREDP# +5*GHSERNI#;  6000 N                        14MIED!
+
+$ ----------------------------------------------------------------------------
+$ NI5P2_L
+
+PHASE NI5P2_L % 2 5 2 !
+CONSTITUENT NI5P2_L : NI : P : !
+
+PARAMETER G(NI5P2_L,NI:P;0) 298.15
+  -388860 +26.39*T +2*GREDP# +5*GHSERNI#;  6000 N                      14MIED!
+
+$ ----------------------------------------------------------------------------
+$ NI12P5_H
+
+PHASE NI12P5_H % 2 12 5 !
+CONSTITUENT NI12P5_H : NI : P : !
+
+PARAMETER G(NI12P5_H,NI:P;0) 298.15
+  -910400 +23.44*T +5*GREDP# +12*GHSERNI#;  6000 N                     14MIED!
+
+$ ----------------------------------------------------------------------------
+$ NI12P5_L
+
+PHASE NI12P5_L % 2 12 5 !
+CONSTITUENT NI12P5_L : NI : P : !
+
+PARAMETER G(NI12P5_L,NI:P;0) 298.15
+  -935800 +57.51*T +5*GREDP# +12*GHSERNI#;  6000 N                     14MIED!
 
 $ ----------------------------------------------------------------------------
 $ NI5SI3_GAMMA
@@ -16842,13 +16921,7 @@ PHASE RED_P % 1 1 !
 CONSTITUENT RED_P : P : !
 
 PARAMETER G(RED_P,P;0) 250.00
-  -25976.559 +148.672002*T -25.55*T*LN(T) +3.4121E-3*T**2 -2.418867E-6*T**3
-  +160095*T**(-1);   500 Y
-  -21723.721 +77.671737*T -14.368*T*LN(T) -9.57685E-3*T**2 +0.393917E-6*T**3
-  -141375*T**(-1);   852.35 Y
-  -119408.413 +1026.02962*T -149.4495562*T*LN(T) +67.272364E-3*T**2
-  -6.651929E-6*T**3 +12495943*T**(-1);  1500 Y
-  -24524.119 +153.839181*T -26.326*T*LN(T);  3000 N                     91DIN!
+  +GREDP#;  6000 N                                                      91DIN!
 
 $ ----------------------------------------------------------------------------
 $ RHOMBOHEDRAL_A7
@@ -18345,7 +18418,7 @@ PARAMETER G(SIGMA_H,FE:CR:TI;0) 298.15
   +8*GFCCFE# +4*GHSERCR# +18*GBCCTI#;  6000 N                           24FRI!
 
 PARAMETER G(SIGMA_H,MN:CR:AL;0) 298.15
-  -391559.64 -167.36*T +8*GHERMN# +4*GHSERCR# +18*GHSERAL#;  6000 N    17CUIF!
+  -391559.64 -167.36*T +8*GHSERMN# +4*GHSERCR# +18*GHSERAL#;  6000 N    17CUIF!
 PARAMETER G(SIGMA_H,MN:CR:CO;0) 298.15
   +0.307692*GSIGMAMNCRMN# +0.692308*GSIGMACOCRCO#;  6000 N               22DO!
 PARAMETER G(SIGMA_H,MN:CR:CR;0) 298.15
@@ -20363,6 +20436,9 @@ NUMBER  SOURCE
 14MIEC  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
         of Ternary Fe-XP Systems. Part 1: Fe-Cr-P." Journal of phase 
         equilibria and diffusion 35 (2014): 458-468.'
+14MIED  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
+        of Ternary Fe-XP Systems. Part 6: Fe-Ni-P." Journal of Phase 
+        Equilibria and Diffusion 36 (2015): 78-87.'
 14RAJ   'Rajkumar, V. B., and KC Hari Kumar. "Thermodynamic modeling of the 
         Fe–Mo system coupled with experiments and ab initio calculations." 
         Journal of Alloys and Compounds 611 (2014): 303-312.'
