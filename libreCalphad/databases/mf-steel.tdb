@@ -178,7 +178,7 @@ DATABASE_INFO The following systems are available:'
   CR-NB     Lu (2015)'
   CR-NI     Lee (1992) and Tang (2016)'
   CR-O      Taylor (1990), Kowalski (1996), and Kjellqvist (2008)'
-  CR-P      Miettinen (1999)'
+  CR-P      Miettinen (1999) and Miettinen (2014)'
   CR-SI     Du (2000) and Chen (2009)'
   CR-TI     Ghosh (2002)'
   CR-V      Ghosh (2002)'
@@ -343,7 +343,7 @@ DATABASE_INFO The following systems are available:'
   CR-FE-N   Hertzman (1977) and Frisk (1990)'
   CR-FE-NI  Hillert (1990) and Lee (1993)'
   CR-FE-O   Kjellqvist (2008)'
-  CR-FE-P   Miettinen (1999)'
+  CR-FE-P   Miettinen (2014)'
   CR-FE-SI  Lindholm (1997), Miettinen (1998), and Cui (2017)'
   CR-FE-V   Lee (1992)'
   CR-FE-W   Gustafson (1988) and Frichtl (2024)'
@@ -3774,7 +3774,11 @@ PARAMETER L(BCC_A2,CR,FE,MN:VA;0) 298.15
 PARAMETER L(BCC_A2,CR,FE,NI:VA;0) 298.15
   -2673 +2.04145*T;  6000 N                                            93LEEA!
 PARAMETER L(BCC_A2,CR,FE,P:VA;0) 298.15
-  -70000;  6000 N                                                       99MIE!
+  -100000;  6000 N                                                     14MIEC!
+PARAMETER L(BCC_A2,CR,FE,P:VA;1) 298.15
+  +50000 -50*T;  6000 N                                                14MIEC!
+PARAMETER L(BCC_A2,CR,FE,P:VA;2) 298.15
+  -100000;  6000 N                                                     14MIEC!
 PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
   -54000;  6000 N                                                       97LIN!
 $ PARAMETER L(BCC_A2,CR,FE,SI:VA;0) 298.15
@@ -7298,6 +7302,12 @@ PARAMETER TC(FCC_A1,CR,FE,NI:VA;1) 298.15
   +10199.2;  6000 N                                                     21XIA!
 PARAMETER TC(FCC_A1,CR,FE,NI:VA;2) 298.15
   -2253.8;  6000 N                                                      21XIA!
+PARAMETER L(FCC_A1,CR,FE,P:VA;0) 298.15
+  -100000;  6000 N                                                     14MIEC!
+PARAMETER L(FCC_A1,CR,FE,P:VA;1) 298.15
+  -25000 -50*T;  6000 N                                                14MIEC!
+PARAMETER L(FCC_A1,CR,FE,P:VA;2) 298.15
+  -100000;  6000 N                                                     14MIEC!
 PARAMETER L(FCC_A1,CR,FE,SI:VA;0) 298.15
   -54000;  6000 N                                                      98MIEC!
 
@@ -8123,10 +8133,16 @@ $ ----------------------------------------------------------------------------
 $ FEP1
 
 PHASE FEP1 % 2 1 1 !
-CONSTITUENT FEP1 : FE : P : !
+CONSTITUENT FEP1 : CR,FE : P : !
 
+PARAMETER G(FEP1,CR:P;0) 298.15
+  -135000 +10*T;  6000 N                                               14MIEC!
 PARAMETER G(FEP1,FE:P;0) 298.15
   -154818.5 -42.25*T*LN(T) -0.01045*T**2 +239.16*T;  6000 N             12CAO!
+
+
+PARAMETER L(FEP1,CR,FE:P;0) 298.15
+  -30000;  6000 N                                                      14MIEC!
 
 $ ----------------------------------------------------------------------------
 $ FE2P
@@ -8135,7 +8151,7 @@ PHASE FE2P % 2 2 1 !
 CONSTITUENT FE2P : CR,CU,FE,MN : P : !
 
 PARAMETER G(FE2P,CR:P;0) 298.15
-  -159530 +5*T +2*GHSERCR# +GHSERPP#;  6000 N                           99MIE!
+  -159300 +5*T +2*GHSERCR# +GHSERPP#;  6000 N                           99MIE!
 PARAMETER G(FE2P,CU:P;0) 298.15
   -70000 +20*T +2*GBCCCU# +GHSERPP#;  6000 N                           14MIEB!
 PARAMETER G(FE2P,FE:P;0) 298.15
@@ -8146,7 +8162,9 @@ PARAMETER G(FE2P,MN:P;0) 298.15
 
 
 PARAMETER L(FE2P,CR,FE:P;0) 298.15
-  -41500;  6000 N                                                       99MIE!
+  -32000;  6000 N                                                      14MIEC!
+PARAMETER L(FE2P,CR,FE:P;1) 298.15
+  +15000;  6000 N                                                      14MIEC!
 PARAMETER L(F2P,FE,MN:P;0) 298.15
   -85000 +50*T;  6000 N                                                14MIEA!
 
@@ -8164,7 +8182,7 @@ PHASE FEP4 % 2 0.2 0.8 !
 CONSTITUENT FEP4 : FE : P : !
 
 PARAMETER G(FE3P,CR:P;0) 298.15
-  -176091 -49.399*T +7.9518*T*LN(T) +3*GHSERCR# +GHSERPP#;  6000 N      99MIE!
+  -175246 -49.6744*T +7.9259*T*LN(T) +3*GHSERCR# +GHSERPP#;  6000 N    14MIEC!
 PARAMETER G(FE3P,FE:P;0) 298.15
   -196669.005 +629.4*T -110.9*T*LN(T) -0.00585*T**2 
   +539500*T**(-1);  6000 N                                              12CAO!
@@ -8173,7 +8191,9 @@ PARAMETER G(FE3P,MN:P;0) 298.15
 
 
 PARAMETER L(FE3P,CR,FE:P;0) 298.15
-  -53000 +20*T;  6000 N                                                 99MIE!
+  -55000 +30*T;  6000 N                                                14MIEC!
+PARAMETER L(FE3P,CR,FE:P;1) 298.15
+  -5000 +10*T;  6000 N                                                 14MIEC!
 PARAMETER L(FE3P,FE,MN:P;0) 298.15
   -50000 +20*T;  6000 N                                                14MIEA!
 
@@ -10137,6 +10157,13 @@ PARAMETER L(HCP_A3,CR,FE,NI:C;0) 298.15
   -6386.25;  6000 N                                                     91HIL!
 PARAMETER L(HCP_A3,CR,FE,NI:VA;0) 298.15
   +16580 -9.7835*T;  6000 N                                            93LEEA!
+$ ESTIMATE SAME CR,FE,P:VA AS FCC_A1
+PARAMETER L(HCP_A3,CR,FE,P:VA;0) 298.15
+  -100000;  6000 N                                                     14MIEC!
+PARAMETER L(HCP_A3,CR,FE,P:VA;1) 298.15
+  -25000 -50*T;  6000 N                                                14MIEC!
+PARAMETER L(HCP_A3,CR,FE,P:VA;2) 298.15
+  -100000;  6000 N                                                     14MIEC!
 
 PARAMETER L(HCP_A3,CR,MN,NI:VA;0) 298.15
   +50000;  6000 N                                                        22DO!
@@ -13256,11 +13283,11 @@ PARAMETER L(LIQUID,CR,FE,NI;1) 298.15
 PARAMETER L(LIQUID,CR,FE,NI;2) 298.15
   -10018;  6000 N                                                      93LEEA!
 PARAMETER L(LIQUID,CR,FE,P;0) 298.15
-  +80000;  6000 N                                                       99MIE!
+  +100000;  6000 N                                                     14MIEC!
 PARAMETER L(LIQUID,CR,FE,P;1) 298.15
-  +80000;  6000 N                                                       99MIE!
+  +180000 -50*T;  6000 N                                               14MIEC!
 PARAMETER L(LIQUID,CR,FE,P;2) 298.15
-  -350000;  6000 N                                                      99MIE!
+  -170000 -50*T;  6000 N                                               14MIEC!
 PARAMETER L(LIQUID,CR,FE,SI;0) 298.15
   +60000 -50*T;  6000 N                                                98MIEC!
 PARAMETER L(LIQUID,CR,FE,V;0) 298.15
@@ -20333,6 +20360,9 @@ NUMBER  SOURCE
 14MIEB  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
         of Ternary Fe-XP Systems. Part 2: Fe-Cu-P." Journal of phase 
         equilibria and diffusion 35 (2014): 469-475.'
+14MIEC  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
+        of Ternary Fe-XP Systems. Part 1: Fe-Cr-P." Journal of phase 
+        equilibria and diffusion 35 (2014): 458-468.'
 14RAJ   'Rajkumar, V. B., and KC Hari Kumar. "Thermodynamic modeling of the 
         Fe–Mo system coupled with experiments and ab initio calculations." 
         Journal of Alloys and Compounds 611 (2014): 303-312.'
