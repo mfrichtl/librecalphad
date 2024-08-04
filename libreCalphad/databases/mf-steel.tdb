@@ -132,7 +132,7 @@ DATABASE_INFO The following systems are available:'
   AL-NB     He (2015)'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
   AL-O      Taylor (1992) and Lindwall (2015)'
-  AL-P      Miettinen (2015)'
+  AL-P      Liang (2013) and Miettinen (2015)'
   AL-SI     Feufel (1997) and Liu (1999)'
   AL-TI     Witusiewicz (2008) EXCEPT L10'
   AL-V      Kroupa (2017)'
@@ -3928,6 +3928,9 @@ PARAMETER L(BCC_A2,FE,NI,V:VA;1) 298.15
 PARAMETER L(BCC_A2,FE,NI,V:VA;2) 298.15
   +16912.5 -12.5*T;  6000 N                                             14ZHA!
 
+PARAMETER L(BCC_A2,FE,P,SI:VA;0) 298.15
+  -60000;  6000 N                                                       16MIE!
+
 PARAMETER L(BCC_A2,FE,TI,V:VA;0) 298.15
   -2048 -2.354*T;  6000 N                                               12GUO!
 PARAMETER L(BCC_A2,FE,TI,V:VA;1) 298.15
@@ -6128,7 +6131,7 @@ $ SPACE GROUP: Fd-3m
 $ PEARSON: cF8
 
 PHASE DIAMOND_A4 % 1 1 !
-CONSTITUENT DIAMOND_A4 : AL,B,BI,C,CR,FE,MN,NI,O,SI,SN,TI : !
+CONSTITUENT DIAMOND_A4 : AL,B,BI,C,CR,FE,MN,NI,O,P,SI,SN,TI : !
 
 PARAMETER G(DIAMOND_A4,AL;0) 298.15 
   +30*T +GHSERAL#; 2900 N                                               98ANS!
@@ -6148,6 +6151,8 @@ PARAMETER G(DIAMOND_A4,NI;0) 298.15
   +30000 +GHSERNI#;  6000 N                                             23WIT!
 PARAMETER G(DIAMOND_A4,O;0) 298.15
   +30000 +GHSEROO#;  6000 N                                             92HAL!
+PARAMETER G(DIAMOND_A4,P;0) 298.15
+  +30*T +GHSERPP#;  6000 N                                              14LIA!
 PARAMETER G(DIAMOND_A4,SI;0) 298.15 
   +GHSERSI#; 3600 N                                                     91DIN!
 PARAMETER G(DIAMOND_A4,SN;0) 100
@@ -6162,24 +6167,18 @@ PARAMETER G(DIAMOND_A4,TI;0) 298.15
 
 PARAMETER L(DIAMOND_A4,AL,SI;0) 298.15
   +111417.7 -46.1392*T;  6000 N                                         99LIU!
-
 PARAMETER L(DIAMOND_A4,C,SI;0) 298.15
   +93386.8;  6000 N                                                     96GRO!
-
 PARAMETER L(DIAMOND_A4,FE,SI;0) 298.15
   +113000 -1.4*T;  6000 N                                               23WIT!
-
 PARAMETER L(DIAMOND_A4,MN,SI;0) 298.15
   -38330;  6000 N                                                       15ZHE!
-
 PARAMETER L(DIAMOND_A4,NI,SI;0) 298.15
   +54400 -41.2*T;  6000 N                                               23WIT!
-
 PARAMETER L(DIAMOND_A4,O,SI;0) 298.15
   -340000 +85.3*T;  6000 N                                              92HAL!
-
-PARAMETER L(DIAMOND_A4,O,SI;0) 298.15
-  -340000 +85.3*T;  6000 N                                              92HAL!
+PARAMETER L(DIAMOND_A4,P,SI;0) 298.15
+  -40498 +21.808*T;  6000 N                                             14LIA!
 
 
 PARAMETER L(DIAMOND_A4,C,FE,MN;0) 298.15
@@ -7463,6 +7462,9 @@ PARAMETER L(FCC_A1,FE,NI,W:VA;2) 298.15
 PARAMETER L(FCC_A1,FE,P:C,VA;0) 298.15
   -223844 -15.2716*T;  6000 N                                           20BER!
 
+PARAMETER L(FCC_A1,FE,P,SI:VA;0) 298.15
+  -60000;  6000 N                                                       16MIE!
+
 PARAMETER L(FCC_A1,FE,TI:C,VA;0) 298.15
   +0;  6000  N                                                          98JON!
 PARAMETER L(FCC_A1,FE,TI:C,VA;1) 298.15
@@ -8053,6 +8055,25 @@ PARAMETER L(FCC_L12,AL,MO,NI:NI:VA;0) 298.15
   +AL3NI# -1.5*MONI3# -1.5*MO2NI2# +MO3NI#;  6000 N                     01DUP!
 
 $ ----------------------------------------------------------------------------
+$ FEP2
+
+PHASE FEP2 % 2 0.333 0.667 !
+CONSTITUENT FEP2 : FE : P : !
+
+
+PARAMETER G(FEP2,FE:P;0) 298.15
+  +0.333*GHSERFE# +0.667*GHSERPP# -76666 +16.33*T;  6000 N              12CAO!
+
+$ ----------------------------------------------------------------------------
+$ FEP4
+
+PHASE FEP4 % 2 0.2 0.8 !
+CONSTITUENT FEP4 : FE : P : !
+
+PARAMETER G(FEP4,FE:P;0) 298.15
+  +0.2*GHSERFE# +0.8*GHSERPP# -62000 +14.6*T;  6000 N                   12CAO!
+
+$ ----------------------------------------------------------------------------
 $ FESI2_L
 
 PHASE FESI2_L % 2 0.333 0.667 !
@@ -8179,6 +8200,15 @@ PARAMETER L(FEZR3_E1A,FE,ZR:ZR;0) 298.15
   +32200.0;  6000 N                                                      17LU!
 
 $ ----------------------------------------------------------------------------
+$ FESI4P4
+
+PHASE FESI4P4 % 3 1 4 4 !
+CONSTITUENT FESI4P4 : FE : SI : P : !
+
+PARAMETER G(FESI4P4,FE:SI:P;0) 298.15
+  -450000 +176*T +GHSERFE# +4*GHSERSI# +4*GHSERPP#;  6000 N             16MIE!
+
+$ ----------------------------------------------------------------------------
 $ FE2SO43
 $ FE (III) SULFATE, FERRIC SULFATE
 
@@ -8216,33 +8246,6 @@ PARAMETER G(FE2TA3,FE,TA:FE;0) 298.15
 
 PARAMETER G(FE2TA3,TA:FE,TA;0) 298.15
   -30000 +20*T;  6000 N                                                 11WIT!
-
-$ ----------------------------------------------------------------------------
-$ FEP1
-
-PHASE FEP1 % 2 1 1 !
-CONSTITUENT FEP1 : CR,FE : P : !
-
-PARAMETER G(FEP1,CR:P;0) 298.15
-  -135000 +10*T;  6000 N                                               14MIEC!
-PARAMETER G(FEP1,FE:P;0) 298.15
-  -154818.5 -42.25*T*LN(T) -0.01045*T**2 +239.16*T;  6000 N             12CAO!
-
-
-PARAMETER L(FEP1,CR,FE:P;0) 298.15
-  -30000;  6000 N                                                      14MIEC!
-
-
-PHASE FEP2 % 2 0.333 0.667 !
-CONSTITUENT FEP2 : FE : P : !
-
-PHASE FEP4 % 2 0.2 0.8 !
-CONSTITUENT FEP4 : FE : P : !
-PARAMETER G(FEP2,FE:P;0) 298.15
-  +0.333*GHSERFE# +0.667*GHSERPP# -76666 +16.33*T;  6000 N              12CAO!
-
-PARAMETER G(FEP4,FE:P;0) 298.15
-  +0.2*GHSERFE# +0.8*GHSERPP# -62000 +14.6*T;  6000 N                   12CAO!
 
 $ ----------------------------------------------------------------------------
 $ FE8SI2C
@@ -10318,6 +10321,10 @@ PARAMETER L(HCP_A3,FE,NI,W:VA;1) 298.15
   +50436;  6000 N                                                       86GUI!
 PARAMETER L(HCP_A3,FE,NI,W:VA;2) 298.15
   +0;  6000 N                                                           86GUI!
+
+$ ESTIMATE SAME FE,P,SI:VA AS FCC_A1
+PARAMETER L(HCP_A3,FE,P,SI:VA;0) 298.15
+  -60000;  6000 N                                                       16MIE!
 
 $ ESTIMATE SAME FE,TI:C,VA AS FCC_A1
 PARAMETER L(HCP_A3,FE,TI:C,VA;0) 298.15
@@ -13028,6 +13035,11 @@ PARAMETER L(LIQUID,NI,W;1) 298.15
 PARAMETER L(LIQUID,NI,W;2) 298.15
   -12400;  6000 N                                                       17ISO!
 
+PARAMETER L(LIQUID,P,SI;0) 298.15
+  -20801 +4.117*T;  6000 N                                              14LIA!
+PARAMETER L(LIQUID,P,SI;1) 298.15
+  +13982 -2.788*T;  6000 N                                              14LIA!
+
 PARAMETER L(LIQUID,SI,TA;0) 298.15
   -256627.7 +92.23583*T;   6000 N                                       89VAH!
 PARAMETER L(LIQUID,SI,TA;1) 298.15
@@ -13497,6 +13509,13 @@ PARAMETER L(LIQUID,FE,NI,W;1) 298.15
 PARAMETER L(LIQUID,FE,NI,W;2) 298.15
   -84842;  6000 N                                                       86GUI!
 
+PARAMETER L(LIQUID,FE,P,SI;0) 298.15
+  +135000 -50*T;  6000 N                                                16MIE!
+PARAMETER L(LIQUID,FE,P,SI;1) 298.15
+  +250000 -70*T;  6000 N                                                16MIE!
+PARAMETER L(LIQUID,FE,P,SI;2) 298.15
+  +320000 -70*T;  6000 N                                                16MIE!
+
 PARAMETER L(LIQUID,FE,TI,V;0) 298.15
   -52086 +13.494*T;  6000 N                                             12GUO!
 PARAMETER L(LIQUID,FE,TI,V;1) 298.15
@@ -13527,6 +13546,26 @@ PARAMETER L(LIQUID,MN,NI,SI;1) 298.15
   -135000;  6000 N                                                       11HU!
 PARAMETER L(LIQUID,MN,NI,SI;2) 298.15
   -80000;  6000 N                                                        11HU!
+
+$ ----------------------------------------------------------------------------
+$ MP1
+
+PHASE MP1 % 2 1 1 !
+CONSTITUENT MP1 : CR,FE : P,SI : !
+
+PARAMETER G(MP1,CR:P;0) 298.15
+  -135000 +10*T +GHSERCR# +GHSERPP#;  6000 N                           14MIEC!
+PARAMETER G(MP1,FE:P;0) 298.15
+  -154818.5 -42.25*T*LN(T) -0.01045*T**2 +239.16*T;  6000 N             12CAO!
+PARAMETER G(MP1,FE:SI;0) 298.15
+  -70000 +5*T +GHSERFE# +GHSERSI#;  6000 N                              16MIE!
+
+
+PARAMETER L(MP1,CR,FE:P;0) 298.15
+  -30000;  6000 N                                                      14MIEC!
+
+PARAMETER L(MP1,FE:P,SI;0) 298.15
+  -12000 +25*T;  6000 N                                                 16MIE!
 
 $ ----------------------------------------------------------------------------
 $ MB2_C32
@@ -13637,7 +13676,7 @@ $ ----------------------------------------------------------------------------
 $ M2P
 
 PHASE M2P % 2 2 1 !
-CONSTITUENT M2P : AL,CR,CU,FE,MN,MO,NB,NI : P : !
+CONSTITUENT M2P : AL,CR,CU,FE,MN,MO,NB,NI : P,SI : !
 
 PARAMETER G(M2P,AL:P;0) 298.15
   -150000 +25*T +2*GHSERAL# +GHSERPP#;  6000 N                         15MIEC!
@@ -13647,6 +13686,8 @@ PARAMETER G(M2P,CU:P;0) 298.15
   -70000 +20*T +2*GBCCCU# +GHSERPP#;  6000 N                           14MIEB!
 PARAMETER G(M2P,FE:P;0) 298.15
   -177142 +364.569*T -66.6699*T*LN(T) -0.01435*T**2;  6000 N            12CAO!
+PARAMETER G(M2P,FE:SI;0) 298.15
+  -70000 +5*T +GHSERFE# +GHSERSI#;  6000 N                              16MIE!
 PARAMETER G(M2P,MN:P;0) 298.15
   -164079 -39.2175*T +6.6209*T*LN(T) +0.002264*T**2 +2*GHSERMN# 
   +GHSERPP#;  6000 N                                                    21ZAI!
@@ -13656,6 +13697,7 @@ PARAMETER G(M2P,NB:P;0) 298.15
   -230000 +60*T +2*GHSERNB# +GHSERPP#;  6000 N                         15MIEA!
 PARAMETER G(M2P,NI:P;0) 298.15
   -175320 +5.05*T +2*GHSERNI# +GREDP#;  6000 N                         14MIED!
+
 
 
 PARAMETER L(M2P,AL,FE:P;0) 298.15
@@ -13672,6 +13714,9 @@ PARAMETER L(M2P,FE,NB:P;0) 298.15
   -125000;  6000 N                                                     15MIEA!
 PARAMETER L(M2P,FE,NI:P;0) 298.15
   +12000 +10*T;  6000 N                                                14MIED!
+
+PARAMETER L(M2P,FE:P,SI;0) 298.15
+  -28000 +25*T;  6000 N                                                 16MIE!
 
 $ ----------------------------------------------------------------------------
 $ M3B2_D5A
@@ -17155,6 +17200,26 @@ PARAMETER G(SIC_B3,SI:C;0) 298.15
   +1341065*T**(-1);  2100 Y
   -105007.971 +360.309*T -53.073*T*LN(T) -7.4525E-4*T**2 +1.73167E-8*T**3
   +3693345*T**(-1);  6000 N                                             91LAC!
+
+$ ----------------------------------------------------------------------------
+$ SIP1
+
+PHASE SIP1 % 2 1 1 !
+CONSTITUENT SIP1 : SI : P : !
+
+PARAMETER G(SIP1,SI:P;0) 298.15
+  -60221 -48.973*T +11.3949*T*LN(T) -0.003698*T**2 +GHSERSI# 
+  +GHSERPP#;  6000 N                                                    14LIA!
+
+$ ----------------------------------------------------------------------------
+$ SIP2
+
+PHASE SIP2 % 2 1 2 !
+CONSTITUENT SIP2 : SI : P : !
+
+PARAMETER G(SIP2,SI:P;0) 298.15
+  -78704 +6.577*T +4.8057*T*LN(T) -0.004942*T**2 +GHSERSI#
+  +2*GHSERPP#;  6000 N                                                  14LIA!
 
 $ ----------------------------------------------------------------------------
 $ SIGMA_D8B
@@ -20656,6 +20721,9 @@ NUMBER  SOURCE
 14KHV   'Khvan, Alexandra V., Bengt Hallstedt, and Christoph Broeckmann. "A 
         thermodynamic evaluation of the Fe-Cr-C system." Calphad 46 (2014): 
         24-33.'
+14LIA   'Liang, Song-Mao, and Rainer Schmid-Fetzer. "Modeling of thermodynamic 
+        properties and phase equilibria of the Si-P system." Journal of Phase 
+        Equilibria and Diffusion 35 (2014): 24-35.'
 14MIEA  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
         of Ternary Fe-XP Systems. Part 3: Fe-Mn-P." Journal of phase 
         equilibria and diffusion 35 (2014): 587-594.'
@@ -20736,6 +20804,9 @@ NUMBER  SOURCE
         and Materials Transactions A 47 (2016): 6173-6186.'
 16HU    'Hu, Biao, et al. "CALPHAD-type thermodynamic assessment of the 
         Ti-Mo-Cr-V quaternary system." Calphad 55 (2016): 103-112.'
+16MIE   'Miettinen, Jyrki, and Gueorgui Vassilev-Urumov. "Thermodynamic 
+        Description of Ternary Fe-XP Systems. Part 8: Fe-Si-P." Journal of 
+        Phase Equilibria and Diffusion 37 (2016): 540-547.'
 16PEN   'Peng, Jian. "Experimental investigation and thermodynamic modeling
         of the Al-Cr-Mo-Ni system and its subsystems." PhD thesis. Karlsruher
         Instituts fuer Technologie. (2016).'
