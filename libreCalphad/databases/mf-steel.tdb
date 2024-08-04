@@ -132,6 +132,7 @@ DATABASE_INFO The following systems are available:'
   AL-NB     He (2015)'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
   AL-O      Taylor (1992) and Lindwall (2015)'
+  AL-P      Miettinen (2015)'
   AL-SI     Feufel (1997) and Liu (1999)'
   AL-TI     Witusiewicz (2008) EXCEPT L10'
   AL-V      Kroupa (2017)'
@@ -272,6 +273,7 @@ DATABASE_INFO The following systems are available:'
   AL-FE-MN  Zheng (2018)'
   AL-FE-O   Lindwall (2015)'
   AL-FE-NI  Zhang (2009)'
+  AL-FE-P   Miettinen (2015)'
   AL-FE-SI  Liu (1999)'
   AL-MG-MN  Du (2007)'
   AL-MN-SI  Du (2004)'
@@ -1071,6 +1073,15 @@ TYPE_DEFINITION B GES AMEND_PHASE_DESCRIPTION @ MAGNETIC  -3.0  0.28 !
 $ ----------------------------------------------------------------------------
 $                           END-MEMBER DEFINITIONS
 $ ----------------------------------------------------------------------------
+
+$ ALP1
+
+PHASE ALP1 % 2 1 1 !
+CONSTITUENT ALP1 : AL : P : !
+
+PARAMETER G(ALP1,AL:P;0) 298.15
+  -161000 -36.301*T +9.6894*T*LN(T) -0.002212*T**2 +GHSERAL# 
+  +GHSERPP#;  6000 N                                                    13LIA!
 
 $ ----------------------------------------------------------------------------
 $ ALB2CR2
@@ -3174,6 +3185,8 @@ PARAMETER L(BCC_A2,AL,NB:VA;1) 298.15
   +77910 -42*T;  6000 N                                                  15HE!
 PARAMETER L(BCC_A2,AL,NI:VA;0) 298.15
   -204838 +37.707*T;  6000 N                                            97ANS!
+PARAMETER L(BCC_A2,AL,P:VA;0) 298.15
+  +0;  6000 N                                                          15MIEC!
 PARAMETER L(BCC_A2,AL,TI:VA;0) 298.15
   -132903 +39.961*T;  6000 N                                            08WIT!
 PARAMETER L(BCC_A2,AL,TI:VA;1) 298.15
@@ -6703,6 +6716,8 @@ PARAMETER L(FCC_A1,AL,NI:VA;2) 298.15
   +33471.014 -9.837000*T;  6000 N                                       97ANS!
 PARAMETER L(FCC_A1,AL,NI:VA;3) 298.15
   -30758.010 +10.253000*T;  6000 N                                      97ANS!
+PARAMETER L(FCC_A1,AL,P:VA;0) 298.15
+  -30000;  6000 N                                                      15MIEC!
 PARAMETER L(FCC_A1,AL,SI:VA;0) 298.15
   -3143.8 +0.39297*T;  6000 N                                           97FEU!
 PARAMETER L(FCC_A1,AL,TI:VA;0) 298.15
@@ -9592,6 +9607,9 @@ PARAMETER L(HCP_A3,AL,NI:VA;2) 298.15
   +33471.014 -9.837000*T;  6000 N                                       97ANS!
 PARAMETER L(HCP_A3,AL,NI:VA;3) 298.15
   -30758.010 +10.253000*T;  6000 N                                      97ANS!
+$ ESTIMATE SAME AL,P:VA AS FCC_A1
+PARAMETER L(HCP_A3,AL,P:VA;0) 298.15
+  -30000;  6000 N                                                      15MIEC!
 PARAMETER L(HCP_A3,AL,SI:VA;0) 298.15
   -3143.8 +0.39297*T;  6000 N                                           97FEU!
 PARAMETER L(HCP_A3,AL,TI:VA;0) 298.15
@@ -12469,6 +12487,8 @@ PARAMETER L(LIQUID,AL,NI;3) 298.15
   +4365.35 -2.51632*T;  6000 N                                          97ANS!
 PARAMETER L(LIQUID,AL,NI;4) 298.15
   -22101.64 +13.16341*T;  6000 N                                        97ANS!
+PARAMETER L(LIQUID,AL,P;0) 298.15
+  -65000 +20*T;  6000 N                                                15MIEC!
 PARAMETER L(LIQUID,AL,SI;0) 298.15
   -11340.1 -1.23394*T;  6000 N                                          97FEU!
 PARAMETER L(LIQUID,AL,SI;1) 298.15
@@ -13096,6 +13116,12 @@ PARAMETER L(LIQUID,AL,FE,NI;1) 298.15
   +57195.0;  6000 N                                                    09ZHAA!
 PARAMETER L(LIQUID,AL,FE,NI;2) 298.15
   -8440.930;  6000 N                                                   09ZHAA!
+PARAMETER L(LIQUID,AL,FE,P;0) 298.15
+  +20000;  6000 N                                                      15MIEC!
+PARAMETER L(LIQUID,AL,FE,P;1) 298.15
+  -180000 +80*T;  6000 N                                               15MIEC!
+PARAMETER L(LIQUID,AL,FE,P;2) 298.15
+  +20000;  6000 N                                                      15MIEC!
 PARAMETER L(LIQUID,AL,FE,SI;0) 298.15
   -96677 +63.727*T;  6000 N                                             99LIU!
 PARAMETER L(LIQUID,AL,FE,SI;1) 298.15
@@ -13611,8 +13637,10 @@ $ ----------------------------------------------------------------------------
 $ M2P
 
 PHASE M2P % 2 2 1 !
-CONSTITUENT M2P : CR,CU,FE,MN,MO,NB,NI : P : !
+CONSTITUENT M2P : AL,CR,CU,FE,MN,MO,NB,NI : P : !
 
+PARAMETER G(M2P,AL:P;0) 298.15
+  -150000 +25*T +2*GHSERAL# +GHSERPP#;  6000 N                         15MIEC!
 PARAMETER G(M2P,CR:P;0) 298.15
   -159300 +5*T +2*GHSERCR# +GHSERPP#;  6000 N                           99MIE!
 PARAMETER G(M2P,CU:P;0) 298.15
@@ -13630,6 +13658,8 @@ PARAMETER G(M2P,NI:P;0) 298.15
   -175320 +5.05*T +2*GHSERNI# +GREDP#;  6000 N                         14MIED!
 
 
+PARAMETER L(M2P,AL,FE:P;0) 298.15
+  -49000 +30*T;  6000 N                                                15MIEC!
 PARAMETER L(M2P,CR,FE:P;0) 298.15
   -32000;  6000 N                                                      14MIEC!
 PARAMETER L(M2P,CR,FE:P;1) 298.15
@@ -13691,9 +13721,11 @@ $ M3P
 $ TODO: SEPARATE THESE INTO SECTIONS
 
 PHASE M3P % 2 3 1 !
-CONSTITUENT M3P : CR,FE,MN,MO,NI : P : !
+CONSTITUENT M3P : AL,CR,FE,MN,MO,NI : P : !
 
 
+PARAMETER G(M3P,AL:P;0) 298.15
+  -150000 +25*T +3*GHSERAL# +GHSERPP#;  6000 N                         15MIEC!
 PARAMETER G(M3P,CR:P;0) 298.15
   -175246 -49.6744*T +7.9259*T*LN(T) +3*GHSERCR# +GHSERPP#;  6000 N    14MIEC!
 PARAMETER G(M3P,FE:P;0) 298.15
@@ -13707,6 +13739,8 @@ PARAMETER G(M3P,NI:P;0) 298.15
   -203560 +18.82*T +3*GHSERNI# +GREDP#;  6000 N                        14MIED!
 
 
+PARAMETER L(M3P,AL,FE:P;0) 298.15
+  -90000 +20*T;  6000 N                                                15MIEC!
 PARAMETER L(M3P,CR,FE:P;0) 298.15
   -55000 +30*T;  6000 N                                                14MIEC!
 PARAMETER L(M3P,CR,FE:P;1) 298.15
@@ -20609,6 +20643,9 @@ NUMBER  SOURCE
         Fe-Mn-Nb-N and Nb-C-N systems." Calphad 40 (2013): 10-15.'
 13KHVB  'Khvan, Alexandra V., Keke Chang, and Bengt Hallstedt. "Thermodynamic 
         assessment of the Fe–Nb–V system." Calphad 43 (2013): 143-148.'
+13LIA   'Liang, Song-Mao, and Rainer Schmid-Fetzer. "Thermodynamic assessment 
+        of the Al–P system based on original experimental data." Calphad 42 
+        (2013): 76-85.'
 13POV   'Povoden-Karadeniz, E. Mat-Calc Fe open database, unpublished, 
         https://www.matcalc.at/index.php/databases/open-databases, 2013.'
 13STE   'Stein, Frank, Cuiyun He, and Nathalie Dupin. "Melting behaviour and 
@@ -20670,17 +20707,20 @@ NUMBER  SOURCE
         database for high Mn-high Al steels: Phase equilibria in the 
         Fe-Mn-Al-C system by experiment and thermodynamic modeling." Calphad 
         51 (2015): 89-103.'
-15LIN  'Lindwall, Greta, et al. "Thermodynamic modeling of the aluminum-iron-
+15LIN   'Lindwall, Greta, et al. "Thermodynamic modeling of the aluminum-iron-
         oxygen system." Calphad 51 (2015): 178-192.'
-15LU   'Lu, Hai-Jin, et al. "Thermodynamic modeling of Cr-Nb and Zr-Cr with 
+15LU    'Lu, Hai-Jin, et al. "Thermodynamic modeling of Cr-Nb and Zr-Cr with 
         extension to the ternary Zr-Nb-Cr system." Calphad 50 (2015): 
         134-143.'
-15MIEA 'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description of 
-        Ternary Fe-XP Systems. Part 5: Fe-Nb-P." Journal of Phase Equilibria 
-        and Diffusion 36 (2015): 68-77.'
-15MIEB 'Miettinen, Jyrki, A. Pashkova, and Gueorgui Vassilev. "Thermodynamic 
+15MIEA  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
+        of Ternary Fe-XP Systems. Part 5: Fe-Nb-P." Journal of Phase 
+        Equilibria and Diffusion 36 (2015): 68-77.'
+15MIEB  'Miettinen, Jyrki, A. Pashkova, and Gueorgui Vassilev. "Thermodynamic 
         Description of Ternary Fe-XP Systems. Part 4: Fe-Mo-P." Journal of 
         Phase Equilibria and Diffusion 36 (2015): 60-67.'
+15MIEC  'Miettinen, Jyrki, Seppo Louhenkilpi, and Gueorgui Vassilev. 
+        "Thermodynamic Description of Ternary Fe-XP Systems. Part 9: Fe-Al-P."
+        Journal of Phase Equilibria and Diffusion 36 (2015): 317-326.'
 15SHI   'Shishin, Denis, et al. "Critical Assessment and Thermodynamic
         Modeling of the Fe-O-S System." Journal of Phase Equilibria and
         Diffusion 36 (2015): 224-240.'
