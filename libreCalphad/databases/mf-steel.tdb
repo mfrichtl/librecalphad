@@ -305,7 +305,7 @@ DATABASE_INFO The following systems are available:'
   C-FE-MN   Huang (1990), Huang (1991), and Djurovic (2011)'
   C-FE-MO   Andersson (1988) and Hillert (1992)'
   C-FE-NB   Huang (1990)'
-  C-FE-NI   Gustafson (1987) and Jacob (2023)'
+  C-FE-NI   Gabriel (1987), Liu (2020), and Jacob (2023)'
   C-FE-P    Bernhard (2020)'
   C-FE-SI   Lacaze (1991), Miettinen (1998), and Zheng (2017)'
   C-FE-TI   Jonsson (1998)'
@@ -5174,6 +5174,7 @@ PARAMETER G(CEMENTITE_D011,V:C;0) 298.15
 PARAMETER G(CEMENTITE_D011,W:C;0) 298.15
   +54150 +3*GHSERW# +GHSERCC#;  6000 N                                  87GUS!
 
+
 $ WANT TO SUPRESS CEMENTITE_D011 IN C-CO-CR SYSTEM
 PARAMETER L(CEMENTITE_D011,CO,CR:C;0) 298.15
   +50000;  6000 N                                                       24FRI!
@@ -5200,7 +5201,7 @@ PARAMETER L(CEMENTITE_D011,FE,NI:B;0) 298.15
 PARAMETER L(CEMENTITE_D011,FE,NI:B;1) 298.15
   +10000;  6000 N                                                       10PAN!
 PARAMETER L(CEMENTITE_D011,FE,NI:C;0) 298.15
-  +29400;  6000 N                                                       87GAB!
+  +28995.9;  6000 N                                                     20LIU!
 PARAMETER L(CEMENTITE_D011,FE,V:C;0) 298.15
   -45873 -12.414*T; 6000 N                                              91HUA!
 
@@ -13286,11 +13287,11 @@ PARAMETER L(LIQUID,C,FE,N;2) 298.15
 PARAMETER L(LIQUID,C,FE,NB;0) 298.15
   -40000;  6000 N                                                      90HUAA!
 PARAMETER L(LIQUID,C,FE,NI;0) 298.15
-  +122200 -58.8*T;  6000 N                                              87GAB!
+  +23643.8;  6000 N                                                     20LIU!
 PARAMETER L(LIQUID,C,FE,NI;1) 298.15
-  +92200 -58.8*T;  6000 N                                               87GAB!
+  +64912.8 -25.14*T;  6000 N                                            20LIU!
 PARAMETER L(LIQUID,C,FE,NI;2) 298.15
-  +152200 -58.8*T;  6000 N                                              87GAB!
+  +204391.3 -111.74*T;  6000 N                                          20LIU!
 PARAMETER L(LIQUID,C,FE,SI;0) 298.15
   +285000;  6000 N                                                     17ZHEA!
 PARAMETER L(LIQUID,C,FE,SI;1) 298.15
@@ -20993,6 +20994,9 @@ NUMBER  SOURCE
         13-20.'
 20BER   'Bernhard, Michael, et al. "Critical evaluation and thermodynamic 
         modeling of the Fe–P and Fe–C–P system." Calphad 70 (2020): 101795.'
+20LIU   'Liu, Wenliang, et al. "Thermodynamic evaluation and investigation of 
+        solidification microstructure in the Fe–Cr–Ni–C system." Calphad 69 
+        (2020): 101763.'
 21DU    'Du, Yong, Rainer Schmid-Fetzer, and Hiroshi Ohtani. "Thermodynamic 
         assessment of the V-N system." International Journal of Materials 
         Research 88.7 (2021): 545-556.'
