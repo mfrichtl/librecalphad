@@ -252,6 +252,7 @@ DATABASE_INFO The following systems are available:'
   NI-V      Korb (1998)'
   NI-W      Gustafson (1988), Turchi (2006), and Isomäki (2017)'
   O-SI      Hallstedt (1992)'
+  P-TI      Ohtani (2006) and Miettinen (2015)'
   SI-TA     Vahlas (1989)'
   SI-TI     Seifert (1996)'
   SI-V      Zhang (2008)'
@@ -388,6 +389,7 @@ DATABASE_INFO The following systems are available:'
   FE-NI-V   Zhao (2014)'
   FE-NI-W   Guillermet (1986)'
   FE-O-S    Shishin (2015)'
+  FE-P-TI   Miettinen (2015)'
   FE-TI-V   Guo (2012)'
   MN-NI-SI  Hu (2011)'
   MO-TI-V   Hu (2016)'
@@ -3666,6 +3668,9 @@ $   +B2NIVA# +LB2NIVA#;  6000 N                                           16PEN!
 PARAMETER L(BCC_A2,NI,W:VA;0) 298.15
   +82000;  6000 N                                                      88GUSA!
 
+PARAMETER L(BCC_A2,P,TI:VA;0) 298.15
+  -170000;  6000 N                                                      06OHT!
+
 PARAMETER L(BCC_A2,SI:C,VA;0) 298.15
   +0;  6000 N                                                           91LAC!
 
@@ -3930,6 +3935,8 @@ PARAMETER L(BCC_A2,FE,NI,V:VA;2) 298.15
 
 PARAMETER L(BCC_A2,FE,P,SI:VA;0) 298.15
   -60000;  6000 N                                                       16MIE!
+PARAMETER L(BCC_A2,FE,P,TI:VA;0) 298.15
+  -90000;  6000 N                                                      15MIED!
 
 PARAMETER L(BCC_A2,FE,TI,V:VA;0) 298.15
   -2048 -2.354*T;  6000 N                                               12GUO!
@@ -7201,6 +7208,9 @@ PARAMETER L(FCC_A1,NI,W:VA;0) 298.15
 PARAMETER L(FCC_A1,NI,W:VA;1) 298.15
   -52900;  6000 N                                                      88GUSA!
 
+PARAMETER L(FCC_A1,P,TI:VA;0) 298.15
+  -170000;  6000 N                                                     15MIED!
+
 PARAMETER L(FCC_A1,SI:C,VA;0) 298.15 
   +0;  6000 N                                                           91LAC!
   
@@ -7464,6 +7474,8 @@ PARAMETER L(FCC_A1,FE,P:C,VA;0) 298.15
 
 PARAMETER L(FCC_A1,FE,P,SI:VA;0) 298.15
   -60000;  6000 N                                                       16MIE!
+PARAMETER L(FCC_A1,FE,P,TI:VA;0) 298.15
+  -90000;  6000 N                                                      15MIED!
 
 PARAMETER L(FCC_A1,FE,TI:C,VA;0) 298.15
   +0;  6000  N                                                          98JON!
@@ -8132,6 +8144,16 @@ PARAMETER G(FESO4,FE:S:O;0) 298.15
   -995911.2 +927.0702*T -150.7843*T*LN(T) -0.00571347*T**2
   +3366120.1*T**(-1);  2000 Y 
   -1012032.9 +1085.46319*T -171.9552*T*LN(T);  6000 N                   15SHI!
+
+$ ----------------------------------------------------------------------------
+$ FETIP
+
+PHASE FETIP % 3 1 1 1 !
+CONSTITUENT FETIP : FE : TI : P : !
+
+PARAMETER G(FETIP,FE:TI:P;0) 298.15
+  -387000 +990*T -139*T*LN(T) +0.075*T**2 +GHSERFE# +GHSERTI#
+  +GHSERPP#;  6000 N                                                   15MIED!
 
 $ ----------------------------------------------------------------------------
 $ FEZRNB_TAU
@@ -10031,7 +10053,6 @@ PARAMETER L(HCP_A3,NI:C,VA;0) 298.15
 $ ESTIMATE SAME NI:O,VA AS FCC_A1
 PARAMETER L(HCP_A3,NI:O,VA;0) 298.15
   -124206 +24.18*T;  6000 N                                             08KJE!
-
 $ ESTIMATE SAME NI,P;VA AS FCC_A1
 PARAMETER L(HCP_A3,NI,P:VA;0) 298.15
   -171000 +19*T;  6000 N                                               14MIED!
@@ -10044,10 +10065,8 @@ PARAMETER L(HCP_A3,NI,SI:VA;2) 298.15
   -29213.4 +49.998*T;  6000 N                                           23WIT!
 PARAMETER TC(HCP_A3,NI,SI:VA;0) 298.15
   -3872;  6000 N                                                        23WIT!
-
 PARAMETER L(HCP_A3,NI,TI:VA;0) 298.15
   -20000;  6000 N                                                       96BEL!
-
 $ ESTIMATE SAME NI,V:VA AS FCC_A1
 PARAMETER L(HCP_A3,NI,V:VA;0) 298.15
   -36365.6 +3.75677*T;  6000 N                                          98KOR!
@@ -10055,12 +10074,15 @@ PARAMETER L(HCP_A3,NI,V:VA;1) 298.15
   +11860.7 -9.0302*T;  6000 N                                           98KOR!
 PARAMETER L(HCP_A3,NI,V:VA;2) 298.15
   -10647.5 +7.00954*T;  6000 N                                          98KOR!
-
 $ ESTIMATE SAME NI,W:VA AS FCC_A1
 PARAMETER L(HCP_A3,NI,W:VA;0) 298.15
   +2556 +11.6*T;  6000 N                                               88GUSA!
 PARAMETER L(HCP_A3,NI,W:VA;1) 298.15
   -52900;  6000 N                                                      88GUSA!
+
+$ ESTIMATE SAME P,SI:VA AS FCC_A1
+PARAMETER L(HCP_A3,P,SI:VA;0) 298.15
+  -170000;  6000 N                                                     15MIED!
 
 PARAMETER L(HCP_A3,SI,TI:VA;0) 298.15
   -302072.20 +77.76859*T;  6000 N                                       96SEI!
@@ -13039,6 +13061,12 @@ PARAMETER L(LIQUID,P,SI;0) 298.15
   -20801 +4.117*T;  6000 N                                              14LIA!
 PARAMETER L(LIQUID,P,SI;1) 298.15
   +13982 -2.788*T;  6000 N                                              14LIA!
+PARAMETER L(LIQUID,P,TI;0) 298.15
+  -276200 +50.25*T;  6000 N                                             06OHT!
+PARAMETER L(LIQUID,P,TI;1) 298.15
+  -12950 +17.57*T;  6000 N                                              06OHT!
+PARAMETER L(LIQUID,P,TI;2) 298.15
+  -11100 +18*T;  6000 N                                                 06OHT!
 
 PARAMETER L(LIQUID,SI,TA;0) 298.15
   -256627.7 +92.23583*T;   6000 N                                       89VAH!
@@ -13515,6 +13543,12 @@ PARAMETER L(LIQUID,FE,P,SI;1) 298.15
   +250000 -70*T;  6000 N                                                16MIE!
 PARAMETER L(LIQUID,FE,P,SI;2) 298.15
   +320000 -70*T;  6000 N                                                16MIE!
+PARAMETER L(LIQUID,FE,P,TI;0) 298.15
+  +85000 -30*T;  6000 N                                                15MIED!
+PARAMETER L(LIQUID,FE,P,TI;1) 298.15
+  -500000;  6000 N                                                     15MIED!
+PARAMETER L(LIQUID,FE,P,TI;2) 298.15
+  -200000;  6000 N                                                     15MIED!
 
 PARAMETER L(LIQUID,FE,TI,V;0) 298.15
   -52086 +13.494*T;  6000 N                                             12GUO!
@@ -13676,7 +13710,7 @@ $ ----------------------------------------------------------------------------
 $ M2P
 
 PHASE M2P % 2 2 1 !
-CONSTITUENT M2P : AL,CR,CU,FE,MN,MO,NB,NI : P,SI : !
+CONSTITUENT M2P : AL,CR,CU,FE,MN,MO,NB,NI,TI : P,SI : !
 
 PARAMETER G(M2P,AL:P;0) 298.15
   -150000 +25*T +2*GHSERAL# +GHSERPP#;  6000 N                         15MIEC!
@@ -13697,7 +13731,9 @@ PARAMETER G(M2P,NB:P;0) 298.15
   -230000 +60*T +2*GHSERNB# +GHSERPP#;  6000 N                         15MIEA!
 PARAMETER G(M2P,NI:P;0) 298.15
   -175320 +5.05*T +2*GHSERNI# +GREDP#;  6000 N                         14MIED!
-
+PARAMETER G(M2P,TI:P;0) 298.15
+  -401022 +146.905*T -5.782*T*LN(T) +0.001705*T**2 +2*GHSERTI#
+  +GHSERPP#;  6000 N                                                   15MIED!
 
 
 PARAMETER L(M2P,AL,FE:P;0) 298.15
@@ -13714,6 +13750,8 @@ PARAMETER L(M2P,FE,NB:P;0) 298.15
   -125000;  6000 N                                                     15MIEA!
 PARAMETER L(M2P,FE,NI:P;0) 298.15
   +12000 +10*T;  6000 N                                                14MIED!
+PARAMETER L(M2P,FE,TI:P;0) 298.15
+  -130000 +23*T;  6000 N                                               15MIED!
 
 PARAMETER L(M2P,FE:P,SI;0) 298.15
   -28000 +25*T;  6000 N                                                 16MIE!
@@ -13766,7 +13804,7 @@ $ M3P
 $ TODO: SEPARATE THESE INTO SECTIONS
 
 PHASE M3P % 2 3 1 !
-CONSTITUENT M3P : AL,CR,FE,MN,MO,NI : P : !
+CONSTITUENT M3P : AL,CR,FE,MN,MO,NI,TI : P : !
 
 
 PARAMETER G(M3P,AL:P;0) 298.15
@@ -13782,6 +13820,9 @@ PARAMETER G(M3P,MO:P;0) 298.15
   -167000 +35*T +3*GHSERMO# +GHSERPP#;  6000 N                         15MIEB!
 PARAMETER G(M3P,NI:P;0) 298.15
   -203560 +18.82*T +3*GHSERNI# +GREDP#;  6000 N                        14MIED!
+PARAMETER G(M3P,TI:P;0) 298.15
+  -401222 +150.905*T -5.782*T*LN(T) +0.001705*T**2 +3*GHSERTI#
+  +GHSERPP#;  6000 N                                                   15MIED!
 
 
 PARAMETER L(M3P,AL,FE:P;0) 298.15
@@ -13794,6 +13835,8 @@ PARAMETER L(M3P,FE,MN:P;0) 298.15
   -50000 +20*T;  6000 N                                                14MIEA!
 PARAMETER L(M3P,FE,NI:P;0) 298.15
   +48500 -16*T;  6000 N                                                14MIED!
+PARAMETER L(M3P,FE,TI:P;0) 298.15
+  -200000 +23*T;  6000 N                                               15MIED!
 
 $ ----------------------------------------------------------------------------
 $ M5B3_D8L
@@ -19989,6 +20032,26 @@ PARAMETER G(THETA_FE4AL13,AL:NI:VA;0) 298.15
   -28901.41 +0.6275*GHSERAL# +0.235*GHSERNI#;  6000 N                  09ZHAA!
 
 $ ----------------------------------------------------------------------------
+$ TIP1
+
+PHASE TIP1 % 2 1 1 !
+CONSTITUENT TIP1 : TI : P : !
+
+PARAMETER G(TIP1,TI:P;0) 298.15
+  -314222 +127.905*T -5.782*T*LN(T) +0.005115*T**2 +GHSERTI#
+  +GHSERPP#;  6000 N                                                   15MIED!
+
+$ ----------------------------------------------------------------------------
+$ TIP2
+
+PHASE TIP2 % 2 1 2 !
+CONSTITUENT TIP2 : TI : P : !
+
+PARAMETER G(TIP2,TI:P;0) 298.15
+  -395244 +205.81*T -11.564*T*LN(T) +0.00341*T**2 +GHSERTI#
+  +2*GHSERPP#;  6000 N                                                  06OHT!
+
+$ ----------------------------------------------------------------------------
 $ TIAL2
 $ PROTOTYPE: HFGA2
 $ SPACE GROUP: I4_1/amd
@@ -20108,6 +20171,17 @@ PARAMETER L(TI2N_C4,TI,V:N;0) 298.15
   -60000;  6000 N                                                       98ZEN!
   
 $ ----------------------------------------------------------------------------
+$ TI3P
+$ SHOULD PROBABLY BE COMBINED WITH M3SI
+
+PHASE TI3P % 2 3 1 !
+CONSTITUENT TI3P : TI : P : !
+
+PARAMETER G(TI3P,TI:P;0) 298.15
+  -418022 +150.905*T -5.782*T*LN(T) +0.001705*T**2 +3*GHSERTI#
+  +GHSERPP#;  6000 N                                                    06OHT!
+
+$ ----------------------------------------------------------------------------
 $ TI3N2_ETA
 $ HIGH-TEMPERATURE TITANIUM NITRIDE, ETA-NITRIDE FROM 96ZEN
 $ SPACE GROUP: P6_3/mmc
@@ -20138,6 +20212,36 @@ CONSTITUENT TI4N3_ZETA : TI : N : !
 
 PARAMETER G(TI4N3_ZETA,TI:N;0) 298.15
   -5956.86333 -3.27489717*T +0.37*GHSERTI# +0.315*GFCCTIN#;  6000 N     96ZEN!
+
+$ ----------------------------------------------------------------------------
+$ TI4P3
+
+PHASE TI4P3 % 2 4 3 !
+CONSTITUENT TI4P3 : TI : P : !
+
+PARAMETER G(TI4P3,TI:P;0) 298.15
+  -1027366 +388.715*T -17.346*T*LN(T) +0.005115*T**2 +4*GHSERTI#
+  +3*GHSERPP#;  6000 N                                                  06OHT!
+
+$ ----------------------------------------------------------------------------
+$ TI5P3
+
+PHASE TI5P3 % 2 0.61 0.39 !
+CONSTITUENT TI5P3 : TI : P : !
+
+PARAMETER G(TI5P3,TI:P;0) 298.15
+  -141277 +51.753*T -2.255*T*LN(T) +0.00066495*T**2 +0.61*GHSERTI#
+  +0.39*GHSERPP#;  6000 N                                               06OHT!
+
+$ ----------------------------------------------------------------------------
+$ TI17P10
+
+PHASE TI17P10 % 2 0.63 0.37 !
+CONSTITUENT TI17P10 : TI : P : !
+
+PARAMETER G(TI17P10,TI:P;0) 298.15
+  -138622 +50.78385*T +2.13934*T*LN(T) +0.00063085*T**2 +0.63*GHSERTI#
+  +0.37*GHSERPP#;  6000 N                                              15MIED!
 
 $ ----------------------------------------------------------------------------
 $ TRIDYMITE
@@ -20583,6 +20687,9 @@ NUMBER  SOURCE
         unpublished, 2006.'
 06HU    'Hu, Jincheng, et al. "Thermodynamic re-assessment of the V-C system."
         Journal of alloys and compounds 421.1-2 (2006): 120-127.'
+06OHT   'Ohtani, Hiroshi, et al. "Thermodynamic analysis of the Fe–Ti–P 
+        ternary system by incorporating first-principles calculations into the
+        CALPHAD approach." Calphad 30.2 (2006): 147-158.'
 06SLU   'Sluiter, M. H. F. "Ab initio lattice stabilities of some elemental 
         complex structures." Calphad 30.4 (2006): 357-366.'
 06SU    'Su, Xuping, and Jean-Claude Tedenac. "Thermodynamic modeling of the 
@@ -20789,6 +20896,9 @@ NUMBER  SOURCE
 15MIEC  'Miettinen, Jyrki, Seppo Louhenkilpi, and Gueorgui Vassilev. 
         "Thermodynamic Description of Ternary Fe-XP Systems. Part 9: Fe-Al-P."
         Journal of Phase Equilibria and Diffusion 36 (2015): 317-326.'
+15MIED  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description 
+        of Ternary Fe-XP Systems: Part 7: Fe-Ti-P." Journal of Phase 
+        Equilibria and Diffusion 36 (2015): 283-290.'
 15SHI   'Shishin, Denis, et al. "Critical Assessment and Thermodynamic
         Modeling of the Fe-O-S System." Journal of Phase Equilibria and
         Diffusion 36 (2015): 224-240.'
