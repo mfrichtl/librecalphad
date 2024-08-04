@@ -293,7 +293,7 @@ DATABASE_INFO The following systems are available:'
   C-CO-FE   Guillermet (1988)'
   C-CO-NI   Guillermet (1988)'
   C-CO-W    Guillermet (1989) and Markström (2005)'
-  C-CR-FE   Andersson (1988), Qiu (1992), Khvan (2014), and Jacob (2023)'
+  C-CR-FE   Andersson (1988), Qiu (1992), Khvan (2014), and Jacob (2023)'c
   C-CR-MO   Qiu (1992) and Bratberg (2005)'
   C-CR-MN   Lee (1993)'
   C-CR-NI   Lee (1992)'
@@ -2786,7 +2786,7 @@ $ SPACE GROUP: Im-3m
 
 PHASE BCC_A2 %A 2 1 3 !
 CONSTITUENT BCC_A2 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                     P,S,SI,SN,TA,TI,V,VA,W,ZR
+                     P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA : !
 
 PARAMETER G(BCC_A2,AL:B;0) 298.15
@@ -3971,9 +3971,9 @@ TYPE_DEFINITION E GES AMEND_PHASE_DESCRIPTION BCC_B2 DIS_PART BCC_A2 !
 
 PHASE BCC_B2 %AE 3 0.5 0.5 3 !
 CONSTITUENT BCC_B2 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                     P,S,SI,SN,TA,TI,V,VA,W,ZR
+                     P,S,SI,SN,TA,TI,V,W,ZR
                    : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                     P,S,SI,SN,TA,TI,V,VA,W,ZR
+                     P,S,SI,SN,TA,TI,V,W,ZR
                    : B,C,H,N,O,VA :  !
 
 FUNCTION B2ALCO 298.15
@@ -4529,13 +4529,13 @@ $ SPACE GROUP: Fm-3m
 TYPE_DEFINITION G GES AMEND_PHASE_DESCRIPTION BCC_D03 DIS_PART BCC_A2 !
 PHASE BCC_D03:B %AG 5 0.25 0.25 0.25 0.25 3 !
 CONSTITUENT BCC_D03 : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                      P,S,SI,SN,TA,TI,V,VA,W,ZR
+                      P,S,SI,SN,TA,TI,V,W,ZR
                     : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                      P,S,SI,SN,TA,TI,V,VA,W,ZR
+                      P,S,SI,SN,TA,TI,V,W,ZR
                     : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                      P,S,SI,SN,TA,TI,V,VA,W,ZR
+                      P,S,SI,SN,TA,TI,V,W,ZR
                     : AL,BI,CE,CO,CR,CU,FE,HF,MG,MN,MO,NB,NI,
-                      P,S,SI,SN,TA,TI,V,VA,W,ZR
+                      P,S,SI,SN,TA,TI,V,W,ZR
                     : B,C,H,N,O,VA :  !
 
 FUNCTION AD03ALFE 298.15
