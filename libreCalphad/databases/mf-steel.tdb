@@ -228,6 +228,7 @@ DATABASE_INFO The following systems are available:'
   MO-N      Frisk (1991)'
   MO-NB     Xiong (2004)'
   MO-NI     Frisk (1992), Turchi (2006), and Yaqoob (2018)'
+  MO-P      Miettinen (2015)'
   MO-SI     Vahlas (1989)'
   MO-TA     Xiong (2004)'
   MO-TI     Saunders (1995)'
@@ -369,6 +370,7 @@ DATABASE_INFO The following systems are available:'
   FE-MN-TI  Zhang (2021)'
   FE-MN-V   Huang (1991)'
   FE-MO-NI  Frisk (1992)'
+  FE-MO-P   Miettinen (2015)'
   FE-MO-SI  Miettinen (1998)'
   FE-MO-W   Gustafson (1988)'
   FE-N-V    Ohtani (1993)'
@@ -3568,6 +3570,8 @@ PARAMETER L(BCC_A2,MO,NB:VA;1) 298.15
   +8201.3;  6000 N                                                      04XIO!
 PARAMETER L(BCC_A2,MO,NI:VA;0) 298.15
   +42405.6;  6000 N                                                     18YAQ!
+PARAMETER L(BCC_A2,MO,P:VA;0) 298.15
+  -197000;  6000 N                                                     15MIEB!
 PARAMETER L(BCC_A2,MO,SI:VA;0) 298.15
   -70899.6;  6000 N                                                     89VAH!
 PARAMETER L(BCC_A2,MO,TA:VA;0) 298.15
@@ -3855,6 +3859,8 @@ PARAMETER L(BCC_A2,CU,FE,P:VA;0) 298.15
 
 PARAMETER L(BCC_A2,FE,MO,NI:VA;0) 298.15
   -35743;  6000 N                                                       92FRI!
+PARAMETER L(BCC_A2,FE,MO,P:VA;0) 298.15
+  +200000;  6000 N                                                     15MIEB!
 PARAMETER L(BCC_A2,FE,MO,SI:VA;0) 298.15
   +0;  6000 N                                                          98MIEB!
 PARAMETER L(BCC_A2,FE,MO,W:VA;0) 298.15
@@ -3874,7 +3880,7 @@ PARAMETER L(BCC_A2,FE,MN,TI:VA;2) 298.15
   -41090;  6000 N                                                       21ZHA!
 
 PARAMETER L(BCC_A2,FE,NB,P:VA;0) 298.15
-  -50000;  6000 N                                                       15MIE!
+  -50000;  6000 N                                                      15MIEA!
 PARAMETER L(BCC_A2,FE,NB,V:VA;0) 298.15
   +74752;  6000 N                                                      13KHVB!
 PARAMETER L(BCC_A2,FE,NB,ZR:VA;0) 298.15
@@ -7088,6 +7094,8 @@ PARAMETER L(FCC_A1,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(FCC_A1,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
+PARAMETER L(FCC_A1,MO,P:VA;0) 298.15
+  -197000;  6000 N                                                     15MIEB!
 PARAMETER L(FCC_A1,MO,TI:VA;0) 298.15
   +16500;  6000 N                                                      95SAUB!
 PARAMETER L(FCC_A1,MO,W:VA;0) 298.15
@@ -7105,9 +7113,9 @@ PARAMETER L(FCC_A1,NB:N,VA;0) 298.15
   -65218;  6000 N                                                       96HUA!
 
 PARAMETER L(FCC_A1,NB,P:VA;0) 298.15
-  -328900 +12.49*T;  6000 N                                             15MIE!
+  -328900 +12.49*T;  6000 N                                            15MIEA!
 PARAMETER L(FCC_A1,NB,P:VA;1) 298.15
-  +128100 -16.36*T;  6000 N                                             15MIE!
+  +128100 -16.36*T;  6000 N                                            15MIEA!
 PARAMETER L(FCC_A1,NB,TA:C;0) 298.15
   -3697 +0.119*T +2E-6*T**2;  6000 N                                   04SERB!
 PARAMETER L(FCC_A1,NB,TA:C;0) 298.15
@@ -7404,13 +7412,15 @@ PARAMETER L(FCC_A1,FE,MO,NI:VA;1) 298.15
   +11555 -55.81*T;  6000 N                                              92FRI!
 PARAMETER L(FCC_A1,FE,MO,NI:VA;2) 298.15
   +77975;  6000 N                                                       92FRI!
+PARAMETER L(FCC_A1,FE,MO,P:VA;0) 298.15
+  +200000;  6000 N                                                     15MIEB!
 PARAMETER L(FCC_A1,FE,MO,SI:VA;0) 298.15
   +0;  6000 N                                                          98MIEB!
 
 PARAMETER L(FCC_A1,FE,NB:C,VA;0) 298.15
   -40000;  6000 N                                                      90HUAA!
 PARAMETER L(FCC_A1,FE,NB,P:VA;0) 298.15
-  -50000;  6000 N                                                       15MIE!
+  -50000;  6000 N                                                      15MIEA!
 
 PARAMETER L(FCC_A1,FE,NI,P:VA;0) 298.15
   -32000;  6000 N                                                      14MIED!
@@ -8207,71 +8217,12 @@ PARAMETER G(FEP1,FE:P;0) 298.15
 PARAMETER L(FEP1,CR,FE:P;0) 298.15
   -30000;  6000 N                                                      14MIEC!
 
-$ ----------------------------------------------------------------------------
-$ FE2P
-
-PHASE FE2P % 2 2 1 !
-CONSTITUENT FE2P : CR,CU,FE,MN,NB,NI : P : !
-
-PARAMETER G(FE2P,CR:P;0) 298.15
-  -159300 +5*T +2*GHSERCR# +GHSERPP#;  6000 N                           99MIE!
-PARAMETER G(FE2P,CU:P;0) 298.15
-  -70000 +20*T +2*GBCCCU# +GHSERPP#;  6000 N                           14MIEB!
-PARAMETER G(FE2P,FE:P;0) 298.15
-  -177142 +364.569*T -66.6699*T*LN(T) -0.01435*T**2;  6000 N            12CAO!
-PARAMETER G(FE2P,MN:P;0) 298.15
-  -164079 -39.2175*T +6.6209*T*LN(T) +0.002264*T**2 +2*GHSERMN# 
-  +GHSERPP#;  6000 N                                                    21ZAI!
-PARAMETER G(FE2P,NB:P;0) 298.15
-  -230000 +60*T +2*GHSERNB# +GHSERPP#;  6000 N                          15MIE!
-PARAMETER G(FE2P,NI:P;0) 298.15
-  -175320 +5.05*T +2*GHSERNI# +GREDP#;  6000 N                         14MIED!
-
-
-PARAMETER L(FE2P,CR,FE:P;0) 298.15
-  -32000;  6000 N                                                      14MIEC!
-PARAMETER L(FE2P,CR,FE:P;1) 298.15
-  +15000;  6000 N                                                      14MIEC!
-PARAMETER L(FE2P,FE,MN:P;0) 298.15
-  -85000 +50*T;  6000 N                                                14MIEA!
-PARAMETER L(FE2P,FE,NB:P;0) 298.15
-  -125000;  6000 N                                                      15MIE!
-PARAMETER L(FE2P,FE,NI:P;0) 298.15
-  +12000 +10*T;  6000 N                                                14MIED!
-
-$ ----------------------------------------------------------------------------
-$ FE3P
-$ TODO: SEPARATE THESE INTO SECTIONS
-
-PHASE FE3P % 2 3 1 !
-CONSTITUENT FE3P : CR,FE,MN,NI : P : !
 
 PHASE FEP2 % 2 0.333 0.667 !
 CONSTITUENT FEP2 : FE : P : !
 
 PHASE FEP4 % 2 0.2 0.8 !
 CONSTITUENT FEP4 : FE : P : !
-
-PARAMETER G(FE3P,CR:P;0) 298.15
-  -175246 -49.6744*T +7.9259*T*LN(T) +3*GHSERCR# +GHSERPP#;  6000 N    14MIEC!
-PARAMETER G(FE3P,FE:P;0) 298.15
-  -196669.005 +629.4*T -110.9*T*LN(T) -0.00585*T**2 
-  +539500*T**(-1);  6000 N                                              12CAO!
-PARAMETER G(FE3P,MN:P;0) 298.15
-  -160000 +20*T +3*GHSERMN# +GHSERPP#;  6000 N                         14MIEA!
-PARAMETER G(FE3P,NI:P;0) 298.15
-  -203560 +18.82*T +3*GHSERNI# +GREDP#;  6000 N                        14MIED!
-
-
-PARAMETER L(FE3P,CR,FE:P;0) 298.15
-  -55000 +30*T;  6000 N                                                14MIEC!
-PARAMETER L(FE3P,CR,FE:P;1) 298.15
-  -5000 +10*T;  6000 N                                                 14MIEC!
-PARAMETER L(FE3P,FE,MN:P;0) 298.15
-  -50000 +20*T;  6000 N                                                14MIEA!
-PARAMETER L(FE3P,FE,NI:P;0) 298.15
-  +48500 -16*T;  6000 N                                                14MIED!
-
 PARAMETER G(FEP2,FE:P;0) 298.15
   +0.333*GHSERFE# +0.667*GHSERPP# -76666 +16.33*T;  6000 N              12CAO!
 
@@ -9993,6 +9944,9 @@ PARAMETER L(HCP_A3,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(HCP_A3,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
+$ ESTIMATE SAME MO,P:VA AS FCC_A1 (AND BCC_A2)
+PARAMETER L(HCP_A3,MO,P:VA;0) 298.15
+  -197000;  6000 N                                                     15MIEB!
 PARAMETER L(HCP_A3,MO,TI:VA;0) 298.15
   +22760 -6*T;  6000 N                                                 95SAUB!
 PARAMETER L(HCP_A3,MO,W:VA;0) 298.15
@@ -10007,9 +9961,9 @@ PARAMETER L(HCP_A3,NB:N,VA;0) 298.15
 
 $ ESTIMATE SAME NB,P:VA AS FCC_A1
 PARAMETER L(HCP_A3,NB,P:VA;0) 298.15
-  -328900 +12.49*T;  6000 N                                             15MIE!
+  -328900 +12.49*T;  6000 N                                            15MIEA!
 PARAMETER L(HCP_A3,NB,P:VA;1) 298.15
-  +128100 -16.36*T;  6000 N                                             15MIE!
+  +128100 -16.36*T;  6000 N                                            15MIEA!
 $ ESTIMATE SAME NB,TA:(C,VA) AS FCC_A1
 PARAMETER L(HCP_A3,NB,TA:C;0) 298.15
   -3697 +0.119*T +2E-6*T**2;  6000 N                                   04SERB!
@@ -10303,6 +10257,9 @@ PARAMETER L(HCP_A3,FE,MO,NI:VA;1) 298.15
   +11555 -55.81*T;  6000 N                                              92FRI!
 PARAMETER L(HCP_A3,FE,MO,NI:VA;2) 298.15
   +77975;  6000 N                                                       92FRI!
+$ ESTIMATE SAME FE,MO,P:VA AS FCC_A1
+PARAMETER L(HCP_A3,FE,MO,P:VA;0) 298.15
+  +200000;  6000 N                                                     15MIEB!
 
 PARAMETER L(HCP_A3,FE,NB:C,VA;0) 298.15
   -20000;  6000 N                                                      90HUAA!
@@ -10311,7 +10268,7 @@ PARAMETER L(HCP_A3,FE,NB:N,VA;0) 298.15
 
 $ ESTIMATE SAME FE,NB,P:VA AS FCC_A1
 PARAMETER L(HCP_A3,FE,NB,P:VA;0) 298.15
-  -50000;  6000 N                                                       15MIE!
+  -50000;  6000 N                                                      15MIEA!
 
 $ ESTIMATE SAME FE,NI,P:VA AS FCC_A1
 PARAMETER L(HCP_A3,FE,NI,P:VA;0) 298.15
@@ -12963,6 +12920,8 @@ PARAMETER L(LIQUID,MO,NI;0) 298.15
   -16922.3;  6000 N                                                     18YAQ!
 PARAMETER L(LIQUID,MO,NI;1) 298.15
   +3490.0;  6000 N                                                      18YAQ!
+PARAMETER L(LIQUID,MO,P;0) 298.15
+  -206000;  6000 N                                                     15MIEB!
 PARAMETER L(LIQUID,MO,SI;0) 298.15
   -135276.2 +1.772195*T;  6000 N                                        89VAH!
 PARAMETER L(LIQUID,MO,SI;1) 298.15
@@ -13465,6 +13424,12 @@ PARAMETER L(LIQUID,FE,MN,TI;2) 298.15
 
 PARAMETER L(LIQUID,FE,MO,NI;0) 298.15
   +50000;  6000 N                                                       92FRI!
+PARAMETER L(LIQUID,FE,MO,P;0) 298.15
+  +100000;  6000 N                                                     15MIEB!
+PARAMETER L(LIQUID,FE,MO,P;1) 298.15
+  +100000;  6000 N                                                     15MIEB!
+PARAMETER L(LIQUID,FE,MO,P;2) 298.15
+  -100000;  6000 N                                                     15MIEB!
 PARAMETER L(LIQUID,FE,MO,SI;0) 298.15
   +110000;  6000 N                                                     98MIEB!
 
@@ -13480,11 +13445,11 @@ PARAMETER L(LIQUID,FE,NV,V;2) 298.15
   +104000;  6000 N                                                      03OHT!
 
 PARAMETER L(LIQUID,FE,NB,P;0) 298.15
-  +85000 +35*T;  6000 N                                                 15MIE!
+  +85000 +35*T;  6000 N                                                15MIEA!
 PARAMETER L(LIQUID,FE,NB,P;1) 298.15
-  +85000 +35*T;  6000 N                                                 15MIE!
+  +85000 +35*T;  6000 N                                                15MIEA!
 PARAMETER L(LIQUID,FE,NB,P;2) 298.15
-  -80000;  6000 N                                                       15MIE!
+  -80000;  6000 N                                                      15MIEA!
 PARAMETER L(LIQUID,FE,NI,P;0) 298.15
   +128000;  6000 N                                                     14MIED!
 PARAMETER L(LIQUID,FE,NI,P;1) 298.15
@@ -13643,6 +13608,42 @@ PARAMETER G(M2B5_D8I,MO:B;0) 298.15
   -49742 +4.98*T +0.32*GHSERMO# +0.68*GHSERBB#;  6000 N                 10PAN!
 
 $ ----------------------------------------------------------------------------
+$ M2P
+
+PHASE M2P % 2 2 1 !
+CONSTITUENT M2P : CR,CU,FE,MN,MO,NB,NI : P : !
+
+PARAMETER G(M2P,CR:P;0) 298.15
+  -159300 +5*T +2*GHSERCR# +GHSERPP#;  6000 N                           99MIE!
+PARAMETER G(M2P,CU:P;0) 298.15
+  -70000 +20*T +2*GBCCCU# +GHSERPP#;  6000 N                           14MIEB!
+PARAMETER G(M2P,FE:P;0) 298.15
+  -177142 +364.569*T -66.6699*T*LN(T) -0.01435*T**2;  6000 N            12CAO!
+PARAMETER G(M2P,MN:P;0) 298.15
+  -164079 -39.2175*T +6.6209*T*LN(T) +0.002264*T**2 +2*GHSERMN# 
+  +GHSERPP#;  6000 N                                                    21ZAI!
+PARAMETER G(M2P,MO:P;0) 298.15
+  -204700 +45*T +2*GHSERMO# +GHSERPP#;  6000 N                         15MIEB!
+PARAMETER G(M2P,NB:P;0) 298.15
+  -230000 +60*T +2*GHSERNB# +GHSERPP#;  6000 N                         15MIEA!
+PARAMETER G(M2P,NI:P;0) 298.15
+  -175320 +5.05*T +2*GHSERNI# +GREDP#;  6000 N                         14MIED!
+
+
+PARAMETER L(M2P,CR,FE:P;0) 298.15
+  -32000;  6000 N                                                      14MIEC!
+PARAMETER L(M2P,CR,FE:P;1) 298.15
+  +15000;  6000 N                                                      14MIEC!
+PARAMETER L(M2P,FE,MN:P;0) 298.15
+  -85000 +50*T;  6000 N                                                14MIEA!
+PARAMETER L(M2P,FE,MO:P;0) 298.15
+  -200000 +140*T;  6000 N                                              15MIEB!
+PARAMETER L(M2P,FE,NB:P;0) 298.15
+  -125000;  6000 N                                                     15MIEA!
+PARAMETER L(M2P,FE,NI:P;0) 298.15
+  +12000 +10*T;  6000 N                                                14MIED!
+
+$ ----------------------------------------------------------------------------
 $ M3B2_D5A
 
 PHASE M3B2_D5A % 3 0.4 0.2 0.4 !
@@ -13684,6 +13685,36 @@ CONSTITUENT M3B4_D78 : CR : B : !
 
 PARAMETER G(M3B4_D78,CR:B;0) 298.15
   -42984 +4.95*T +0.429*GHSERCR# +0.571*GHSERBB#;  6000 N               02CAM!
+
+$ ----------------------------------------------------------------------------
+$ M3P
+$ TODO: SEPARATE THESE INTO SECTIONS
+
+PHASE M3P % 2 3 1 !
+CONSTITUENT M3P : CR,FE,MN,MO,NI : P : !
+
+
+PARAMETER G(M3P,CR:P;0) 298.15
+  -175246 -49.6744*T +7.9259*T*LN(T) +3*GHSERCR# +GHSERPP#;  6000 N    14MIEC!
+PARAMETER G(M3P,FE:P;0) 298.15
+  -196669.005 +629.4*T -110.9*T*LN(T) -0.00585*T**2 
+  +539500*T**(-1);  6000 N                                              12CAO!
+PARAMETER G(M3P,MN:P;0) 298.15
+  -160000 +20*T +3*GHSERMN# +GHSERPP#;  6000 N                         14MIEA!
+PARAMETER G(M3P,MO:P;0) 298.15
+  -167000 +35*T +3*GHSERMO# +GHSERPP#;  6000 N                         15MIEB!
+PARAMETER G(M3P,NI:P;0) 298.15
+  -203560 +18.82*T +3*GHSERNI# +GREDP#;  6000 N                        14MIED!
+
+
+PARAMETER L(M3P,CR,FE:P;0) 298.15
+  -55000 +30*T;  6000 N                                                14MIEC!
+PARAMETER L(M3P,CR,FE:P;1) 298.15
+  -5000 +10*T;  6000 N                                                 14MIEC!
+PARAMETER L(M3P,FE,MN:P;0) 298.15
+  -50000 +20*T;  6000 N                                                14MIEA!
+PARAMETER L(M3P,FE,NI:P;0) 298.15
+  +48500 -16*T;  6000 N                                                14MIED!
 
 $ ----------------------------------------------------------------------------
 $ M5B3_D8L
@@ -14628,6 +14659,24 @@ PARAMETER L(MONI_DELTA,MO:MO,NI:NI;0) 298.15
   -336919.7 +392.181*T;  6000 N                                         18YAQ!
 
 $ ----------------------------------------------------------------------------
+$ MOP1
+
+PHASE MOP1 % 2 1 1 !
+CONSTITUENT MOP1 : MO : P : !
+
+PARAMETER G(MOP1,MO:P;0) 298.15
+  -219200 +45*T +GHSERMO# +GHSERPP#;  6000 N                           15MIEB!
+
+$ ----------------------------------------------------------------------------
+$ MO3P
+
+PHASE MO3P % 2 3 1 !
+CONSTITUENT MO3P : MO : P : !
+
+PARAMETER G(MO3P,MO:P;0) 298.15
+  -223500 +33.5*T +3*GHSERMO# +GHSERPP#;  6000 N                       15MIEB!
+
+$ ----------------------------------------------------------------------------
 $ MONOCLINIC
 
 PHASE MONOCLINIC % 1 1 !
@@ -15110,7 +15159,7 @@ PHASE NBP1 % 2 1 1 !
 CONSTITUENT NBP1 : NB : P : !
 
 PARAMETER G(NBP1,NB:P;0) 298.15
-  -260800 +43.2*T +GHSERNB# +GHSERPP#;  6000 N                          15MIE!
+  -260800 +43.2*T +GHSERNB# +GHSERPP#;  6000 N                         15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ NBP2
@@ -15119,7 +15168,7 @@ PHASE NBP2 % 2 1 2 !
 CONSTITUENT NBP2 : NB : P : !
 
 PARAMETER G(NBP2,NB:P;0) 298.15
-  -330300 +65*T +GHSERNB# +2*GHSERPP#;  6000 N                          15MIE!
+  -330300 +65*T +GHSERNB# +2*GHSERPP#;  6000 N                         15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ NB3P
@@ -15128,7 +15177,7 @@ PHASE NB3P % 2 3 1 !
 CONSTITUENT NB3P : NB : P : !
 
 PARAMETER G(NB3P,NB:P;0) 298.15
-  -314800 +80*T +3*GHSERNB# +GHSERPP#;  6000 N                          15MIE!
+  -314800 +80*T +3*GHSERNB# +GHSERPP#;  6000 N                         15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ NB7P4
@@ -15137,7 +15186,7 @@ PHASE NB7P4 % 2 7 4 !
 CONSTITUENT NB7P4 : NB : P : !
 
 PARAMETER G(NB7P4,NB:P;0) 298.15
-  -1213300 +240*T +7*GHSERNB# +4*GHSERPP#;  6000 N                      15MIE!
+  -1213300 +240*T +7*GHSERNB# +4*GHSERPP#;  6000 N                     15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ NICR3B6
@@ -19319,17 +19368,17 @@ PHASE TAU1_FENBP % 2 2 1 !
 CONSTITUENT TAU1_FENBP : FE,NB : P : !
 
 PARAMETER G(TAU1_FENBP,FE:P;0) 298.15
-  -160000 +30*T +2*GHSERFE# +GHSERPP#;  6000 N                          15MIE!
+  -160000 +30*T +2*GHSERFE# +GHSERPP#;  6000 N                         15MIEA!
 PARAMETER G(TAU1_FENBP,NB:P;0) 298.15
-  -274000 +6*T*LN(T) +2*GHSERNB# +GHSERPP#;  6000 N                     15MIE!
+  -274000 +6*T*LN(T) +2*GHSERNB# +GHSERPP#;  6000 N                    15MIEA!
 
 
 PARAMETER L(TAU1_FENBP,FE,NB:P;0) 298.15
-  -160000;  6000 N                                                      15MIE!
+  -160000;  6000 N                                                     15MIEA!
 PARAMETER L(TAU1_FENBP,FE,NB:P;1) 298.15
-  +0;  6000 N                                                           15MIE!
+  +0;  6000 N                                                          15MIEA!
 PARAMETER L(TAU1_FENBP,FE,NB:P;2) 298.15
-  +70000;  6000 N                                                       15MIE!
+  +70000;  6000 N                                                      15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ N_MNNISI
@@ -19381,7 +19430,7 @@ PHASE TAU2_FENB2P % 3 1 2 1 !
 CONSTITUENT TAU2_FENB2P : FE : NB : P : !
 
 PARAMETER G(TAU2_FENB2P,FE:NB:P;0) 298.15
-  -335500 +57*T +GHSERFE# +2*GHSERNB# +GHSERPP#;  6000 N                15MIE!
+  -335500 +57*T +GHSERFE# +2*GHSERNB# +GHSERPP#;  6000 N               15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ TAU2_D811
@@ -19428,7 +19477,7 @@ PHASE TAU3_FENB4P % 3 1 4 1 !
 CONSTITUENT TAU3_FENB4P : FE : NB : P : !
 
 PARAMETER G(TAU3_FENB4P,FE:NB:P;0) 298.15
-  -332000 +40*T +GHSERFE# +4*GHSERNB# +GHSERPP#;  6000 N                15MIE!
+  -332000 +40*T +GHSERFE# +4*GHSERNB# +GHSERPP#;  6000 N               15MIEA!
 
 $ ----------------------------------------------------------------------------
 $ TAU4_ALCRSI
@@ -20626,9 +20675,12 @@ NUMBER  SOURCE
 15LU   'Lu, Hai-Jin, et al. "Thermodynamic modeling of Cr-Nb and Zr-Cr with 
         extension to the ternary Zr-Nb-Cr system." Calphad 50 (2015): 
         134-143.'
-15MIE  'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description of 
+15MIEA 'Miettinen, Jyrki, and Gueorgui Vassilev. "Thermodynamic Description of 
         Ternary Fe-XP Systems. Part 5: Fe-Nb-P." Journal of Phase Equilibria 
         and Diffusion 36 (2015): 68-77.'
+15MIEB 'Miettinen, Jyrki, A. Pashkova, and Gueorgui Vassilev. "Thermodynamic 
+        Description of Ternary Fe-XP Systems. Part 4: Fe-Mo-P." Journal of 
+        Phase Equilibria and Diffusion 36 (2015): 60-67.'
 15SHI   'Shishin, Denis, et al. "Critical Assessment and Thermodynamic
         Modeling of the Fe-O-S System." Journal of Phase Equilibria and
         Diffusion 36 (2015): 224-240.'
