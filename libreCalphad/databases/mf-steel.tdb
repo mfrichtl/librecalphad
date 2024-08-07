@@ -113,7 +113,9 @@ $ 2024-07-27 CO-CR-MO R_COCRMO PHASE TOO SMALL FROM Ostrowska.
 $ 2024-07-28 CR-FE-W FROM Ostrowska ISSUES WITH INTERMETALLICS
 $ 2024-08-01 AL-NI-MO FROM PENG 2016 DID NOT INCORPORATE NI3MO, NI4MO, X, OR
 $            N PHASES
-$
+$ 2024-08-07 B-V FROM DA SILVA ISSUES WITH MB_BF AND INCOMPATIBLE MODEL FOR
+$            M3B2_D5A PHASES
+$ 
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
 DATABASE_INFO The following systems are available:'
@@ -143,6 +145,7 @@ DATABASE_INFO The following systems are available:'
   B-MN      Sun (2010) EXCEPT BETA-B SOLUBILITY'
   B-NI      Sun (2009), Pan (2010), and Oikawa (2022)'
   B-SI      Chen (2009)'
+  B-V       da Silva (2017)'
   C-CO      Guillermet (1988) and Kusoffsky (1997)'
   C-CR      Andersson (1987), Lee (1992), Qiu (1992), and Khvan (2012)'
   C-CU      Shubhank (2014) and Chen (2019)'
@@ -3102,7 +3105,7 @@ PARAMETER G(BCC_A2,TI:VA;0) 298.15
   +GBCCTI#;  6000 N                                                     91DIN!
 
 PARAMETER G(BCC_A2,V:B;0) 298.15
-  +GHSERV# +3*GHSERBB#;  6000 N                                         23FRI!
+  +50000 +GHSERV# +3*GHSERBB#;  6000 N                                  17SIL!
 PARAMETER G(BCC_A2,V:C;0) 298.15
   +108082 +GHSERV# +3*GHSERCC#;  6000 N                                 06HU !
 PARAMETER G(BCC_A2,V:H;0) 298.15
@@ -4825,7 +4828,7 @@ PARAMETER L(BETA_2,FE,V:VA;1) 298.15
 
 PARAMETER L(BETA_2,NI,V:VA;0) 298.15
   -30513.8 +12.6138*T;  6000 N                                          12KIM!
-
+ 
 PARAMETER L(BETA_2,V:H,VA;0) 298.15
   -12800 +18*T;  6000 N                                                 08UKI!
 PARAMETER L(BETA_2,V:H,VA;1) 298.15
@@ -12595,6 +12598,12 @@ PARAMETER L(LIQUID,B,NI;2) 298.15
   +94942.9034 -37.9327311*T;  6000 N                                   09SUNB!
 PARAMETER L(LIQUID,B,SI;0) 298.15
   +11008.088 -6.45944029*T;  6000 N                                    09CHEC!
+PARAMETER L(LIQUID,B,V;0) 298.15
+  -148389.1;  6000 N                                                    17SIL!
+PARAMETER L(LIQUID,B,V;1) 298.15
+  -17722.7;  6000 N                                                     17SIL!
+PARAMETER L(LIQUID,B,V;2) 298.15
+  +36585.5 +0.09604*T;  6000 N                                          17SIL!
 
 PARAMETER L(LIQUID,C,CO;0) 298.15
   -107940.6 +24.956*T;  6000 N                                          97KUS!
@@ -13256,6 +13265,13 @@ PARAMETER L(LIQUID,B,FE,MN;1) 298.15
 PARAMETER L(LIQUID,B,FE,MN;2) 298.15
   +14520.3 -59.97*T;  6000 N                                            16REP!
 
+PARAMETER L(LIQUID,B,SI,V;0) 298.15
+  +0; 6000 N                                                            17SIL!
+PARAMETER L(LIQUID,B,SI,V;1) 298.15
+  -21101;  6000 N                                                       17SIL!
+PARAMETER L(LIQUID,B,SI,V;2) 298.15
+  +43353 -65*T;  6000 N                                                 17SIL!
+
 PARAMETER L(LIQUID,C,CO,CR;0) 298.15
   -258600;  6000 N                                                      14KAP!
 PARAMETER L(LIQUID,C,CO,CR;1) 298.15
@@ -13643,7 +13659,7 @@ $ PEARSON: hP3
 $ SPACE GROUP: P6/mmm
 
 PHASE MB2_C32 % 2 1 2 !
-CONSTITUENT MB2_C32 : AL,CR,FE,MN,MO : B : !
+CONSTITUENT MB2_C32 : AL,CR,FE,MN,MO,V : B : !
 
 PARAMETER G(MB2_C32,AL:B;0) 298.15
   -23000 -3.05*T +GHSERAL# +2*GHSERBB#;  6000 N                         04MIR!
@@ -13655,6 +13671,8 @@ PARAMETER G(MB2_C32,MN:B;0) 298.15
   -63300 -37.668*T +GHSERMN# +2*GHSERBB#;  6000 N                       10SUN!
 PARAMETER G(MB2_C32,MO:B;0) 298.15
   -143814 +6.66*T +1.14*GHSERMO# +1.86*GHSERBB#;  6000 N                10PAN!
+PARAMETER G(MB2_C32,V:B;0) 298.15
+  -204228.6 +5.7768*T +GHSERV# +2*GHSERBB#;  6000 N                     17SIL!
 
 
 PARAMETER L(MB2_C32,FE,MN:B;0) 298.15
@@ -13781,9 +13799,13 @@ PARAMETER L(M2P_C22,FE:P,SI;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ M3B2_D5A
+$ PROTOTYPE: U3SI2
+$ SPACE GROUP: P4/mbm
+$ PEARSON: tP10
+$ TODO: ADD MISSING ENDMEMBERS
 
 PHASE M3B2_D5A % 3 0.4 0.2 0.4 !
-CONSTITUENT M3B2_D5A : CR,FE,MO,NI : CR,FE,NI : B : !
+CONSTITUENT M3B2_D5A : CR,FE,MO,NI,V : CR,FE,NI,V : B : !
 
 PARAMETER G(M3B2_D5A,CR:CR:B;0) 298.15
   -36762 +4.29*T +0.6*GHSERCR# +0.4*GHSERBB#;  6000 N                   10PAN!
@@ -13813,6 +13835,9 @@ PARAMETER G(M3B2_D5A,NI:FE:B;0) 298.15
 PARAMETER G(M3B2_D5A,NI:NI:B;0) 298.15
   -20210 +6.58*T +0.6*GHSERNI# +0.4*GHSERBB#;  6000 N                   10PAN!
 
+PARAMETER G(M3B2_D5A,V:V:B;0) 298.15
+  -55550.6 +1.5850*T +0.4*GSHERV# +0.2*GHSERV# +0.4*GHSERBB#;  6000 N   17SIL!
+
 $ ----------------------------------------------------------------------------
 $ M3B4_D7B
 $ PROTOTYPE: TA3B4
@@ -13820,10 +13845,12 @@ $ SPACE GROUP: Immm
 $ PEARSON: oI14
 
 PHASE M3B4_D7B % 2 0.4286 0.5714 !
-CONSTITUENT M3B4_D7B : CR : B : !
+CONSTITUENT M3B4_D7B : CR,V : B : !
 
 PARAMETER G(M3B4_D7B,CR:B;0) 298.15
   -42984 +4.95*T +0.4286*GHSERCR# +0.5714*GHSERBB#;  6000 N             02CAM!
+PARAMETER G(M3B4_D7B,V:B;0) 298.15
+  -69723.9 +2.3967*T +0.4286*GHSERV# +0.5714*GHSERBB#;  6000 N          17SIL!
 
 $ ----------------------------------------------------------------------------
 $ M3P_D0E
@@ -14971,7 +14998,7 @@ $ SPACE GROUP: Cmcm
 $ PEARSON: oC8
 
 PHASE MB_BF % 2 0.5 0.5 !
-CONSTITUENT MB_BF : CR,FE,MO : B : !
+CONSTITUENT MB_BF : CR,FE,MO,V : B : !
 
 PARAMETER G(MB_BF,CR:B;0) 298.15
   -40000 +3.24*T +0.5*GHSERCR# +0.5*GHSERBB#;  6000 N                  14MIEF!
@@ -14979,7 +15006,8 @@ PARAMETER G(MB_BF,FE:B;0) 298.15
   -10000 +5*T +0.5*GSHERFE# +0.5*GSHERBB#;  6000 N                     14MIEF!
 PARAMETER G(MB_BF,MO:B;0) 298.15
   -57300 +4.5*T +0.5*GHSERMO# +0.5*GHSERBB#;  6000 N                    10PAN!
-
+PARAMETER G(MB_BF,V:B;0) 298.15
+  -69152.3 +2.3520*T +0.5*GSHERV# +0.5*GHSERBB#;  6000 N                17SIL!
 
 PARAMETER L(MB_BF,CR,FE:B;0) 298.15
   -60000 +20*T;  6000 N                                                14MIEF!
@@ -15641,7 +15669,7 @@ PARAMETER G(M5SI3_D88,CR:AL;0) 298.15
 PARAMETER G(M5SI3_D88,CR:SI;0) 298.15
   -227117.69 +5*GHSERCR# +3*GHSERSI#;  6000 N                          17CUID!
 
-PARAMETER G(M5B3_D8L,FE:AL;0) 298.15
+PARAMETER G(M5SI3_D88,FE:AL;0) 298.15
   +5*GHSERFE# +3*GHSERAL#;  6000 N                                      24FRI!
 PARAMETER G(M5SI3_D88,FE:SI;0) 298.15
   -279088.672 +1058.8256*T -185.9992*T*LN(T) +528882.24*T**(-1) 
@@ -19504,6 +19532,23 @@ PARAMETER G(T_ALSIV,AL:SI:V;0) 298.15
   +0.333*GHSERV#;  6000 N                                               17KRO!
 
 $ ----------------------------------------------------------------------------
+$ T2_BVSI
+
+PHASE T2_BVSI % 2 0.625 0.375 !
+CONSTITUENT T2_BVSI : V : B,SI : !
+
+PARAMETER G(T2_BVSI,V:B;0) 298.15
+  -34659 +5.2423*T +0.625*GHSERV# +0.375*GHSERBB#;  6000 N              17SIL!
+PARAMETER G(T2_BVSI,V:SI;0) 298.15
+  +243737 -21.4912*T +0.625*GHSERV# +0.375*GHSERSI#;  6000 N            17SIL!
+
+
+PARAMETER L(T2_BVSI,V:B,SI;0) 298.15
+  -554138 +49.6657*T;  6000 N                                           17SIL!
+PARAMETER L(T2_BVSI,V:B,SI;1) 298.15
+  +40286 +17.7777*T;  6000 N                                            17SIL!
+
+$ ----------------------------------------------------------------------------
 $ TAU_ALFESI
 
 PHASE TAU_ALFESI % 3 0.4 0.25 0.35 !
@@ -20368,6 +20413,39 @@ PARAMETER G(U_PHASE,MN:NI:SI;0) 298.15
   -29580.458 +0.66*GHSERMN# +0.04*GHSERNI# +0.30*GHSERSI#;  6000 N       11HU!
 
 $ ----------------------------------------------------------------------------
+$ VBSI_D88
+$ TERNARY PHASE FROM DA SILVA 2017
+
+PHASE VBSI_D88 % 3 0.5556 0.3333 0.1111 !
+CONSTITUENT VBSI_D88 : V : B,SI : B,VA : !
+
+PARAMETER G(VBSI_D88,V:B:B;0) 298.15
+  +0.5556*GHSERV# +0.3333*GHSERBB# +0.1111*GHSERBB#;  6000 N            17SIL!
+PARAMETER G(VBSI_D88,V:B:VA;0) 298.15
+  +0.5556*GHSERV# +0.3333*GHSERBB#;  6000 N                             17SIL!
+
+PARAMETER G(VBSI_D88,V:SI:B;0) 298.15
+  -67031 +10.1752*T +0.5556*GHSERV# +0.3333*GHSERSI# 
+  +0.1111*GHSERBB#;  6000 N                                             17SIL!
+PARAMETER G(VBSI_D88,V:SI:VA;0) 298.15
+  +0.5556*GHSERV# +0.3333*GHSERSI#;  6000 N                             17SIL!
+
+
+PARAMETER L(VBSI_D88,V:SI:B,VA;0) 298.15
+  -45211;  6000 N                                                       17SIL!
+
+$ ----------------------------------------------------------------------------
+$ V2B3
+$ PROTOTYPE: V2B3
+$ SPACE GROUP: Cmcm
+
+PHASE V2B3 % 2 0.4 0.6 !
+CONSTITUENT V2B3 : V : B : !
+
+PARAMETER G(V2B3,V:B;0) 298.15
+  -69975.5 +2.4997*T +0.4*GHSERV# +0.6*GHSERBB#;  6000 N                17SIL!
+
+$ ----------------------------------------------------------------------------
 $ V3H2
 $ VANADIUM DIHYDRIDE
 
@@ -20385,6 +20463,17 @@ CONSTITUENT V4C3 : V : C : !
 PARAMETER G(V4C3,V:C;0) 298.15
   -49992 +0.02514*T +0.621*GHSERV#+0.379*GHSERCC#;  6000 N              06HU !
 
+
+$ ----------------------------------------------------------------------------
+$ V5B6
+$ PROTOTYPE: V5B6
+$ SPACE GROUP: Ammm
+
+PHASE V5B6 % 2 0.4546 0.5454 !
+CONSTITUENT V5B6 : V : B : !
+
+PARAMETER G(V5B6,V:B;0) 298.15
+  -69516.6 +2.3770*T +0.4546*GHSERV# +0.5454*GHSERBB#;  6000 N          17SIL!
 
 $ ----------------------------------------------------------------------------
 $ V8C7
@@ -21060,6 +21149,8 @@ NUMBER  SOURCE
         description of the Cu-Cr-Zr system." Calphad 59 (2017): 1-11.'
 17LU    'Lu, Hai-Jin, et al. "Thermodynamic investigation of the Zr-Fe-Nb 
         system and its applications." Intermetallics 88 (2017): 91-100.'
+17SIL   'da Silva, Antonio Augusto Araujo Pinto, et al. "Thermodynamic 
+        modeling of the V-Si-B system." Calphad 59 (2017): 199-206.'
 17ZHEA  'Zheng, Wei-sen, et al. "Thermodynamic modeling of Fe-C-Mn-Si alloys."
         Journal of Iron and Steel Research International 24.2 (2017): 
         190-197.'
