@@ -142,6 +142,7 @@ DATABASE_INFO The following systems are available:'
   B-MO      Pan (2010)'
   B-MN      Sun (2010) EXCEPT BETA-B SOLUBILITY'
   B-NI      Sun (2009), Pan (2010), and Oikawa (2022)'
+  B-SI      Chen (2009)'
   C-CO      Guillermet (1988) and Kusoffsky (1997)'
   C-CR      Andersson (1987), Lee (1992), Qiu (1992), and Khvan (2012)'
   C-CU      Shubhank (2014) and Chen (2019)'
@@ -282,6 +283,7 @@ DATABASE_INFO The following systems are available:'
   AL-SI-V   Kroupa (2017)'
   AL-TI-V   Li (2024)'
   B-C-NI    Oikawa (2022)'
+  B-C-SI    Checn (2009)'
   B-CR-FE   Pan (2010) and Miettinen (2014)'
   B-CR-MO   Pan (2010)'
   B-CR-NI   Pan (2010)'
@@ -2759,24 +2761,30 @@ PARAMETER G(ANILITE,CU:S;0) 298.15
   -76000.8 -22.78185*T +1.75*GHSERCU# +GHSERSS#;  6000 N                07LEE!
 
 $ ----------------------------------------------------------------------------
-$ B4C_D1G
+$ B4C
+$ SPACE GROUP: R-3m
+$ PEARSON: hR15
 
-PHASE B4C_D1G % 2 1 1 !
-CONSTITUENT B4C_D1G : B11C,B12 : B2,C2B,CB2 : !
+PHASE B4C % 2 1 1 !
+CONSTITUENT B4C : B11C,B12 : B2,C2B,CB2,SI2 : !
 
-PARAMETER G(B4C_D1G,B11C:B2;0) 298.15
+PARAMETER G(B4C,B11C:B2;0) 298.15
   -148993.047 +11.5310464*T +13*GHSERBB# +GHSERCC#;  6000 N             96KAS!
-PARAMETER G(B4C_D1G,B11C:B2C;0) 298.15
+PARAMETER G(B4C,B11C:B2C;0) 298.15
   -293453.353 +11.5310464*T +13*GHSERBB# +2*GHSERCC#;  6000 N           96KAS!
-PARAMETER G(B4C_D1G,B11C:C2B;0) 298.15
+PARAMETER G(B4C,B11C:C2B;0) 298.15
   -311207.416 +11.5310464*T +12*GHSERBB# +3*GHSERCC#;  6000 N           96KAS!
+PARAMETER G(B4C,B11C:SI2;0) 298.15
+  -200000 +22.909095*T +11*GHSERBB# +GHSERCC# +2*GHSERSI#;  6000 N     09CHEC!
 
-PARAMETER G(B4C_D1G,B12:B2;0) 298.15
+PARAMETER G(B4C,B12:B2;0) 298.15
   +10000 +11.5310464*T +14*GHSERBB#;  6000 N                            96KAS!
-PARAMETER G(B4C_D1G,B12:B2C;0) 298.15
+PARAMETER G(B4C,B12:B2C;0) 298.15
   -138993.047 +11.5310464*T +14.071428571*GHSERBB# +GHSERCC#;  6000 N   96KAS!
-PARAMETER G(B4C_D1G,B12:C2B;0) 298.15
+PARAMETER G(B4C,B12:C2B;0) 298.15
   -283453.45 +11.5310464*T +13*GHSERBB# +2*GHSERCC#;  6000 N            96KAS!
+PARAMETER G(B4C,B12:SI2;0) 298.15
+  -100000 +22.909095*T +12*GHSERBB# +2*GHSERSI#;  6000 N               09CHEC!
 
 $ ----------------------------------------------------------------------------
 $ BCC_A2
@@ -3042,7 +3050,7 @@ PARAMETER G(BCC_A2,S:VA;0) 298.15
   +GBCCSS#;  6000 N                                                     91DIN!
 
 PARAMETER G(BCC_A2,SI:B;0) 298.15
-  +GHSERSI# +3*GHSERBB#;  6000 N                                        23FRI!
+  +25000 +GHSERSI# +3*GHSERBB#;  6000 N                                 24FRI!
 PARAMETER G(BCC_A2,SI:C;0) 298.15
   +369050 -98.167*T +GBCCSI# +3*GHSERCC#;  6000 N                       91LAC!
 PARAMETER G(BCC_A2,SI:H;0) 298.15
@@ -4826,22 +4834,28 @@ PARAMETER L(BETA_2,V:H,VA;2) 298.15
   +11100 -8.2*T;  6000 N                                                08UKI!
 
 $ ----------------------------------------------------------------------------
-$ BETA_RHOMB_B
-$ BETA BORIDE
+$ BETA_RHOMBO_B
+$ BETA BORON
 $ SPACE GROUP: R-3m
-$ PEARSON: hR108
+$ PEARSON: hR12
 
 PHASE BETA_RHOMBO_B % 2 93 12 !
-CONSTITUENT BETA_RHOMBO_B : B : B,C : !
+CONSTITUENT BETA_RHOMBO_B : B : B,C,SI : !
 
 PARAMETER G(BETA_RHOMBO_B,B:B;0) 298.15
   +93*GHSERBB# +12*GHSERBB#;  6000 N                                    91DIN!
-
-PARAMETER G(BETA_RHOMB_B,B:C;0) 298.15
+PARAMETER G(BETA_RHOMBO_B,B:C;0) 298.15
   +10000 +93*GHSERBB# +12*GHSERCC#;  6000 N                             96KAS!
+PARAMETER G(BETA_RHOMBO_B,B:SI;0) 298.15
+  -461741.918 +93*GHSERBB# +12*GHSERSI#;  6000 N                       09CHEC!
+
 
 PARAMETER L(BETA_RHOMB_B,B:B,C;0) 298.15
   -1636713.01;  6000 N                                                  96KAS!
+PARAMETER L(BETA_RHOMBO_B,B:B,SI;0) 298.15
+  -44.5*T;  6000 N                                                     09CHEC!
+PARAMETER L(BETA_RHOMBO_B,B:B,SI;1) 298.15
+  -233627;  6000 N                                                     09CHEC!
 
 $ ----------------------------------------------------------------------------
 $ CBCC_A12
@@ -6146,7 +6160,7 @@ CONSTITUENT DIAMOND_A4 : AL,B,BI,C,CR,FE,MN,NI,O,P,SI,SN,TI : !
 PARAMETER G(DIAMOND_A4,AL;0) 298.15 
   +30*T +GHSERAL#; 2900 N                                               98ANS!
 PARAMETER G(DIAMOND_A4,B;0) 298.15
-  +10 +GHSERBB#;  6000 N                                                98ANS!
+  +20 +GHSERBB#;  6000 N                                                98ANS!
 PARAMETER G(DIAMOND_A4,BI;0) 298.15
   +11296.8 +9.253655*T +GHSERBI#; 3000 N                                91DIN!
 PARAMETER G(DIAMOND_A4,C;0) 298.15 
@@ -6177,6 +6191,8 @@ PARAMETER G(DIAMOND_A4,TI;0) 298.15
 
 PARAMETER L(DIAMOND_A4,AL,SI;0) 298.15
   +111417.7 -46.1392*T;  6000 N                                         99LIU!
+PARAMETER L(DIAMOND_A4,B,SI;0) 298.15
+  +65655.0752 -15.6289638*T;  6000 N                                   09CHEC!
 PARAMETER L(DIAMOND_A4,C,SI;0) 298.15
   +93386.8;  6000 N                                                     96GRO!
 PARAMETER L(DIAMOND_A4,FE,SI;0) 298.15
@@ -12577,6 +12593,8 @@ PARAMETER L(LIQUID,B,NI;1) 298.15
   +63254.0561 -21.9049039*T;  6000 N                                   09SUNB!
 PARAMETER L(LIQUID,B,NI;2) 298.15
   +94942.9034 -37.9327311*T;  6000 N                                   09SUNB!
+PARAMETER L(LIQUID,B,SI;0) 298.15
+  +11008.088 -6.45944029*T;  6000 N                                    09CHEC!
 
 PARAMETER L(LIQUID,C,CO;0) 298.15
   -107940.6 +24.956*T;  6000 N                                          97KUS!
@@ -13796,13 +13814,16 @@ PARAMETER G(M3B2_D5A,NI:NI:B;0) 298.15
   -20210 +6.58*T +0.6*GHSERNI# +0.4*GHSERBB#;  6000 N                   10PAN!
 
 $ ----------------------------------------------------------------------------
-$ M3B4_D78
+$ M3B4_D7B
+$ PROTOTYPE: TA3B4
+$ SPACE GROUP: Immm
+$ PEARSON: oI14
 
-PHASE M3B4_D78 % 2 0.429 0.571 !
-CONSTITUENT M3B4_D78 : CR : B : !
+PHASE M3B4_D7B % 2 0.4286 0.5714 !
+CONSTITUENT M3B4_D7B : CR : B : !
 
-PARAMETER G(M3B4_D78,CR:B;0) 298.15
-  -42984 +4.95*T +0.429*GHSERCR# +0.571*GHSERBB#;  6000 N               02CAM!
+PARAMETER G(M3B4_D7B,CR:B;0) 298.15
+  -42984 +4.95*T +0.4286*GHSERCR# +0.5714*GHSERBB#;  6000 N             02CAM!
 
 $ ----------------------------------------------------------------------------
 $ M3P_D0E
@@ -15752,7 +15773,7 @@ PARAMETER G(M5SI4,TI:SI;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ V6SI5
-$ PROTOTYPE: NB6SSN5
+$ PROTOTYPE: NB6SN5
 $ SPACE GROUP: Immm
 $ PEARSON: oI44
 
@@ -15761,11 +15782,10 @@ CONSTITUENT V6SI5 : CR,V : AL,SI : !
 
 PARAMETER G(V6SI5,CR:AL;0) 298.15
   +6*GHSERCR# +5*GHSERSI#;  6000 N                                      24FRI!
-PARAMETER G(V6SI5,V:AL;0) 298.15
-  +110000 +6*GHSERV# +5*GHSERAL#;  6000 N                               17KRO!
-
 PARAMETER G(V6SI5,CR:SI;0) 298.15
   -307769 +6*GHSERCR# +5*GHSERSI#;  6000 N                              15CHA!
+PARAMETER G(V6SI5,V:AL;0) 298.15
+  +110000 +6*GHSERV# +5*GHSERAL#;  6000 N                               17KRO!
 PARAMETER G(V6SI5,V:SI;0) 298.15
   -580401.8 +65.04476*T +6*GHSERV# +5*GHSERSI#;  6000 N                08ZHAA!
 
@@ -17227,11 +17247,58 @@ PARAMETER L(S_PHASE,MN,NI:SI;1) 298.15
   -74906.402;  6000 N                                                    11HU!
 
 $ ----------------------------------------------------------------------------
+$ SIB3
+$ PROTOTYPE: B4C
+$ SPACE GROUP: R-3m
+$ PEARSON: hR15
+
+PHASE SIB3 % 2 0.25 0.75 !
+CONSTITUENT SIB3 : SI : B : !
+
+PARAMETER G(SIB3,SI:B;0) 298.15
+  -19986.103 +6.3911152*T +0.25*GHSERSI# +0.75*GHSERBB#;  6000 N       09CHEC!
+
+$ ----------------------------------------------------------------------------
+$ SIB6
+$ PROTOTYPE: SIB6
+$ SPACE GROUP: Pnnm
+$ PEARSON: oP280
+
+PHASE SIB6 % 2 0.143 0.857 !
+CONSTITUENT SIB6 : SI : B : !
+
+PARAMETER G(SIB6,SI:B;0) 298.15
+  -22809.0246 +7.30171747*T +0.143*GHSERSI# +0.857*GHSERBB#;  6000 N   09CHEC!
+
+$ ----------------------------------------------------------------------------
+$ SIBN
+$ PROTOTYPE: B
+$ SPACE GROUP R-3m
+$ PEARSON: hR12
+
+PHASE SIBN % 3 61 1 8 !
+CONSTITUENT SIBN : B : SI : B,SI : !
+
+PARAMETER G(SIBN,B:SI:B;0) 298.15
+  -254754.232 +86.5471*T +61*GHSERBB# +GHSERSI# +8*GHSERBB#;  6000 N   09CHEC!
+PARAMETER G(SIBN,B:SI:SI;0) 298.15
+  -652194.127 +275.666*T +61*GHSERBB# +GHSERSI# +8*GHSERSI#;  6000 N   09CHEC!
+
+
+PARAMETER L(SIBN,B:SI:B,SI;0) 298.15
+  -1589069.02 +400.9447*T;  6000 N                                     09CHEC!
+
+$ ----------------------------------------------------------------------------
 $ SIC_B3
+$ PROTOTYPE: ZNS
+$ SPACE GROUP : F-4-3m
+$ PEARSON: cF8
 
 PHASE SIC_B3 % 2 1 1 !
-CONSTITUENT SIC_B3 : SI : C : !
+CONSTITUENT SIC_B3 : SI : B,C : !
 
+PARAMETER G(SIC_B3,SI:B;0) 298.15
+  +30000 +GHSERSI# +GHSERBB#;  6000 N                                  09CHEC!
 PARAMETER G(SIC_B3,SI:C;0) 298.15
   -85572.264 +173.2005*T -25.856*T*LN(T) -0.02107*T**2 +3.2153E-6*T**3
   +438415*T**(-1);  700 Y 
@@ -20766,6 +20833,8 @@ NUMBER  SOURCE
         Calphad 33.1 (2009): 211-214.'
 09CHEB  'Chen, Le Yi, et al. "Thermodynamic modeling of Ti-Cr-Mn ternary 
         system." Calphad 33.4 (2009): 658-663.'
+09CHEC  'Chen, H. M., et al. "Thermodynamic assessment of the B–C–Si system." 
+        Journal of alloys and compounds 481.1-2 (2009): 182-189.'
 09KEY   'De Keyzer, Jozefien, et al. "Thermodynamic modeling and optimization 
         of the Fe-Ni-Ti system." Calphad 33.1 (2009): 109-123.'
 09LIA   'Liang, Yu, et al. "A thermodynamic description of the Al-Cr-Si 
