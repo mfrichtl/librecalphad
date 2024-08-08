@@ -115,6 +115,8 @@ $ 2024-08-01 AL-NI-MO FROM PENG 2016 DID NOT INCORPORATE NI3MO, NI4MO, X, OR
 $            N PHASES
 $ 2024-08-07 B-V FROM DA SILVA ISSUES WITH MB_BF AND INCOMPATIBLE MODEL FOR
 $            M3B2_D5A PHASES
+$ 2024-08-08 B-CU FROM ZHANG 2009 B-SOLUBILITY IN FCC_A1 TOO HIGH, ASSESSMENT
+$            DOES NOT INCLUDE ALPHA-B, SO THEY MAY BE RELATED ISSUES.
 $ 
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -140,6 +142,7 @@ DATABASE_INFO The following systems are available:'
   AL-V      Kroupa (2017)'
   B-C       Kasper (1996)'
   B-CR      Campbell (2002), Pan (2010), and Miettinen (2014)'
+  B-CU      Zhang (2009)'
   B-FE      Van Rompaey (2002) and Pan (2010)'
   B-MO      Pan (2010)'
   B-MN      Sun (2010) EXCEPT BETA-B SOLUBILITY'
@@ -286,7 +289,7 @@ DATABASE_INFO The following systems are available:'
   AL-SI-V   Kroupa (2017)'
   AL-TI-V   Li (2024)'
   B-C-NI    Oikawa (2022)'
-  B-C-SI    Checn (2009)'
+  B-C-SI    Chen (2009)'
   B-CR-FE   Pan (2010) and Miettinen (2014)'
   B-CR-MO   Pan (2010)'
   B-CR-NI   Pan (2010)'
@@ -2738,8 +2741,10 @@ PARAMETER G(AL63MO37,AL:MO;0) 298.15
   -1.51552361E6 -176.057703*T +63*GHSERAL# +37*GHSERMO#;  6000 N        16PEN!
 
 $ ----------------------------------------------------------------------------
-$ AL99CR23
 $ ALPHA_RHOMBO_B
+$ PROTOTYPE: ALPHA-B
+$ SPACE GROUP: R-3m
+$ PEARSON: hR12
 
 PHASE ALPHA_RHOMBO_B % 1 1 !
 CONSTITUENT ALPHA_RHOMBO_B : B : !
@@ -2882,7 +2887,7 @@ PARAMETER BMAGN(BCC_A2,CR:VA;0) 298.15
   -311.50; 6000 N                                                       91DIN!
 
 PARAMETER G(BCC_A2,CU:B;0) 298.15
-  +GHSERCU# +3*GHSERBB#;  6000  N                                       23FRI!
+  +50000 +GHSERCU# +3*GHSERBB#;  6000  N                                24FRI!
 PARAMETER G(BCC_A2,CU:C;0) 298.15
   +127000 +GHSERCC# +GHSERCU#;  6000 N                                  14SHU!
 PARAMETER G(BCC_A2,CU:H;0) 298.15
@@ -3395,6 +3400,8 @@ PARAMETER L(BCC_A2,CR,ZR:VA;0) 298.15
 PARAMETER L(BCC_A2,CR,ZR:VA;1) 298.15
   +10065.5 -6.10*T;  6000 N                                              15LU!
 
+PARAMETER L(BCC_A2,CU:B,VA;0) 298.15
+  +35000;  6000 N                                                       24FRI!
 PARAMETER L(BCC_A2,CU,FE:VA;0) 298.15
   +39676.0 -4.73222*T;  6000 N                                          95CHE!
 PARAMETER TC(BCC_A2,CU,FE:VA;0) 298.15
@@ -4843,12 +4850,14 @@ $ SPACE GROUP: R-3m
 $ PEARSON: hR12
 
 PHASE BETA_RHOMBO_B % 2 93 12 !
-CONSTITUENT BETA_RHOMBO_B : B : B,C,SI : !
+CONSTITUENT BETA_RHOMBO_B : B : B,C,CU,SI : !
 
 PARAMETER G(BETA_RHOMBO_B,B:B;0) 298.15
   +93*GHSERBB# +12*GHSERBB#;  6000 N                                    91DIN!
 PARAMETER G(BETA_RHOMBO_B,B:C;0) 298.15
   +10000 +93*GHSERBB# +12*GHSERCC#;  6000 N                             96KAS!
+PARAMETER G(BETA_RHOMBO_B,B:CU;0) 298.15
+  +117316 +93*GHSERBB# +12*GHSERCU#;  6000 N                           09ZHAC!
 PARAMETER G(BETA_RHOMBO_B,B:SI;0) 298.15
   -461741.918 +93*GHSERBB# +12*GHSERSI#;  6000 N                       09CHEC!
 
@@ -6413,7 +6422,7 @@ PARAMETER BMAGN(FCC_A1,CR:VA;0) 298.15
   -2.46; 6000 N                                                         91DIN!
 
 PARAMETER G(FCC_A1,CU:B;0) 298.15
-  +GHSERCU# +GHSERBB#;  6000 N                                          24FRI!
+  +GHSERCU# +GHSERBB#;  6000 N                                         09ZHAC!
 PARAMETER G(FCC_A1,CU:C;0) 298.15
   +106690 +GHSERCU# +GHSERCC#;  6000 N                                  19CHE!
 PARAMETER G(FCC_A1,CU:H;0) 298.15
@@ -6926,6 +6935,9 @@ PARAMETER L(FCC_A1,CR,W:VA;0) 298.15
   +31520;  6000 N                                                      88GUSA!
 PARAMETER L(FCC_A1,CR,W:VA;1) 298.15
   -1320;  6000 N                                                       88GUSA!
+
+PARAMETER L(FCC_A1,CU:B,VA;0) 298.15
+  +33007.7;  6000 N                                                    09ZHAC!
 
 PARAMETER L(FCC_A1,CU,FE:C;0) 298.15
   +5335.4;  6000 N                                                      19CHE!
@@ -9388,7 +9400,7 @@ PARAMETER TC(HCP_A3,CR:VA;0) 298.15
   -1109; 6000 N                                                         91DIN!
 
 PARAMETER G(HCP_A3,CU:B;0) 298.15
-  +GHSERCU# +0.5*GHSERBB#;  6000 N                                      24FRI!
+  +12000 +GHSERCU# +0.5*GHSERBB#;  6000 N                               24FRI!
 PARAMETER G(HCP_A3,CU:C;0) 298.15
   +15000 +GHSERCU# +0.5*GHSERCC#;  6000 N                               24FRI!
 PARAMETER G(HCP_A3,CU:H;0) 298.15
@@ -12576,6 +12588,12 @@ PARAMETER L(LIQUID,B,CR;2) 298.15
   -1674;  6000 N                                                        02CAM!
 PARAMETER L(LIQUID,B,CR;3) 298.15
   -43361;  6000 N                                                       02CAM!
+PARAMETER L(LIQUID,B,CU;0) 298.15
+  -264.2;  6000 N                                                      09ZHAC!
+PARAMETER L(LIQUID,B,CU;1) 298.15
+  +9050.1;  6000 N                                                     09ZHAC!
+PARAMETER L(LIQUID,B,CU;2) 298.15
+  +24616.6;  6000 N                                                    09ZHAC!
 PARAMETER L(LIQUID,B,FE;0) 298.15
   -130243 +32.152*T;  6000 N                                            02ROM!
 PARAMETER L(LIQUID,B,FE;1) 298.15
@@ -20947,6 +20965,9 @@ NUMBER  SOURCE
 09ZHAB  'Zhang, Lijun, et al. "Phase equilibria and thermal analysis in the 
         Fe–Mn–Ni system." International journal of materials research 100.2 
         (2009): 160-175.'
+09ZHAC  'Zhang, Wei-Wei, et al. "Thermodynamic assessment of the Cu-B system 
+        supported by key experiment and first-principles calculations." 
+        Journal of phase equilibria and diffusion 30 (2009): 480-486.'
 10CAC   'Cacciamani, G., et al. "The Fe-Ni system: Thermodynamic modelling 
         assisted by atomistic calculations." Intermetallics 18.6 (2010): 
         1148-1162.'
