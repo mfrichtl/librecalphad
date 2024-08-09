@@ -1869,6 +1869,10 @@ PARAMETER L(AL2CU_C16,FE,MN:B;1) 298.15
 PARAMETER L(AL2CU_C16,ZR:FE,ZR;0) 298.15
   -38250.0 -5.00*T;  6000 N                                              17LU!
 
+
+PARAMETER L(AL2CU_C16,FE:B,FE;0) 298.15
+  +50000;  6000 N                                                       24FRI!
+  
 $ ----------------------------------------------------------------------------
 $ AL2FE
 $ PROTOTYPE: AL2FE
@@ -6203,6 +6207,8 @@ PARAMETER G(DIAMOND_A4,TI;0) 298.15
 
 PARAMETER L(DIAMOND_A4,AL,SI;0) 298.15
   +111417.7 -46.1392*T;  6000 N                                         99LIU!
+PARAMETER L(DIAMOND_A4,B,FE;1) 298.15
+  +75000;  6000 N                                                       24FRI!
 PARAMETER L(DIAMOND_A4,B,SI;0) 298.15
   +65655.0752 -15.6289638*T;  6000 N                                   09CHEC!
 PARAMETER L(DIAMOND_A4,C,SI;0) 298.15
