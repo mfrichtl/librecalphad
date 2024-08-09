@@ -116,6 +116,7 @@ $ 2024-08-07 B-V FROM DA SILVA ISSUES WITH MB_BF AND INCOMPATIBLE MODEL FOR
 $            M3B2_D5A PHASES
 $ 2024-08-08 B-CU FROM ZHANG 2009 B-SOLUBILITY IN FCC_A1 TOO HIGH, ASSESSMENT
 $            DOES NOT INCLUDE ALPHA-B, SO THEY MAY BE RELATED ISSUES.
+$ 2024-08-09 AL-S FROM SHI 2019 NOT QUITE RIGHT
 $ 
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -136,6 +137,7 @@ DATABASE_INFO The following systems are available:'
   AL-NI     Ansara (1997), Dupin (1999, 2001), and Wang (2019)'
   AL-O      Taylor (1992) and Lindwall (2015)'
   AL-P      Liang (2013) and Miettinen (2015)'
+  AL-S      Shi (2019)'
   AL-SI     Feufel (1997) and Liu (1999)'
   AL-TI     Witusiewicz (2008) EXCEPT L10'
   AL-V      Kroupa (2017)'
@@ -508,6 +510,7 @@ ELEMENT ZR   HCP_A3                    9.1224E+01  5.5663E+03  3.9181E+01 !
 
 
 SPECIES AL2   AL2 !
+SPECIES AL2S3 AL2S3 !
 SPECIES AL3+  AL/+3 !
 SPECIES ALO   AL1O1 !
 SPECIES ALO3/2  AL1O1.5 !
@@ -1746,6 +1749,15 @@ PARAMETER G(ALN_B4,AL:N;0) 298.15
   $ -225337 +203.474*T 
 
 $ ----------------------------------------------------------------------------
+$ ALS1
+
+PHASE ALS1 % 2 0.5 0.5 !
+CONSTITUENT ALS1 : AL : S : !
+
+PARAMETER G(ALS1,AL:S;0) 298.15
+  -73956 +20.20*T +0.5*GHSERAL# +0.5*GHSERSS#;  6000 N                  19SHI!
+
+$ ----------------------------------------------------------------------------
 $ AL2CU_C16
 $ PROTOTYPE: AL2CU
 $ SPACE GROUP: I4/mcm
@@ -1907,6 +1919,31 @@ PARAMETER G(AL2FE,AL:NI;0) 298.15
 
 PARAMETER L(AL2FE,AL:FE,MN;0) 298.15
   +9700 -13.9*T;  6000 N                                               18ZHEA!
+
+$ ----------------------------------------------------------------------------
+$ AL2S3_ALPHA
+$ PROTOTYPE: AL2S3
+$ SPACE GROUP: P6_1
+$ PEARSON: hP30
+
+PHASE AL2S3_ALPHA % 2 0.4 0.6 !
+CONSTITUENT AL2S3_ALPHA : AL : S : !
+
+PARAMETER G(AL2S3_ALPHA,AL:S;0) 298.15
+  -130246 +27.18*T +0.4*GHSERAL# +0.6*GHSERSS#;  6000 N                 19SHI!
+
+$ ----------------------------------------------------------------------------
+$ AL2S3_GAMMA
+$ PROTOTYPE: AL2O3
+$ SPACE GROUP: R-3C
+$ PEARSON: hR10
+$ TODO: COMBINE WITH CORUNDUM_D51
+
+PHASE AL2S3_GAMMA % 2 0.4 0.6 !
+CONSTITUENT AL2S3_GAMMA : AL : S : !
+
+PARAMETER G(AL2S3_GAMMA,AL:S;0) 298.15
+  -107931 +9.66*T +0.4*GHSERAL# +0.6*GHSERSS#;  6000 N                  19SHI!
 
 $ ----------------------------------------------------------------------------
 $ AL3CO
@@ -12382,9 +12419,9 @@ $ ----------------------------------------------------------------------------
 $ LIQUID
 
 PHASE LIQUID:L % 1 1!
-CONSTITUENT LIQUID:L : AL,ALO3/2,B,BI,C,CE,CO,CR,CRO3/2,CU,CU2S,FE,FEO,FEO3/2,
-                       FES,H,HF,MG,MN,MNS,MO,N,NB,NI,NIO,P,S,SI,SN,TA,TI,V,
-                       W,ZR : ! 
+CONSTITUENT LIQUID:L : AL,AL2S3,ALO3/2,B,BI,C,CE,CO,CR,CRO3/2,CU,CU2S,
+                       FE,FEO,FEO3/2,FES,H,HF,MG,MN,MNS,MO,N,NB,NI,NIO,
+                       P,S,SI,SN,TA,TI,V,W,ZR : ! 
 
 FUNCTION GLIQAL2O3 298.15
   +1607850.8 +405.559491*T -67.4804*T*LN(T) -0.06747*T**2
@@ -12404,6 +12441,8 @@ FUNCTION GFEOLIQ 298.15
 PARAMETER G(LIQUID,AL;0) 298.15
   +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
   -795.991 +177.430209*T -31.748192*T*LN(T); 2900 N                     91DIN!
+PARAMETER G(LIQUID,AL2S3;0) 298.15
+  -430141 +2*GHSERAL# +3*GHSERSS#;  6000 N                              19SHI!
 PARAMETER G(LIQUID,ALO3/2;0) 298.15
   +0.5*GLIQAL2O3#;  6000 N                                              92TAY!
 PARAMETER G(LIQUID,B;0) 298.15
@@ -12513,6 +12552,10 @@ PARAMETER G(LIQUID,ZR;0) 298.15
   +18147.69 -9.080812*T +1627.5E-25*T**7 +GHSERZR#; 2128 Y
   -8281.26 +253.812609*T -42.144*T*LN(T);  6000 N                       91DIN!
 
+PARAMETER L(LIQUID,AL,AL2S3;0) 298.15
+  +20632; 6000 N                                                        19SHI!
+PARAMETER L(LIQUID,AL,AL2S3;1) 298.15
+  +22878;  6000 N                                                       19SHI!
 PARAMETER L(LIQUID,AL,ALO3/2;0) 298.15
   +110000 +46*T;  6000 N                                                15LIN!
 PARAMETER L(LIQUID,AL,B;0) 298.15
@@ -12591,8 +12634,7 @@ PARAMETER L(LIQUID,AL,SI;0) 298.15
   -11340.1 -1.23394*T;  6000 N                                          97FEU!
 PARAMETER L(LIQUID,AL,SI;1) 298.15
   -3530.9 +1.35993*T;  6000 N                                           97FEU!
-PARAMETER L(LIQUID,AL,SI;2) 298.15
-  +2265.4;  6000 N                                                      97FEU!
+PARAMETER L(LIQUID,AL,SI;2) 298.15+2265.4;  6000 N                                                      97FEU!
 PARAMETER L(LIQUID,AL,TI;0) 298.15
   -118048 +41.972*T;  6000 N                                            08WIT!
 PARAMETER L(LIQUID,AL,TI;1) 298.15
@@ -12605,6 +12647,9 @@ PARAMETER L(LIQUID,AL,V;1) 298.15
   -18000 +8*T;  6000 N                                                  17KRO!
 PARAMETER L(LIQUID,AL,V;2) 298.15
   +34300 -13.92*T;  6000 N                                              17KRO!
+
+PARAMETER L(LIQUID,AL2S3,S;0) 298.15
+  +4132;  6000 N                                                        19SHI!
 
 PARAMETER L(LIQUID,B,C;0) 298.15
   -67045.26 +4.46969*T;  6000 N                                         96KAS!
@@ -21243,6 +21288,9 @@ NUMBER  SOURCE
 19OHN   'Ohnuma, Ikuo, et al. "Experimental determination and thermodynamic 
         evaluation of low-temperature phase equilibria in the Fe-Ni binary 
         system." Calphad 67 (2019): 101677.'
+19SHI   'Shi, Chenying, et al. "Thermodynamic Description of the Al–X (X= S, 
+        Se, Te) Systems." Journal of Phase Equilibria and Diffusion 40 (2019): 
+        392-402.'
 19WAN   'Wang, Peisheng, et al. "Thermodynamic analysis of the topologically 
         close packed σ phase in the CoCr system." Intermetallics 105 (2019): 
         13-20.'
