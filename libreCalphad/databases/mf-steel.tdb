@@ -165,7 +165,7 @@ DATABASE_INFO The following systems are available:'
   C-NI      Gabriel (1987)'
   C-SI      Lacaze (1991) and Gröbner (1996)'
   C-TA      Frisk (1996)'
-  C-TI      Jonsson (1996), Dumitrescu (1999), and Frisk (2003)'
+  C-TI      Jonsson (1996), Shim (1996), Dumitrescu (1999), and Frisk (2003)'
   C-V       Huang (1991) and Hu (2006) EXCEPT ORDERED V6C5 PHASE'
   C-W       Gustafson (1987) and Huang (1997)'
   CE-FE     Su (2006)'
@@ -236,7 +236,7 @@ DATABASE_INFO The following systems are available:'
   MN-P      Miettinen (2014)'
   MN-S      Dilner (2015)'
   MN-SI     Zheng (2015) and Zheng (2017)'
-  MN-TI     Saunders (1993)'
+  MN-TI     Saunders (1993) and Shim (1996)'
   MN-V      Huang (1991)'
   MO-N      Frisk (1991)'
   MO-NB     Xiong (2004)'
@@ -327,6 +327,7 @@ DATABASE_INFO The following systems are available:'
   C-FE-W    Gustafson (1987)'
   C-MN-SI   Zheng (2017)'
   C-MN-V    Huang (1991)'
+  C-MO-TI   Shim (1996)'
   C-MO-V    Bratberg (2002)'
   C-MO-W    Gustafson (1988)'
   C-N-NB    Lee (2001) and Frisk (2008)'
@@ -1698,7 +1699,7 @@ PARAMETER G(ALM3_D019,TI:MO;0) 298.15
 PARAMETER G(ALM3_D019,TI:NB;0) 298.15
   +10668 +3*GHSERTI# +GHCPNB#;  6000 N                                 95SAUA!
 PARAMETER G(ALM3_D019,TI:TI;0) 298.15
-  +4 +3*GHSERTI# +GHSERTI#;  6000 N                                    95SAUB!
+  +2500 +3*GHSERTI# +GHSERTI#;  6000 N                                  24FRI!
 PARAMETER G(ALM3_D019,TI:W;0) 298.15
   +3*GHSERTI# +GHSERW#;  6000 N                                         23FRI!
 
@@ -3725,11 +3726,6 @@ PARAMETER L(BCC_A2,MN,VA:VA;0) 298.15
 PARAMETER L(BCC_A2,MN:N,VA;0) 298.15
   -185000;  6000 N                                                     93QIUA!
 
-$ I DON'T KNOW WHERE BRATBERG GOT THIS PARAMETER, BUT IT INCREASES THE C
-$ SOLUBILITY IN BCC TOO MUCH.
-$ PARAMETER L(BCC_A2,MO:C,VA;0) 298.15
-$   -50000;  6000 N                                                       02BRA!
-
 PARAMETER L(BCC_A2,MO,NB:VA;0) 298.15
   -68202.6 +29.85596*T;  6000 N                                         04XIO!
 PARAMETER L(BCC_A2,MO,NB:VA;1) 298.15
@@ -3744,10 +3740,14 @@ PARAMETER L(BCC_A2,MO,TA:VA;0) 298.15
   -75129.2 +30*T;  6000 N                                               04XIO!
 PARAMETER L(BCC_A2,MO,TA:VA;1) 298.15
   +6039.24;  6000 N                                                     04XIO!
+PARAMETER L(BCC_A2,MO,TI:C;0) 298.15
+  -459700;  6000 N                                                      96SHI!
 PARAMETER L(BCC_A2,MO,TI:VA;0) 298.15
-  +2000;  6000 N                                                       95SAUB!
+  +20249 -13.474*T;  6000 N                                             96SHI!
 PARAMETER L(BCC_A2,MO,TI:VA;1) 298.15
-  -2000;  6000 N                                                       95SAUB!
+  -22963 +8.598*T;  6000 N                                              96SHI!
+PARAMETER L(BCC_A2,MO,TI:VA;2) 298.15
+  -8171;  6000 N                                                        96SHI!
 PARAMETER L(BCC_A2,MO,V:C;0) 298.15
   +330000;  6000 N                                                      02BRA!
 PARAMETER L(BCC_A2,MO,V:VA;0) 298.15
@@ -3758,6 +3758,9 @@ PARAMETER L(BCC_A2,MO,W:C;0) 298.15
   +2000;  6000 N                                                       88GUSC!
 PARAMETER L(BCC_A2,MO,W:VA;0) 298.15
   +2000;  6000 N                                                       88GUSE!
+
+PARAMETER L(BCC_A2,MO:C,VA;0) 298.15
+  -50000;  6000 N                                                       96SHI!
 
 PARAMETER L(BCC_A2,NB:C,VA;0) 298.15
   -510295 -70*T;  6000 N                                               13KHVA!
@@ -3839,13 +3842,6 @@ PARAMETER L(BCC_A2,SI,W:VA;0) 298.15
 PARAMETER L(BCC_A2,TA:C,VA;0) 298.15
   -749073;  6000 N                                                      96FRI!
 
-PARAMETER L(BCC_A2,TI:C,N;0) 298.15
-  -11540 +20*T;  6000 N                                                 04FRI!
-PARAMETER L(BCC_A2,TI:C,VA;0) 298.15
-  -555895 +65.883*T;  6000 N                                            03FRI!
-PARAMETER L(BCC_A2,TI:N,VA;0) 298.15
-  -984397;  6000 N                                                     96JONB!
-
 PARAMETER L(BCC_A2,TI,V:N;0) 298.15
   +90000;  6000 N                                                       98ZEN!
 PARAMETER L(BCC_A2,TI,V:VA;0) 298.15
@@ -3853,12 +3849,32 @@ PARAMETER L(BCC_A2,TI,V:VA;0) 298.15
 PARAMETER L(BCC_A2,TI,V:VA;1) 298.15
   +2025.39;  6000 N                                                    02GHOA!
 
+PARAMETER L(BCC_A2,TI:C,N;0) 298.15
+  -11540 +20*T;  6000 N                                                 04FRI!
+PARAMETER L(BCC_A2,TI:C,VA;0) 298.15
+  -555895 +65.883*T;  6000 N                                            03FRI!
+PARAMETER L(BCC_A2,TI:N,VA;0) 298.15
+  -984397;  6000 N                                                     96JONB!
+
 PARAMETER L(BCC_A2,TA,V:C;0) 298.15
   -9879.25 +1*T;  6000 N                                               04SERB!
 PARAMETER L(BCC_A2,TA,V:VA;0) 298.15
   +5476.65; 6000 N                                                      04DAN!
 PARAMETER L(BCC_A2,TA,V:VA;1) 298.15
   -16527.68;  6000 N                                                    04DAN!
+
+PARAMETER L(BCC_A2,V,W:VA;0) 298.15
+  +17828;  6000 N                                                       05BRA!
+PARAMETER L(BCC_A2,V,ZR:C;0) 298.15
+  -40000 +17*T;  6000 N                                                04SERB!
+PARAMETER L(BCC_A2,V,ZR:VA;0) 298.15
+  +2253.9668 +19.4653*T;  6000 N                                       04SERA!
+PARAMETER L(BCC_A2,V,ZR:VA;1) 298.15
+  -9657.3231 +10.8995*T;  6000 N                                       04SERA!
+PARAMETER L(BCC_A2,V,ZR:VA;2) 298.15
+  -593.4275;  6000 N                                                   04SERA!
+PARAMETER L(BCC_A2,VA,W:VA;0) 298.15
+  +100000;  6000 N                                                      20OST!
 
 PARAMETER L(BCC_A2,V:C,VA;0) 298.15
   -342833;  6000 N                                                      06HU !
@@ -3870,19 +3886,6 @@ PARAMETER L(BCC_A2,V:H,VA;2) 298.15
   +633500 -132.2*T;  6000 N                                             08UKI!
 PARAMETER L(BCC_A2,V:N,VA;0) 298.15
   -1559450.57 +257.074961*T;  6000 N                                    21DU !
-PARAMETER L(BCC_A2,V,W:VA;0) 298.15
-  +17828;  6000 N                                                       05BRA!
-PARAMETER L(BCC_A2,V,ZR:C;0) 298.15
-  -40000 +17*T;  6000 N                                                04SERB!
-PARAMETER L(BCC_A2,V,ZR:VA;0) 298.15
-  +2253.9668 +19.4653*T;  6000 N                                       04SERA!
-PARAMETER L(BCC_A2,V,ZR:VA;1) 298.15
-  -9657.3231 +10.8995*T;  6000 N                                       04SERA!
-PARAMETER L(BCC_A2,V,ZR:VA;2) 298.15
-  -593.4275;  6000 N                                                   04SERA!
-
-PARAMETER L(BCC_A2,VA,W:VA;0) 298.15
-  +100000;  6000 N                                                      20OST!
 
 
 PARAMETER L(BCC_A2,AL,CO,FE:VA;0) 298.15
@@ -7366,21 +7369,23 @@ PARAMETER L(FCC_A1,MN,TI:VA;0)  298.15
 PARAMETER L(FCC_A1,MN,V:VA;0) 298.15
   -11820;  6000 N                                                       91HUA!
 
-PARAMETER L(FCC_A1,MO:C,VA;0) 298.15
-  -41300;  6000 N                                                      88ANDC!
-PARAMETER L(FCC_A1,MO:N,VA;0) 298.15
-  -52565;  6000 N                                                       91FRI!
-
 PARAMETER L(FCC_A1,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
 PARAMETER L(FCC_A1,MO,NI:VA;1) 298.15
   +18911.0;  6000 N                                                     18YAQ!
 PARAMETER L(FCC_A1,MO,P:VA;0) 298.15
   -197000;  6000 N                                                     15MIEB!
+PARAMETER L(FCC_A1,MO,TI:C;0) 298.15
+  +32845 -27.218*T;  6000 N                                             96SHI!
 PARAMETER L(FCC_A1,MO,TI:VA;0) 298.15
-  +16500;  6000 N                                                      95SAUB!
+  -25505;  6000 N                                                       96SHI!
 PARAMETER L(FCC_A1,MO,W:VA;0) 298.15
   +2000;  6000 N                                                       88GUSE!
+
+PARAMETER L(FCC_A1,MO:C,VA;0) 298.15
+  -41300;  6000 N                                                      88ANDC!
+PARAMETER L(FCC_A1,MO:N,VA;0) 298.15
+  -52565;  6000 N                                                       91FRI!
 
 PARAMETER L(FCC_A1,NB:C,N;0) 298.15
   +12.5922*T;  6000 N                                                   01LEE!
@@ -7486,40 +7491,20 @@ PARAMETER L(FCC_A1,TA,V:VA;0) 298.15
 PARAMETER L(FCC_A1,TA,V:VA;1) 298.15
   -110.96344 -1.28982*T +12.71632E-6*T**2;  6000 N                     04SERB!
 
+PARAMETER L(FCC_A1,TI,V:C;0) 298.15
+  -130833.62 +45.055*T;  6000 N                                         15ZHA!
+
 PARAMETER L(FCC_A1,TI:C,N;0) 298.15
   -72712 +30.95*T;  6000 N                                              04FRI!
-PARAMETER V0(FCC_A1,TI:C,N;0) 298.15
-  -2.4953E-7;  6000 N                                                   08FRI!
+
 PARAMETER L(FCC_A1,TI:C,VA;0) 298.15
   -40219.8 -18.250*T;  6000 N                                           03FRI!
 PARAMETER L(FCC_A1,TI:C,VA;1) 298.15
   -108521 +12.735*T;  6000 N                                            03FRI!
-PARAMETER V0(FCC_A1,TI:C,VA;0) 298.15
-  +4.0036E-6;  6000 N                                                   08FRI!
-PARAMETER V0(FCC_A1,TI:C,VA;1) 298.15
-  -1.2433E-6;  6000 N                                                   08FRI!
 PARAMETER L(FCC_A1,TI:N,VA;0) 298.15
   -42704;  6000 N                                                       99DUM!
 PARAMETER L(FCC_A1,TI:N,VA;1) 298.15
   -13989;  6000 N                                                       99DUM!
-PARAMETER V0(FCC_A1,TI:N,VA;0) 298.15
-  +3.2526E-6;  6000 N                                                   08FRI!
-PARAMETER V0(FCC_A1,TI:N,VA;1) 298.15
-  -1.4817E-6;  6000 N                                                   08FRI!
-
-PARAMETER L(FCC_A1,TI,V:C;0) 298.15
-  -130833.62 +45.055*T;  6000 N                                         15ZHA!
-
-PARAMETER L(FCC_A1,V:C,N;0) 298.15
-  -20000;  6000 N                                                       08FRI!
-PARAMETER L(FCC_A1,V:C,VA;0) 298.15
-  -54989 -6.920*T;  6000 N                                              06HU !
-PARAMETER L(FCC_A1,V:C,VA;1) 298.15
-  -58754;  6000 N                                                       06HU !
-PARAMETER L(FCC_A1,V:N,VA;0) 298.15
-  -96650.6628 +12.6449463*T; 6000 N                                     21DU !
-PARAMETER L(FCC_A1,V:N,VA;1) 298.15
-  +14340.0127;  6000 N                                                  21DU !
 
 PARAMETER L(FCC_A1,V,W:C;0) 298.15
   -28973 +13.3*T;  6000 N                                               05BRA!
@@ -7531,6 +7516,17 @@ PARAMETER L(FCC_A1,V,ZR:VA;0) 298.15
   +204710.15 -50.6589*T;  6000 N                                       04SERB!
 PARAMETER L(FCC_A1,V,ZR:VA;1) 298.15
   -78288.92 +33.6500*T;  6000 N                                        04SERB!
+
+PARAMETER L(FCC_A1,V:C,N;0) 298.15
+  -20000;  6000 N                                                       08FRI!
+PARAMETER L(FCC_A1,V:C,VA;0) 298.15
+  -54989 -6.920*T;  6000 N                                              06HU !
+PARAMETER L(FCC_A1,V:C,VA;1) 298.15
+  -58754;  6000 N                                                       06HU !
+PARAMETER L(FCC_A1,V:N,VA;0) 298.15
+  -96650.6628 +12.6449463*T; 6000 N                                     21DU !
+PARAMETER L(FCC_A1,V:N,VA;1) 298.15
+  +14340.0127;  6000 N                                                  21DU !
 
 PARAMETER L(FCC_A1,W:C,VA;0) 298.15
   -17.98*T;  6000 N                                                     87GUS!
@@ -9826,11 +9822,10 @@ PARAMETER G(HCP_A3,TA:VA;0) 298.15
 PARAMETER G(HCP_A3,TI:B;0) 298.15
   +GHSERTI# +0.5*GHSERBB#;  6000 N                                      24FRI!
 PARAMETER G(HCP_A3,TI:C;0) 298.15
-  -105319 +179.144*T  -30.231*T*LN(T) -3.3778E-3*T**2;  6000 N          03FRI!
+  -105319 +179.144*T -30.231*T*LN(T) -3.3778E-3*T**2;  6000 N           03FRI!
 PARAMETER G(HCP_A3,TI:H;0) 298.15
   +GHSERTI# +0.25*GHSERHH#;  6000 N                                     24FRI!
 PARAMETER G(HCP_A3,TI:N;0) 298.15
-  $ -9888.08 -3.0822*T + 0.5*GHSERTI# +0.5*GFCCTIN#;  6000 N             96JONB!
   -6046.53 -2.653*T +0.5*GHSERTI# +0.5*GFCCTIN#;  6000 N                96ZEN!
 PARAMETER G(HCP_A3,TI:O;0) 298.15
   +GHSERTI# +0.5*GHSEROO#;  6000 N                                      24FRI!
@@ -10279,9 +10274,6 @@ PARAMETER L(HCP_A3,MN,TI:VA;0)  298.15
 PARAMETER L(HCP_A3,MN,V:VA;0) 298.15
   -11820;  6000 N                                                       91HUA!
 
-PARAMETER L(HCP_A3,MO:C,VA;0) 298.15
-  +4150;  6000 N                                                       88ANDC!
-
 $ ESTIMATE SAME MO,NI:VA AS FCC_A1
 PARAMETER L(HCP_A3,MO,NI:VA;0) 298.15
   -3606.8;  6000 N                                                      18YAQ!
@@ -10290,10 +10282,15 @@ PARAMETER L(HCP_A3,MO,NI:VA;1) 298.15
 $ ESTIMATE SAME MO,P:VA AS FCC_A1 (AND BCC_A2)
 PARAMETER L(HCP_A3,MO,P:VA;0) 298.15
   -197000;  6000 N                                                     15MIEB!
+PARAMETER L(HCP_A3,MO,TI:C;0) 298.15
+  -15349.5;  6000 N                                                     96SHI!
 PARAMETER L(HCP_A3,MO,TI:VA;0) 298.15
-  +22760 -6*T;  6000 N                                                 95SAUB!
+  +27144;  6000 N                                                       96SHI!
 PARAMETER L(HCP_A3,MO,W:VA;0) 298.15
   +2000;  6000 N                                                       88GUSC!
+
+PARAMETER L(HCP_A3,MO:C,VA;0) 298.15
+  +4150;  6000 N                                                       88ANDC!
 
 PARAMETER L(HCP_A3,NB:C,N;0) 298.15
   -15000;  6000 N                                                       01LEE!
@@ -13359,7 +13356,8 @@ PARAMETER L(LIQUID,MO,TA;0) 298.15
 PARAMETER L(LIQUID,MO,TA;1) 298.15
   +577.5;  6000 N                                                       04XIO!
 PARAMETER L(LIQUID,MO,TI;0) 298.15
-  -9000 +2*T;  6000 N                                                  95SAUB!
+  +5487 -9.727*T;  6000 N                                               96SHI!
+  
 PARAMETER L(LIQUID,MO,V;0) 298.15
   +17784;  6000 N                                                       02BRA!
 
@@ -13718,6 +13716,12 @@ PARAMETER L(LIQUID,C,MN,SI;1) 298.15
 PARAMETER L(LIQUID,C,MN,SI;2) 298.15
   +557500;  6000 N                                                     17ZHEA!
 
+PARAMETER L(LIQUID,C,MO,TI;0) 298.15
+  -379405;  6000 N                                                      96SHI!
+PARAMETER L(LIQUID,C,MO,TI;1) 298.15
+  -15909;  6000 N                                                       96SHI!
+PARAMETER L(LIQUID,C,MO,TI;2) 298.15
+  -111135;  6000 N                                                      96SHI!
 PARAMETER L(LIQUID,C,MO,V;0) 298.15
   +120000;  6000 N                                                      02BRA!
 
@@ -14266,13 +14270,21 @@ $ ----------------------------------------------------------------------------
 $ MC_ETA
 
 PHASE MC_ETA % 2 1 1 !
-CONSTITUENT MC_ETA : MO : C,VA : !
+CONSTITUENT MC_ETA : MO,TI : C,VA : !
 
 PARAMETER G(MC_ETA,MO:C;0) 298.15
   -9100 -5.35*T -750000*T**(-1) +GHSERMO# +GHSERCC#;  6000 N           88ANDC!
 PARAMETER G(MC_ETA,MO:VA;0) 298.15
   +15200 +0.63*T +GHSERMO#;  6000 N                                    88ANDC!
 
+PARAMETER G(MC_ETA,TI:C;0) 298.15
+  -110000 +GHSERTI# +GHSERCC#;  6000 N                                  96SHI!
+PARAMETER G(MC_ETA,TI:VA;0) 298.15
+  +20000 +GHSERTI#;  6000 N                                             96SHI!
+
+
+PARAMETER L(MC_ETA,MO,TI:C;0) 298.15
+  -110500;  6000 N                                                      96SHI!
 
 PARAMETER L(MC_ETA,MO:C,VA;0) 298.15
   -59500;  6000 N                                                      88ANDC!
@@ -21052,6 +21064,9 @@ NUMBER  SOURCE
 96SEI   'Seifert, H. J., H. L. Lukas, and G. Petzow. "Thermodynamic 
         optimization of the Ti-Si system." Zeitschrift fuer Metallkunde 87 
         (1996).'
+96SHI   'Shim, Jae-Hyeok, Chang-Seok Oh, and Dong Nyung Lee. "A thermodynamic 
+        evaluation of the Ti-Mo-C system." Metallurgical and Materials 
+        Transactions B 27 (1996): 955-966.'
 96ZEN   'Zeng, Kejun, and Rainer Schmid-Fetzer. "Critical assessment and 
         thermodynamic modeling of the Ti-N system." International Journal of 
         Materials Research 87.7 (1996): 540-554.'
@@ -21453,6 +21468,9 @@ NUMBER  SOURCE
         Instituts fuer Technologie. (2016).'
 16REP   'Repovský, Peter, et al. "Experimental study and thermodynamic 
         modelling of the B-Fe-Mn ternary system." Calphad 55 (2016): 252-259.'
+16WIT   'Witusiewicz, V. T., et al. "Thermodynamic modelling of the ternary 
+        B–Mo–Ti system with refined B–Mo description." Journal of Alloys and 
+        Compounds 655 (2016): 336-352.'
 18LIA   'Liang, Yongpeng, Shuhong Liu, and Yong Du. "Thermodynamic assessment
         of the Mn-H and Mg-Mn-H systems." Journal of Phase Equilibria and 
         Diffusion 39 (2018): 186-195.'        

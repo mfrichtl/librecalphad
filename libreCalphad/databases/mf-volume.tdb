@@ -227,7 +227,18 @@ PARAMETER VA(FCC_A1,RH:VA;0)  298.15
 PARAMETER V0(FCC_A1,SI:VA;0)  298.15
   +9.2E-6;  6000 N                                                      07HAL!
 
+PARAMETER V0(FCC_A1,TI:C,N;0) 298.15
+  -2.4953E-7;  6000 N                                                   08FRI!
+PARAMETER V0(FCC_A1,TI:C,VA;0) 298.15
+  +4.0036E-6;  6000 N                                                   08FRI!
+PARAMETER V0(FCC_A1,TI:C,VA;1) 298.15
+  -1.2433E-6;  6000 N                                                   08FRI!
+PARAMETER V0(FCC_A1,TI:N,VA;0) 298.15
+  +3.2526E-6;  6000 N                                                   08FRI!
+PARAMETER V0(FCC_A1,TI:N,VA;1) 298.15
+  -1.4817E-6;  6000 N                                                   08FRI!
 
+  
 PARAMETER V0(FCC_A1,CR,NI:VA;0)  298.15
   -0.396E-6;  6000 N                                                    19XIO!
 PARAMETER V0(FCC_A1,FE,NI:VA;0)  298.15
