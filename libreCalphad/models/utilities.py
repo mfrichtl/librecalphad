@@ -107,7 +107,7 @@ def parse_composition(row, dependent_element):
                 continue
             elif element in interstitials and frac > 0.0005:
                 alloy.append(element.capitalize())
-            elif frac > 0.002:
+            elif frac > 0.005:
                 alloy.append(element.capitalize())
         conditions.update({v.X(element.upper()): frac})
     except Exception as e:
