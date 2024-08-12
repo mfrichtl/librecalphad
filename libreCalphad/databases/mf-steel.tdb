@@ -602,6 +602,10 @@ FUNCTION GHCPAL 298.15
 $ ----------------------------------------------------------------------------
 $ B
 
+FUNCTION GBCCBB 298.15
+  +43514 -12.217*T +GHSERBB#; 3000 N                                    91DIN!
+FUNCTION GFCCBB 298.15 
+  +43514- 12.217*T +GHSERBB#; 6000 N !
 FUNCTION GHSERBB   298.15
   -7735.284 +107.111864*T -15.6641*T*LN(T) -6.864515E-3*T**2
   +0.618878E-6*T**3 +370843*T**(-1);  1100 Y
@@ -610,9 +614,6 @@ FUNCTION GHSERBB   298.15
   -36667.582 +231.336244*T -31.5957527*T*LN(T) -1.59488E-3*T**2
   +0.134719E-6*T**3 +11205883*T**(-1);  3000 Y
   -21530.653 +222.396264*T -31.4*T*LN(T);  6000 N                       91DIN!
-
-FUNCTION GBCCBB 298.15
-  +43514 -12.217*T +GHSERBB#; 3000 N                                    91DIN!
 
 $ ----------------------------------------------------------------------------
 $ BI
@@ -1929,6 +1930,10 @@ PARAMETER G(AL2CU_C16,ZR:ZR;0) 298.15
   +84390.0 +2*GHSERZR# +GHSERZR#;  6000 N                                17LU!
 
 
+PARAMETER L(AL2CU_C16,CO,MO:B;0) 298.15
+  -152922 +56.4*T;  6000 N                                              21LIU!
+PARAMETER L(AL2CU_C16,CO,VA:B;0) 298.15
+  +50000;  6000 N                                                       24FRI!
 PARAMETER L(AL2CU_C16,FE,MN:B;0) 298.15
   -12360;  6000 N                                                       16REP!
 PARAMETER L(AL2CU_C16,FE,MN:B;1) 298.15
@@ -5772,7 +5777,7 @@ PARAMETER L(CORUNDUM_D51,CR3+,FE3+:VA:O2-;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ CO2SI_BETA
-$ BETA CO2SI PHASE (HIGH TEMPERATURE ALLOTROPE OF M2SI_C23)
+$ BETA CO2SI PHASE (HIGH TEMPERATURE ALLOTROPE OF M2SI_C37)
 
 PHASE CO2SI_BETA % 2 2 1 !
 CONSTITUENT CO2SI_BETA : CO,SI : CO,SI : !
@@ -5780,7 +5785,7 @@ CONSTITUENT CO2SI_BETA : CO,SI : CO,SI : !
 FUNCTION GCO2SIBCOCO 298.15
   +15000 +3*GHSERCO#;  6000 N                                           06ZHA!
 FUNCTION GCO2SIBCOSI 298.15
-  +2983.62 -1.8216*T +GC23CO2SI#;  6000 N                              06ZHA!
+  +2983.62 -1.8216*T +GC37CO2SI#;  6000 N                              06ZHA!
 FUNCTION GCO2SIBSISI 298.15
   +15000 +3*GHSERSI#;  6000 N                                           06ZHA!
 
@@ -6577,16 +6582,16 @@ PARAMETER G(DJURLEITE,CU:S;0) 298.15
   -79718.6 -30.97899*T +1.93*GHSERCU# +GHSERSS#;  6000 N                07LEE!
 
 $ ----------------------------------------------------------------------------
-$ E_PHASE
+$ E_C23
 $ PROTOTYPE: PBCL2
 $ SPACE GROUP: Pnma
 $ PEARSON: oP12
 $ MNNISI: TAU4 IN HU 2011, E PHASE IN GUPTA 2006
 
-PHASE E_PHASE % 3 1 1 1 !
-CONSTITUENT E_PHASE : MN : NI : SI : !
+PHASE E_C23 % 3 1 1 1 !
+CONSTITUENT E_C23 : MN : NI : SI : !
 
-PARAMETER G(E_PHASE,MN:NI:SI;0) 298.15
+PARAMETER G(E_C23,MN:NI:SI;0) 298.15
   -105442.245 -27.585*T +GHSERMN# +GHSERNI# +GHSERSI#;  6000 N           11HU!
 
 $ ----------------------------------------------------------------------------
@@ -6640,7 +6645,7 @@ PARAMETER G(FCC_A1,CE:VA;0) 298.15
   +GHSERCE#; 4000 N                                                     91DIN!
 
 PARAMETER G(FCC_A1,CO:B;0) 298.15
-  -18734.7 +GHSERCO# +GHSERBB#;  6000 N                                  02DU!
+  -18734.7 +GFCCCO# +GFCCBB#;  6000 N                                    02DU!
 PARAMETER G(FCC_A1,CO:C;0) 298.15
   +50463.8 -6.849*T +GHSERCO# +GHSERCC#;  6000 N                        89GUI!
 PARAMETER G(FCC_A1,CO:H;0) 298.15
@@ -10025,11 +10030,6 @@ $ NEEDED TO SUPPRESS THE HCP PHASE IN CE-FE DIAGRAM
 PARAMETER L(HCP_A3,CE,FE:VA;0) 298.15
   +17*T;  6000 N                                                        23FRI!
 
-PARAMETER L(HCP_A3,CO:H,VA;0) 298.15
-  -20000;  6000 N                                                       12KIM!
-PARAMETER L(HCP_A3,CO:N,VA;0) 298.15
-  +5000 -5*T;  6000 N                                                  92GUIA!
-
 PARAMETER L(HCP_A3,CO,CR:C;0)  298.15
   -6436;  6000 N                                                        97KUS!
 PARAMETER L(HCP_A3,CO,CR:VA;0) 298.15
@@ -10120,6 +10120,13 @@ PARAMETER BMAGN(HCP_A3,CO,W:VA;0) 298.15
   -3.268;  6000 N                                                       89GUI!
 PARAMETER TC(HCP_A3,CO,W:VA;0) 298.15
   +1396;  6000 N                                                        89GUI!
+
+PARAMETER L(HCP_A3,CO:B,VA;0) 298.15
+  +0;  6000 N                                                            02DU!
+PARAMETER L(HCP_A3,CO:H,VA;0) 298.15
+  -20000;  6000 N                                                       12KIM!
+PARAMETER L(HCP_A3,CO:N,VA;0) 298.15
+  +5000 -5*T;  6000 N                                                  92GUIA!
 
 $ ESTIMATE SAME CR:B,VA AS FCC_A1
 PARAMETER L(HCP_A3,CR:B,VA;0) 298.15
@@ -10367,6 +10374,8 @@ PARAMETER L(HCP_A3,MO,TI:VA;0) 298.15
 PARAMETER L(HCP_A3,MO,W:VA;0) 298.15
   +2000;  6000 N                                                       88GUSC!
 
+PARAMETER L(HCP_A3,MO:B,VA;0) 298.15
+  +0;  6000 N                                                           16WIT!
 PARAMETER L(HCP_A3,MO:C,VA;0) 298.15
   +4150;  6000 N                                                       88ANDC!
 
@@ -13688,6 +13697,9 @@ PARAMETER L(LIQUID,AL,TI,V;1) 298.15
 PARAMETER L(LIQUID,AL,TI,V;2) 298.15
   +225000;  6000 N                                                       24LI!
 
+PARAMETER L(LIQUID,B,CO,MO;0) 298.15
+  -24500 -49*T;  6000 N                                                 21LIU!
+
 PARAMETER L(LIQUID,B,CR,FE;0) 298.15
   -90000 +20*T;  6000 N                                                14MIEF!
 PARAMETER L(LIQUID,B,CR,FE;1) 298.15
@@ -14771,6 +14783,9 @@ PARAMETER G(M12C,CO:W:C;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ M23C6_D84
+$ PROTOTYPE: CR23C6
+$ SPACE GROUP: Fm-3m
+$ PEARSON: cF116
 
 PHASE M23C6_D84 % 3 20 3 6 !
 CONSTITUENT M23C6_D84 : CO,CR,FE,MN,NI,V : CO,CR,FE,MN,MO,NI,V,W : B,C : !
@@ -14805,7 +14820,7 @@ PARAMETER G(M23C6_D84,CO:MN:B;0) 298.15
 PARAMETER G(M23C6_D84,CO:MN:C;0) 298.15
   +20*GHSERCO# +3*GHSERMN# +6*GHSERCC#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CO:MO:B;0) 298.15
-  +20*GHSERCO# +3*GHSERMO# +6*GHSERBB#;  6000 N                         23FRI!
+  -576897 -15.892*T +20*GHSERCO# +3*GHSERMO# +6*GHSERBB#;  6000 N       21LIU!
 PARAMETER G(M23C6_D84,CO:MO:C;0) 298.15
   +20*GHSERCO# +3*GHSERMO# +6*GHSERCC#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CO:NI:B;0) 298.15
@@ -15354,6 +15369,60 @@ PARAMETER L(MOB4,MO,TI:B;0) 298.15
   -108000 +23.5*T;  6000 N                                              16WIT!
 
 $ ----------------------------------------------------------------------------
+$ MOCOB_C37
+$ PROTOTYPE: CO2SI
+$ SPACE GROUP: Pnma
+$ PEARSON: oP12
+$ TODO: COMBINE WITH M2SI_C37
+
+PHASE MOCOB_C37 % 3 0.33 0.33 0.33 !
+CONSTITUENT MOCOB_C37 : MO : CO : B : !
+
+PARAMETER G(MOCOB_C37,MO:CO:B;0) 298.15
+  -37438.31 -5.33*T +3.19280*T +0.33*GHSERMO# +0.33*GHSERCO# 
+  +0.33*GHSERBB#;  6000 N                                               21LIU!
+
+$ ----------------------------------------------------------------------------
+$ MOCO2B4
+$ PROTOTYPE: TA3B4
+$ SPACE GROUP: Immm
+$ PEARSON: oI14
+$ TODO: COMBINE WITH M3B4_D7B
+
+PHASE MOCO2B4 % 3 0.14286 0.28571 0.57143 !
+CONSTITUENT MOCO2B4 : MO : CO : B : !
+
+PARAMETER G(MOCO2B4,MO:CO:B;0) 298.15
+  -39800 +4.8*T +0.14286*GHSERMO# +0.28571*GHSERCO# 
+  +0.57143*GHSERBB#;  6000 N                                            21LIU!
+
+$ ----------------------------------------------------------------------------
+$ MO2COB2
+$ PROTOTYPE: W2COB2
+$ SPACE GROUP: Immm
+$ PEARSON: oI10
+$ TODO: COMBINE WITH CRB4?
+
+PHASE MO2COB2 % 3 0.4 0.2 0.4 !
+CONSTITUENT MO2COB2 : MO : CO : B : !
+
+PARAMETER G(MO2COB2,MO:CO:B;0) 298.15
+  -42140 -6.62*T +0.4*GHSERMO# +0.2*GHSERCO# +0.4*GHSERBB#;  6000 N     21LIU!
+
+$ ----------------------------------------------------------------------------
+$ MO3COB3
+$ PROTOTYPE: W3COB3
+$ SPACE GROUP: Cmcm
+$ PEARSON: oS28
+
+PHASE MO3COB3 % 3 0.4286 0.1428 0.4286 !
+CONSTITUENT MO3COB3 : MO : CO : B : !
+
+PARAMETER G(MO3COB3,MO:CO:B;0) 298.15
+  -43040.68 -7*T +0.4286*GHSERMO# +0.1428*GHSERCO# 
+  +0.4286*GHSERBB#;  6000 N                                             21LIU!
+
+$ ----------------------------------------------------------------------------
 $ MONI_DELTA
 $ PROTOTYPE: MONI
 
@@ -15659,7 +15728,12 @@ $ PEARSON: tI16
 
 PHASE MB_BG % 2 0.5 0.5 !
 $ ADD VA BACK TO FIRST SL WHEN PYCALPHAD CAN HANDLE THEM
-CONSTITUENT MB_BG : MO,TI : B,VA : !
+CONSTITUENT MB_BG : CO,MO,TI : B,VA : !
+
+PARAMETER G(MB_BG,CO:B;0) 298.15
+  +5000 +0.5*GHSERCO# +0.5*GHSERBB#;  6000 N                            21LIU!
+PARAMETER G(MB_BG,CO:VA;0) 298.15
+  +5000 +0.5*GHSERCO#;  6000 N                                          24FRI!
 
 PARAMETER G(MB_BG,MO:B;0) 298.15
   -54990 -0.098*T +0.3*T*LN(T) +0.5*GHSERMO# +0.5*GHSERBB#;  6000 N     16WIT!
@@ -15684,6 +15758,8 @@ PARAMETER L(MB_BG,MO,TI:B;1) 298.15
 
 PARAMETER L(MB_BG,MO:B,VA;0) 298.15
   -75000; 6000 N                                                        16WIT!
+PARAMETER L(MB_BG,MO:CO,VA;0) 298.15
+  -10327 -17.598*T;  6000 N                                             21LIU!
 
 $ ----------------------------------------------------------------------------
 $ MSI2_C1
@@ -15826,41 +15902,41 @@ PARAMETER G(MSI2_C54,TI:SI;0) 298.15
   -58539.95 +2.46700*T +GHSERTI# +2*GHSERSI#;  6000 N                   96SEI!
 
 $ ----------------------------------------------------------------------------
-$ M2SI_C23
+$ M2SI_C37
 $ PROTOTYPE: CO2SI
 $ SPACE GROUP: Pnma
 $ PEARSON: oP12
 
-PHASE M2SI_C23 % 2 2 1 !
-CONSTITUENT M2SI_C23 : CO,SI : CO,SI : !
+PHASE M2SI_C37 % 2 2 1 !
+CONSTITUENT M2SI_C37 : CO,SI : CO,SI : !
 
-FUNCTION GC23CO 298.15
+FUNCTION GC37CO 298.15
   +5000 +2*GHSERCO# +GHSERCO#;  6000 N                                  06ZHA!
-FUNCTION GC23CO2SI 298.15
+FUNCTION GC37CO2SI 298.15
   -85640.4 -74.97495*T -2.38326*T*LN(T) -0.045279*T**2 
   -4257813.6*T**(-1);  6000 N                                           06ZHA!
-FUNCTION GC23SI 298.15
+FUNCTION GC37SI 298.15
   +15000 +2*GHSERSI# +GHSERSI#;  6000 N                                 24FRI!
 
-PARAMETER G(M2SI_C23,CO:CO;0) 298.15
-  +GC23CO#;  6000 N                                                     06ZHA!
-PARAMETER G(M2SI_C23,CO:SI;0) 298.15
-  +GC23CO2SI#;  6000 N                                                  06ZHA!
-PARAMETER G(M2SI_C23,SI:CO;0) 298.15
-  +GC23CO# +GC23SI# -GC23CO2SI#;  6000 N                                06ZHA!
-PARAMETER G(M2SI_C23,SI:SI;0) 298.15
-  +GC23SI#;  6000 N                                                     06ZHA!
+PARAMETER G(M2SI_C37,CO:CO;0) 298.15
+  +GC37CO#;  6000 N                                                     06ZHA!
+PARAMETER G(M2SI_C37,CO:SI;0) 298.15
+  +GC37CO2SI#;  6000 N                                                  06ZHA!
+PARAMETER G(M2SI_C37,SI:CO;0) 298.15
+  +GC37CO# +GC37SI# -GC37CO2SI#;  6000 N                                06ZHA!
+PARAMETER G(M2SI_C37,SI:SI;0) 298.15
+  +GC37SI#;  6000 N                                                     06ZHA!
 
 
-PARAMETER L(M2SI_C23,CO:CO,SI;0) 298.15
+PARAMETER L(M2SI_C37,CO:CO,SI;0) 298.15
   +6647.1;  6000 N                                                      06ZHA!
 
-PARAMETER L(M2SI_C23,CO,SI:CO;0) 298.15
+PARAMETER L(M2SI_C37,CO,SI:CO;0) 298.15
   -70565.4;  6000 N                                                     06ZHA!
-PARAMETER L(M2SI_C23,CO,SI:SI;0) 298.15
+PARAMETER L(M2SI_C37,CO,SI:SI;0) 298.15
   -70565.4;  6000 N                                                     06ZHA!
 
-PARAMETER L(M2SI_C23,SI:CO,SI;0) 298.15
+PARAMETER L(M2SI_C37,SI:CO,SI;0) 298.15
   +6647.1;  6000 N                                                      06ZHA!
 
 $ ----------------------------------------------------------------------------
@@ -21850,6 +21926,8 @@ NUMBER  SOURCE
 21DU    'Du, Yong, Rainer Schmid-Fetzer, and Hiroshi Ohtani. "Thermodynamic 
         assessment of the V-N system." International Journal of Materials 
         Research 88.7 (2021): 545-556.'
+21LIU   'Liu, Yangfan, et al. "Experimental investigation and thermodynamic 
+        modeling of the Mo–Co–B ternary system." Calphad 75 (2021): 102354.'
 21NOO   'Noori, Mehdi, and Bengt Hallstedt. "Thermodynamic modelling of the 
         Al–Co–Fe system." Calphad 74 (2021): 102288.'
 21WAN   Wang, Peisheng, et al. "Thermodynamic assessment of the Co-Cr-Ni, 
