@@ -281,12 +281,14 @@ DATABASE_INFO The following systems are available:'
   '
   AL-C-FE   Connetable (2008), Chin (2010), and Zheng (2017)'
   AL-C-MN   Chin (2010) and Zheng (2018)'
+  AL-CO-FE  Noori (2021)'
   AL-CO-NB  He (2015)'
   AL-CO-MN  Noori (2020)'
   AL-CR-MG  Cui (2017) EXCEPT MQM LIQUID'
   AL-CR-MN  Cui (2017) EXCEPT MQM LIQUID'
   AL-CR-NI  Dupin (2001) and Peng (2016)
   AL-CR-SI  Hu (2013)'
+  AL-CU-FE  Chen (2009)'
   AL-CU-NI  Wang (2019)'
   AL-FE-MN  Zheng (2018)'
   AL-FE-O   Lindwall (2015)'
@@ -1963,15 +1965,21 @@ $ SPACE GROUP: P1
 $ PEARSON: aP18
 
 PHASE AL2FE % 2 2 1 !
-CONSTITUENT AL2FE : AL : FE,MN,NI : !
+CONSTITUENT AL2FE : AL,CU : FE,MN,NI : !
 
 PARAMETER G(AL2FE,AL:FE;0) 298.15
   -103900 +23*T +2*GHSERAL# +GHSERFE#;  6000 N                         17ZHEC!
 PARAMETER G(AL2FE,AL:MN;0) 298.15
-  -71960 +21.6*T;  6000 N                                              18ZHEA!
+  -71960 +21.6*T +2*GHSERAL# +GHSERMN#;  6000 N                        18ZHEA!
 PARAMETER G(AL2FE,AL:NI;0) 298.15
-  -97558.26;  6000 N                                                   09ZHAA!
+  -97558.26 +2*GHSERAL# +GHSERNI#;  6000 N                             09ZHAA!
 
+PARAMETER G(AL2FE,CU:FE;0) 298.15
+  +2*GHSERAL# +GHSERFE#;  6000 N                                       09CHED!
+
+
+PARAMETER L(AL2FE,AL,CU:FE;0) 298.15
+  -69000;  6000 N                                                      09CHED!
 
 PARAMETER L(AL2FE,AL:FE,MN;0) 298.15
   +9700 -13.9*T;  6000 N                                               18ZHEA!
@@ -2396,7 +2404,7 @@ $ SPACE GROUP: Cmcm
 $ PEARSON: oC24
 
 PHASE AL5FE2 % 2 5 2 !
-CONSTITUENT AL5FE2 : AL : CO,FE,MN,NI : !
+CONSTITUENT AL5FE2 : AL,CU : CO,FE,MN,NI : !
 
 PARAMETER G(AL5FE2,AL:CO;0) 298.15
   -295000 +65*T +5*GHSERAL# +2*GHSERCO#;  6000 N                        21NOO!
@@ -2407,6 +2415,12 @@ PARAMETER G(AL5FE2,AL:MN;0) 298.15
 PARAMETER G(AL5FE2,AL:NI;0) 298.15
   -36501.136 +2.7496*T;  6000 N                                        09ZHAA!
 
+PARAMETER G(AL5FE2,CU:FE;0) 298.15
+  +5*GHSERCU# +2*GHSERFE#;  6000 N                                     09CHED!
+
+
+PARAMETER L(AL5FE2,AL,CU:FE;0) 298.15
+  -161000;  6000 N                                                     09CHED!
 
 PARAMETER L(AL5FE2,AL:CO,FE;0) 298.15
   -7666;  6000 N                                                        21NOO!
@@ -2770,12 +2784,12 @@ PARAMETER G(AL13CO4_Y,AL:CO;0) 298.15
 
 $ ----------------------------------------------------------------------------
 $ AL13FE4
-$ PROTOTYPE: AL13FE4
+$ PROTOTYPE: AL13FE4, AL3FE
 $ SPACE GROUP: C2/m
 $ PEARSON: mC102
 
 PHASE AL13FE4 % 3 0.6275 0.235 0.1375 !
-CONSTITUENT AL13FE4 : AL : CO,FE,MN,NI : AL,SI,VA : !
+CONSTITUENT AL13FE4 : AL,CU : CO,FE,MN,NI : AL,SI,VA : !
 
 PARAMETER G(AL13FE4,AL:CO:AL;0) 298.15
   -39891 +8.46*T +0.6275*GHSERAL# +0.235*GHSERCO# 
@@ -2807,6 +2821,17 @@ PARAMETER G(AL13FE4,AL:NI:SI;0) 298.15
   +0.6275*GHSERAL# +0.235*GHSERNI# +0.1375*GHSERSI#;  6000 N            24FRI!
 PARAMETER G(AL13FE4,AL:NI:VA;0) 298.15
   -28901.41 +0.6275*GHSERAL# +0.235*GHSERNI#;  6000 N                  09ZHAA!
+
+PARAMETER G(AL13FE4,CU:FE:AL;0) 298.15
+  -7525 +0.6275*GHSERCU# +0.235*GHSERFE# +0.1375*GHSERAL#;  6000 N     09CHED!
+PARAMETER G(AL13FE4,CU:FE:VA;0) 298.15
+  +0.6275*GHSERCU# +0.235*GHSERFE#;  6000 N                            09CHED!
+
+
+PARAMETER L(AL13FE4,AL,CU:FE:AL;0) 298.15
+  -14845;  6000 N                                                      09CHED!
+PARAMETER L(AL13FE4,AL,CU:FE:VA;0) 298.15
+  -14845;  6000 N                                                      09CHED!
 
 $ ----------------------------------------------------------------------------
 $ AL17MO4
@@ -3592,6 +3617,8 @@ PARAMETER L(BCC_A2,CU,SI:VA;1) 298.15
   -47275.11 -8.517323*T;  6000 N                                        00YAN!
 PARAMETER L(BCC_A2,CU,V:VA;0) 298.15
   +42377.8;  6000 N                                                    08ZHAB!
+PARAMETER L(BCC_A2,CU,VA:VA;0) 298.15
+  +100000;  6000 N                                                     09CHED!
 PARAMETER L(BCC_A2,CU,ZR:VA;0) 298.15
   +4000 -10*T;  6000 N                                                 17LIUA!
 
@@ -3975,6 +4002,12 @@ PARAMETER L(BCC_A2,AL,CR,SI:VA;1) 298.15
 PARAMETER L(BCC_A2,AL,CR,SI:VA;2) 298.15
   +0;  6000 N                                                            13HU!
 
+PARAMETER L(BCC_A2,AL,CU,FE:VA;0) 298.15
+  -267841 +131.45655*T;  6000 N                                        09CHED!
+PARAMETER L(BCC_A2,AL,CU,FE:VA;1) 298.15
+  -103924 +69.91943*T;  6000 N                                         09CHED!
+PARAMETER L(BCC_A2,AL,CU,FE:VA;2) 298.15
+  -29249;  6000 N                                                      09CHED!
 PARAMETER L(BCC_A2,AL,CU,NI:VA;0) 298.15
   -518491.506 +213.890*T;  6000 N                                       19WAN!
 PARAMETER L(BCC_A2,AL,CU,NI:VA;1) 298.15
@@ -4229,7 +4262,7 @@ PARAMETER TC(BCC_B2,AL:CO:VA;0) 298.15
 PARAMETER G(BCC_B2,AL:CR:VA;0) 298.15
   -2000;  6000 N                                                        01DUP!
 PARAMETER G(BCC_B2,AL:CU:VA;0) 298.15
-  -10000;  6000 N                                                       19WAN!
+  -10000;  6000 N                                                      09CHED!
 PARAMETER G(BCC_B2,AL:FE:C;0) 298.15
   +0;  6000 N                                                           08CON!
 PARAMETER G(BCC_B2,AL:FE:VA;0) 298.15
@@ -4288,13 +4321,15 @@ PARAMETER G(BCC_B2,CR:VA:VA;0) 298.15
   +0;  6000 N                                                           01DUP!
 
 PARAMETER G(BCC_B2,CU:AL:VA;0) 298.15
-  -10000;  6000 N                                                       19WAN!
+  -10000;  6000 N                                                      09CHED!
 PARAMETER G(BCC_B2,CU:CU:VA;0) 298.15
   +0;  6000 N                                                           19WAN!
+PARAMETER G(BCC_B2,CU:FE:VA;0) 298.15
+  +0;  6000 N                                                          09CHED!
 PARAMETER G(BCC_B2,CU:NI:VA;0) 298.15
   +40000;  6000 N                                                       19WAN!
 PARAMETER G(BCC_B2,CU:VA:VA;0) 298.15
-+0;  6000 N                                                             19WAN!
+  +0;  6000 N                                                          09CHED!
 
 PARAMETER G(BCC_b2,FE:AL:C;0) 298.15
   +0;  6000 N                                                           08CON!
@@ -4312,6 +4347,8 @@ PARAMETER TC(BCC_B2,FE:CO:VA;0) 298.15
   +370;  6000 N                                                         02OHN!
 PARAMETER G(BCC_B2,FE:CR:VA;0) 298.15
   +3000 +0.5*GHSERFE# +0.5*GHSERCR#;  6000 N                            97LIN!
+PARAMETER G(BCC_B2,FE:CU:VA;0) 298.15
+  +0;  6000 N                                                          09CHED!
 PARAMETER G(BCC_B2,FE:FE:C;0) 298.15
   +0;  6000 N                                                           08CON!
 PARAMETER G(BCC_B2,FE:FE:VA;0) 298.15
@@ -4434,7 +4471,7 @@ PARAMETER G(BCC_B2,VA:CO:VA;0) 298.15
 PARAMETER G(BCC_B2,VA:CR:VA;0) 298.15
   +0;  6000 N                                                           01DUP!
 PARAMETER G(BCC_B2,VA:CU:VA;0) 298.15
-  +0;  6000 N                                                           19WAN!
+  +0;  6000 N                                                          09CHED!
 PARAMETER G(BCC_B2,VA:MO:VA;0) 298.15
   +0.5*B2MOVA# -0.5*LB2MOVA#;  6000 N                                   16PEN!
 PARAMETER G(BCC_B2,VA:NI:VA;0) 298.15
@@ -4451,6 +4488,8 @@ PARAMETER L(BCC_B2,AL,CO:FE:VA;0) 298.15
 PARAMETER L(BCC_B2,AL,CO:MN:VA;0) 298.156
   +17089;  6000 N                                                       20NOO!
 
+PARAMETER L(BCC_B2,AL,CU:FE:VA;0) 298.15
+  +0;  6000 N                                                          09CHED!
 PARAMETER L(BCC_B2,AL,CU:NI:VA;0) 298.15
   +1852.464 -12.932*T;  6000 N                                          19WAN!
 PARAMETER L(BCC_B2,AL,CU:NI:VA;1) 298.15
@@ -4472,6 +4511,8 @@ PARAMETER L(BCC_B2,AL,FE:CO:VA;0) 298.15
   +15533;  6000 N                                                       21NOO!
 PARAMETER TC(BCC_B2,AL,FE:CO:VA;0) 298.15
   +1403;  6000 N                                                        21NOO!
+PARAMETER L(BCC_B2,AL,FE:CU:VA;0) 298.15
+  +30837;  6000 N                                                      09CHED!
 PARAMETER L(BCC_B2,AL,FE:FE:VA;0) 298.15
   +GD03FEAL#;  6000 N                                                  09SUNA!
 PARAMETER L(BCC_B2,AL,FE:FE:VA;1) 298.15
@@ -4518,9 +4559,6 @@ PARAMETER L(BCC_B2,AL,TI:TI:VA;1) 298.15
 PARAMETER L(BCC_B2,AL,V:TI:VA;0) 298.15
   +3366 -5*T;  6000 N                                                    24LI!
 
-PARAMETER L(BCC_B2,TI,V:FE:VA;0) 298.15
-  +10000 -1.000*T;  6000 N                                              12GUO!
-
 PARAMETER L(BCC_B2,AL:AL,FE:VA;0) 298.15
   +2*GD03ALFE#;  6000 N                                                09SUNA!
 PARAMETER L(BCC_B2,AL:AL,FE:VA;1) 298.15
@@ -4547,6 +4585,8 @@ PARAMETER L(BCC_B2,AL:CO,MN:VA;0) 298.15
   +23780;  6000 N                                                       20NOO!
 PARAMETER L(BCC_B2,AL:CO,VA:VA;0) 298.15
   -56770 -18*T;  6000 N                                                 13STE!
+PARAMETER L(BCC_B2,AL:CU,FE:VA;0) 298.15
+  +31874;  6000 N                                                      09CHED!
 PARAMETER L(BCC_B2,AL:CU,NI:VA;0) 298.15
   -10809.388 +14.287*T;  6000 N                                         19WAN!
 PARAMETER L(BCC_B2,AL:CU,NI:VA;1) 298.15
@@ -4604,13 +4644,8 @@ PARAMETER L(BCC_B2,CO,MN:AL:VA;0) 298.15
 PARAMETER L(BCC_B2,CO,VA:AL:VA;0) 298.15
   -56770 -18*T;  6000 N                                                 13STE!
 
-PARAMETER L(BCC_B2,CU:AL,NI:VA;0) 298.15
-  +11340.461 -23.093*T;  6000 N                                         19WAN!
-PARAMETER L(BCC_B2,CU:AL,NI:VA;1) 298.15
-  +0;  6000 N                                                           19WAN!
-PARAMETER L(BCC_B2,CU:AL,NI:VA;2) 298.15
-  -1893.563 +7.144*T;  6000 N                                           19WAN!
-
+PARAMETER L(BCC_B2,CU,FE:AL:VA;0) 298.15
+  +31874;  6000 N                                                      09CHED!
 PARAMETER L(BCC_B2,CU,NI:AL:VA;0) 298.15
   -10809.388 +14.287*T;  6000 N                                         19WAN!
 PARAMETER L(BCC_B2,CU,NI:AL:VA;1) 298.15
@@ -4618,44 +4653,14 @@ PARAMETER L(BCC_B2,CU,NI:AL:VA;1) 298.15
 PARAMETER L(BCC_B2,CU,NI:AL:VA;2) 298.15
   +6118.873 -4.706*T;  6000 N                                           19WAN!
 
-PARAMETER L(BCC_B2,FE:AL,CO:VA;0) 298.15
-  -5651;  6000 N                                                        21NOO!
-PARAMETER L(BCC_B2,FE:AL,FE:VA;0) 298.15
-  +2*GD03FEAL#;  6000 N                                                09SUNA!
-PARAMETER L(BCC_B2,FE:AL,FE:VA;1) 298.15
-  +120;  6000 N                                                        17ZHEC!
-PARAMETER L(BCC_B2,FE:AL,FE:VA;2) 298.15
-  -520;  6000 N                                                        17ZHEC!
-PARAMETER BMAGN(BCC_B2,FE:AL,FE:VA;1) 298.15
-  -1.6;  6000 N                                                        09SUNA!
-PARAMETER BMAGN(BCC_B2,FE:AL,FE:VA;2) 298.15
-  +0.4;  6000 N                                                        09SUNA!
-PARAMETER L(BCC_B2,FE:AL,NI:VA;0) 298.15
-  -57636.58;  6000 N                                                   09ZHAA!
-PARAMETER L(BCC_B2,FE:CO,FE:VA;0) 298.15
-  -872;  6000  N                                                        17WAN!
-PARAMETER L(BCC_B2,FE:CO,FE:VA;1) 298.15
-  -123.653;  6000 N                                                     02OHN!
-PARAMETER BMAGN(BCC_B2,FE:CO,FE:VA;0) 298.15
-  -0.1;  6000 N                                                         02OHN!
-PARAMETER TC(BCC_B2,FE:CO,FE:VA;0) 298.15
-  -370;  6000 N                                                         02OHN!
-PARAMETER L(BCC_B2,FE:FE,SI:VA;0) 298.15
-  +10675.2;  6000 N                                                    17CUIA!
-PARAMETER BMAGN(BCC_B2,FE:FE,SI:VA;0) 298.15
-  +0.75;  6000 N                                                       17CUIA!
-PARAMETER TC(BCC_B2,FE:FE,SI:VA;0) 298.15
-  +210;  6000 N                                                        17CUIA!
-PARAMETER L(BCC_B2,FE:FE,TI:VA;0) 298.15
-  -10971;  6000  N                                                      99KUM!
-PARAMETER L(BCC_B2,FE:FE,TI:VA;1) 298.15
-  -13764;  6000 N                                                       99KUM!
-PARAMETER L(BCC_B2,FE:MN,TI:VA;0) 298.15
-  +11480;  6000 N                                                       21ZHA!
-PARAMETER L(BCC_B2,FE:NI,SI:VA;0) 298.15
-  +25*T;  6000 N                                                        23WIT!
-PARAMETER L(BCC_B2,FE:TI,V:VA;0) 298.15
-  +10000 -1.000*T;  6000 N                                              12GUO!
+PARAMETER L(BCC_B2,CU:AL,FE:VA;0) 298.15
+  +30837;  6000 N                                                      09CHED!
+PARAMETER L(BCC_B2,CU:AL,NI:VA;0) 298.15
+  +11340.461 -23.093*T;  6000 N                                         19WAN!
+PARAMETER L(BCC_B2,CU:AL,NI:VA;1) 298.15
+  +0;  6000 N                                                           19WAN!
+PARAMETER L(BCC_B2,CU:AL,NI:VA;2) 298.15
+  -1893.563 +7.144*T;  6000 N                                           19WAN!
 
 PARAMETER L(BCC_B2,FE,MN:TI:VA;0) 298.15
   -30510 +7.1*T;  6000 N                                                21ZHA!
@@ -4693,6 +4698,48 @@ PARAMETER L(BCC_B2,FE,TI:V:VA;0) 298.15
   +22808;  6000 N                                                       12GUO!
 PARAMETER L(BCC_B2,FE,V:TI:VA;0) 298.15
   +43130 -11.936*T;  6000 N                                             12GUO!
+
+PARAMETER L(BCC_B2,FE:AL,CO:VA;0) 298.15
+  -5651;  6000 N                                                        21NOO!
+PARAMETER L(BCC_B2,FE:AL,CU:VA;0) 298.15
+  +0;  6000 N                                                          09CHED!
+PARAMETER L(BCC_B2,FE:AL,FE:VA;0) 298.15
+  +2*GD03FEAL#;  6000 N                                                09SUNA!
+PARAMETER L(BCC_B2,FE:AL,FE:VA;1) 298.15
+  +120;  6000 N                                                        17ZHEC!
+PARAMETER L(BCC_B2,FE:AL,FE:VA;2) 298.15
+  -520;  6000 N                                                        17ZHEC!
+PARAMETER BMAGN(BCC_B2,FE:AL,FE:VA;1) 298.15
+  -1.6;  6000 N                                                        09SUNA!
+PARAMETER BMAGN(BCC_B2,FE:AL,FE:VA;2) 298.15
+  +0.4;  6000 N                                                        09SUNA!
+PARAMETER L(BCC_B2,FE:AL,NI:VA;0) 298.15
+  -57636.58;  6000 N                                                   09ZHAA!
+PARAMETER L(BCC_B2,FE:CO,FE:VA;0) 298.15
+  -872;  6000  N                                                        17WAN!
+PARAMETER L(BCC_B2,FE:CO,FE:VA;1) 298.15
+  -123.653;  6000 N                                                     02OHN!
+PARAMETER BMAGN(BCC_B2,FE:CO,FE:VA;0) 298.15
+  -0.1;  6000 N                                                         02OHN!
+PARAMETER TC(BCC_B2,FE:CO,FE:VA;0) 298.15
+  -370;  6000 N                                                         02OHN!
+PARAMETER L(BCC_B2,FE:FE,SI:VA;0) 298.15
+  +10675.2;  6000 N                                                    17CUIA!
+PARAMETER BMAGN(BCC_B2,FE:FE,SI:VA;0) 298.15
+  +0.75;  6000 N                                                       17CUIA!
+PARAMETER TC(BCC_B2,FE:FE,SI:VA;0) 298.15
+  +210;  6000 N                                                        17CUIA!
+PARAMETER L(BCC_B2,FE:FE,TI:VA;0) 298.15
+  -10971;  6000  N                                                      99KUM!
+PARAMETER L(BCC_B2,FE:FE,TI:VA;1) 298.15
+  -13764;  6000 N                                                       99KUM!
+PARAMETER L(BCC_B2,FE:MN,TI:VA;0) 298.15
+  +11480;  6000 N                                                       21ZHA!
+PARAMETER L(BCC_B2,FE:NI,SI:VA;0) 298.15
+  +25*T;  6000 N                                                        23WIT!
+PARAMETER L(BCC_B2,FE:TI,V:VA;0) 298.15
+  +10000 -1.000*T;  6000 N                                              12GUO!
+
 
 PARAMETER L(BCC_B2,MN,SI:NI:VA;0) 298.15
   -182448.464 +110*T;  6000 N                                            11HU!
@@ -4770,6 +4817,9 @@ PARAMETER BMAGN(BCC_B2,SI:FE,SI:VA;0) 298.15
   +0.75;  6000 N                                                       17CUIA!
 PARAMETER TC(BCC_B2,SI:FE,SI:VA;0) 298.15
   +210;  6000 N                                                        17CUIA!
+
+PARAMETER L(BCC_B2,TI,V:FE:VA;0) 298.15
+  +10000 -1.000*T;  6000 N                                              12GUO!
 
 PARAMETER L(BCC_B2,TI:AL,TI:VA;0) 298.15
   -21406;  6000 N                                                       08WIT!
@@ -7604,6 +7654,12 @@ PARAMETER L(FCC_A1,AL,CR,NI:VA;0) 298.15
 PARAMETER L(FCC_A1,AL,CR,SI:VA;0) 298.15
   +89999.34;  6000 N                                                     13HU!
 
+PARAMETER L(FCC_A1,AL,CU,FE:VA;0) 298.15
+  +0;  6000 N                                                          09CHED!
+PARAMETER L(FCC_A1,AL,CU,FE:VA;1) 298.15
+  +0;  6000 N                                                          09CHED!
+PARAMETER L(FCC_A1,AL,CU,FE:VA;2) 298.15
+  +0;  6000 N                                                          09CHED!
 PARAMETER L(FCC_A1,AL,CU,NI:VA;0) 298.15
   -16650.922 -166.475*T;  6000 N                                        19WAN!
 PARAMETER L(FCC_A1,AL,CU,NI:VA;1) 298.15
@@ -8383,6 +8439,26 @@ PARAMETER L(FCC_L12,AL,MO,NI:NI:VA;0) 298.15
   +AL3NI# -1.5*MONI3# -1.5*MO2NI2# +MO3NI#;  6000 N                     01DUP!
 
 $ ----------------------------------------------------------------------------
+$ FECU2AL7
+
+PHASE FECU2AL7 % 3 1 2 7 !
+CONSTITUENT FECU2AL7 : FE : CU : AL : !
+
+PARAMETER G(FECU2AL7,FE:CU:AL;0) 298.15
+  -197545 +0.23633*T +GHSERFE# +2*GHSERCU# +7*GHSERAL#;  6000 N        09CHED!
+
+$ ----------------------------------------------------------------------------
+$ FECU10AL10
+
+PHASE FECU10AL10 % 3 1 10 10 !
+CONSTITUENT FECU10AL10 : FE : AL,CU : AL : !
+
+PARAMETER G(FECU10AL10,FE:AL:AL;0) 298.15
+  +GHSERFE# +10*GHSERAL# +10*GHSERAL#;  6000 N                         09CHED!
+PARAMETER G(FECU10AL10,FE:CU:AL;0) 298.15
+  -502570 +37.01600*T +GHSERFE# +10*GHSERCU# +10*GHSERAL#;  6000 N     09CHED!
+
+$ ----------------------------------------------------------------------------
 $ FEP2_C18
 $ PROTOTPYE: FES2
 $ SPACE GROUP: Pnnm
@@ -9019,16 +9095,22 @@ $ GAMMA_D83
 $ PROTOTYPE: AL4CU9
 
 PHASE GAMMA_D83 % 3 4 1 8 !
-CONSTITUENT GAMMA_D83 : AL,NI : AL,CU,NI : CU,NI : !
+CONSTITUENT GAMMA_D83 : AL,NI : AL,CU,NI : CU,FE,NI : !
 
 PARAMETER G(GAMMA_D83,AL:AL:CU;0) 298.15
   -300716.0 +390.0*T -52*T*LN(T) +5*GHSERAL# +8*GHSERCU#;  6000 N      91SAUA!
+PARAMETER G(GAMMA_D83,AL:AL:FE;0) 298.15
+  -150000 +4*GHSERAL# +GHSERAL# +8*GHSERFE#;  6000 N                   09CHED!
 PARAMETER G(GAMMA_D83,AL:AL:NI;0) 298.15
   +5*GHSERAL# +8*GHSERNI#;  6000 N                                      19WAN!
+
 PARAMETER G(GAMMA_D83,AL:CU:CU;0) 298.15
   -280501.0 +379.6*T -52*T*LN(T) +4*GHSERAL# +9*GHSERCU#;  6000 N      91SAUA!
+PARAMETER G(GAMMA_D83,AL:CU:FE;0) 298.15
+  -100000 +4*GHSERAL# +GHSERCU# +8*GHSERFE#; 6000 N                    09CHED!
 PARAMETER G(GAMMA_D83,AL:CU:NI;0) 298.15
   +65000 +4*GHSERAL# +GHSERCU# +8*GHSERNI#;  6000 N                     19WAN!
+
 PARAMETER G(GAMMA_D83,AL:NI:CU;0) 298.15
   +4*GHSERAL# +GHSERNI# +8*GHSERCU#;  6000 N                            19WAN!
 PARAMETER G(GAMMA_D83,AL:NI:NI;0) 298.15
@@ -9038,10 +9120,12 @@ PARAMETER G(GAMMA_D83,NI:AL:CU;0) 298.15
   +4*GHSERNI# +GHSERAL# +8*GHSERCU# +65000;  6000 N                     19WAN!
 PARAMETER G(GAMMA_D83,NI:AL:NI;0) 298.15
   +65000 +12*GHSERNI# +GHSERAL#;  6000 N                                19WAN!
+
 PARAMETER G(GAMMA_D83,NI:CU:CU;0) 298.15
   +65000 +4*GHSERNI# +9*GHSERCU#;  6000 N                               19WAN!
 PARAMETER G(GAMMA_D83,NI:CU:NI;0) 298.15
   +65000 +12*GHSERNI# +GHSERCU#;  6000 N                                19WAN!
+
 PARAMETER G(GAMMA_D83,NI:NI:CU;0) 298.15
   +65000 +5*GHSERNI# +8*GHSERCU#;  6000 N                               19WAN!
 PARAMETER G(GAMMA_D83,NI:NI:NI;0) 298.15
@@ -13706,6 +13790,10 @@ PARAMETER L(LIQUID,AL,CR,SI;1) 298.15
 PARAMETER L(LIQUID,AL,CR,SI;2) 298.15
   +0;  6000 N                                                            13HU!
 
+PARAMETER L(LIQUID,AL,CU,FE;0) 298.15
+  -28836 +10.57665*T;  6000 N                                          09CHED!
+PARAMETER L(LIQUID,AL,CU,FE;1) 298.15
+  -43967 +7.47667*T;  6000 N                                           09CHED!
 PARAMETER L(LIQUID,AL,CU,NI;0) 298.15
   -327538.782 +68.702*T;  6000 N                                        19WAN!
 PARAMETER L(LIQUID,AL,CU,NI;1) 298.15
@@ -14445,7 +14533,7 @@ PARAMETER G(M3B2_D5A,NI:NI:B;0) 298.15
   -20210 +6.58*T +0.6*GHSERNI# +0.4*GHSERBB#;  6000 N                   10PAN!
 
 PARAMETER G(M3B2_D5A,V:V:B;0) 298.15
-  -55550.6 +1.5850*T +0.4*GSHERV# +0.2*GHSERV# +0.4*GHSERBB#;  6000 N   17SIL!
+  -55550.6 +1.5850*T +0.4*GHSERV# +0.2*GHSERV# +0.4*GHSERBB#;  6000 N   17SIL!
 
 $ ----------------------------------------------------------------------------
 $ M3B4_D7B
@@ -15620,9 +15708,10 @@ $ MS2_C6
 $ PROTOTYPE: CDI2
 $ SPACE GROUP: P-3m
 $ PEARSON: hP3
+$ RETURN VA TO SL 1 WHEN PYCALPHAD CAN HANDLE IT
 
 PHASE MS2_C6 % 3 1 2 1 !
-CONSTITUENT MS2_C6 : FE,VA : S,VA : TI,VA : !
+CONSTITUENT MS2_C6 : FE : S,VA : TI,VA : !
 
 PARAMETER G(MS2_C6,FE:S:TI;0) 298.15
   -317783.784 +60*T +GHSERFE# +2*GHSERSS# +GHSERTI#;  6000 N            17HIR!
@@ -15831,7 +15920,7 @@ CONSTITUENT MB_B33 : CR,FE,MO,TI,V : B,TI,VA : !
 PARAMETER G(MB_B33,CR:B;0) 298.15
   -40000 +3.24*T +0.5*GHSERCR# +0.5*GHSERBB#;  6000 N                  14MIEF!
 PARAMETER G(MB_B33,FE:B;0) 298.15
-  -10000 +5*T +0.5*GSHERFE# +0.5*GSHERBB#;  6000 N                     14MIEF!
+  -10000 +5*T +0.5*GHSERFE# +0.5*GSHERBB#;  6000 N                     14MIEF!
 
 PARAMETER G(MB_B33,MO:B;0) 298.15
   -52317 +0.947*T +0.5*GHSERMO# +0.5*GHSERBB#;  6000 N                  16WIT!
@@ -15856,7 +15945,7 @@ PARAMETER G(MB_B33,VA:VA;0) 298.15
   +15*T;  6000 N                                                        16WIT!
 
 PARAMETER G(MB_B33,V:B;0) 298.15
-  -69152.3 +2.3520*T +0.5*GSHERV# +0.5*GHSERBB#;  6000 N                17SIL!
+  -69152.3 +2.3520*T +0.5*GHSERV# +0.5*GHSERBB#;  6000 N                17SIL!
 
 
 PARAMETER L(MB_B33,CR,FE:B;0) 298.15
@@ -21848,6 +21937,9 @@ NUMBER  SOURCE
         system." Calphad 33.4 (2009): 658-663.'
 09CHEC  'Chen, H. M., et al. "Thermodynamic assessment of the B–C–Si system." 
         Journal of alloys and compounds 481.1-2 (2009): 182-189.'
+09CHED  'Chen, Hai-Lin, et al. "Experimental investigation and thermodynamic 
+        modeling of the ternary Al–Cu–Fe system." Journal of Materials 
+        Research 24.10 (2009): 3154-3164.'
 09KEY   'De Keyzer, Jozefien, et al. "Thermodynamic modeling and optimization 
         of the Fe-Ni-Ti system." Calphad 33.1 (2009): 109-123.'
 09LIA   'Liang, Yu, et al. "A thermodynamic description of the Al-Cr-Si 
