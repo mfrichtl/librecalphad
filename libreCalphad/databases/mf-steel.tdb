@@ -267,6 +267,7 @@ DATABASE_INFO The following systems are available:'
   NI-V      Korb (1998)'
   NI-W      Gustafson (1988), Turchi (2006), and Isomäki (2017)'
   O-SI      Hallstedt (1992)'
+  O-V       Yang (2015)'
   P-TI      Ohtani (2006) and Miettinen (2015)'
   S-TI      Hirata (2017)'
   SI-TA     Vahlas (1989)'
@@ -581,6 +582,13 @@ SPECIES SI3   SI3 !
 SPECIES SIO   SI1O1 !
 SPECIES SIO2  SI1O2 !
 SPECIES TI2   TI2 !
+SPECIES V2+   V/+2 !
+SPECIES V3+   V/+3 !
+SPECIES V4+   V/+4 !
+SPECIES V5+   V/+5 !
+SPECIES VO3/2 V1O1.5 !
+SPECIES VO2   V1O2 !
+SPECIES VO5/2 V1O2.5 !
 
 $ ----------------------------------------------------------------------------
 $                            ELEMENTAL FUNCTIONS
@@ -1055,6 +1063,10 @@ FUNCTION GC15TI  298.15
 $ ----------------------------------------------------------------------------
 $ V
 
+FUNCTION GFCCVV  298.15
+  +7500 +1.7*T +GHSERV#; 6000 N                                         91DIN!
+FUNCTION GHCPVV  298.15
+  +4000 +2.4*T +GHSERV#; 4000 N                                         91DIN!
 FUNCTION GHSERV   298.15
   -7930.43 +133.346053*T -24.134*T*LN(T) -3.098E-3*T**2
   +0.12175E-6*T**3 +69460*T**(-1);   790 Y
@@ -1062,9 +1074,9 @@ FUNCTION GHSERV   298.15
   -0.68E-6*T**3;  2183 Y
   -41689.864 +321.140783*T -47.43*T*LN(T) 
   +644.389E29*T**(-9);  4000 N                                          91DIN!
-
-FUNCTION GFCCV  298.15
-  +7500 +1.7*T +GHSERV#; 6000 N                                         91DIN!
+FUNCTION GLIQVV 298.15
+  +20764.117 -9.455552*T -519.136E-24*T**7 +GHSERV#; 2183 Y
+  -19617.51 +311.055983*T -47.43*T*LN(T);  6000 N                       91DIN!
 
 $ ----------------------------------------------------------------------------
 $ W
@@ -1794,9 +1806,10 @@ $ AL2CU_C16
 $ PROTOTYPE: AL2CU
 $ SPACE GROUP: I4/mcm
 $ PEARSON: tI12
+$ TODO: ADD VA BACK TO SL 1 WHEN PYCALPHAD CAN HANDLE THEM
 
 PHASE AL2CU_C16 % 2 2 1 !
-CONSTITUENT AL2CU_C16 : AL,CO,CR,FE,MN,MO,TA,TI,VA,ZR 
+CONSTITUENT AL2CU_C16 : AL,CO,CR,FE,MN,MO,TA,TI,ZR 
                       : AL,B,CU,FE,NI,SI,VA,ZR : !
 
 PARAMETER G(AL2CU_C16,AL:AL;0) 298.15
@@ -2954,6 +2967,34 @@ PARAMETER G(ANILITE,CU:S;0) 298.15
   -76000.8 -22.78185*T +1.75*GHSERCU# +GHSERSS#;  6000 N                07LEE!
 
 $ ----------------------------------------------------------------------------
+$ ANTIRUTILE_C4
+$ ANTI-RUTILE PHASE
+$ PROTOTYPE: TI2N
+$ SPACE GROUP: P4_2/mnm
+$ PEARSON: tP6
+
+PHASE ANTIRUTILE_C4 % 2 2 1 !
+CONSTITUENT ANTIRUTILE_C4 : TI,V : C,N : !
+
+PARAMETER G(ANTIRUTILE_C4,TI:C;0) 298.15
+  -17349 +GHSERTI# +GFCCTIC#;  6000 N                                  96JONA!
+PARAMETER G(ANTIRUTILE_C4,TI:N;0) 298.15
+  -67116 +26.53956*T +GHSERTI# +GFCCTIN#;  6000 N                       01LEE!
+
+PARAMETER G(ANTIRUTILE_C4,V:C;0) 298.15
+  +2*GHSERV# +GHSERCC#;  6000 N                                         24FRI!
+PARAMETER G(ANTIRUTILE_C4,V:N;0) 298.15
+  -100000 +20*T +2*GHSERV# +GHSERNN#;  6000 N                           98ZEN!
+
+
+PARAMETER L(ANTIRUTILE_C4,TI:C,N;0) 298.15
+  -25000;  6000 N                                                       01LEE!
+
+PARAMETER L(ANTIRUTILE_C4,TI,V:N;0) 298.15
+  -60000;  6000 N                                                       98ZEN!
+  
+$ ----------------------------------------------------------------------------
+
 $ B4C
 $ SPACE GROUP: R-3m
 $ PEARSON: hR15
@@ -3303,7 +3344,7 @@ PARAMETER G(BCC_A2,V:H;0) 298.15
 PARAMETER G(BCC_A2,V:N;0) 298.15
   +800000 +GHSERV# +3*GHSERNN#;  6000 N                                 21DU !
 PARAMETER G(BCC_A2,V:O;0) 298.15
-  +GHSERV# +3*GHSEROO#;  6000 N                                         24FRI!
+  -515378 +186.93*T +GHSERV# +3*GHSEROO#;  6000 N                       15YAN!
 PARAMETER G(BCC_A2,V:VA;0) 298.15
   +GHSERV#;  6000 N                                                     91DIN!
   
@@ -3964,6 +4005,10 @@ PARAMETER L(BCC_A2,V:H,VA;2) 298.15
   +633500 -132.2*T;  6000 N                                             08UKI!
 PARAMETER L(BCC_A2,V:N,VA;0) 298.15
   -1559450.57 +257.074961*T;  6000 N                                    21DU !
+PARAMETER L(BCC_A2,V:O,VA;0) 298.15
+  -513376;  6000 N                                                      15YAN!
+PARAMETER L(BCC_A2,V:O,VA;1) 298.15
+  +274677;  6000  N                                                     15YAN!
 
 
 PARAMETER L(BCC_A2,AL,CO,FE:VA;0) 298.15
@@ -5699,8 +5744,8 @@ $ PEARSON: hR10
 $ SPACE GROUP: R-3c
 
 PHASE CORUNDUM_D51 % 3 2 1 3 !
-CONSTITUENT CORUNDUM_D51 : AL3+,CR2+,CR3+,FE2+,FE3+ 
-                         : CR3+,FE3+,NI2+,VA 
+CONSTITUENT CORUNDUM_D51 : AL3+,CR2+,CR3+,FE2+,FE3+,V2+,V3+,V4+,VA
+                         : CR3+,FE3+,NI2+,O2-,VA 
                          : O2- : !
 
 FUNCTION GCR2O3 298.15
@@ -5708,7 +5753,6 @@ FUNCTION GCR2O3 298.15
   -1.38885E-6*T**3 +1501761*T**(-1);  1000 Y
   -1166947.9 +701.5624*T -115.5381*T*LN(T) -0.00620492*T**2
   +1.00698E-7*T**3 +239949*T**(-1);  6000 N                             08KJE!
-
 FUNCTION GCORUND 298.15
   -1707351.3 +448.021092*T -67.4804*T*LN(T) -0.06747*T**2
   +1.4205433E-5*T**3 +938780*T**(-1);  600 Y 
@@ -5716,7 +5760,6 @@ FUNCTION GCORUND 298.15
   +2.78532E-7*T**3 +2120700*T**(-1); 1500 Y 
   -1772163.19 +1053.4548*T -156.058*T*LN(T) +0.00709105*T**2
   -6.29402E-7*T**3 +12366640*T**(-1); 3000 N                            15LIN!
-
 FUNCTION GFE2O3 298.15
   -858683 +827.946*T -137.0089*T*LN(T) +1453810*T**(-1);  6000 N        91SUN!
 
@@ -5749,7 +5792,6 @@ PARAMETER BMAGN(CORUNDUM_D51,CR2+:VA:O2-;0) 298.15
   -5.814;  6000 N                                                       90TAY!
 PARAMETER TC(CORUNDUM_D51,CR2+:VA:O2-;0) 298.15
   -918;  6000 N                                                         90TAY!
-
 PARAMETER G(CORUNDUM_D51,CR3+:CR3+:O2-;0) 298.15
   -232227.2 +241.3793*T +GCR2O3#;  6000 N                               08KJE!
 PARAMETER BMAGN(CORUNDUM_D51,CR3+:CR3+:O2-;0) 298.15
@@ -5799,7 +5841,6 @@ PARAMETER BMAGN(CORUNDUM_D51,FE2+:VA:O2-;0) 298.15
   -25.1;  6000 N                                                        91SUN!
 PARAMETER TC(CORUNDUM_D51,FE2+:VA:O2-;0) 298.15
   -2867;  6000 N                                                        91SUN!
-
 PARAMETER G(CORUNDUM_D51,FE3+:CR3+:O2-;0) 298.15
   +300000 +GFE2O3#;  6000 N                                             08KJE!
 PARAMETER BMAGN(CORUNDUM_D51,FE3+:CR3+:O2-;0) 298.15
@@ -5824,6 +5865,24 @@ PARAMETER BMAGN(CORUNDUM_D51,FE3+:VA:O2-;0) 298.15
   -25.1;  6000 N                                                        91SUN!
 PARAMETER TC(CORUNDUM_D51,FE3+:VA:O2-;0) 298.15
   -2867;  6000 N                                                        91SUN!
+
+PARAMETER G(CORUNDUM_D51,V2+:O2-:O2-;0) 298.15
+  +466.95 -3835.11 +637.92 +2*GV1O2LT#;  6000 N                         15YAN!
+PARAMETER G(CORUNDUM_D51,V2+:VA:O2-;0) 298.15
+  +637.92 +GV2O3#;  6000 N                                              15YAN!
+PARAMETER G(CORUNDUM_D51,V3+:O2-:O2-;0) 298.15
+  +466.95 +2*GV1O2LT#;  6000 N                                          15YAN!
+PARAMETER G(CORUNDUM_D51,V3+:VA:O2-;0) 298.15
+  +3835.11 +GV2O3#;  6000 N                                             15YAN!
+PARAMETER G(CORUNDUM_D51,V4+:O2-:O2-;0) 298.15
+  +466.95 -3835.11 +4927.13 +2*GV1O2LT#;  6000 N                        15YAN!
+PARAMETER G(CORUNDUM_D51,V4+:VA:O2-;0) 298.15
+  +4927.13 +GV2O3#;  6000 N                                             15YAN!
+
+PARAMETER G(CORUNDUM_D51,VA:O2-:O2-;0) 298.15
+  +466.95 -3835.11 -GV2O3# +2*GV1O2LT#;  6000 N                         15YAN!
+PARAMETER G(CORUNDUM_D51,VA:VA:O2-;0) 298.15
+  +0;  6000 N                                                           15YAN!
 
 
 PARAMETER L(CORUNDUM_D51,AL3+,FE3+:VA:O2-;0) 298.15
@@ -6991,7 +7050,7 @@ PARAMETER G(FCC_A1,V:N;0) 298.15
 PARAMETER G(FCC_A1,V:O;0) 298.15
   +GHSERV# +GHSEROO#;  6000 N                                           24FRI!
 PARAMETER G(FCC_A1,V:VA;0) 298.15
-  +GFCCV#;  6000 N                                                      91DIN!
+  +GFCCVV#;  6000 N                                                     91DIN!
 
 PARAMETER G(FCC_A1,W:B;0) 298.15
   +GHSERW# +GHSERBB#;  6000 N                                           24FRI!
@@ -9721,7 +9780,8 @@ $ PEARSON: cF8
 $ SPACE GROUP: Fm-3m
 
 PHASE HALITE_B1 %B 2 1 1 !
-CONSTITUENT HALITE_B1 : AL3+,CO2+,CR3+,FE2+,NI2+,NI3+,SI4+,VA : O2- : !
+CONSTITUENT HALITE_B1 : AL3+,CO2+,CR3+,FE2+,NI2+,NI3+,SI4+,V,V2+,V3+,VA 
+                      : O2-,VA : !
 
 FUNCTION GCOOS 298.15
   -252530 +270.075*T -47.825*T*LN(T) -0.005112*T**2 
@@ -9733,9 +9793,18 @@ FUNCTION GNIO 298.15
   -8.11809E-7*T**3 +1270*T**(-1);  1800 Y 
   -259131.4 +337.305*T -55.75758*T*LN(T) +0.002220246*T**2
   -7.80093E-7*T**3;  6000 N                                             96KOW!
+FUNCTION GV1O1 298.15
+  -452649.127 +334.032868*T -52.91877*T*LN(T) -0.00655714*T**2 
+  +5.33969167E-11*T**3 +818200*T**(-1);  2063 Y 
+  -459188.444 +454.230294*T -70*T*LN(T);  6000 N                        15YAN!
+FUNCTION GV2O3 298.15
+  -1270647.05 +886.334178*T -144.3096*T*LN(T) +0.00933134*T**2
+  -1.81532333E-6*T**3 +1722474*T**(-1);  2230 Y 
+  -1310233.34 +1037.18289*T -160*T*LN(T);  6000 N                       15YAN!
 
 PARAMETER G(HALITE_B1,AL3+:O2-;0) 298.15
   +50000 +0.5*GCORUND#;  3000 N                                         15LIN!
+
 PARAMETER G(HALITE_B1,CO2+:O2-;0) 298.15
   +GCOOS#;  6000 N                                                      03CHE!
 PARAMETER BMAGN(HALITE_B1,CO2+:O2-;0) 298.15
@@ -9744,6 +9813,7 @@ PARAMETER NT(HALITE_B1,CO2+:O2-;0) 298.15
   +290;  60000 N                                                        03CHE!
 PARAMETER TC(HALITE_B1,CO2+:O2-;0) 298.15
   -870;  6000 N                                                         03CHE!
+
 PARAMETER G(HALITE_B1,CR3+:O2-;0) 298.15
   -563748.9 +407.4569*T -66.02315*T*LN(T) +0.002628*T**2
   -6.944225E-7*T**3 +750881*T**(-1);  1000 Y 
@@ -9753,6 +9823,7 @@ PARAMETER BMAGN(HALITE_B1,CR3+:O2-;0) 298.15
   +0.9873;  6000 N                                                      08KJE!
 PARAMETER TC(HALITE_B1,CR3+:O2-;0) 298.15
   +519;  6000 N                                                         08KJE!
+
 PARAMETER G(HALITE_B1,FE2+:O2-;0) 298.15
   -279318 +252.848*T -46.12826*T*LN(T) -0.0057402984*T**2;  6000 N      08KJE!
 PARAMETER BMAGN(HALITE_B1,FE2+:O2-;0) 298.15
@@ -9765,24 +9836,42 @@ PARAMETER BMAGN(HALITE_B1,FE3+:O2-;0) 298.15
   +0.9873;  6000 N                                                      08KJE!
 PARAMETER TC(HALITE_B1,FE3+:O2-;0) 298.15
   +519;  6000 N                                                         08KJE!
+
 PARAMETER G(HALITE_B1,NI2+:O2-2;0) 298.15
   +GNIO#;  6000 N                                                       08KJE!
 PARAMETER BMAGN(HALITE_B1,NI2+:O2-;0) 298.15
   +0.9873;  6000 N                                                      08KJE!
 PARAMETER TC(HALITE_B1,NI2+:O2-;0) 298.15
   +519;  6000 N                                                         08KJE!
-PARAMETER G(HALITE_B1,NI3+:02-;0) 298.15
+PARAMETER G(HALITE_B1,NI3+:O2-;0) 298.15
   +132919.5 -64.8855*T +GNIO#;  6000 N                                  08KJE!
 PARAMETER BMAGN(HALITE_B1,NI3+:O2-;0) 298.15
   +0.9873;  6000 N                                                      08KJE!
 PARAMETER TC(HALITE_B1,NI3+:O2-;0) 298.15
   +519;  6000 N                                                         08KJE!
+
 PARAMETER G(HALITE_B1,SI4+:O2-;0) 298.15
   +200*T;  6000 N                                                       24FRI!
+
+PARAMETER G(HALITE_B1,V:O2-;0) 298.15
+  -30*T +GFCCVV#;  6000 N                                               15YAN!
+PARAMETER G(HALITE_B1,V:VA;0) 298.15
+  +GFCCVV#;  6000  N                                                    15YAN!
+PARAMETER G(HALITE_B1,V2+:O2-;0) 298.15
+  +GV1O1#;  6000 N                                                      15YAN!
+PARAMETER G(HALITE_B1,V2+:VA;0) 298.15
+  +30*T +GV1O1#;  6000 N                                                15YAN!
+PARAMETER G(HALITE_B1,V3+:O2-;0) 298.15
+  +10956 +0.5*GV2O3#;  6000 N                                           15YAN!
+PARAMETER G(HALITE_B1,V3+:VA;0) 298.15
+  +10956 +30*T +0.5*GV2O3#;  6000 N                                     15YAN!
+
 PARAMETER G(HALITE_B1,VA:O2-;0)  298.15
   +0;  6000 N                                                           08KJE!
+$ PARAMETER G(HALITE_B1,VA:VA;0) 298.15
+$   +30*T;  6000 N                                                        15YAN!
 
-
+ 
 PARAMETER L(HALITE_B1,CR3+,FE2+:O2-;0) 298.15
   +12500;  6000 N                                                       08KJE!
 PARAMETER L(HALITE_B1,CR3+,FE2+:O2-;0) 298.15
@@ -9792,14 +9881,21 @@ PARAMETER L(HALITE_B1,FE2+,FE3+:O2-;0) 298.15
   -12324.4;  6000 N                                                     08KJE!
 PARAMETER L(HALITE_B1,FE2+,FE3+:O2-;1) 298.15
   +20070;  6000 N                                                       08KJE!
-
 PARAMETER L(HALITE_B1,FE2+,NI2+:O2-;0) 298.15
   -21995.7281 +19.7411922*T;  6000 N                                    08KJE!
 PARAMETER L(HALITE_B1,FE2+,NI2+:O2-;1) 298.15
   -3335.37286;  6000 N                                                  08KJE!
-
 PARAMETER L(HALITE_B1,FE3+,NI2+:O2-;0) 298.15
   +64792.4377;  6000 N                                                  08KJE!
+
+PARAMETER L(HALITE_B1,V2+,V3+:O2-;0) 298.15
+  -7958.4;  6000 N                                                      15YAN!
+
+
+PARAMETER L(HALITE_B1,V:V2+:O2-,VA;0) 298.15
+  +37205.229;  6000 N                                                   15YAN!
+PARAMETER L(HALITE_B1,V3+:O2-,VA;0) 298.15
+  +38002;  6000 N                                                       15YAN!
 
 $ ----------------------------------------------------------------------------
 $ HCP_A3
@@ -11080,7 +11176,7 @@ $ IT MAY COME IN HANDY TO INCLUDE THIS IN THE DATABASE
 
 PHASE IONIC_LIQ:Y % 2 1 1 !
 CONSTITUENT IONIC_LIQ : CO2+,CO3+,CR3+,FE2+,MN2+,NI2+,SI4+ 
-                      : FEO3/2,O2-,S,S2-,SI,SIO2,VA : !
+                      : FEO3/2,O2-,S,S2-,SI,SIO2,V2+,VA,VO3/2,VO2,VO5/2 : !
 
 FUNCTION GCOOLIQ 298.15
   +42060 -20*T +GCOOS#;  6000 N                                         03CHE!
@@ -11088,6 +11184,24 @@ FUNCTION GSIO2LIQ 298.15
   -923689.98 +316.24766*T -52.17*T*LN(T) -0.012002*T**2 
   +665550*T**(-1); 2980 Y
   -957614.21 +580.01419*T -87.428*T*LN(T);  4000 N                      92HAL!
+FUNCTION GV2O3LIQ 298.15
+  -1130647.05 +823.5539089*T -144.3096*T*LN(T) +0.00933134*T**2
+  -1.81532333E-6*T**3 +1722474*T**(-1);  2230 Y 
+  -1170233.34 +974.4026209*T -160*T*LN(T);  6000 N                      15YAN!
+FUNCTION GV1O2LIQ 298.15
+  -666043.928 +104.5557163*T -23.84754*T*LN(T) -0.0754984*T**2
+  +1.68293667E-5*T**3 +9742.025*T**(-1);  340 Y 
+  -678763.718 +382.8539233*T -69.68954*T*LN(T) -0.00841982*T**2
+  +9.50542E-7*T**3 +628472.5*T**(-1);  700 Y 
+  -680716.919 +410.4175703*T -73.9568*T*LN(T) -0.0037019825*T**2
+  -1.03988433E-7*T**3 +822530.5*T**(-1);  1400 Y 
+  -676412.045 +378.7739833*T -69.61465*T*LN(T) -0.00572185*T**2
+  +8.000575E-8*T**3;  1818 Y 
+  -725868.707 +674.1237373*T -106.692*T*LN(T);  6000 N                  15YAN!
+FUNCTION GV2O5LIQ 298.15
+  -1553720.68 -1079.3777661*T -190.8802*T*LN(T) +0.04639246*T**2
+  -1.58726633E-5*T**3 +1951745.5*T**(-1);  954 Y 
+  -1563448.88 +1115.4932261*T -190*T*LN(T);  6000 N                     15YAN!
 
 PARAMETER G(IONIC_LIQ,CO2+:O2-;0) 298.15
   +2*GCOOLIQ#;  6000 N                                                  03CHE!
@@ -11097,11 +11211,13 @@ PARAMETER G(IONIC_LIQ,CO3+:O2-;0) 298.15
   -76314 +103.63*T +2*GCOOS# +GHSEROO#;  6000 N                         03CHE!
 PARAMETER G(IONIC_LIQ,CO3+:VA;0) 298.15
   +76314 +103.63*T +2*GLIQCO# +2*GCOOS# +GHSEROO# -3*GCOOLIQ#;  6000 N  03CHE!
+
 PARAMETER G(IONIC_LIQ,CR3+:O2-;0) 298.15
   -1047074 +260.777*T -3.97112*T*LN(T) +2*GLIQCR# 
   +1.5*GGASO2#;  6000 N                                                 08KJE!
 PARAMETER G(IONIC_LIQ,CR3+:VA;0) 298.15
   +GLIQCR#;  6000 N                                                     08KJE!
+
 PARAMETER G(IONIC_LIQ,FE2+:O2-;0) 298.15
   +4*GFEOLIQ#;  6000 N                                                  08KJE!
 PARAMETER G(IONIC_LIQ,FE2+:VA;0) 298.15
@@ -11112,40 +11228,75 @@ PARAMETER G(IONIC_LIQ,FE2+:S2-;0) 298.15
   -208450 -2.958*T +2*GLIQFE# +2*GLIQSS#;  6000 N                       07LEE!
 PARAMETER G(IONIC_LIQ,FE2+:VA;0) 298.15
   +GLIQFE#;  6000 N                                                     91DIN!
+
 PARAMETER G(IONIC_LIQ,MN2+:S2-;0) 298.15
   +52220 -27.88*T +GMNS#;  6000 N                                       15DIL!
 PARAMETER G(IONIC_LIQ,MN2+:VA;0) 298.15
   +GLIQMN#;  6000 N                                                     91DIN!
+
 PARAMETER G(IONIC_LIQ,NI2+:O2-;0) 298.15
   -402345.6 +176.606*T -4.35796*T*LN(T) +2*GLIQNI# +GGASO2#;  6000 N    08KJE!
 PARAMETER G(IONIC_LIQ,NI2+:VA;0) 298.15
   +GLIQNI#;  6000 N                                                     08KJE!
+
 PARAMETER G(IONIC_LIQ,S;0) 298.15
   +GLIQSS#;  6000 N                                                     91DIN!
+
 PARAMETER G(IONIC_LIQ,SI;0) 298.15
   +GLIQSI#;  6000 N                                                     91DIN!
-PARAMETER L(IONIC_LIQ,SI4+:O2-;0) 298.15
+PARAMETER G(IONIC_LIQ,SI4+:O2-;0) 298.15
   +2000000 +2*GSIO2LIQ#;  6000 N                                        92HAL!
 PARAMETER G(IONIC_LIQ,SIO2;0) 298.15
   +GSIO2LIQ#;  4000 N                                                   92HAL!
 
+PARAMETER G(IONIC_LIQ,V2+:O2-;0) 298.15
+  +94854 -46.53*T +GV1O1#;  6000 N                                      15YAN!
+PARAMETER G(IONIC_LIQ,V2+:VA;0) 298.15
+  +GLIQVV#; 6000 N                                                      91DIN!
+PARAMETER G(IONIC_LIQ,VO3/2;0) 298.15
+  +0.5*GV2O3LIQ#;  6000 N                                               15YAN!
+PARAMETER G(IONIC_LIQ,VO2;0) 298.15
+  +3308.6 +GV1O2LIQ#;  6000 N                                           15YAN!
+PARAMETER G(IONIC_LIQ,VO5/2;0) 298.15
+  +0.5*GV2O5LIQ#;  6000 N                                               15YAN!
 
-PARAMETER L(IONIC_LIQ,CR3+,FE2+:02-;0) 298.15
+
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-;0) 298.15
   -60000 +38.3*T;  6000 N                                               08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,FE2+:02-;1) 298.15
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-;1) 298.15
   +8650;  6000 N                                                        08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,FE2+:02-;3) 298.15
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-;3) 298.15
   -12975;  6000 N                                                       08KJE!
 PARAMETER L(IONIC_LIQ,CR3+,FE2+:VA;0) 298.15
   -17737 +7.996546*T;  6000 N                                           08KJE!
 PARAMETER L(IONIC_LIQ,CR3+,FE2+:VA;1) 298.15
   -1331;  6000 N                                                        08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,NI2+:02-;0) 298.15
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-;0) 298.15
   +60000 -49.1*T;  6000 N                                               08KJE!
 PARAMETER L(IONIC_LIQ,CR3+,NI2+:VA;0) 298.15
   +318 -7.3318*T;  6000 N                                               08KJE!
 PARAMETER L(IONIC_LIQ,CR3+,NI2+:VA;1) 298.15
   +16941 -6.3696*T;  6000 N                                             08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;0) 298.15
+  -61730;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;1) 298.15
+  -8650;  6000 N                                                        08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;2) 298.15
+  +12975;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;0) 298.15
+  -340000;  6000 N                                                      08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;1) 298.15
+  +0;  6000 N                                                           08KJE!
+PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;2) 298.15
+  -340000;  6000 N                                                      08KJE!
+
+PARAMETER L(IONIC_LIQ,CR3+:O2-,VA;0) 298.15
+  +280000 -99.3*T;  6000 N                                              08KJE!
+PARAMETER L(IONIC_LIQ,CR3+:O2-,VA;1) 298.15
+  -146000;  6000 N                                                      08KJE!
+PARAMETER L(IONIC_LIQ,CR3+:O2-,VA;2) 298.15
+  -65000;  6000 N                                                       08KJE!
+
 PARAMETER L(IONIC_LIQ,CO2+:O2-,VA;0) 298.15
   +182675 -30.556*T;  6000 N                                            03CHE!
 PARAMETER L(IONIC_LIQ,CO2+:O2-,VA;1) 298.15
@@ -11161,13 +11312,6 @@ PARAMETER L(IONIC_LIQ,FE2+,MN2+:VA;0) 298.15
   -3950 +0.489*T;  6000 N                                              89HUAA!
 PARAMETER L(IONIC_LIQ,FE2+,MN2+:VA;1) 298.15
   +1145;  6000 N                                                       89HUAA!
-
-PARAMETER L(IONIC_LIQ,CR3+:O2-,VA;0) 298.15
-  +280000 -99.3*T;  6000 N                                              08KJE!
-PARAMETER L(IONIC_LIQ,CR3+:02-,VA;1) 298.15
-  -146000;  6000 N                                                      08KJE!
-PARAMETER L(IONIC_LIQ,CR3+:02-,VA;2) 298.15
-  -65000;  6000 N                                                       08KJE!
 
 PARAMETER L(IONIC_LIQ,FE2+:FEO3/2,O2-;0) 298.15
   -26362;  6000 N                                                       08KJE!
@@ -11206,20 +11350,12 @@ PARAMETER L(IONIC_LIQ,NI2+:O2-,VA;2) 298.15
 PARAMETER L(IONIC_LIQ,SI4+:SIO2,VA;0) 298.15
   +120000 +14.4*T;  6000 N                                              92HAL!
 
-
-PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;0) 298.15
-  -61730;  6000 N                                                       08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;1) 298.15
-  -8650;  6000 N                                                        08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-,VA;2) 298.15
-  +12975;  6000 N                                                       08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;0) 298.15
-  -340000;  6000 N                                                      08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;1) 298.15
-  +0;  6000 N                                                           08KJE!
-PARAMETER L(IONIC_LIQ,CR3+,NI2+:O2-,VA;2) 298.15
-  -340000;  6000 N                                                      08KJE!
-
+PARAMETER L(IONIC_LIQ,V2+:O2-,VA;0) 298.15
+  -98900;  6000 N                                                       15YAN!
+PARAMETER L(IONIC_LIQ,V2+:O2-,VA:1) 298.15
+  +51034;  6000 N                                                       15YAN!
+PARAMETER L(IONIC_LIQ,V2+:O2-,VO3/2;0) 298.15
+  +1449.9 -50.71*T;  6000 N                                             15YAN!
 
 PARAMETER L(IONIC_LIQ,CR3+,FE2+,NI2+:VA;0) 298.15
   +36583;  6000 N                                                       08KJE!
@@ -13031,8 +13167,7 @@ PARAMETER G(LIQUID,TI;0) 298.15
   +12.457117E-6*T**3 -67034516*T**(-1);  1941 Y
   -19887.066 +298.7367*T -46.29*T*LN(T);  6000 N                        91DIN!
 PARAMETER G(LIQUID,V;0) 298.15
-  +20764.117 -9.455552*T -519.136E-24*T**7 +GHSERV#; 2183 Y
-  -19617.51 +311.055983*T -47.43*T*LN(T);  6000 N                       91DIN!
+  +GLIQVV#;  6000                                                       91DIN!
 PARAMETER G(LIQUID,W;0) 298.15
   +52160.584 -14.10999*T -2713.468E-27*T**7 +GHSERW#; 3695 Y
   -30436.051 +375.175*T -54*T*LN(T);  6000 N                            91DIN!
@@ -16772,33 +16907,6 @@ PARAMETER G(M5SI4,TI:SI;0) 298.15
   -79000.0 +2.97694*T +5*GHSERTI# +4*GHSERSI#;  6000 N                  96SEI!
 
 $ ----------------------------------------------------------------------------
-$ V6SI5
-$ PROTOTYPE: NB6SN5
-$ SPACE GROUP: Immm
-$ PEARSON: oI44
-
-PHASE V6SI5 % 2 6 5 !
-CONSTITUENT V6SI5 : CR,V : AL,SI : !
-
-PARAMETER G(V6SI5,CR:AL;0) 298.15
-  +6*GHSERCR# +5*GHSERSI#;  6000 N                                      24FRI!
-PARAMETER G(V6SI5,CR:SI;0) 298.15
-  -307769 +6*GHSERCR# +5*GHSERSI#;  6000 N                              15CHA!
-PARAMETER G(V6SI5,V:AL;0) 298.15
-  +110000 +6*GHSERV# +5*GHSERAL#;  6000 N                               17KRO!
-PARAMETER G(V6SI5,V:SI;0) 298.15
-  -580401.8 +65.04476*T +6*GHSERV# +5*GHSERSI#;  6000 N                08ZHAA!
-
-
-PARAMETER L(V6SI5,CR,V:SI;0) 298.15
-  -128788 +26.5551*T;  6000 N                                           15CHA!
-PARAMETER L(V6SI5,CR,V:SI;1) 298.15
-  -37928;  6000 N                                                       15CHA!
-
-PARAMETER L(V6SI5,V:AL,SI;0) 298.15
-  -519090;  6000 N                                                      17KRO!
-
-$ ----------------------------------------------------------------------------
 $ M11SI8
 
 PHASE M11SI8 % 2 11 8 !
@@ -18204,6 +18312,29 @@ PARAMETER G(RHOMBOHEDRAL_A7,P;0) 250
   -188 +0.12527*T +GHSERPP#;  3000 N                                    91DIN!
 PARAMETER G(RHOMBOHEDRAL_A7,SN;0) 100 
   +2035 +GHSERSN#; 3000 N                                               91DIN!
+
+$ ----------------------------------------------------------------------------
+$ RUTILE_C4
+$ PROTOTYPE: TIO2
+$ SPACE GROUP: P4_2/mnm
+$ PEARSON: tP6
+
+PHASE RUTILE_C4 % 2 1 2 !
+CONSTITUENT RUTILE_C4 : V4+ : O2- : !
+
+FUNCTION GV1O2HT 298.15
+  -722078.128 +135.3776085*T -23.84754*T*LN(T) -0.0754984*T**2
+  +1.68293667E-5*T**3 +9742.025*T**(-1);  340 Y 
+  -734797.918 +413.6758155*T -69.68954*T*LN(T) -0.00841982*T**2
+  +9.50542E-7*T**3 +628472.5*T**(-1);  700 Y 
+  -736751.119 +441.2394625*T -73.9568*T*LN(T) -0.0037019825*T**2
+  -1.03988433E-7*T**3 +822530.5*T**(-1);  1400 Y 
+  -732446.245 +409.5958755*T -69.61465*T*LN(T) -0.00572185*T**2
+  +8.000575E-8*T**3;  1818 Y 
+  -781902.907 +704.9456295*T -106.692*T*LN(T);  6000 N                  15YAN!
+
+PARAMETER G(RUTILE_C4,V4+:O2-;0) 298.15
+  +GV1O2HT#;  6000 N                                                    15YAN!
 
 $ ----------------------------------------------------------------------------
 $ S_PHASE
@@ -21218,33 +21349,6 @@ PARAMETER L(TI2AL5,TI:AL,TI;0) 298.15
   -232241 +10.101*T;  6000 N                                            08WIT!
 
 $ ----------------------------------------------------------------------------
-$ TI2N_C4
-$ RUTILE STRUCTURE
-$ PROTTYPE: EPSILON-TI2N
-$ SPACE GROUP: P4_2/mnm
-$ PEARSON: tP6
-
-PHASE TI2N_C4 % 2 2 1 !
-CONSTITUENT TI2N_C4 : TI,V : C,N : !
-
-PARAMETER G(TI2N_C4,TI:C;0) 298.15
-  -17349 +GHSERTI# +GFCCTIC#;  6000 N                                  96JONA!
-PARAMETER G(TI2N_C4,TI:N;0) 298.15
-  -67116 +26.53956*T +GHSERTI# +GFCCTIN#;  6000 N                       01LEE!
-
-PARAMETER G(TI2N_C4,V:C;0) 298.15
-  +2*GHSERV# +GHSERCC#;  6000 N                                         24FRI!
-PARAMETER G(TI2N_C4,V:N;0) 298.15
-  -100000 +20*T +2*GHSERV# +GHSERNN#;  6000 N                           98ZEN!
-
-
-PARAMETER L(TI2N_C4,TI:C,N;0) 298.15
-  -25000;  6000 N                                                       01LEE!
-
-PARAMETER L(TI2N_C4,TI,V:N;0) 298.15
-  -60000;  6000 N                                                       98ZEN!
-  
-$ ----------------------------------------------------------------------------
 $ TI2P1
 $ NOT THE SAME AS M2P_C22
 $ SPACE GROUP: P6/mmm
@@ -21430,6 +21534,29 @@ PARAMETER G(U_PHASE,MN:NI:SI;0) 298.15
   -29580.458 +0.66*GHSERMN# +0.04*GHSERNI# +0.30*GHSERSI#;  6000 N       11HU!
 
 $ ----------------------------------------------------------------------------
+$ VO2_ALPHA
+$ PROTOTYPE: ALPHA-VO2, LOW-TEMPERATURE ALLOTROPE
+$ SPACE GROUP: P2_1/c
+$ PEARSON: mP12
+
+PHASE VO2_ALPHA % 2 1 2 !
+CONSTITUENT VO2_ALPHA : V4+ : O2- : !
+
+FUNCTION GV1O2LT 298.15
+  -726575.928 +148.606432*T -23.84754*T*LN(T) -0.0754984*T**2
+  +1.68293667E-5*T**3 +9742.025*T**(-1);  340 Y 
+  -739295.718 +426.904639*T -69.68954*T*LN(T) -0.00841982*T**2
+  +9.50542E-7*T**3 +628472.5*T**(-1);  700 Y 
+  -741248.919 +454.468286*T -73.9568*T*LN(T) -0.0037019825*T**2
+  -1.03988433E-7*T**3 +822530.5*T**(-1);  1400 Y 
+  -736944.045 +422.824699*T -69.61465*T*LN(T) -0.00572185*T**2
+  +8.000575E-8*T**3;  1818 Y 
+  -786400.707 +718.174453*T -106.692*T*LN(T); 6000 N                    15YAN!
+
+PARAMETER G(VO2_ALPHA,V4+:O2-;0) 298.15
+  +GV1O2LT#;  6000 N                                                    15YAN!
+
+$ ----------------------------------------------------------------------------
 $ VBSI_D88
 $ TERNARY PHASE FROM DA SILVA 2017
 
@@ -21463,6 +21590,18 @@ PARAMETER G(V2B3,V:B;0) 298.15
   -69975.5 +2.4997*T +0.4*GHSERV# +0.6*GHSERBB#;  6000 N                17SIL!
 
 $ ----------------------------------------------------------------------------
+$ V2O5
+$ PROTOTYPE: V2O5 GLASS
+
+PHASE V2O5 % 2 2 5 !
+CONSTITUENT V2O5 : V5+ : O2- : !
+
+PARAMETER G(V2O5,V5+:O2-;0) 298.15
+  -1617720.68 +1146.46372*T -190.8802*T*LN(T) +0.04639246*T**2 
+  -1.58726633E-5*T**3 +1951745.5*T**(-1);  954 Y
+  -1627448.88 +1182.57918*T -190*T*LN(T);  6000 N                       15YAN!
+
+$ ----------------------------------------------------------------------------
 $ V3H2
 $ VANADIUM DIHYDRIDE
 
@@ -21473,13 +21612,91 @@ PARAMETER G(V3H2,V:H;0) 298.15
   -16630 +28.7*T +0.6*GHSERV# +0.2*GHSERHH#;  6000 N                    08UKI!
 
 $ ----------------------------------------------------------------------------
+$ V3O5_LT
+$ PROTOTYPE: V3O5 LOW-TEMPERATURE ALLOTROPE
+$ SPACE GROUP: P2/c
+$ PEARSON: mP32
+
+PHASE V3O5_LT % 3 2 1 5 !
+CONSTITUENT V3O5_LT : V3+ : V4+ : O2- : !
+
+FUNCTION GV3O5LT 298.15
+  -20986 +GV2O3# +GV1O2LT#;  6000 N                                     15YAN!
+
+PARAMETER G(V3O5_LT,V3+:V4+:O2-;0) 298.15
+  +GV3O5LT#;  6000 N                                                    15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V3O5_HT
+$ PROTOTYPE: V3O5 HIGH-TEMPERATURE ALLOTROPE
+$ SPACE GROUP: I2/c
+$ PEARSON: mI32
+
+PHASE V3O5_HT % 3 2 1 5 !
+CONSTITUENT V3O5_HT : V3+ : V4+ : O2- : !
+
+FUNCTION GV3O5HT 298.15
+  +12499.6 -29.20*T +GV2O3# +GV1O2LT#;  6000 N                          15YAN!
+
+PARAMETER G(V3O5_HT,V3+:V4+:O2-;0) 298.15
+  +GV3O5HT#;  6000 N                                                    15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V3O7
+$ PROTOTYPE: V3O7
+$ SPACE GROUP: C2/c
+$ PEARSON: mC120
+
+PHASE V3O7 % 3 2 1 7 !
+CONSTITUENT V3O7 : V5+ : V4+ : O2- : !
+
+FUNCTION GV2O5 298.15
+  -26769 +27.28*T +GV2O5# +GV1O2LT#;  341 Y
+  -26769 +27.28*T +GV2O5# +GV1O2HTT#;  6000 N                           15YAN!
+
+PARAMETER G(V3O7,V5+:V4+:O2-;0) 298.15
+  +GV2O5#;  6000 N                                                      15YAN!
+
+$ ----------------------------------------------------------------------------
 $ V4C3
+
 PHASE V4C3 % 2 0.621 0.379 !
 CONSTITUENT V4C3 : V : C : !
 
 PARAMETER G(V4C3,V:C;0) 298.15
   -49992 +0.02514*T +0.621*GHSERV#+0.379*GHSERCC#;  6000 N              06HU !
 
+
+$ ----------------------------------------------------------------------------
+$ V4O1_BETA
+$ SPACE GROUP: I4/mmm
+$ PEARSON: tI2.5
+
+PHASE V4O1_BETA % 2 1 1 !
+CONSTITUENT V4O1_BETA : V : O,VA : !
+
+PARAMETER G(V4O1_BETA,V:O;0) 298.15
+  +54381 -9.329*T +GV1O1#;  6000 N                                      15YAN!
+PARAMETER G(V4O1_BETA,V:VA;0) 298.15
+  +1540 -0.512*T +GHSERV#;  6000 N                                      15YAN!
+
+
+PARAMETER L(V4O1_BETA,V:O,VA;0) 298.15
+  -101228;  6000 N                                                      15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V4O7
+$ PROTOTYPE: V4O7
+$ SPACE GROUP: P-1
+$ PEARSON: aP22
+
+PHASE V407 % 3 2 2 7 !
+CONSTITUENT V407 : V3+ : V4+ : O2- : !
+
+PARAMETER G(V407,V3+:V4+:O2-;0) 298.15
+  -9979 +3.13*T +GV3O5LT# +GV1O2LT#;  341 Y 
+  -9979 +3.13*T +GV3O5LT# +GV1O2HT#;  428 Y 
+  -9979 +3.13*T +GV3O5HT# +GV1O2HT#;  6000 N                            15YAN!
 
 $ ----------------------------------------------------------------------------
 $ V5B6
@@ -21493,6 +21710,75 @@ PARAMETER G(V5B6,V:B;0) 298.15
   -69516.6 +2.3770*T +0.4546*GHSERV# +0.5454*GHSERBB#;  6000 N          17SIL!
 
 $ ----------------------------------------------------------------------------
+$ V5O9
+$ PROTOTYPE: V5O9
+$ SPACE GROUP: P-1
+$ PEARSON: aP28
+
+PHASE V5O9 % 3 2 3 9 !
+CONSTITUENT V5O9 : V3+ : V4+ : O2- : !
+
+PARAMETER G(V5O9,V3+:V4+:O2-;0) 298.15
+  -16919 +6.29*T +GV3O5LT# +2*GV1O2LT#;  341 Y 
+  -16919 +6.29*T +GV3O5LT# +2*GV1O2HT#;  428 Y 
+  -16919 +6.29*T +GV3O5HT# +2*GV1O2HT#;  6000 N                         15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V6O11
+$ PROTOTYPE: V6O11
+$ SPACE GROUP: P-1
+$ PEARSON: aP34
+
+PHASE V6O11 % 3 2 4 11 !
+CONSTITUENT V6O11 : V3+ : V4+ : O2- : !
+
+PARAMETER G(V6O11,V3+:V4+:O2-;0) 298.15
+  -23149.4 +9.56*T +GV3O5LT# +3*GV1O2LT#;  341 Y 
+  -23149.4 +9.56*T +GV3O5LT# +3*GV1O2HT#;  428 Y 
+  -23149.4 +9.56*T +GV3O5HT# +3*GV1O2HT#;  6000 N                       15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V6O13
+$ PROTOTYPE: V6O13
+$ SPACE GROUP: C2/m
+$ PEARSON: mC38
+
+PHASE V6O13 % 3 2 4 13 !
+CONSTITUENT V6O13 : V3+ : V4+ : O2- : !
+
+PARAMETER G(V6O13,V3+:V4+:O2-;0) 298.15
+  -27412 +25.57*T +GV2O5# +4*GV1O2LT#;  341 Y 
+  -27412 +25.57*T +GV2O5# +4*GV1O2HT#;  6000 N                          15YAN!
+
+$ ----------------------------------------------------------------------------
+
+$ V6SI5
+$ PROTOTYPE: NB6SN5
+$ SPACE GROUP: Immm
+$ PEARSON: oI44
+
+PHASE V6SI5 % 2 6 5 !
+CONSTITUENT V6SI5 : CR,V : AL,SI : !
+
+PARAMETER G(V6SI5,CR:AL;0) 298.15
+  +6*GHSERCR# +5*GHSERSI#;  6000 N                                      24FRI!
+PARAMETER G(V6SI5,CR:SI;0) 298.15
+  -307769 +6*GHSERCR# +5*GHSERSI#;  6000 N                              15CHA!
+PARAMETER G(V6SI5,V:AL;0) 298.15
+  +110000 +6*GHSERV# +5*GHSERAL#;  6000 N                               17KRO!
+PARAMETER G(V6SI5,V:SI;0) 298.15
+  -580401.8 +65.04476*T +6*GHSERV# +5*GHSERSI#;  6000 N                08ZHAA!
+
+
+PARAMETER L(V6SI5,CR,V:SI;0) 298.15
+  -128788 +26.5551*T;  6000 N                                           15CHA!
+PARAMETER L(V6SI5,CR,V:SI;1) 298.15
+  -37928;  6000 N                                                       15CHA!
+
+PARAMETER L(V6SI5,V:AL,SI;0) 298.15
+  -519090;  6000 N                                                      17KRO!
+
+$ ----------------------------------------------------------------------------
 $ V8C7
 PHASE V8C7 % 3 1 0.875 0.125 !
 CONSTITUENT V8C7 : V : C : VA : !
@@ -21500,6 +21786,63 @@ CONSTITUENT V8C7 : V : C : VA : !
 PARAMETER G(V8C7,V:C:VA;0) 298.15
   -119929 +261.160*T -41.469*T*LN(T) -6.935E-3*T**2 +596200*T**(-1)
   +3.521E7*T**3;  6000 N                                                06HU !
+
+$ ----------------------------------------------------------------------------
+$ V7O13
+$ PROTOTYPE: V7O13
+$ SPACE GROUP: P-1
+$ PEARSON: aP40
+
+PHASE V7O13 % 3 2 5 13 !
+CONSTITUENT V7O13 : V3+ : V4+ : O2- : !
+
+PARAMETER G(V7O13,V3+:V4+:O2-;0) 298.15
+  -24034 +10.172*T +GV3O5LT# +4*GV1O2LT#;  341 Y 
+  -24034 +10.172*T +GV3O5LT# +4*GV1O2HT#;  428 Y 
+  -24034 +10.172*T +GV3O5HT# +4*GV1O2HT#;  6000 N                       15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V8O15
+$ PROTOTYPE: V8O15
+$ SPACE GROUP: P-1
+$ PEARSON: aP46
+
+PHASE V8O15 % 3 2 6 15 !
+CONSTITUENT V8O15 : V3+ : V4+ : O2- : !
+
+PARAMETER G(V8O15,V3+:V4+:O2-;0) 298.15
+  -24398.9 +10.447*T +GV3O5LT# +5*GV1O2LT#;  341 Y 
+  -24398.9 +10.447*T +GV3O5LT# +5*GV1O2HT#;  428 Y 
+  -24398.9 +10.447*T +GV3O5HT# +5*GV1O2HT#;  6000 N                     15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V14O6_GAMMA
+$ PROTOTPYE: V14O6
+$ SPACE GROUP: C2/m
+$ PEARSON: mC20
+
+PHASE V14O6_GAMMA % 2 1 0.5 !
+CONSTITUENT V14O6_GAMMA : V : O,VA : !
+
+PARAMETER G(V14O6_GAMMA,V:O;0) 298.15
+  -220054 +33.54*T +GHCPVV#;  6000 N                                    15YAN!
+PARAMETER G(V14O6_GAMMA,V:VA;0) 298.15
+  +GHCPVV#;  6000 N                                                     15YAN!
+
+PARAMETER L(V14O6_GAMMA,V:O,VA;0) 298.15
+  -14949;  6000 N                                                       15YAN!
+
+$ ----------------------------------------------------------------------------
+$ V52O64_DELTAP
+$ PROTOTYPE: V52O64 DELTA PRIME
+$ SPACE GROUP: I4_1/amd
+$ PEARSON: tI116
+
+PHASE V52O64_DELTAP % 2 52 64 !
+CONSTITUENT V52O64_DELTAP : V : O : !
+
+PARAMETER G(V52O64_DELTAP,V:O;0) 298.15
+  +345671 -25*T +64*GV1O1# -12*GFCCVV#;  6000 N                         15YAN!
 
 $ ----------------------------------------------------------------------------
 $ W_PHASE
@@ -22114,6 +22457,8 @@ NUMBER  SOURCE
 15SHI   'Shishin, Denis, et al. "Critical Assessment and Thermodynamic
         Modeling of the Fe-O-S System." Journal of Phase Equilibria and
         Diffusion 36 (2015): 224-240.'
+15YAN   'Yang, Yang, Huahai Mao, and Malin Selleby. "Thermodynamic assessment
+        of the V–O system." Calphad 51 (2015): 144-160.'
 15ZHE   'Zheng, Weisen, et al. "Thermodynamic assessment of the Fe-Mn-Si 
         system and atomic mobility of its fcc phase." Journal of Alloys and 
         Compounds 632 (2015): 661-675.'
