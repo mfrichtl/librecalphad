@@ -302,6 +302,7 @@ DATABASE_INFO The following systems are available:'
   AL-CU-NI  Wang (2019)'
   AL-FE-MN  Zheng (2018)'
   AL-FE-MO  Du (2009)'
+  AL-FE-N   Hiller (1992)'
   AL-FE-NI  Zhang (2009)'
   AL-FE-O   Lindwall (2015)'
   AL-FE-P   Miettinen (2015)'
@@ -579,6 +580,7 @@ SPECIES MN2+  MN/+2 !
 SPECIES MNS   MN1S1 !
 SPECIES NCN   N1C1N1 !
 SPECIES N2    N2 !
+SPECIES N3-   N/-3 !
 SPECIES NI2   NI2 !
 SPECIES NI2+  NI/+2 !
 SPECIES N3    N3 !
@@ -611,6 +613,10 @@ FUNCTION RTLNP 298.15
 $ ----------------------------------------------------------------------------
 $ AL
 
+FUNCTION GBCCAL 298.15
+  +10083 -4.813*T +GHSERAL#; 2900 N                                     91DIN!
+FUNCTION GHCPAL 298.15
+  +5481-1.8*T +GHSERAL#; 2900 N                                         91DIN!
 FUNCTION GHSERAL 298.15
   -7976.15 +137.093038*T -24.3671976*T*LN(T) -1.884662E-3*T**2 
   -0.877664E-6*T**3 +74092*T**(-1); 700 Y
@@ -618,10 +624,9 @@ FUNCTION GHSERAL 298.15
   -5.764227E-6*T**3 +74092*T**(-1); 933.473 Y
   -11278.361 +188.684136*T -31.748192*T*LN(T) 
   -1230.622E25*T**(-9); 2900 N                                          91DIN!
-FUNCTION GBCCAL 298.15
-  +10083 -4.813*T +GHSERAL#; 2900 N                                     91DIN!
-FUNCTION GHCPAL 298.15
-  +5481-1.8*T +GHSERAL#; 2900 N                                         91DIN!
+FUNCTION GLIQAL 298.15
+  +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
+  -795.991 +177.430209*T -31.748192*T*LN(T); 2900 N                     91DIN!
 
 $ ----------------------------------------------------------------------------
 $ B
@@ -868,8 +873,7 @@ FUNCTION GHSERNN  298.15
 +563070*T**(-1);  3350 Y
 -16392.8 +50.26*T -20.4695*T*LN(T) +0.239754E-3*T**2 -0.008333E-6*T**3
 +4596375*T**(-1);  6000 N                                               91DIN!
-
-FUNCTION GLIQN 298.15
+FUNCTION GLIQNN 298.15
   +29950 +59.02*T +GHSERNN#; 6000 N                                     91DIN!
 
 $ ----------------------------------------------------------------------------
@@ -3660,7 +3664,7 @@ PARAMETER G(BCC_A2,TI:C;0) 298.15
 PARAMETER G(BCC_A2,TI:H;0) 298.15
   +GHSERTI# +3*GHSERHH#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,TI:N;0) 298.15
-  +310935 +31.466*T +GFCCTIN# +2*GLIQN#;  6000 N                       96JONB!
+  +310935 +31.466*T +GFCCTIN# +2*GLIQNN#;  6000 N                      96JONB!
 PARAMETER G(BCC_A2,TI:O;0) 298.15
   +GHSERTI# +3*GHSEROO#;  6000 N                                        24FRI!
 PARAMETER G(BCC_A2,TI:VA;0) 298.15
@@ -4012,7 +4016,7 @@ PARAMETER L(BCC_A2,FE,MN:VA;0) 298.15
 PARAMETER TC(BCC_A2,FE,MN:VA;0) 298.15
   +123;  6000 N                                                        89HUAA!
 PARAMETER L(BCC_A2,FE,MO:C;0) 298.15
-  -1226000 +570*T;  6000 N                                              92HIL!
+  -1226000 +570*T;  6000 N                                             92HILA!
 PARAMETER TC(BCC_A2,FE,MO:C;0) 298.15
   +335;  6000 N                                                        88ANDD!
 PARAMETER TC(BCC_A2,FE,MO:C;1) 298.15
@@ -5957,7 +5961,7 @@ PARAMETER L(CEMENTITE_D011,CR,FE:C;0) 298.15
 PARAMETER L(CEMENTITE_D011,CR,MN:C;0) 298.15
   +9000;  6000 N                                                       93LEEC!
 PARAMETER L(CEMENTITE_D011,CR,MO:C;0) 298.15
-  +40000;  6000 N                                                       92HIL!
+  +40000;  6000 N                                                      92HILA!
 PARAMETER L(CEMENTITE_D011,CR,NI:B;0) 298.15
   +28000;  6000 N                                                       10PAN!
 PARAMETER L(CEMENTITE_D011,CR,V:C;0) 298.15
@@ -11594,9 +11598,12 @@ $ IONIC 2-SUBLATTICE LIQUID MODEL
 $ IT MAY COME IN HANDY TO INCLUDE THIS IN THE DATABASE
 
 PHASE IONIC_LIQ:Y % 2 1 1 !
-CONSTITUENT IONIC_LIQ : CO2+,CO3+,CR3+,FE2+,MN2+,NI2+,SI4+ 
-                      : FEO3/2,O2-,S,S2-,SI,SIO2,V2+,VA,VO3/2,VO2,VO5/2 : !
+CONSTITUENT IONIC_LIQ : AL3+,CO2+,CO3+,CR3+,FE2+,MN2+,N,NI2+,SI4+ 
+                      : FEO3/2,N3-,O2-,S,S2-,SI,SIO2,V2+,
+                        VA,VO3/2,VO2,VO5/2 : !
 
+FUNCTION GALNLIQ 298.15
+  +70679 -23*T;  6000 N                                                92HILB!
 FUNCTION GCOOLIQ 298.15
   +42060 -20*T +GCOOS#;  6000 N                                         03CHE!
 FUNCTION GSIO2LIQ 298.15
@@ -11622,6 +11629,12 @@ FUNCTION GV2O5LIQ 298.15
   -1.58726633E-5*T**3 +1951745.5*T**(-1);  954 Y 
   -1563448.88 +1115.4932261*T -190*T*LN(T);  6000 N                     15YAN!
 
+PARAMETER G(IONIC_LIQ,AL3+:N;0) 298.15
+  +3*GLIQNN#;  6000 N                                                  92HILB!
+PARAMETER G(IONIC_LIQ,AL3+:N3-;0) 298.15
+  +3*GALNLIQ#;  6000 N                                                 92HILB!
+PARAMETER G(IONIC_LIQ,AL3+:VA;0) 298.15
+  +GLIQAL#;  6000 N                                                     91DIN!
 PARAMETER G(IONIC_LIQ,CO2+:O2-;0) 298.15
   +2*GCOOLIQ#;  6000 N                                                  03CHE!
 PARAMETER G(IONIC_LIQ,CO2+:VA;0) 298.15
@@ -11637,16 +11650,18 @@ PARAMETER G(IONIC_LIQ,CR3+:O2-;0) 298.15
 PARAMETER G(IONIC_LIQ,CR3+:VA;0) 298.15
   +GLIQCR#;  6000 N                                                     08KJE!
 
+PARAMETER G(IONIC_LIQ,FE2+:N;0) 298.15
+  +2*GLIQNN#;  6000 N                                                   91DIN!
+PARAMETER G(IONIC_LIQ,FE2+:N3-;0) 298.15
+  +4.5E5 +3*GLIQFE# +2*GHSERNN# +2*RTLNP#;  6000 N                     92HILB!
 PARAMETER G(IONIC_LIQ,FE2+:O2-;0) 298.15
   +4*GFEOLIQ#;  6000 N                                                  08KJE!
-PARAMETER G(IONIC_LIQ,FE2+:VA;0) 298.15
-  +GLIQFE#;  6000 N                                                     08KJE!
-PARAMETER G(IONIC_LIQ,FEO3/2;0) 298.15
-  -89819 +39.962*T +2.5*GFEOLIQ#;  6000 N                               08KJE!
 PARAMETER G(IONIC_LIQ,FE2+:S2-;0) 298.15
   -208450 -2.958*T +2*GLIQFE# +2*GLIQSS#;  6000 N                       07LEE!
 PARAMETER G(IONIC_LIQ,FE2+:VA;0) 298.15
   +GLIQFE#;  6000 N                                                     91DIN!
+PARAMETER G(IONIC_LIQ,FEO3/2;0) 298.15
+  -89819 +39.962*T +2.5*GFEOLIQ#;  6000 N                               08KJE!
 
 PARAMETER G(IONIC_LIQ,MN2+:S2-;0) 298.15
   +52220 -27.88*T +GMNS#;  6000 N                                       15DIL!
@@ -11679,6 +11694,18 @@ PARAMETER G(IONIC_LIQ,VO2;0) 298.15
 PARAMETER G(IONIC_LIQ,VO5/2;0) 298.15
   +0.5*GV2O5LIQ#;  6000 N                                               15YAN!
 
+
+PARAMETER L(IONIC_LIQ,AL3+,FE2+:N,VA;0) 298.15
+  -258830;  6000 N                                                     92HILB!
+PARAMETER L(IONIC_LIQ,AL3+,FE2+:VA;0) 298.15
+  -81930 +16.03*T;  6000 N                                             17ZHEC!
+PARAMETER L(IONIC_LIQ,AL3+,FE2+:VA;1) 298.15
+  -15100.5 +9.38*T;  6000 N                                            17ZHEC!
+
+PARAMETER L(IONIC_LIQ,AL3+:N3-,VA;0) 298.15
+  +847751 -151.631*T;  6000 N                                          92HILB!
+PARAMETER L(IONIC_LIQ,AL3+:N,VA;0) 298.15
+  -61000 +78*T;  6000 N                                                92HILB!
 
 PARAMETER L(IONIC_LIQ,CR3+,FE2+:O2-;0) 298.15
   -60000 +38.3*T;  6000 N                                               08KJE!
@@ -11736,6 +11763,12 @@ PARAMETER L(IONIC_LIQ,FE2+:FEO3/2,O2-;0) 298.15
   -26362;  6000 N                                                       08KJE!
 PARAMETER L(IONIC_LIQ,FE2+:FEO3/2,O2-;1) 298.15
   +13353;  6000 N                                                       08KJE!
+PARAMETER L(IONIC_LIQ,FE2+:N,N3-;0) 298.15
+  +0;  6000 N                                                          92HILB!
+PARAMETER L(IONIC_LIQ,FE2+:N,VA;0) 298.15
+  -39860 -24.02*T;  6000 N                                              91FRI!
+PARAMETER L(IONIC_LIQ,FE2+:N3-,VA;0) 298.15
+  +0;  6000 N                                                          92HILB!
 PARAMETER L(IONIC_LIQ,FE2+:O2-,VA;0) 298.15
   +176681 -16.368*T;  6000 N                                            08KJE!
 PARAMETER L(IONIC_LIQ,FE2+:O2-,VA;1) 298.15
@@ -13482,8 +13515,7 @@ FUNCTION GFEOLIQ 298.15
   +34008 -20.969*T +GFEO#;  6000 N                                      96KOW!
   
 PARAMETER G(LIQUID,AL;0) 298.15
-  +11005.045 -11.84185*T +79.337E-21*T**7 +GHSERAL#; 933.473 Y
-  -795.991 +177.430209*T -31.748192*T*LN(T); 2900 N                     91DIN!
+  +GLIQAL#;  6000  N                                                    91DIN!
 PARAMETER G(LIQUID,AL2S3;0) 298.15
   -430141 +2*GHSERAL# +3*GHSERSS#;  6000 N                              19SHI!
 PARAMETER G(LIQUID,ALO3/2;0) 298.15
@@ -13548,7 +13580,7 @@ PARAMETER G(LIQUID,MO;0) 298.15
   +41831.347 -14.694912*T +424.519E-24*T**7 +GHSERMO#; 2896 Y
   +3538.963 +271.6697*T -42.63829*T*LN(T);  5000 N                      91DIN!
 PARAMETER G(LIQUID,N;0) 298.15 
-  +GLIQN#;  6000 N                                                      91DIN!
+  +GLIQNN#;  6000 N                                                     91DIN!
 PARAMETER G(LIQUID,NB;0) 298.15 
   +29781.555 -10.816418*T -306.098E-25*T**7 +GHSERNB#; 2750 Y
   -7499.398 +260.756148*T -41.77*T*LN(T);  6000 N                       91DIN!
@@ -22503,8 +22535,10 @@ NUMBER  SOURCE
         (1992): 165-175.'
 92HAL   'Hallstedt, Bengt. "Thermodynamic assessment of the Silicon—Oxygen 
         system." Calphad 16.1 (1992): 53-61.'
-92HIL   'Hillert, Mats, and C. Qiu. "A reassessment of the Fe-Cr-Mo-C system."
+92HILA  'Hillert, Mats, and C. Qiu. "A reassessment of the Fe-Cr-Mo-C system."
         Journal of Phase Equilibria 13 (1992): 512-521.'
+92HILB  'Hillert, Mats, and Stefan Jonsson. "An assessment of the Al-Fe-N 
+        system." Metallurgical transactions A 23 (1992): 3141-3149.'
 92LEEA  'Lee, Byeong-Joo. "On the stability of Cr carbides." Calphad 16.2 
         (1992): 121-149.'
 92LEEB  'Lee, B -J., and Dong Nyung Lee. "A thermodynamic evaluation of the 
