@@ -129,6 +129,7 @@ $            TO PYCALPHAD ISSUES WITH MAGNETIC ORDERING OF B2.
 $ 2024-08-19 AL-CR-FE FROM WANG 2017 NEEDS LOTS OF WORK
 $ 2024-08-19 AL-FE-V FROM WANG 2019 SIGMA PHASE INCORRECT SUBLATTICE MODEL.
 $ 2024-08-21 AL-FE-NB FROM GUO 2017 DISCREPANCY WITH MU PHASE.
+$ 2024-08-22 AL-TA FROM WITUSIEWICZ 2010 ISSUE WITH PHI/SIGMA 
 $
 $ DATABASE INFORMATION:
 $ * INDICATES ONLY DISORDERED SOLUTION AND STOICHIOMETRIC PHASES INCORPORATED
@@ -153,6 +154,7 @@ DATABASE_INFO The following systems are available:'
   AL-P      Liang (2013) and Miettinen (2015)'
   AL-S      Shi (2019)'
   AL-SI     Feufel (1997) and Liu (1999)'
+  AL-TA     Witusiewicz (2010)'
   AL-TI     Witusiewicz (2008) EXCEPT L10'
   AL-V      Kroupa (2017)'
   B-C       Kasper (1996)'
@@ -1217,16 +1219,6 @@ PARAMETER L(ALCRFE_O1,AL:AL,CR,FE;0) 298.15
   +13634100 -21640*T +8.49975*T**2;  6000 N                             17WAN!
 
 $ ----------------------------------------------------------------------------
-$ ALP1
-
-PHASE ALP1 % 2 1 1 !
-CONSTITUENT ALP1 : AL : P : !
-
-PARAMETER G(ALP1,AL:P;0) 298.15
-  -161000 -36.301*T +9.6894*T*LN(T) -0.002212*T**2 +GHSERAL# 
-  +GHSERPP#;  6000 N                                                    13LIA!
-
-$ ----------------------------------------------------------------------------
 $ ALB2CR2
 
 PHASE ALB2CR2 % 3 0.2 0.4 0.4 !
@@ -1915,13 +1907,48 @@ PARAMETER G(ALN_B4,AL:N;0) 298.15
   $ -225337 +203.474*T 
 
 $ ----------------------------------------------------------------------------
-$ ALS1
+$ AL1P1
 
-PHASE ALS1 % 2 0.5 0.5 !
-CONSTITUENT ALS1 : AL : S : !
+PHASE AL1P1 % 2 1 1 !
+CONSTITUENT AL1P1 : AL : P : !
 
-PARAMETER G(ALS1,AL:S;0) 298.15
+PARAMETER G(AL1P1,AL:P;0) 298.15
+  -161000 -36.301*T +9.6894*T*LN(T) -0.002212*T**2 +GHSERAL# 
+  +GHSERPP#;  6000 N                                                    13LIA!
+
+$ ----------------------------------------------------------------------------
+$ AL1S1
+
+PHASE AL1S1 % 2 0.5 0.5 !
+CONSTITUENT AL1S1 : AL : S : !
+
+PARAMETER G(AL1S1,AL:S;0) 298.15
   -73956 +20.20*T +0.5*GHSERAL# +0.5*GHSERSS#;  6000 N                  19SHI!
+
+$ ----------------------------------------------------------------------------
+$ ALTA_PHI
+$ PROTOTYPE: AL-TA PHI, 45AL55TA
+$ SPACE GROUP: P2_1/c
+$ PEARSON: tP30
+
+PHASE ALTA_PHI % 2 0.8837 1.1163 !
+CONSTITUENT ALTA_PHI : AL,TA : AL,TA : !
+
+PARAMETER G(ALTA_PHI,AL:AL;0) 298.15
+  +500 +0.8837*GHSERAL# +1.1163*GHSERAL#;  6000 N                       10WIT!
+PARAMETER G(ALTA_PHI,AL:TA;0) 298.15
+  -49300 +5.021*T +0.8837*GHSERAL# +1.1163*GHSERTA#;  6000 N            10WIT!
+
+PARAMETER G(ALTA_PHI,TA:AL;0) 298.15
+  +0.8837*GHSERTA# +1.1163*GHSERAL#;  6000 N                            10WIT!
+PARAMETER G(ALTA_PHI,TA:TA;0) 298.15
+  +22500 +0.8837*GHSERTA# +1.1163*GHSERTA#;  6000 N                     10WIT!
+
+
+PARAMETER L(ALTA_PHI,AL,TA:TA;0) 298.15
+  -27895.6 +8.5005*T;  6000 N                                           10WIT!!
+PARAMETER L(ALTA_PHI,AL:AL,TA;0) 298.15
+  -52500 +32.7892*T;  6000 N                                            10WIT!
 
 $ ----------------------------------------------------------------------------
 $ AL2CU_C16
@@ -2175,7 +2202,7 @@ $ SPACE GROUP: I4/mmm
 $ PEARSON: tI8
 
 PHASE AL3M_D022 % 2 3 1 !
-CONSTITUENT AL3M_D022 : AL,CO,FE,MO,NB,NI,SI,TI,V : AL,CR,FE,MO,NB,TI,V : !
+CONSTITUENT AL3M_D022 : AL,CO,FE,MO,NB,NI,SI,TI,V : AL,CR,FE,MO,NB,TA,TI,V : !
 
 FUNCTION GAL3NB1 298.15
   -166984 +34.8*T +3*GHSERAL# +GHSERNB#;  6000 N                         15HE!
@@ -2190,6 +2217,8 @@ PARAMETER G(AL3M_D022,AL:MO;0) 298.15
   -138710.769 +40.9417405*T +3*GHSERAL# +GHSERMO#;  6000 N              10CUP!
 PARAMETER G(AL3M_D022,AL:NB;0) 298.15
   +GAL3NB1#;  6000 N                                                     15HE!
+PARAMETER G(AL3M_D022,AL:TA;0) 298.15
+  -119800 +26.304*T +3*GHSERAL# +GHSERTA#;  6000 N                      10WIT!
 PARAMETER G(AL3M_D022,AL:TI;0) 298.15
   -143733 +35.088*T +3*GHSERAL# +GHSERTI#;  6000 N                      08WIT!
 PARAMETER G(AL3M_D022,AL:V;0) 298.15
@@ -2306,6 +2335,8 @@ PARAMETER L(AL3M_D022,AL,TI:V;0) 298.15
 PARAMETER L(AL3M_D022,AL,V:TI;0) 298.15
   +50000;  6000 N                                                        24LI!
 
+PARAMETER L(AL3M_D022,AL:AL,TA;0) 298.15
+  -1494 -10.6211*T;  6000 N                                             10WIT!
 PARAMETER L(AL3M_D022,AL:AL,TI;0) 298.15
   -67583;  6000 N                                                       08WIT!
 PARAMETER L(AL3M_D022,AL:FE,V;0) 298.15
@@ -3281,6 +3312,25 @@ PARAMETER G(AL63MO37,AL:MO;0) 298.15
   -1638310.2 -403.7604*T +63*GHSERAL# +37*GHSERMO#;  6000 N              09DU!
 
 $ ----------------------------------------------------------------------------
+$ AL69TA39
+$ PROTOTYPE: AL69TA39
+$ SPACE GROUP: F-43m
+$ PEARSON: cF432
+
+PHASE AL69TA39 % 2 0.6389 0.3611 !
+CONSTITUENT AL69TA39 : AL%,TA : AL,TA% : !
+
+PARAMETER G(AL69TA39,AL:AL;0) 298.15
+  +3000 +0.6389*GHSERAL# +0.3611*GHSERAL#;  6000 N                      10WIT!
+PARAMETER G(AL69TA39,AL:TA;0) 298.15
+  -25904 +3.502*T +0.6389*GHSERAL# +0.3611*GHSERTA#;  60000 N           10WIT!
+
+PARAMETER G(AL69TA39,TA:AL;0) 298.15
+  +0.6389*GHSERTA# +0.3611*GHSERAL#;  6000 N                            10WIT!
+PARAMETER G(AL69TA39,TA:TA;0) 298.15
+  +9000 +0.6389*GHSERTA# +0.3611*GHSERTA#;  6000 N                      10WIT!
+
+$ ----------------------------------------------------------------------------
 $ ALPHA_RHOMBO_B
 $ PROTOTYPE: ALPHA-B
 $ SPACE GROUP: R-3m
@@ -3781,6 +3831,8 @@ PARAMETER L(BCC_A2,AL,NI:VA;0) 298.15
   -204838 +37.707*T;  6000 N                                            97ANS!
 PARAMETER L(BCC_A2,AL,P:VA;0) 298.15
   +0;  6000 N                                                          15MIEC!
+PARAMETER L(BCC_A2,AL,TA:VA;0) 298.15
+  -578.90066;  6000 N                                                   10WIT!
 PARAMETER L(BCC_A2,AL,TI:VA;0) 298.15
   -132903 +39.961*T;  6000 N                                            08WIT!
 PARAMETER L(BCC_A2,AL,TI:VA;1) 298.15
@@ -7509,6 +7561,8 @@ PARAMETER L(FCC_A1,AL,P:VA;0) 298.15
   -30000;  6000 N                                                      15MIEC!
 PARAMETER L(FCC_A1,AL,SI:VA;0) 298.15
   -3143.8 +0.39297*T;  6000 N                                           97FEU!
+PARAMETER L(FCC_A1,AL,TA:VA;0) 298.15
+  -125394.8 +78.85*T;  6000 N                                           10WIT!
 PARAMETER L(FCC_A1,AL,TI:VA;0) 298.15
   -119185 +40.723*T;  6000 N                                            08WIT!
 PARAMETER L(FCC_A1,AL,V:VA;0) 298.15
@@ -9787,7 +9841,7 @@ PHASE GAS:G % 1 1 !
 CONSTITUENT GAS:G : AL,AL2,ALO,ALO2,AL2O2,B,B2,C,C2,C3,C4,C5,
                     CN,CNN,C2N,C2N2,C4N2,CR,C2,CRO,CRO2,FE,FEO,H,H2,MN,
                     MO,MO2,N,N2,NCN,NI,NIO,O2,O3,SI,SI2,
-                    SI3,SIO,SIO2,TI,TI2,V : !
+                    SI3,SIO,SIO2,TA,TI,TI2,V : !
 
 FUNCTION GHGASAL 298.15
   +3.26352E5 +1.64448E2*T;  6000 N                                      92TAY!
@@ -10094,6 +10148,17 @@ PARAMETER G(GAS,SIO2;0) 298.15
   +5.18207925E-8*T**3 +1432574.4*T**(-1) +RTLNP#;  2600 Y 
   -334879.726 +203.9225*T -62.391808*T*LN(T) +7.50099152E-6*T**2
   -2.5839338E-10*T**3 +2321910.8*T**(-1) +RTLNP#;  6000 N               92HAL!
+PARAMETER G(GAS,TA;0) 298.15
+  +778354.148 -86.9745131*T -14.20039*T*LN(T) -0.007338225*T**2
+  +1.78913E-7*T**3 -105967.1*T**(-1) +RTLNP#;  700 Y
+  +777752.285 -88.0986009*T -13.78268*T*LN(T) -0.00918088*T**2
+  +7.334755E-7*T**3 +24159.195*T**(-1) +RTLNP#;  1600 Y
+  +754463.426 +77.8713183*T -36.40211*T*LN(T) +6.75171E-4*T**2
+  -7.82934667E-8*T**3 +4567559*T**(-1) +RTLNP#;  5100 Y
+  +895631.819 -338.928535*T +13.40182*T*LN(T) -0.0069422*T**2
+  +1.36139367E-7*T**3 -67869550*T**(-1) +RTLNP#;  8400 Y
+  +322438.534 +636.08615*T -95.23214*T*LN(T) +0.0022289675*T**2
+  -9.27389167E-9*T**3 +5.00859E8*T**(-1) +RTLNP#;  10000 N              10WIT!
 PARAMETER G(GAS,TI;0) 298.15
   +4.66676993E5 -25.5431898*T -23.4738718*T*LN(T) +2.633828E-3*T**2
   -4.85754729E-7*T**3 -1.00677291E5*T**(-1) +R*T*LN(P);  1800 Y
@@ -10713,6 +10778,9 @@ PARAMETER L(HCP_A3,AL,P:VA;0) 298.15
   -30000;  6000 N                                                      15MIEC!
 PARAMETER L(HCP_A3,AL,SI:VA;0) 298.15
   -3143.8 +0.39297*T;  6000 N                                           97FEU!
+$ ESTIMATE SAME AL,TA:VA AS FCC_A1
+PARAMETER L(HCP_A3,AL,TA:VA;0) 298.15
+  -125394.8 +78.85*T;  6000 N                                           10WIT!
 PARAMETER L(HCP_A3,AL,TI:VA;0) 298.15
   -134164 +37.863*T;  6000 N                                            08WIT!
 PARAMETER L(HCP_A3,AL,TI:VA;1) 298.15
@@ -13760,7 +13828,14 @@ PARAMETER L(LIQUID,AL,SI;0) 298.15
   -11340.1 -1.23394*T;  6000 N                                          97FEU!
 PARAMETER L(LIQUID,AL,SI;1) 298.15
   -3530.9 +1.35993*T;  6000 N                                           97FEU!
-PARAMETER L(LIQUID,AL,SI;2) 298.15+2265.4;  6000 N                                                      97FEU!
+PARAMETER L(LIQUID,AL,SI;2) 298.15
+  +2265.4;  6000 N                                                      97FEU!
+PARAMETER L(LIQUID,AL,TA;0) 298.15
+  -55024.6 +9.4894*T;  6000 N                                           10WIT!
+PARAMETER L(LIQUID,AL,TA;1) 298.15
+  -32750.1 +19.6888*T;  6000 N                                          10WIT!
+PARAMETER L(LIQUID,AL,TA;2) 298.15
+  +26570 -4.667*T;  6000 N                                              10WIT!
 PARAMETER L(LIQUID,AL,TI;0) 298.15
   -118048 +41.972*T;  6000 N                                            08WIT!
 PARAMETER L(LIQUID,AL,TI;1) 298.15
@@ -19657,9 +19732,9 @@ $ PEARSON: tP30
 $ TERMS FROM WANG 2019 ARE ACTUALLY FOR 8 4 18 MODEL...BEWARE
 
 PHASE SIGMA2_D8B %B 3 10 4 16 !
-CONSTITUENT SIGMA2_D8B : AL,CO,CR,FE,MO,NB,V,W
-                       : CO,CR,FE,MO,NB,V,W
-                       : AL,CO,CR,FE,MO,NB,V,W : !
+CONSTITUENT SIGMA2_D8B : AL,CO,CR,FE,MO,NB,TA,V,W
+                       : CO,CR,FE,MO,NB,TA,V,W
+                       : AL,CO,CR,FE,MO,NB,TA,V,W : !
 
 FUNCTION GAL7NB8 298.15
   +302984 +34*T +10*GHSERNB# +4*GHSERNB# +16*GHSERAL#;  6000 N           15HE!
@@ -19740,6 +19815,11 @@ PARAMETER G(SIGMA2_D8B,AL:NB:NB;0) 298.15
   +GAL1NB2#;  6000 N                                                     15HE!
 PARAMETER G(SIGMA2_D8B,AL:NB:V;0) 298.15
   +10*GHSERAL# +4*GHSERNB# +16*GHSERV#;  6000 N                         24FRI!
+
+PARAMETER G(SIGMA2_D8B,AL:TA:AL;0) 298.15
+  +342090 +212.976*T +10*GHSERAL# +4*GHSERTA# +16*GHSERAL#;  6000 N     10WIT!
+PARAMETER G(SIGMA2_D8B,AL:TA:TA;0) 298.15
+  -661440 +91.953*T +10*GHSERAL# +4*GHSERTA# +16*GHSERTA#;  6000 N      10WIT!
 
 PARAMETER G(SIGMA2_D8B,AL:V:AL;0) 298.15
   +10*GHSERAL# +4*GHSERV# +16*GHSERAL#;  6000 N                         24FRI!
@@ -20238,6 +20318,11 @@ PARAMETER G(SIGMA2_D8B,NB:V:NB;0) 298.15
 PARAMETER G(SIGMA2_D8B,NB:V:V;0) 298.15
   +10*GFCCNB# +4*GHSERV# +16*GHSERV#;  6000 N                          13KHVB!
 
+PARAMETER G(SIGMA2_D8B,TA:TA:AL;0) 298.15
+  +10*GHSERTA# +4*GHSERTA# +16*GHSERAL#;  6000 N                        10WIT!
+PARAMETER G(SIGMA2_D8B,TA:TA:TA;0) 298.15
+  +73.497*T +10*GHSERTA# +4*GHSERTA# +16*GHSERTA#;  6000 N              10WIT!
+
 PARAMETER G(SIGMA2_D8B,V:CO:AL;0) 298.15
   +10*GHSERV# +4*GHSERCO# +16*GHSERAL#;  6000 N                         24FRI!
 PARAMETER G(SIGMA2_D8B,V:CO:CO;0) 298.15
@@ -20364,6 +20449,8 @@ PARAMETER L(SIGMA2_D8B,AL,FE:NB:NB;1) 298.15
 
 PARAMETER L(SIGMA2_D8B,AL:NB:AL,NB;0) 298.15
   +154800;  6000 N                                                       15HE!
+PARAMETER L(SIGMA2_D8B,AL:TA:AL,TA;0) 298.15
+  -662055;  6000 N                                                      10WIT!
 
 PARAMETER L(SIGMA2_D8B,CO,CR:CR:CR;0) 298.15
   -295397.4;  6000 N                                                   19WANA!
@@ -23004,10 +23091,9 @@ NUMBER  SOURCE
         of Surrey. (2010).'
 10SUN   'Sun, Weihua, et al. "Thermodynamic assessment of the Mn-B system." 
         Journal of Phase Equilibria and Diffusion 31 (2010): 357-364.'
-10WIT   'Witusiewicz, V. T., et al. "The Al–B–Nb–Ti system: I. Re-assessment 
-        of the constituent binary systems B–Nb and B–Ti on the basis of new 
-        experimental data." Journal of alloys and compounds 448.1-2 (2008): 
-        185-194.'
+10WIT   Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
+        re-assessment of the binary Al–Ta system." Intermetallics 18.1 (2010):
+        92-106.
 11DJU   'Djurovic, Dejan, et al. "Thermodynamic assessment of the Fe-Mn-C 
         system." Calphad 35.4 (2011): 479-491.'
 11HU    'Hu, Biao, et al. "Experimental investigation and thermodynamic 
