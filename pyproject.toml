@@ -1,8 +1,6 @@
 [build-system]
 requires = [
-    "pycalphad",
     "setuptools",
-    "pymatgen",
     "pytest",
 ]
 build-backend = "setuptools.build_meta"
@@ -12,6 +10,10 @@ name='libreCalphad'
 version='0.0.1'
 authors=[
     {name = 'Matt Frichtl'},
+]
+dependencies = [
+    "pycalphad",
+    "pymatgen",
 ]
 description='Open-source Calphad databases and property models.'
 license={text = 'MIT'}
@@ -38,4 +40,7 @@ classifiers=[
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
 ]
+[project.optional-dependencies]
+propertyModels = ['pandarallel', 'scikit-learn']
