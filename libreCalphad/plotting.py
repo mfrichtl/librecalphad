@@ -8,7 +8,7 @@ import numpy as np
 from pycalphad import equilibrium, variables as v
 from pycalphad.plot.utils import phase_legend
 
-def step_plot(db, components, phases, conditions, yscale='log', ylims=(1e-5,1.1), fontsize=20):
+def step_plot(db, components, conditions, disabled_phases=[], yscale='log', ylims=(1e-5,1.1), fontsize=20):
     """
     Function to make a step plot.
     """
@@ -21,6 +21,7 @@ def step_plot(db, components, phases, conditions, yscale='log', ylims=(1e-5,1.1)
               'ytick.labelsize': fontsize,}
     plt.rcParams.update(params)
 
+    phases = [phase for phase in list(db.phases.keys()) if phase not in disabled_phases]
     eq = equilibrium(db, components, phases, conditions)
     eq_phases = []
     for entry in eq.Phase.squeeze():

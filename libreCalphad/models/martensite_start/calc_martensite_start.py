@@ -25,14 +25,14 @@ import sys
 import time
 
 sns.set_style('whitegrid')
-sns.set_context('paper', font_scale=2)
+sns.set_context('paper', font_scale=1)
 dbf = 'mf-steel.tdb'
 max_num_conds_DG = 12  # stack smashing errors seem to be associated with too many conditions in a computation
 remove_list = ['FE', 'GE']  # Remove these from component lists, Fe removed because it is the dependent component in all subsequent calculations
 # do_not_remove_list = ['C', 'N', 'NB', 'O', 'TI', 'V', 'W']  # Don't remove the elements that can form stable high-temperature compounds that affect austenite composition
 do_not_remove_list = ['C', 'N']
 interstitials = ['B', 'C', 'H', 'N', 'O']
-disabled_phases = ['BCC_B2', 'BCC_D03', 'FCC_L10', 'FCC_L12', 'GAS', 'HCP_L12', 'KAPPA_A1', 'KAPPA_E21', 'IONIC_LIQ']  # disable ordered phases for austenite composition calculations
+disabled_phases = ['BCC_B2', 'BCC_D03', 'FCC_L10', 'FCC_L12', 'GAS', 'HCP_L12', 'KAPPA_A1', 'KAPPA_E21', 'IONIC_LIQ', 'TAU2_ALFEMO_A2']  # disable some phases for calculations
 nb_workers = 12  # number of cores you want to use for parallel computing
 solute_threshold = 1e-12  # threshold below which I will discard a solute for predicting the Ms temperature, without it the calculations seem to stall.
 mf_plate_baseline_fits = [2090]  # from literature
@@ -47,15 +47,15 @@ figure_dir = './figures/'
 model_param_dir = './model_params/'
 
 conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace(0, 0.33, 7), 'Fe-Cr': np.linspace(0, 0.15, 10), 'Fe-Cu': np.linspace(0, 0.08, 3),
-                           'Fe-Mn': np.linspace(0, 0.15, 6), 'Fe-N': np.linspace(0, 0.055, 3), 'Fe-Ni': np.linspace(0, 0.25, 10),
-                           'Al-Ni': [np.linspace(0, 0.05, 3), np.linspace(0.1, 0.2, 3)], 'C-Cr': [np.linspace(0, 0.02, 3), np.linspace(0, 0.11, 3)], 
+                           'Fe-Mn': np.linspace(0, 0.15, 6), 'Fe-N': np.linspace(0, 0.055, 3), 'Fe-Ni': np.linspace(0, 0.25, 10), 'C-Mn': [np.linspace(0, 0.03, 4), np.linspace(0, 0.05, 4)],  
+                           'Al-Ni': [np.linspace(0, 0.05, 3), np.linspace(0.1, 0.2, 3)], 'C-Cr': [np.linspace(0, 0.02, 3), np.linspace(0, 0.11, 3)],
                            'Co-Ni': [np.linspace(0, 0.35, 7), np.linspace(0.15, 0.3, 7)], 'Cr-Ni': [np.linspace(0, 0.2, 6), np.linspace(0.07, 0.2, 5)],
                            'Cu-Ni': [np.linspace(0, 0.05, 4), [0.16, 0.18, 0.2]], 'Mo-Ni': [np.linspace(0, 0.04, 4), [0.16, 0.18, 0.2]], 'Ni-Si': [[0.1875], np.linspace(0, 0.05, 4)],
                            'Ni-Ti': [[0.195], np.linspace(0, 0.03, 4)], 'Ni-V': [np.linspace(0.15, 0.23, 3), np.linspace(0, 0.04, 2)], 'Ni-W': [[0.14, 0.16], np.linspace(0, 0.04, 4)],
                            },
                         # not enough data
-                        #  'C-Ni': [np.linspace(0, 0.025, 2), np.linspace(0.05, 0.14, 4)], 'C-Co': [[0, 0.05], np.linspace(0.03, 0.1, 4)],  'C-Mo': [np.linspace(0.01, 0.05, 3), np.linspace(0.005, 0.02, 3)],
-                        #   'C-Mn': [np.linspace(0, 0.08, 4), np.linspace(0, 0.05, 4)], 'C-Si': [[0, 0.004, 0.008], np.linspace(0.02, 0.08, 3)],
+                        #   'C-Ni': [np.linspace(0, 0.025, 2), np.linspace(0.05, 0.14, 4)], 'C-Co': [[0, 0.05], np.linspace(0.03, 0.1, 4)],  
+                        #   'C-Mo': [np.linspace(0.01, 0.05, 3), np.linspace(0.005, 0.02, 3)], 'C-Si': [[0, 0.004, 0.008], np.linspace(0.02, 0.08, 3)],
                         # 
             'plate-mf': {'Fe-C': np.linspace(0, 0.1, 6), 'Fe-Co': np.linspace(0, 0.33, 10), 'Fe-Cr': np.linspace(0, 0.15, 10), 'Fe-Cu': np.linspace(0, 0.08, 3),
                          'Fe-Mn': np.linspace(0, 0.14, 4), 'Fe-N': np.linspace(0, 0.08, 4), 'Fe-Ni': np.linspace(0, 0.25, 10),
@@ -82,10 +82,10 @@ conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace
                             },
             }
 lath_orders = {'martensite_start': 0, 'Fe-C': 0, 'Fe-Co': 1, 'Fe-Mn': 0, 'Fe-N': 0, 'Fe-Ni': 1, 'Fe-Cr': 0, 'Fe-Cu': 0,
-               'Al-Ni': 0, 'C-Cr': 0, 'Co-Ni': 0, 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-Ti': 0, 'Ni-V': 0, 'Ni-W': 0,
-               #  'C-Si': 0, 'C-Mn': 0, 
+               'Al-Ni': 0, 'C-Cr': 0,'C-Mn': 0, 'Co-Ni': 0, 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-Ti': 0, 'Ni-V': 0, 'Ni-W': 0,
+               #  'C-Si': 0, 
             }
-plate_orders = {'martensite_start': 0, 'Fe-C': 1, 'Fe-Co': 1, 'Fe-Cr': 0, 'Fe-Cu': 0, 'Fe-Mn': 0, 'Fe-N': 0, 'Fe-Ni': 1,
+plate_orders = {'martensite_start': 0, 'Fe-C': 1, 'Fe-Co': 1, 'Fe-Cr': 0, 'Fe-Cu': 0, 'Fe-Mn': 1, 'Fe-N': 0, 'Fe-Ni': 1,
                 'Al-Ni': 0, 'C-Cr': 0, 'C-Mn': 0, 'Co-Ni': 0,
                 # 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-V': 0, 'Ni-W': 0, 
                 }
@@ -196,7 +196,13 @@ def calc_aus_comp(row, db):
             row['error_message'].append(f"Removed {n} components to calculate solutionizing equilibrium.")
         row['solutionizing_components'] = components
         row['solutionizing_conditions'] = conditions
-        eq = equilibrium(db, components, phases, conditions, calc_opts={'pdens': pdens})
+        try:
+            eq = equilibrium(db, components, phases, conditions, calc_opts={'pdens': pdens})
+        except Exception as e:
+            print(e)
+            print(components)
+            print(phases)
+            print(conditions)
         eq_energy = eq.GM.squeeze().values
         print(f"Attempt: {n+1}, Austenite calculated energy: {eq_energy} J/mol")
         print(conditions)
@@ -602,26 +608,21 @@ def fit_model(orders, data, model_type):
                 x_c = sub_data['C']
                 x_n = sub_data['N']
                 x_o = sub_data['O']
+                fullx_b = data['B']
+                fullx_c = data['C']
+                fullx_n = data['N']
+                fullx_o = data['O']
                 interstitial = True
             print(f"Modeling interactions for {fit_term}.")
             if order == 0:
                 fits[fit_term] = curve_fit(lambda x, C_0: x[0]*x[1]*C_0/(1-x[2]-x[3]-x[4]-x[5]), np.vstack([x_0, x_1, x_b, x_c, x_n, x_o]), sub_data['excess_DG'])
-                if interstitial:
-                    data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1*fits[fit_term][0][0]/(1-fullx_b-fullx_c-fullx_n-fullx_o))
-                else:
-                    data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1*fits[fit_term][0][0])
+                data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1*fits[fit_term][0][0]/(1-fullx_b-fullx_c-fullx_n-fullx_o))
             elif order == 1:
                 fits[fit_term] = curve_fit(lambda x, C_0, C_1: x[0]*x[1]/(1-x[2]-x[3]-x[4]-x[5])*(C_0 + C_1*(x[0]*x[1])), np.vstack([x_0, x_1, x_b, x_c, x_n, x_o]), sub_data['excess_DG'])
-                if interstitial:
-                    data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1/(1-fullx_b-fullx_c-fullx_n-fullx_o)*(fits[fit_term][0][0] + fits[fit_term][0][1]*(fullx_0*fullx_1)))
-                else:
-                    data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1*(fits[fit_term][0][0] + fits[fit_term][0][1]*(fullx_0*fullx_1)))
+                data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1/(1-fullx_b-fullx_c-fullx_n-fullx_o)*(fits[fit_term][0][0] + fits[fit_term][0][1]*(fullx_0*fullx_1)))
             elif order == 2:
                 fits[fit_term] = curve_fit(lambda x, C_0, C_1, C_2: x[0]*x[1]/(1-x[2]-x[3]-x[4]-x[5])*(C_0 + (C_1*(x[0]*x[1]) + C_2*(x[0]*x[1])**2)), np.vstack([x_0, x_1, x_b, x_c, x_n, x_o]), sub_data['excess_DG'])
-                if interstitial:
-                    data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1/(1-fullx_b-fullx_c-fullx_n-fullx_o)*(fits[fit_term][0][0] + (fits[fit_term][0][1]*(fullx_0*fullx_1) + fits[fit_term][0][2]*(fullx_0*fullx_1)**2)))
-                else:   
-                    data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1*(fits[fit_term][0][0] + (fits[fit_term][0][1]*(fullx_0*fullx_1) + fits[fit_term][0][2]*(fullx_0*fullx_1)**2)))
+                data['excess_DG'] = data['excess_DG'] - (fullx_0*fullx_1/(1-fullx_b-fullx_c-fullx_n-fullx_o)*(fits[fit_term][0][0] + (fits[fit_term][0][1]*(fullx_0*fullx_1) + fits[fit_term][0][2]*(fullx_0*fullx_1)**2)))
             else:
                 raise NotImplementedError(f"Fit order for {model_type} {fit_term} not implemented.")
             processed_systems.append(fit_term)
@@ -721,6 +722,7 @@ def predict_DG(row):
     for cond in list(conditions.keys()):
         if conditions[cond] == 0:
             del conditions[cond]
+            print(f"Removing {cond.__str__()}")
             continue
         cond = cond.__str__()
         if 'X' in cond:
@@ -759,9 +761,17 @@ def calc_model_Ms(row, db):
     ms_type = row['type']
     conditions = row['conditions']
     components = get_components_from_conditions(conditions, dependent_component='FE')
+    components = ['FE', 'VA']
     pags = np.nan  # This function is for fitting the chemistry-dependent models, PAGS is not a factor here.
-    
 
+    for cond in list(conditions.keys()):
+        if conditions[cond] == 0:
+            del conditions[cond]
+            print(f"Removing {cond.__str__()}")
+            continue
+        cond = cond.__str__()
+        if 'X' in cond:
+            components = np.concatenate([components, [cond.split('_')[1]]])
 
     new_fits = None
     temp_bounds = Bounds(1e-6, 2500)
@@ -801,11 +811,10 @@ def calc_model_Ms(row, db):
         else:
             n += 1
             pdens += n*500
-    if model_DG > 0.5:  # Find where the solver is performing poorly
+    if model_DG > 0.5 or model_Ms == 500:  # Find where the solver is performing poorly
         print(f"Solver problem with: {ms_type}, {conditions}")
         print(f"Calculated Ms: {model_Ms}")
         print(f"Calculated DG: {model_DG}")
-
     print(f"{ms_type} Ms: {model_Ms}, conditions: {conditions}")
     return model_Ms
 
@@ -1339,8 +1348,8 @@ def load_exp_data():
     data = pd.concat([pd.read_excel(file) for file in in_files])
     data = data.query("ignore == False & martensite_start > 299 & type != 'mixed'").copy()
     data = data.apply(lambda row: parse_composition(row, 'FE'), axis=1)
-    data['original_components'] = data['components']
-    data['original_conditions'] = data['conditions']
+    data['original_components'] = data.apply(lambda row: row['components'], axis=1)
+    data['original_conditions'] = data.apply(lambda row: row['conditions'], axis=1)
     for element in elements:  # replace NaNs with 0.0 for elemental columns
         data[element] = data[element].fillna(0)
 
@@ -1511,7 +1520,7 @@ def do_martensite_start(db, DG_refit):
     plt.close()
 
     mf_lp_RMSE = np.sqrt(np.mean(lath_plate_exp.query("predicted_type == False")['error']**2))
-    fig, ax = plt.subplots(figsize=(10,10))
+    fig, ax = plt.subplots(figsize=(15,10))
     sns.scatterplot(data=lath_plate_exp.query("predicted_type == False"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=100, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_lp_RMSE, color='black', linestyle='--', ax=ax)
@@ -1541,7 +1550,7 @@ def do_martensite_start(db, DG_refit):
     plt.close()
 
     mf_eps_RMSE = np.sqrt(np.mean(epsilon_exp.query("predicted_type == False")['error']**2))
-    fig, ax = plt.subplots(figsize=(10,10))
+    fig, ax = plt.subplots(figsize=(15,10))
     sns.scatterplot(data=epsilon_exp.query("predicted_type == False"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_eps_RMSE, color='black', linestyle='--', ax=ax)
@@ -1566,7 +1575,7 @@ def do_martensite_start(db, DG_refit):
     fig.savefig(''.join([figure_dir, 'Ms_lath-plate_residuals_plot_all.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(10,10))
+    fig, ax = plt.subplots(figsize=(15,10))
     sns.scatterplot(data=lath_plate_exp.query("predicted_type == False"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
     ax.set_xlabel('Experimental Ms (K)')

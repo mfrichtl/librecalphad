@@ -56,6 +56,8 @@ def parse_composition(row, dependent_element):
     interstitials = ['B', 'C', 'H', 'N', 'O']
     dependent_element = dependent_element.lower()
     material_col = 'material_at%'
+    solute_threshold = 0.005  # threshold below which a solute won't contribute to the designation of the alloy system.
+
     if pd.isnull(row['material_at%']):  # no atomic percent entered
         weight_percent = True
         material_col = 'material_wt%'
@@ -107,7 +109,7 @@ def parse_composition(row, dependent_element):
                 continue
             elif element in interstitials and frac > 0.0005:
                 alloy.append(element.capitalize())
-            elif frac > 0.005:
+            elif frac > solute_threshold:
                 alloy.append(element.capitalize())
         conditions.update({v.X(element.upper()): frac})
     except Exception as e:
