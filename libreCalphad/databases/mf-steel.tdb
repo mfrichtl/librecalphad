@@ -334,6 +334,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-FE   Andersson (1988), Qiu (1992), Khvan (2014), and Jacob (2023)'
   C-CR-MO   Qiu (1992) and Bratberg (2005)'
   C-CR-MN   Lee (1993)'
+  C-CR-NB   Khvan (2012)'
   C-CR-NI   Lee (1992)'
   C-CR-SI   Du (2000)'
   C-CR-TI   Haglöf (2022)'
@@ -349,6 +350,7 @@ DATABASE_INFO The following systems are available:'
   C-FE-TI   Jonsson (1998)'
   C-FE-V    Huang (1991)'
   C-FE-W    Gustafson (1987)'
+  C-MN-NB   Khvan (2012)'
   C-MN-SI   Zheng (2017)'
   C-MN-V    Huang (1991)'
   C-MO-TI   Shim (1996)'
@@ -6243,7 +6245,7 @@ $ SPACE GROUP: Pnma
 $ PEARSON: oP16
 
 PHASE CEMENTITE_D011 %B 2 3 1 !
-CONSTITUENT CEMENTITE_D011 : CO,CR,CU,FE,MN,MO,NI,SI,V,W : B,C,N,VA : !
+CONSTITUENT CEMENTITE_D011 : CO,CR,CU,FE,MN,MO,NB,NI,SI,V,W : B,C,N,VA : !
 
 FUNCTION GFE3C 0.01
   +11369.937746 -5.641259263*T -8.333E-6*T**4; 43 Y
@@ -6291,6 +6293,9 @@ PARAMETER G(CEMENTITE_D011,MO:B;0) 298.15
   -120000 +15.12*T +3*GHSERMO# +GHSERBB#;  6000 N                       10PAN!
 PARAMETER G(CEMENTITE_D011,MO:C;0) 298.15
   +77000 -57.4*T +3*GHSERMO# +GHSERCC#;  6000 N                        88ANDD!
+
+PARAMETER G(CEMENTITE_D011,NB:C;0) 298.15
+  +137491 +3*GHSERNB# +GHSERCC#;  6000 N                                12KHV!
 
 PARAMETER G(CEMENTITE_D011,NI:B;0) 298.15
   -95722.8624 +21.72114516*T +3*GHSERNI# +GHSERBB#;  6000 N            09SUNB!
@@ -8002,6 +8007,8 @@ PARAMETER L(FCC_A1,CR,MO:VA;0) 298.15
   +28890 -7.962*T;  6000 N                                              92QIU!
 PARAMETER L(FCC_A1,CR,MO:VA;1) 298.15
   +5974 -2.428*T;  6000 N                                               92QIU!
+PARAMETER L(FCC_A1,CR,NB:C;0) 298.15
+  -23000;  6000 N                                                       12KHV!
 PARAMETER L(FCC_A1,CR,NI:B;0) 298.15
   -5000;  6000 N                                                        02CAM!
 PARAMETER L(FCC_A1,CR,NI:C;0) 298.15
@@ -11329,6 +11336,8 @@ PARAMETER L(HCP_A3,CR,MO:VA;0) 298.15
   +28890 -7.962*T;  6000 N                                              92QIU!
 PARAMETER L(HCP_A3,CR,MO:VA;1) 298.15
   +5974 -2.428*T;  6000 N                                               92QIU!
+PARAMETER L(HCP_A3,CR,NB:C;0) 298.15
+  +18500;  6000 N                                                       12KHV!
 $ ESTIMATE SAME CR,NI:X AS FCC_A1
 PARAMETER L(HCP_A3,CR,NI:B;0) 298.15
   -3750;  6000 N                                                        02CAM!
@@ -15250,6 +15259,8 @@ PARAMETER L(LIQUID,C,CR,FE;1) 298.15
   +57150;  6000 N                                                       14KHV!
 PARAMETER L(LIQUID,C,CR,FE;2) 298.15
   +62630;  6000 N                                                       14KHV!
+PARAMETER L(LIQUID,C,CR,NB;0) 298.15
+  +100000;  6000 N                                                      14KHV!
 PARAMETER L(LIQUID,C,CR,SI;0) 298.15
   -248421; 6000 N                                                       00DUA!
 PARAMETER L(LIQUID,C,CR,SI;1) 298.15
@@ -16113,7 +16124,7 @@ $ SPACE GROUP: C2/c
 $ PEARSON: mC28
 
 PHASE M5C2 %B 2 5 2 !
-CONSTITUENT M5C2 : FE,MN,V : C,N : !
+CONSTITUENT M5C2 : FE,NB,MN,V : C,N : !
 
 PARAMETER G(M5C2,FE:C;0) 0.01
   +1.666667*GFE3C# +0.3333333*GHSERCC# +6200;  6000 N                   11DJU!
@@ -16124,6 +16135,9 @@ PARAMETER G(M5C2,MN:C;0) 298.15
   -73954 +6.36*T +5*GHSERMN# +2*GHSERCC#;  6000 N                       10DJU!
 PARAMETER G(M5C2,MN:N;0) 298.15
   +25*T +5*GHSERMN# +2*GHSERNN#;  6000 N                                24FRI!
+
+PARAMETER G(M5C2,NB:C;0) 298.15
+  -110958 +5*GHSERNB# +2*GHSERCC#;  6000 N                              12KHV!
 
 PARAMETER G(M5C2,V:C;0) 298.15
   -307123.3 +1059.7*T -175.66*T*LN(T) +1.453274E6*T**(-1);  6000 N      91HUA!
@@ -16223,7 +16237,7 @@ $ SPACE GROUP: Pnma
 $ PEARSON: oP40
 
 PHASE M7C3_D101 % 2 7 3 !
-CONSTITUENT M7C3_D101 : CO,CR,FE,MN,MO,NI,TI,V,W : C : !
+CONSTITUENT M7C3_D101 : CO,CR,FE,MN,MO,NB,NI,TI,V,W : C : !
 
 PARAMETER G(M7C3_D101,CO:C;0) 298.15
   +75000 +50*T +7*GHSERCO# +3*GHSERCC#;  6000 N                         97KUS!
@@ -16235,6 +16249,8 @@ PARAMETER G(M7C3_D101,MN:C;0) 298.15
   -106695 +9.36*T +7*GHSERMN# +3*GHSERCC#;  6000 N                      10DJU!
 PARAMETER G(M7C3_D101,MO:C;0) 298.15
   -140415 +24.24*T +7*GHSERMO# +3*GHSERCC#;  6000 N                     92QIU!
+PARAMETER G(M7C3_D101,NB:C;0) 298.15
+  +151964 +7*GHSERNB# +3*GHSERCC#;  6000 N                              12KHV!
 PARAMETER G(M7C3_D101,NI:C;0) 298.15
   +107130 -36.605*T +7*GHSERNI# +3*GHSERCC#;  6000 N                   92LEEA!
 PARAMETER G(M7C3_D101,TI:C;0) 298.15
@@ -16291,7 +16307,7 @@ $ SPACE GROUP: Fm-3m
 $ PEARSON: cF116
 
 PHASE M23C6_D84 % 3 20 3 6 !
-CONSTITUENT M23C6_D84 : CO,CR,FE,MN,NI,V : CO,CR,FE,MN,MO,NI,V,W : B,C : !
+CONSTITUENT M23C6_D84 : CO,CR,FE,MN,NI,V : CO,CR,FE,MN,MO,NB,NI,V,W : B,C : !
 
 FUNCTION GCO23C6 298.15
   +145000 +116*T +23*GHSERCO# +6*GHSERCC#;  6000 N                      97KUS!
@@ -16359,6 +16375,8 @@ PARAMETER G(M23C6_D84,CR:MO:B;0) 298.15
   +20*GHSERCR# +3*GHSERMO# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CR:MO:C;0) 298.15
   -439117 -50.0535*T +20*GHSERCR# +3*GHSERMO# +6*GHSERCC#;  6000 N      92QIU!
+PARAMETER G(M23C6_D84,CR:NB:C;0) 298.15
+  -130000 +0.8695652*GCR23C6# +3*GHSERNB# +0.7826087*GHSERCC#;  6000 N  12KHV!
 PARAMETER G(M23C6_D84,CR:NI:B;0) 298.15
   +20*GHSERCR# +3*GHSERNI# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CR:NI:C;0) 298.15
@@ -16428,6 +16446,8 @@ PARAMETER G(M23C6_D84,MN:MO:B;0) 298.15
   +20*GHSERMN# +3*GHSERMO# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,MN:MO:C;0) 298.15
   +20*GHSERMN# +3*GHSERMO# +6*GHSERCC#;  6000 N                         23FRI!
+PARAMETER G(M23C6_D84,MN:NB:C;0) 298.15
+  -130000 +0.8695652*GMN23C6# +3*GHSERNB# +0.7826087*GHSERCC#;  6000 N  12KHV!
 PARAMETER G(M23C6_D84,MN:NI:B;0) 298.15
   +20*GHSERMN# +3*GHSERNI# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,MN:NI:C;0) 298.15
