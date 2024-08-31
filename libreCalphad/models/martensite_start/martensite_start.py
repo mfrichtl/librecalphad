@@ -187,13 +187,9 @@ def get_martensite_start(barrier, db, conditions, martensite_type=None, phases=N
     Function to predict the martensite start temperature of an alloy.
     """
 
-    def update_conditions(conditions, T):
-        new_conds = conditions.copy().update({v.T: T})
-        return new_conds
     assert ~all([martensite_type == None, phases == None]), "Must provide either a martensite type or the two phases for calculating driving force."
 
     cond = conditions.copy()
-    print(cond)
     components = get_components_from_conditions(cond, dependent_component='FE')
     temp_bounds = Bounds(298.15, 1300)
 
@@ -204,6 +200,6 @@ def get_martensite_start(barrier, db, conditions, martensite_type=None, phases=N
     else:
         raise NotImplementedError(f"Unknown martensite type passed, {martensite_type}. Must be 'lath', 'plate', or 'epsilon'.")
 
-    min_res = minimize(lambda T: np.abs(barrier - DG(db, components, phases, update_conditions(cond, T))), 500, method='Nelder-Mead', bounds=temp_bounds)
+    min_res = minimize(lambda T: np.abs(barrier + DG(db, components, phases, cond.update({v.T: T}))), 500, method='Nelder-Mead', bounds=temp_bounds)
 
     return min_res.x
