@@ -9,6 +9,7 @@ from libreCalphad.databases.db_utils import load_database
 from libreCalphad.models.utilities import convert_conditions, DG, get_components_from_conditions, parse_composition, trim_conditions
 from libreCalphad.plotting import step_plot
 from collections import defaultdict
+import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -32,7 +33,7 @@ remove_list = ['FE', 'GE']  # Remove these from component lists, Fe removed beca
 # do_not_remove_list = ['C', 'N', 'NB', 'O', 'TI', 'V', 'W']  # Don't remove the elements that can form stable high-temperature compounds that affect austenite composition
 do_not_remove_list = ['C', 'N']
 interstitials = ['B', 'C', 'H', 'N', 'O']
-disabled_phases = ['BCC_B2', 'BCC_D03', 'FCC_L10', 'FCC_L12', 'GAS', 'HCP_L12', 'KAPPA_A1', 'KAPPA_E21', 'IONIC_LIQ', 'TAU2_ALFEMO_A2']  # disable some phases for calculations
+disabled_phases = ['BCC_B2', 'BCC_4SL', 'FCC_L10', 'FCC2_L10', 'FCC_L12', 'GAS', 'HCP_L12', 'KAPPA_A1', 'KAPPA_E21', 'IONIC_LIQ', 'TAU2_ALFEMO_A2', 'LAVES2_C14']  # disable some phases for calculations
 nb_workers = 12  # number of cores you want to use for parallel computing
 solute_threshold = 1e-12  # threshold below which I will discard a solute for predicting the Ms temperature, without it the calculations seem to stall.
 mf_plate_baseline_fits = [2090]  # from literature
@@ -49,24 +50,28 @@ model_param_dir = './model_params/'
 conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace(0, 0.33, 7), 'Fe-Cr': np.linspace(0, 0.15, 10), 'Fe-Cu': np.linspace(0, 0.08, 3),
                            'Fe-Mn': np.linspace(0, 0.15, 6), 'Fe-N': np.linspace(0, 0.055, 3), 'Fe-Ni': np.linspace(0, 0.25, 10), 'C-Mn': [np.linspace(0, 0.03, 4), np.linspace(0, 0.05, 4)],  
                            'Al-Ni': [np.linspace(0, 0.05, 3), np.linspace(0.1, 0.2, 3)], 'C-Cr': [np.linspace(0, 0.02, 3), np.linspace(0, 0.11, 3)],
-                           'Co-Ni': [np.linspace(0, 0.35, 7), np.linspace(0.15, 0.3, 7)], 'Cr-Ni': [np.linspace(0, 0.2, 6), np.linspace(0.07, 0.2, 5)],
-                           'Cu-Ni': [np.linspace(0, 0.05, 4), [0.16, 0.18, 0.2]], 'Mo-Ni': [np.linspace(0, 0.04, 4), [0.16, 0.18, 0.2]], 'Ni-Si': [[0.1875], np.linspace(0, 0.05, 4)],
-                           'Ni-Ti': [[0.195], np.linspace(0, 0.03, 4)], 'Ni-V': [np.linspace(0.15, 0.23, 3), np.linspace(0, 0.04, 2)], 'Ni-W': [[0.14, 0.16], np.linspace(0, 0.04, 4)],
+                           'C-Ni': [np.linspace(0, 0.025, 3), np.linspace(0.00, 0.2, 7)], 'Co-Ni': [np.linspace(0, 0.35, 7), np.linspace(0.15, 0.3, 7)], 
+                           'Cr-Ni': [np.linspace(0, 0.2, 6), np.linspace(0.07, 0.2, 5)], 'Cu-Ni': [np.linspace(0, 0.05, 4), [0.16, 0.18, 0.2]], 
+                           'Mo-Ni': [np.linspace(0, 0.04, 4), [0.16, 0.18, 0.2]], 'Mn-Ni': [np.linspace(0, 0.05, 3), np.linspace(0.16, 0.2, 4)],
+                           'Ni-Si': [np.linspace(0.16, 0.2, 4), np.linspace(0, 0.05, 4)], 'Ni-Ti': [[0.195], np.linspace(0, 0.03, 4)], 
+                           'Ni-V': [np.linspace(0.15, 0.23, 3), np.linspace(0, 0.04, 2)], 'Ni-W': [[0.14, 0.16], np.linspace(0, 0.04, 4)],
                            },
                         # not enough data
                         #   'C-Ni': [np.linspace(0, 0.025, 2), np.linspace(0.05, 0.14, 4)], 'C-Co': [[0, 0.05], np.linspace(0.03, 0.1, 4)],  
-                        #   'C-Mo': [np.linspace(0.01, 0.05, 3), np.linspace(0.005, 0.02, 3)], 'C-Si': [[0, 0.004, 0.008], np.linspace(0.02, 0.08, 3)],
+                        #   'C-Mo': [np.linspace(0.01, 0.05, 3), np.linspace(0.005, 0.02, 3)]
+                        #   'C-Si': [np.linspace(0, 0.02, 3), np.linspace(0.00, 0.1, 3)]  2024-08-29: C-SI increased error
                         # 
             'plate-mf': {'Fe-C': np.linspace(0, 0.1, 6), 'Fe-Co': np.linspace(0, 0.33, 10), 'Fe-Cr': np.linspace(0, 0.15, 10), 'Fe-Cu': np.linspace(0, 0.08, 3),
                          'Fe-Mn': np.linspace(0, 0.14, 4), 'Fe-N': np.linspace(0, 0.08, 4), 'Fe-Ni': np.linspace(0, 0.25, 10),
                          'Al-Ni': [np.linspace(0, 0.05, 3), np.linspace(0.2, 0.22, 3)], 'C-Cr': [np.linspace(0, 0.01, 3), np.linspace(0, 0.1, 5)],
                          'C-Mn': [np.linspace(0, 0.04, 4), np.linspace(0, 0.10, 4)], 'Co-Ni': [np.linspace(0, 0.23, 7), np.linspace(0.15, 0.25, 4)],
+                         'Cr-N': [np.linspace(0.1, 0.15, 3), np.linspace(0, 0.03, 4)]
                          
                          # not enough data -- probably Ms too low to model without extension of systems to 0 K
                          
                          # 'Cr-Ni': [np.linspace(0, 0.05, 2), np.linspace(0.2, 0.23, 3)], 'Cu-Ni': [np.linspace(0, 0.05, 3), np.linspace(0.2, 0.23, 3)],
                          # 'Mo-Ni': [np.linspace(0, 0.04, 4), [0.25]], 'Ni-Si': [np.linspace(0.2, 0.23, 3), np.linspace(0, 0.05, 3)], 'Ni-V': [np.linspace(0.2, 0.24, 3), np.linspace(0, 0.04, 2)],
-                         # 'Ni-W': [np.linspace(0.18, 0.24, 3), np.linspace(0, 0.04, 2)], 'C-Ni': [np.linspace(0, 0.025, 2), np.linspace(0.05, 0.14, 4)],
+                         # 'Ni-W': [np.linspace(0.18, 0.24, 3), np.linspace(0, 0.04, 2)],
                          },
             'epsilon-mf':  {'Fe-Mn': np.linspace(0.1, 0.235, 10),
                             'Al-Mn': [np.linspace(0, 0.05, 3), np.linspace(0.15, 0.17, 3)], 'C-Mn': [np.linspace(0, 0.015, 4), np.linspace(0.12, 0.26, 6)], 'Co-Mn': [np.linspace(0, 0.05, 3), np.linspace(0.1, 0.18, 4)],
@@ -74,6 +79,7 @@ conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace
                             'Mn-Nb': [np.linspace(0.16, 0.18, 3), np.linspace(0, 0.01, 4)], 'Mn-Ni': [np.linspace(0.16, 0.18, 3), np.linspace(0, 0.03, 3)], 'Mn-Si': [np.linspace(0.15, 0.26, 5), np.linspace(0, 0.15, 4)], 
                             'Mn-Ti': [[0.15, 0.176], np.linspace(0, 0.02, 4)], 'Mn-V': [np.linspace(0.16, 0.19, 3), np.linspace(0, 0.03, 3)], 'Mn-W': [[0.15, 0.178], np.linspace(0, 0.03, 3)],
                             },
+                        
             'lath-storm': {'Fe-C': np.linspace(0, 0.04, 5), 'Fe-Co': np.linspace(0, 0.3, 10), 'Fe-Cr': np.linspace(0, 0.1, 10), 'Fe-Cu': np.linspace(0, 0.1, 5),
                            'Fe-Mn': np.linspace(0, 0.3, 10), 'Fe-Ni': np.linspace(0, 0.25, 10), 'C-Cr': [np.linspace(0, 0.02, 5), np.linspace(0, 0.1, 10)],
                             },
@@ -82,16 +88,23 @@ conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace
                             },
             }
 lath_orders = {'martensite_start': 0, 'Fe-C': 0, 'Fe-Co': 1, 'Fe-Mn': 0, 'Fe-N': 0, 'Fe-Ni': 1, 'Fe-Cr': 0, 'Fe-Cu': 0,
-               'Al-Ni': 0, 'C-Cr': 0,'C-Mn': 0, 'Co-Ni': 0, 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-Ti': 0, 'Ni-V': 0, 'Ni-W': 0,
-               #  'C-Si': 0, 
+               'Al-Ni': 0, 'C-Cr': 0, 'C-Mn': 0, 'C-Ni': 0, 'Co-Ni': 0, 'Cr-Ni': 1, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Mn-Ni': 0, 'Ni-Si': 0, 'Ni-Ti': 0, 'Ni-V': 0, 'Ni-W': 0,
+               # 'C-Si': 0, 
             }
 plate_orders = {'martensite_start': 0, 'Fe-C': 1, 'Fe-Co': 1, 'Fe-Cr': 0, 'Fe-Cu': 0, 'Fe-Mn': 1, 'Fe-N': 0, 'Fe-Ni': 1,
-                'Al-Ni': 0, 'C-Cr': 0, 'C-Mn': 0, 'Co-Ni': 0,
-                # 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-V': 0, 'Ni-W': 0, 
+                'Al-Ni': 0, 'C-Cr': 0, 'C-Mn': 0, 'Co-Ni': 1, 'Cr-N': 0,
+                # 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-V': 0, 'Ni-W': 0,
                 }
 epsilon_orders = {'martensite_start': 0, 'Fe-Mn': 1,
                   'Al-Mn': 0, 'C-Mn': 0, 'Co-Mn': 0, 'Cr-Mn': 0, 'Cu-Mn': 0, 'Mn-Mo': 0, 'Mn-Nb': 0, 'Mn-Ni': 0, 'Mn-Si': 0, 'Mn-Ti': 0, 'Mn-V': 0, 'Mn-W': 0,
                 }
+                #  
+
+# Ignore selected entries for fitting -- probably from some impurities or something
+
+selected_ignore = {'plate': {'Fe-C': ['Grange1946', 'Hanemann1932']},
+                   'lath': {},
+                   'epsilon': {}}
 
 included_components = {'lath': ['VA'], 'plate': ['VA'], 'epsilon': ['VA']}
 for term in lath_orders:
@@ -459,11 +472,11 @@ def get_model_Ms(T, model_type, db, components, phases, conditions, pags, pdens,
         if 'plate' in model_type and 'storm' in model_type:
             model_energy = get_plate_model_storm(components, conditions)
         if 'plate' in model_type and 'mf' in model_type:
-            model_energy, contrib_dict = get_model(T, components, conditions, C, model_type, pags)
+            model_energy, contrib_dict = get_model(components, conditions, C, model_type, pags)
         if 'lath' in model_type and 'mf' in model_type:
-            model_energy, contrib_dict = get_model(T, components, conditions, C, model_type, pags)
+            model_energy, contrib_dict = get_model(components, conditions, C, model_type, pags)
         if 'epsilon' in model_type and 'mf' in model_type:
-            model_energy, contrib_dict = get_model(T, components, conditions, C, model_type, pags)
+            model_energy, contrib_dict = get_model(components, conditions, C, model_type, pags)
         assert not np.isnan(model_energy), f"Model energy incorrectly calculated for {model_type, conditions}"
     except Exception as e:
         print(e)
@@ -633,7 +646,7 @@ def fit_model(orders, data, model_type):
     return fits
 
 
-def get_model(T, components, conditions, fits, model_type, pags):
+def get_model(components, conditions, fits, model_type, pags):
     terms = list(fits.keys())
     assert 'martensite_start' in terms, "Don't have terms to fit the Ms temperatures for non-chemistry-dependent terms...try again."
 
@@ -665,7 +678,6 @@ def get_model(T, components, conditions, fits, model_type, pags):
         splits = term.split('-')
         term_contrib = 0
         x_b = x_c = x_n = x_o = 0
-        order = len(fit) - 1  # same order as above
         if term == 'martensite_start':
             # Energy barrier for pure iron
             # term_contrib = fit[0]
@@ -720,10 +732,9 @@ def predict_DG(row):
     pags = np.nan  # PAGS not a factor in this function and should not affect the energy prediction
     
     for cond in list(conditions.keys()):
-        if conditions[cond] == 0:
-            del conditions[cond]
-            print(f"Removing {cond.__str__()}")
-            continue
+        # if conditions[cond] == 0:
+        #     del conditions[cond]
+        #     continue
         cond = cond.__str__()
         if 'X' in cond:
             components = np.concatenate([components, [cond.split('_')[1]]])
@@ -731,21 +742,21 @@ def predict_DG(row):
     if model_type == 'plate-mf':
         model_params = pd.read_json(''.join([model_param_dir, 'mf_plate_parameters.json']))
         model_fits = model_params['mf_plate_fits'][0]
-        model_DG, contrib_dict = get_model(row['martensite_start'], components, conditions, model_fits, model_type, pags)
+        model_DG, contrib_dict = get_model(components, conditions, model_fits, model_type, pags)
     elif model_type == 'plate-storm':
         model_DG = get_plate_model_storm(components, conditions)
         contrib_dict = {}
     if model_type == 'lath-mf':
         model_params = pd.read_json(''.join([model_param_dir, 'mf_lath_parameters.json']))
         model_fits = model_params['mf_lath_fits'][0]
-        model_DG, contrib_dict = get_model(row['martensite_start'], components, conditions, model_fits, model_type, pags)
+        model_DG, contrib_dict = get_model(components, conditions, model_fits, model_type, pags)
     if model_type == 'lath-storm':
         model_DG = get_lath_model_storm(row['martensite_start'], components, conditions)
         contrib_dict = {}
     if model_type == 'epsilon-mf':
         model_params = pd.read_json(''.join([model_param_dir, 'mf_epsilon_parameters.json']))
         model_fits = model_params['mf_epsilon_fits'][0]
-        model_DG, contrib_dict = get_model(row['martensite_start'], components, conditions, model_fits, model_type, pags)
+        model_DG, contrib_dict = get_model(components, conditions, model_fits, model_type, pags)
     
     print(f"{model_type} DG: {model_DG}, conditions: {conditions}")
     row['DG'] = model_DG
@@ -842,7 +853,8 @@ def fit_models(db, do_curve_fit=False, DG_refit=False):
     # Plate model
     plate_parameters = pd.DataFrame()
     old_plate_parameters = pd.read_json(''.join([model_param_dir, 'mf_plate_parameters.json']))
-    mf_plate_data = exp_data.query("type == 'plate'").reset_index(drop=True)
+    ignored_refs = list(itertools.chain(*[selected_ignore['plate'][key] for key in list(selected_ignore['plate'].keys())]))
+    mf_plate_data = exp_data.query("type == 'plate' & reference not in @ignored_refs").reset_index(drop=True)
     plate_terms = [term for term in list(conc_arrays['plate-mf'].keys())]
     plate_terms.append('martensite_start')
     plate_parameters['terms'] = [plate_terms]
@@ -859,7 +871,8 @@ def fit_models(db, do_curve_fit=False, DG_refit=False):
 
     # Lath Model
     lath_parameters = pd.DataFrame()
-    mf_lath_data = exp_data.query("type == 'lath'").reset_index(drop=True)
+    ignored_refs = list(itertools.chain(*[selected_ignore['lath'][key] for key in list(selected_ignore['lath'].keys())]))
+    mf_lath_data = exp_data.query("type == 'lath' & reference not in @ignored_refs").reset_index(drop=True)
     lath_terms = [term for term in list(conc_arrays['lath-mf'].keys())]
     lath_terms.append('martensite_start')
     lath_parameters['terms'] = [lath_terms]
@@ -878,7 +891,8 @@ def fit_models(db, do_curve_fit=False, DG_refit=False):
 
     # Epsilon model
     epsilon_parameters = pd.DataFrame()
-    mf_epsilon_data = exp_data.query("type == 'epsilon' & DG > -50").reset_index(drop=True)  # TODO: CHECK DG THRESHOLD. I THINK IT SHOULD BE ~ -50 OR SO.
+    ignored_refs = list(itertools.chain(*[selected_ignore['epsilon'][key] for key in list(selected_ignore['epsilon'].keys())]))
+    mf_epsilon_data = exp_data.query("type == 'epsilon' & reference not in @ignored_refs").reset_index(drop=True)
     epsilon_terms = [term for term in list(conc_arrays['epsilon-mf'].keys())]
     epsilon_terms.append('martensite_start')
     epsilon_parameters['terms'] = [epsilon_terms]
@@ -1240,8 +1254,8 @@ def make_plots():
 
         if 'Fe' in split_term:  # only Fe-X binary systems, can include all models on one plot
             
-            for type in ['lath-plate', 'epsilon']:
-                if type == 'epsilon':
+            for martensite_type in ['lath-plate', 'epsilon']:
+                if martensite_type == 'epsilon':
                     exp_type_query = ['epsilon']
                     model_DG_query = ['epsilon-mf']
                     model_Ms_query = ['epsilon-mf', 'T0-epsilon']
