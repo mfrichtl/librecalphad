@@ -36,12 +36,12 @@ interstitials = ['B', 'C', 'H', 'N', 'O']
 disabled_phases = ['BCC_B2', 'BCC_4SL', 'FCC_L10', 'FCC2_L10', 'FCC_L12', 'GAS', 'HCP_L12', 'KAPPA_A1', 'KAPPA_E21', 'IONIC_LIQ', 'TAU2_ALFEMO_A2', 'LAVES2_C14']  # disable some phases for calculations
 nb_workers = 12  # number of cores you want to use for parallel computing
 solute_threshold = 1e-12  # threshold below which I will discard a solute for predicting the Ms temperature, without it the calculations seem to stall.
-mf_plate_baseline_fits = [2090]  # from literature
-mf_lath_baseline_fits = [1250]  # from my constant fit for the Fe- alloys
+mf_plate_baseline_fits = [2089]  # from my constant fit for Fe- alloys
+mf_lath_baseline_fits = [1249]  # from my constant fit for the Fe- alloys
 mf_epsilon_baseline_fits = [-75]
-mf_plate_PAGS_fits = [ 77.63442863, -0.73221549, 187.70856069, -30.01005018, -24.39189729]
-mf_lath_PAGS_fits = [1.85298492, -49.60331451, -49.99999982, -32.85721641, 405.72772938 + 37]  # 37 J/mol to offset and make the energy contribution at 100 um be 0
-mf_epsilon_PAGS_fits =  [6.87063893e+01,  2.17951485e-06, -1.70658126e-01, -4.82696638e+02]
+mf_plate_PAGS_fits = [-57.02647348, 264.45553715]
+mf_lath_PAGS_fits = [-6.91419073, 9.49295022, 301.84731367 + 30]  # 30 J/mol to offset and make the energy contribution at 100 um be ~0
+mf_epsilon_PAGS_fits =  [7.17987277e+01, 3.14716030e-06, -1.71695704e-01, -4.79208177e+02]
 
 exp_data_dir = './experimental_data/'
 figure_dir = './figures/'
@@ -318,12 +318,12 @@ def get_dG(row, db):
     if np.isnan(row['PAGS']):
         pags_energy = 0
     elif row['type'] == 'plate':
-        pags_energy = mf_plate_PAGS_fits[0]*np.log(row['PAGS'])**mf_plate_PAGS_fits[1] + mf_plate_PAGS_fits[2]*np.exp(row['PAGS']/mf_plate_PAGS_fits[3]) + mf_plate_PAGS_fits[4]
+        pags_energy = mf_plate_PAGS_fits[0]*np.log(row['PAGS']) + mf_plate_PAGS_fits[1]
     elif row['type'] == 'lath':
         if row['PAGS'] >= 100:
             pags_energy = 0
         else:
-            pags_energy = mf_lath_PAGS_fits[0]*np.log(row['PAGS']**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]*np.exp(row['PAGS']/mf_lath_PAGS_fits[3])+ mf_lath_PAGS_fits[4]
+            pags_energy = mf_lath_PAGS_fits[0]*np.log(row['PAGS']**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]
     elif row['type'] == 'epsilon':
         pags_energy = mf_epsilon_PAGS_fits[0]*np.log(row['PAGS']**mf_epsilon_PAGS_fits[1])**mf_epsilon_PAGS_fits[2] + mf_epsilon_PAGS_fits[3]
     else:
@@ -540,11 +540,11 @@ def fit_model(orders, data, model_type):
         sub_data = data.query("alloy_system == 'Fe-'")
         fits['martensite_start'] = [mf_lath_baseline_fits]
         data['excess_DG'] = data['DG'] - mf_lath_baseline_fits[0]
-        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if any([np.isnan(row['PAGS'])]) else row['excess_DG'] - (mf_lath_PAGS_fits[0]*np.log(row['PAGS']**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]*np.exp(row['PAGS']/mf_lath_PAGS_fits[3])+ mf_lath_PAGS_fits[4]), axis=1)
+        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if any([np.isnan(row['PAGS'])]) else row['excess_DG'] - (mf_lath_PAGS_fits[0]*np.log(row['PAGS']**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]), axis=1)
     elif model_type == 'plate':
         fits['martensite_start'] = [mf_plate_baseline_fits]
         data['excess_DG'] = data['DG'] - mf_plate_baseline_fits[0]
-        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if np.isnan(row['PAGS']) else row['excess_DG'] - (mf_plate_PAGS_fits[0]*np.log(row['PAGS'])**mf_plate_PAGS_fits[1] + mf_plate_PAGS_fits[2]*np.exp(row['PAGS']/mf_plate_PAGS_fits[3])+ mf_plate_PAGS_fits[4] ), axis=1)
+        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if np.isnan(row['PAGS']) else row['excess_DG'] - (mf_plate_PAGS_fits[0]*np.log(row['PAGS']) + mf_plate_PAGS_fits[1]))
 
     quat_systems = []
     processed_Mn = False
@@ -667,9 +667,9 @@ def get_model(components, conditions, fits, model_type, pags):
     elif model_type == 'epsilon-mf':
         pags_energy = mf_epsilon_PAGS_fits[0]*np.log(pags**mf_epsilon_PAGS_fits[1])**mf_epsilon_PAGS_fits[2] + mf_epsilon_PAGS_fits[3]
     elif model_type == 'lath-mf':
-        pags_energy = mf_lath_PAGS_fits[0]*np.log(pags**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]*np.exp(pags/mf_lath_PAGS_fits[3]) + mf_lath_PAGS_fits[4]
+        pags_energy = mf_lath_PAGS_fits[0]*np.log(pags**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]
     elif model_type == 'plate-mf':
-        pags_energy = mf_plate_PAGS_fits[0]*np.log(pags)**mf_plate_PAGS_fits[1] + mf_plate_PAGS_fits[2]*np.exp(pags/mf_plate_PAGS_fits[3])+ mf_plate_PAGS_fits[4]
+        pags_energy = mf_plate_PAGS_fits[0]*np.log(pags) + mf_plate_PAGS_fits[1]
     contrib_dict['PAGS'] = pags_energy
     energy_barrier += pags_energy
     
@@ -688,7 +688,7 @@ def get_model(components, conditions, fits, model_type, pags):
                 # term_contrib = mf_epsilon_baseline_fits[0] + mf_epsilon_baseline_fits[1]*T + mf_epsilon_baseline_fits[2]*T**2
             if model_type == 'lath-mf':
                 # term_contrib = mf_lath_baseline_fits[0] + mf_lath_baseline_fits[1]*T
-                term_contrib = fit[0]
+                term_contrib = mf_lath_baseline_fits[0]
             if model_type == 'plate-mf':
                 term_contrib = mf_plate_baseline_fits[0]
         elif len(splits) == 2:  # binary system, either Fe-X or X-Y
@@ -708,7 +708,7 @@ def get_model(components, conditions, fits, model_type, pags):
                 term_contrib += np.sum(np.fromiter([fit[i]*(x_j)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
             elif splits[1] == 'Mn' and model_type == 'epsilon-mf':
                 x_i = comp_dict[splits[0].upper()]
-                term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))                
+                term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))               
             else:
                 x_i = comp_dict[splits[0].upper()]
                 x_j = comp_dict[splits[1].upper()]
