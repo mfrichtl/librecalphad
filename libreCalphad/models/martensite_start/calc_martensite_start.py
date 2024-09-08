@@ -87,8 +87,8 @@ conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace
                             'Fe-Mn': np.linspace(0, 0.3, 10), 'Fe-Ni': np.linspace(0, 0.25, 10), 'C-Cr': [np.linspace(0, 0.02, 5), np.linspace(0, 0.1, 10)],
                             },
             }
-lath_orders = {'martensite_start': 0, 'Fe-C': 0, 'Fe-Co': 1, 'Fe-Mn': 0, 'Fe-N': 0, 'Fe-Ni': 1, 'Fe-Cr': 0, 'Fe-Cu': 0,
-               'Al-Ni': 0, 'C-Cr': 0, 'C-Mn': 0, 'C-Ni': 0, 'Co-Ni': 0, 'Cr-Ni': 1, 'Cu-Ni': 0, 'Mo-Ni': 0, 'Mn-Ni': 0, 'Ni-Si': 0, 'Ni-Ti': 0, 'Ni-V': 0, 'Ni-W': 0,
+lath_orders = {'martensite_start': 0, 'Fe-C': 0, 'Fe-Co': 1, 'Fe-Cr': 0, 'Fe-Cu': 0,'Fe-Mn': 0, 'Fe-N': 0, 'Fe-Ni': 1,
+               'Al-Ni': 0, 'C-Cr': 0, 'C-Mn': 0, 'C-Ni': 0, 'Co-Ni': 0, 'Cr-Ni': 0, 'Cu-Ni': 0, 'Mn-Ni': 0, 'Mo-Ni': 0, 'Ni-Si': 0, 'Ni-Ti': 0, 'Ni-V': 0, 'Ni-W': 0,
                # 'C-Si': 0, 
             }
 plate_orders = {'martensite_start': 0, 'Fe-C': 1, 'Fe-Co': 1, 'Fe-Cr': 0, 'Fe-Cu': 0, 'Fe-Mn': 1, 'Fe-N': 0, 'Fe-Ni': 1,
@@ -523,7 +523,7 @@ def fit_model(orders, data, model_type):
     terms = list(orders.keys())
     assert 'martensite_start' in terms, "Need to pass the Ms temperatures for fitting the non-chemistry-dependent terms...try again."
     fits = {}
-    data  = data.query("PAGS_energy < 25").copy()  # Just remove the tiny grained stuff
+    data  = data.query("PAGS_energy < 25").copy()  # Just remove the tiny grained stuff for fitting
 
     data['excess_DG'] = data['DG']  # initialize excess
     
@@ -540,11 +540,11 @@ def fit_model(orders, data, model_type):
         sub_data = data.query("alloy_system == 'Fe-'")
         fits['martensite_start'] = [mf_lath_baseline_fits]
         data['excess_DG'] = data['DG'] - mf_lath_baseline_fits[0]
-        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if any([np.isnan(row['PAGS'])]) else row['excess_DG'] - (mf_lath_PAGS_fits[0]*np.log(row['PAGS']**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]), axis=1)
+        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if np.isnan(row['PAGS']) else row['excess_DG'] - (mf_lath_PAGS_fits[0]*np.log(row['PAGS']**mf_lath_PAGS_fits[1]) + mf_lath_PAGS_fits[2]), axis=1)
     elif model_type == 'plate':
         fits['martensite_start'] = [mf_plate_baseline_fits]
         data['excess_DG'] = data['DG'] - mf_plate_baseline_fits[0]
-        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if np.isnan(row['PAGS']) else row['excess_DG'] - (mf_plate_PAGS_fits[0]*np.log(row['PAGS']) + mf_plate_PAGS_fits[1]))
+        data['excess_DG'] = data.apply(lambda row: row['excess_DG'] if np.isnan(row['PAGS']) else row['excess_DG'] - (mf_plate_PAGS_fits[0]*np.log(row['PAGS']) + mf_plate_PAGS_fits[1]), axis=1)
 
     quat_systems = []
     processed_Mn = False
@@ -587,7 +587,6 @@ def fit_model(orders, data, model_type):
         split_term = fit_term.split('-')
         x_b = x_c = x_n = x_o = np.zeros(len(sub_data))  # initialize interstitial values as zeros.
         fullx_b = fullx_c = fullx_n = fullx_o = np.zeros(len(data))
-        interstitial = False
         if len(split_term) == 2:
             x_i = split_term[0]
             x_j = split_term[1]
@@ -601,22 +600,22 @@ def fit_model(orders, data, model_type):
                 x_1 = np.ones(len(sub_data))
                 fullx_0 = data[x_i]
                 fullx_1 = np.ones(len(data))
-            elif model_type == 'epsilon' and x_i == 'Mn':
-                x_0 = sub_data[x_j]
-                x_1 = np.ones(len(sub_data))
-                fullx_0 = data[x_j]
-                fullx_1 = np.ones(len(data))
-            elif model_type == 'epsilon' and x_j == 'Mn':
-                x_0 = sub_data[x_i]
-                x_1 = np.ones(len(sub_data))
-                fullx_0 = data[x_i]
-                fullx_1 = np.ones(len(data))
+            # elif model_type == 'epsilon' and x_i == 'Mn':
+            #     x_0 = sub_data[x_j]
+            #     x_1 = np.ones(len(sub_data))
+            #     fullx_0 = data[x_j]
+            #     fullx_1 = np.ones(len(data))
+            # elif model_type == 'epsilon' and x_j == 'Mn':
+            #     x_0 = sub_data[x_i]
+            #     x_1 = np.ones(len(sub_data))
+            #     fullx_0 = data[x_i]
+            #     fullx_1 = np.ones(len(data))
             else:  # solute interaction
                 x_0 = sub_data[x_i]
                 x_1 = sub_data[x_j]
                 fullx_0 = data[x_i]
                 fullx_1 = data[x_j]
-            if (x_i in interstitials or x_j in interstitials) and order > 0:  # need to change the denominator to account for higher order and interstitial interactions
+            if any([x_i in interstitials, x_j in interstitials]):  # need to change the denominator to account for higher order and interstitial interactions
                 x_b = sub_data['B']
                 x_c = sub_data['C']
                 x_n = sub_data['N']
@@ -625,7 +624,6 @@ def fit_model(orders, data, model_type):
                 fullx_c = data['C']
                 fullx_n = data['N']
                 fullx_o = data['O']
-                interstitial = True
             print(f"Modeling interactions for {fit_term}.")
             if order == 0:
                 fits[fit_term] = curve_fit(lambda x, C_0: x[0]*x[1]*C_0/(1-x[2]-x[3]-x[4]-x[5]), np.vstack([x_0, x_1, x_b, x_c, x_n, x_o]), sub_data['excess_DG'])
@@ -692,7 +690,7 @@ def get_model(components, conditions, fits, model_type, pags):
             if model_type == 'plate-mf':
                 term_contrib = mf_plate_baseline_fits[0]
         elif len(splits) == 2:  # binary system, either Fe-X or X-Y
-            if any(map(lambda comp: comp in splits, interstitials)) and len(fit) > 1:  # should evaluate to true if an interstitial element is being fit
+            if any(map(lambda comp: comp in splits, interstitials)):  # should evaluate to true if an interstitial element is being fit
                 x_b = comp_dict['B']
                 x_c = comp_dict['C']
                 x_n = comp_dict['N']
@@ -703,12 +701,12 @@ def get_model(components, conditions, fits, model_type, pags):
             elif splits[1] == 'Fe':
                 x_i = comp_dict[splits[0].upper()]
                 term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
-            elif splits[0] == 'Mn' and model_type == 'epsilon-mf':
-                x_j = comp_dict[splits[1].upper()]
-                term_contrib += np.sum(np.fromiter([fit[i]*(x_j)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
-            elif splits[1] == 'Mn' and model_type == 'epsilon-mf':
-                x_i = comp_dict[splits[0].upper()]
-                term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))               
+            # elif splits[0] == 'Mn' and model_type == 'epsilon-mf':
+            #     x_j = comp_dict[splits[1].upper()]
+            #     term_contrib += np.sum(np.fromiter([fit[i]*(x_j)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
+            # elif splits[1] == 'Mn' and model_type == 'epsilon-mf':
+            #     x_i = comp_dict[splits[0].upper()]
+            #     term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))               
             else:
                 x_i = comp_dict[splits[0].upper()]
                 x_j = comp_dict[splits[1].upper()]
@@ -1275,7 +1273,7 @@ def make_plots():
                 ax.set_ylabel(r"$\Delta G^{\gamma \rightarrow \alpha}$ J mol$^{-1}$")
                 # ax.set_title(r"$\Delta G^{\gamma \rightarrow \alpha}$" + f" for {systems[-1]} System")
                 fig.tight_layout()
-                fig.savefig(''.join([figure_dir, term, '_', type, '_DG.png']))
+                fig.savefig(''.join([figure_dir, term, '_', martensite_type, '_DG.png']))
                 plt.close()
 
                 model_projected_data = model_data.query("alloy_system in @systems & projected_point == True & type in @model_Ms_query")
@@ -1286,7 +1284,7 @@ def make_plots():
                 ax.set_ylabel("Martensite Start Temperature (K)")
                 # ax.set_title(f"Martensite Start Temperature for {systems[-1]} System")
                 fig.tight_layout()
-                fig.savefig(''.join([figure_dir, term, '_', type, '_Ms.png']))
+                fig.savefig(''.join([figure_dir, term, '_', martensite_type, '_Ms.png']))
                 plt.close()
         else:  # other interacting systems, need to graph differently
             for model in models:
@@ -1445,14 +1443,15 @@ def predict_type():
     sns.set_style('white')
     gpc = GaussianProcessClassifier(kernel=classifier_kernel)
     _ = gpc.fit(X_train, Y_train)
+    R_squared = gpc.score(X_test, Y_test)
     print(gpc.kernel_.get_params())
-    print(f"{len(Y_train)} data points used for GPC training and {len(Y_test)} for testing. R^2: {str(gpc.score(X_test, Y_test))}")
+    print(f"{len(Y_train)} data points used for GPC training and {len(Y_test)} for testing. R^2: {str(R_squared)}")
     con_matrix = ConfusionMatrixDisplay.from_estimator(gpc, X_test, Y_test)
     con_matrix.ax_.set_xlabel("Predicted Type")
     con_matrix.ax_.set_ylabel("Actual Type")
     con_matrix.figure_.tight_layout()
     con_matrix.figure_.savefig('/'.join([figure_dir, 'gpc_confusion_matrix.png']))
-    pd.DataFrame({'gp_classifier': [gpc], 'version': time.time()}).to_pickle('./gp_classifier_model.pkl')
+    pd.DataFrame({'gp_classifier': [gpc], 'training_data': len(Y_train), 'testing_data': len(Y_test), 'R^2': R_squared, 'version': time.time()}).to_pickle('./gp_classifier_model.pkl')
 
     sns.set_style('whitegrid')
     data_to_classify = data.query("type.isnull()").copy()

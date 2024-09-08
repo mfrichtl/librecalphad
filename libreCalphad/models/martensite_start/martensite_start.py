@@ -4,7 +4,7 @@ Examples of its use are contained in martensite_start.ipynb.
 """
 
 from collections import defaultdict
-import json
+from importlib import resources as impresources
 from libreCalphad.models.utilities import get_components_from_conditions, DG
 from libreCalphad.models.martensite_start.calc_martensite_start import get_model
 import numpy as np
@@ -83,7 +83,8 @@ def get_lath_model_mf(conditions, pags=np.nan):
                 Dictionary of the predicted contributions of each modeled subsystem of the alloy, in J/mol.
     """
 
-    fits = pd.read_json('./model_params/mf_lath_parameters.json')['mf_lath_fits'][0]
+    param_file = str(impresources.files('libreCalphad.models.martensite_start.model_params') / 'mf_lath_parameters.json')
+    fits = pd.read_json(param_file)['mf_lath_fits'][0]
     components = get_components_from_conditions(conditions, dependent_component='FE')
     energy_barrier, contrib_dict = get_model(components, conditions, fits, 'lath-mf', pags)
     return energy_barrier, contrib_dict
@@ -106,7 +107,8 @@ def get_plate_model_mf(conditions, pags=np.nan):
                 Dictionary of the predicted contributions of each modeled subsystem of the alloy, in J/mol.
     """
 
-    fits = pd.read_json('./model_params/mf_plate_parameters.json')['mf_plate_fits'][0]
+    param_file = str(impresources.files('libreCalphad.models.martensite_start.model_params') / 'mf_plate_parameters.json')
+    fits = pd.read_json(param_file)['mf_plate_fits'][0]
     components = get_components_from_conditions(conditions, dependent_component='FE')
     energy_barrier, contrib_dict = get_model(components, conditions, fits, 'plate-mf', pags)
     return energy_barrier, contrib_dict
@@ -129,7 +131,8 @@ def get_epsilon_model_mf(conditions, pags=np.nan):
                 Dictionary of the predicted contributions of each modeled subsystem of the alloy, in J/mol.
     """
 
-    fits = pd.read_json('./model_params/mf_epsilon_parameters.json')['mf_epsilon_fits'][0]
+    param_file = str(impresources.files('libreCalphad.models.martensite_start.model_params') / 'mf_epsilon_parameters.json')
+    fits = pd.read_json(param_file)['mf_epsilon_fits'][0]
     components = get_components_from_conditions(conditions, dependent_component='FE')
     energy_barrier, contrib_dict = get_model(components, conditions, fits, 'epsilon-mf', pags)
     return energy_barrier, contrib_dict
@@ -147,7 +150,8 @@ def predict_martensite_type(conditions):
                 An array of strings of the predicted martensite types.
     """
 
-    gpc = pd.read_pickle('./gp_classifier_model.pkl').iloc[0]['gp_classifier']  # load the clasifier model
+    gpc_file = str(impresources.files('libreCalphad.models.martensite_start') / 'gp_classifier_model.pkl')
+    gpc = pd.read_pickle(gpc_file).iloc[0]['gp_classifier']  # load the clasifier model
     feature_dict = {}
     df = pd.DataFrame()
     if type(conditions[v.T]) == int or type(conditions[v.T]) == float:  # only a single temperature
