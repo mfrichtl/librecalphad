@@ -1,5 +1,8 @@
+.DS_Store
 .vscode/
 *.pkl
+# Allow the GPC ML model type prediction pkl file
+!libreCalphad/models/martensite_start/gp_classifier_model.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
