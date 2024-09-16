@@ -26,7 +26,7 @@ import sys
 import time
 
 sns.set_style('whitegrid')
-sns.set_context('paper', font_scale=1)
+sns.set_context('paper', font_scale=2)
 dbf = 'mf-steel.tdb'
 max_num_conds_DG = 12  # stack smashing errors seem to be associated with too many conditions in a computation
 remove_list = ['FE', 'GE']  # Remove these from component lists, Fe removed because it is the dependent component in all subsequent calculations
@@ -1270,8 +1270,8 @@ def make_plots():
                 sns.scatterplot(data=model_exp_data, x=x, y='DG', hue='type', ax=ax, style='reference', s=200)
                 sns.lineplot(data=model_projected_data, x=x, y='DG', hue='type', ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
-                ax.set_ylabel(r"$\Delta G^{\gamma \rightarrow \alpha}$ J mol$^{-1}$")
-                # ax.set_title(r"$\Delta G^{\gamma \rightarrow \alpha}$" + f" for {systems[-1]} System")
+                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{\gamma \rightarrow \alpha}~\frac{\mathrm{J}} {\mathrm{mol}}$")
+
                 fig.tight_layout()
                 fig.savefig(''.join([figure_dir, term, '_', martensite_type, '_DG.png']))
                 plt.close()
@@ -1334,7 +1334,7 @@ def make_plots():
                 xrange = [np.min(np.concatenate([system_model_data[x], model_exp_data[x]])), np.max(np.concatenate([system_model_data[x], model_exp_data[x]]))]
                 cmid = np.mean(crange)
                 cbar_dict = dict(
-                    title=r"$ \Delta g \frac{\mathrm{J}}{\mathrm{mol}}$",
+                    # title=r"$ \Delta g \frac{\mathrm{J}}{\mathrm{mol}}$ \n",
                     titleside='top',
                     tickmode='array',
                     tickvals=[crange[0], cmid, crange[1]],
@@ -1512,6 +1512,10 @@ def do_martensite_start(db, DG_refit):
         storm_exp.to_json(''.join([exp_data_dir, 'stormvinter_predicted_martensite_start.json']))
     else:
         storm_exp = pd.read_json(''.join([exp_data_dir, 'stormvinter_predicted_martensite_start.json']))
+
+def make_parity_plots():
+    exp_data = pd.read_json(''.join([exp_data_dir, 'predicted_martensite_start.json']))
+    storm_exp = pd.read_json(''.join([exp_data_dir, 'stormvinter_predicted_martensite_start.json']))
 
     lath_plate_exp = exp_data.query("type == 'lath' or type == 'plate'")
     epsilon_exp = exp_data.query("type == 'epsilon'")
@@ -1751,6 +1755,8 @@ if __name__ == '__main__':
         model_pags(db)
     if 'martensite start' in args or 'all' in args:  # calculate martensite start model temperatures to compare to experimental data
         do_martensite_start(db, DG_refit)
+    if any(['parity' in args, 'all' in args]):
+        make_parity_plots()
     else:
         print("Anything else you want me to do?")
         print(f"Arguments were: {args}")
