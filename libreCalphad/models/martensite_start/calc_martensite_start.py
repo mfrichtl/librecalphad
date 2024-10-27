@@ -1468,7 +1468,7 @@ def predict_type():
     
     data = pd.concat([exp_data, data_to_classify]).reset_index(drop=True)
     data['martensite_start'] = data['martensite_start'] * 1000
-    exp_data['type'] = exp_data.apply(lambda row: 'alpha' if row['type'] == 'non-martensite' else row['type'], axis=1)
+    data['type'] = data.apply(lambda row: 'alpha' if row['type'] == 'non-martensite' else row['type'], axis=1)
     data.to_json(''.join([exp_data_dir, 'gpc_predicted_types.json']))
 
 
