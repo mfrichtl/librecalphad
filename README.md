@@ -7,5 +7,8 @@ Welcome to the LibreCalphad project. The purpose is to create a set of open CALP
 
 The rest of the files don't really do much for now. More will be added to this at a later date.
 
+# Property Models
+A martensite-start temperature model for steels is currently available. It still needs much work, but is a good start for collaboration. See the README in it's folder or the notebook in the examples folder for more information.
+
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.

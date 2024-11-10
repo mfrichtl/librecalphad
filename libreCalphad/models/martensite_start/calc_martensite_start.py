@@ -83,7 +83,7 @@ conc_arrays = {'lath-mf': {'Fe-C': np.linspace(0, 0.06, 4), 'Fe-Co': np.linspace
             'lath-storm': {'Fe-C': np.linspace(0, 0.04, 5), 'Fe-Co': np.linspace(0, 0.3, 10), 'Fe-Cr': np.linspace(0, 0.1, 10), 'Fe-Cu': np.linspace(0, 0.1, 5),
                            'Fe-Mn': np.linspace(0, 0.3, 10), 'Fe-Ni': np.linspace(0, 0.25, 10), 'C-Cr': [np.linspace(0, 0.02, 5), np.linspace(0, 0.1, 10)],
                             },
-            'plate-storm': {'Fe-C': np.linspace(0, 0.05, 5), 'Fe-Co': np.linspace(0, 0.3, 10), 'Fe-Cr': np.linspace(0, 0.1, 10), 'Fe-Cu': np.linspace(0, 0.1, 5),
+            'plate-storm': {'Fe-C': np.linspace(0, 0.08, 5), 'Fe-Co': np.linspace(0, 0.3, 10), 'Fe-Cr': np.linspace(0, 0.1, 10), 'Fe-Cu': np.linspace(0, 0.1, 5),
                             'Fe-Mn': np.linspace(0, 0.3, 10), 'Fe-Ni': np.linspace(0, 0.25, 10), 'C-Cr': [np.linspace(0, 0.02, 5), np.linspace(0, 0.1, 10)],
                             },
             }
@@ -615,7 +615,7 @@ def fit_model(orders, data, model_type):
                 x_1 = sub_data[x_j]
                 fullx_0 = data[x_i]
                 fullx_1 = data[x_j]
-            if any([x_i in interstitials, x_j in interstitials]):  # need to change the denominator to account for higher order and interstitial interactions
+            if any([x_i in interstitials, x_j in interstitials]) and order > 0:  # need to change the denominator to account for higher order and interstitial interactions
                 x_b = sub_data['B']
                 x_c = sub_data['C']
                 x_n = sub_data['N']
@@ -675,38 +675,27 @@ def get_model(components, conditions, fits, model_type, pags):
         fit = fits[term][0]
         splits = term.split('-')
         term_contrib = 0
-        x_b = x_c = x_n = x_o = 0
+        x_b = x_c = x_n = x_o = 0  # initialize interstitials for a purely substitutional fitting term
         if term == 'martensite_start':
             # Energy barrier for pure iron
-            # term_contrib = fit[0]
             if model_type == 'epsilon-mf':
-                # term_contrib = fit[0]
                 term_contrib = mf_epsilon_baseline_fits[0]
-                # term_contrib = mf_epsilon_baseline_fits[0] + mf_epsilon_baseline_fits[1]*T
-                # term_contrib = mf_epsilon_baseline_fits[0] + mf_epsilon_baseline_fits[1]*T + mf_epsilon_baseline_fits[2]*T**2
             if model_type == 'lath-mf':
-                # term_contrib = mf_lath_baseline_fits[0] + mf_lath_baseline_fits[1]*T
                 term_contrib = mf_lath_baseline_fits[0]
             if model_type == 'plate-mf':
                 term_contrib = mf_plate_baseline_fits[0]
         elif len(splits) == 2:  # binary system, either Fe-X or X-Y
-            if any(map(lambda comp: comp in splits, interstitials)):  # should evaluate to true if an interstitial element is being fit
+            if any(map(lambda comp: comp in splits, interstitials)) and len(fit) > 1:  # should evaluate to true if an interstitial element is being fit and order > 0
                 x_b = comp_dict['B']
                 x_c = comp_dict['C']
                 x_n = comp_dict['N']
                 x_o = comp_dict['O']
-            if splits[0] == 'Fe':
+            if splits[0] == 'Fe':  # Fe-X
                 x_j = comp_dict[splits[1].upper()]
                 term_contrib += np.sum(np.fromiter([fit[i]*(x_j)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
-            elif splits[1] == 'Fe':
+            elif splits[1] == 'Fe':  # X-Fe
                 x_i = comp_dict[splits[0].upper()]
-                term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
-            # elif splits[0] == 'Mn' and model_type == 'epsilon-mf':
-            #     x_j = comp_dict[splits[1].upper()]
-            #     term_contrib += np.sum(np.fromiter([fit[i]*(x_j)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))
-            # elif splits[1] == 'Mn' and model_type == 'epsilon-mf':
-            #     x_i = comp_dict[splits[0].upper()]
-            #     term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))               
+                term_contrib += np.sum(np.fromiter([fit[i]*(x_i)**(i+1)/(1-x_b-x_c-x_n-x_o) for i in range(len(fit))], float))   
             else:
                 x_i = comp_dict[splits[0].upper()]
                 x_j = comp_dict[splits[1].upper()]
@@ -1339,18 +1328,23 @@ def make_plots():
                     tickmode='array',
                     tickvals=[crange[0], cmid, crange[1]],
                     ticks='outside')
+                dpi = plt.rcParams['figure.dpi']
                 contour = go.Contour(x=system_model_data[x], y=system_model_data[hue], z=system_model_data['DG'], line_smoothing=1, zmin=crange[0], zmax=crange[1], colorbar=cbar_dict, colorscale='bluered')
                 scatter = go.Scatter(x=model_exp_data[x], y=model_exp_data[hue], mode='markers', 
                                      marker=dict(size=16, color=model_exp_data['DG'], cmin=crange[0], cmax=crange[1], colorbar=cbar_dict, colorscale='bluered', showscale=False,
                                                  line=dict(color='White', width=2)))
                 data = [contour, scatter]
                 fig = go.Figure(data=data) 
-                fig.update_xaxes(range=xrange)
-                fig.update_yaxes(range=[np.min(np.concatenate([system_model_data[hue], model_exp_data[hue]])),
-                                        np.max(np.concatenate([system_model_data[hue], model_exp_data[hue]]))])
                 fig.update_layout(#title_text=f"{term} Driving Force Contour Plot for MF {model_type.capitalize()} Martensite Model",
-                                  xaxis_title=r"$x_\mathrm{sol}$".replace('sol', x),
-                                  yaxis_title=r"$x_\mathrm{hue}$".replace('hue', hue))
+                                  autosize=False,
+                                  width=12*dpi,
+                                  height=8*dpi,
+                                  font=dict(size=19.2),)
+                fig.update_xaxes(range=xrange, title_text=r"$x_\mathrm{sol}$".replace('sol', x), title_font_size=24)
+                fig.update_yaxes(range=[np.min(np.concatenate([system_model_data[hue], model_exp_data[hue]])),
+                                        np.max(np.concatenate([system_model_data[hue], model_exp_data[hue]]))],
+                                        title_text=r"$x_\mathrm{hue}$".replace('hue', hue), title_font_size=24)
+                plt.xlabel(r"$x_\mathrm{hue}$".replace('hue', hue), size=19.2)
                 fig.write_image(''.join([figure_dir, term, '_', model, '_contour_DG.png']))
 
 
@@ -1520,37 +1514,68 @@ def do_martensite_start(db, DG_refit):
 def make_parity_plots():
     exp_data = pd.read_json(''.join([exp_data_dir, 'predicted_martensite_start.json']))
     storm_exp = pd.read_json(''.join([exp_data_dir, 'stormvinter_predicted_martensite_start.json']))
-
-    exp_data['predicted_type'] = exp_data.apply(lambda row: 'Predicted Type' if row['predicted_type'] == True else 'Known Type', axis=1)
+    storm_exp['Type Prediction'] = storm_exp.apply(lambda row: 'Predicted' if row['predicted_type'] == True else 'Known', axis=1)
+    exp_data['Type Prediction'] = exp_data.apply(lambda row: 'Predicted' if row['predicted_type'] == True else 'Known', axis=1)
+    exp_data['Type'] = exp_data.apply(lambda row: row['type'].capitalize(), axis=1)
     lath_plate_exp = exp_data.query("type == 'lath' or type == 'plate'")
     epsilon_exp = exp_data.query("type == 'epsilon'")
-    
+
+    # MF model, all martensite types
+    combined_RMSE = np.sqrt(np.mean(exp_data['error']**2))
+    line_vals = np.linspace(np.min(exp_data['martensite_start'])-15, np.max(exp_data['martensite_start'])+15)
+    fig, ax = plt.subplots(figsize=(12,8))
+    sns.scatterplot(data=exp_data, x='martensite_start', y='mf_martensite_start', hue='Type Prediction',  style='Type', s=100, ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals, ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals+combined_RMSE, color='black', linestyle='--', ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals-combined_RMSE, color='black', linestyle='--', ax=ax)
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
+    ax.text(400, 1050, f"Alloys Predicted: {len(exp_data)}")
+    ax.text(400, 1000, f"RMSE: {round(combined_RMSE, 2)} K")
+    fig.tight_layout()
+    fig.savefig(''.join([figure_dir, 'mf_combined_parity_plot_all.png']))
+    plt.close()
+
+    mf_combined_known_type_RMSE = np.sqrt(np.mean(exp_data.query("`Type Prediction` == 'Known Type'")['error']**2))
+    fig, ax = plt.subplots(figsize=(12,8))
+    sns.scatterplot(data=exp_data.query("`Type Prediction` == 'Known Type'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=100, ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals, ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals+mf_combined_known_type_RMSE, color='black', linestyle='--', ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals-mf_combined_known_type_RMSE, color='black', linestyle='--', ax=ax)
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
+    ax.text(400, 1050, f"Alloys Predicted: {len(exp_data.query("`Type Prediction` == 'Known Type'"))}")
+    ax.text(400, 1000, f"RMSE: {round(mf_combined_known_type_RMSE, 2)} K")
+    fig.tight_layout()
+    fig.savefig(''.join([figure_dir, 'mf_combined_parity_plot_known_type.png']))
+    plt.close()
+
     # MF model, lath  & plate
     mf_lp_RMSE = np.sqrt(np.mean(lath_plate_exp['error']**2))
     line_vals = np.linspace(np.min(lath_plate_exp['martensite_start'])-15, np.max(lath_plate_exp['martensite_start'])+15)
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=lath_plate_exp, x='martensite_start', y='mf_martensite_start', hue='predicted_type', s=100, ax=ax)
+    sns.scatterplot(data=lath_plate_exp, x='martensite_start', y='mf_martensite_start', hue='Type Prediction', style='Type', s=100, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_lp_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_lp_RMSE, color='black', linestyle='--', ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
     ax.text(400, 1050, f"Alloys Predicted: {len(lath_plate_exp)}")
     ax.text(400, 1000, f"RMSE: {round(mf_lp_RMSE, 2)} K")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf_lath-plate_parity_plot_all.png']))
     plt.close()
 
-    mf_lp_RMSE = np.sqrt(np.mean(lath_plate_exp.query("predicted_type == False")['error']**2))
+    mf_lp_known_type_RMSE = np.sqrt(np.mean(lath_plate_exp.query("`Type Prediction` == 'Known Type'")['error']**2))
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=lath_plate_exp.query("predicted_type == False"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=100, ax=ax)
+    sns.scatterplot(data=lath_plate_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=100, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_lp_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_lp_RMSE, color='black', linestyle='--', ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms (K)')
-    ax.text(400, 1050, f"Alloys Predicted: {len(lath_plate_exp.query('predicted_type == False'))}")
-    ax.text(400, 1000, f"RMSE: {round(mf_lp_RMSE, 2)} K")
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
+    ax.text(400, 1050, f"Alloys Predicted: {len(lath_plate_exp.query("`Type Prediction` == 'Known'"))}")
+    ax.text(400, 1000, f"RMSE: {round(mf_lp_known_type_RMSE, 2)} K")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf_lath-plate_parity_plot_known_type.png']))
     plt.close()
@@ -1559,28 +1584,28 @@ def make_parity_plots():
     mf_eps_RMSE = np.sqrt(np.mean(epsilon_exp['error']**2))
     line_vals = np.linspace(np.min(epsilon_exp['martensite_start'])-15, np.max(epsilon_exp['martensite_start'])+15)
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=epsilon_exp, x='martensite_start', y='mf_martensite_start', hue='predicted_type', s=100, ax=ax)
+    sns.scatterplot(data=epsilon_exp, x='martensite_start', y='mf_martensite_start', hue='Type Prediction', s=100, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_eps_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_eps_RMSE, color='black', linestyle='--', ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
     ax.text(350, 460, f"Alloys Predicted: {len(epsilon_exp)}")
     ax.text(350, 450, f"RMSE: {round(mf_eps_RMSE, 2)} K")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf_epsilon_parity_plot_all.png']))
     plt.close()
 
-    mf_eps_RMSE = np.sqrt(np.mean(epsilon_exp.query("predicted_type == False")['error']**2))
+    mf_eps_known_type_RMSE = np.sqrt(np.mean(epsilon_exp.query("`Type Prediction` == 'Known'")['error']**2))
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=epsilon_exp.query("predicted_type == False"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', ax=ax)
+    sns.scatterplot(data=epsilon_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
-    sns.lineplot(x=line_vals, y=line_vals+mf_eps_RMSE, color='black', linestyle='--', ax=ax)
-    sns.lineplot(x=line_vals, y=line_vals-mf_eps_RMSE, color='black', linestyle='--', ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms (K)')
-    ax.text(350, 460, f"Alloys Predicted: {len(epsilon_exp.query('predicted_type == False'))}")
-    ax.text(350, 450, f"RMSE: {round(mf_eps_RMSE, 2)} K")
+    sns.lineplot(x=line_vals, y=line_vals+mf_eps_known_type_RMSE, color='black', linestyle='--', ax=ax)
+    sns.lineplot(x=line_vals, y=line_vals-mf_eps_known_type_RMSE, color='black', linestyle='--', ax=ax)
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
+    ax.text(350, 460, f"Alloys Predicted: {len(epsilon_exp.query("`Type Prediction` == 'Known'"))}")
+    ax.text(350, 450, f"RMSE: {round(mf_eps_known_type_RMSE, 2)} K")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf_epsilon_parity_plot_known_type.png']))
     plt.close()
@@ -1591,17 +1616,17 @@ def make_parity_plots():
     fig, ax = plt.subplots(figsize=(12,8))
     sns.scatterplot(data=lath_plate_exp, x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'Ms_lath-plate_residuals_plot_all.png']))
     plt.close()
 
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=lath_plate_exp.query("predicted_type == False"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
+    sns.scatterplot(data=lath_plate_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'Ms_lath-plate_residuals_plot_known_type.png']))
     plt.close()
@@ -1609,17 +1634,17 @@ def make_parity_plots():
     fig, ax = plt.subplots(figsize=(12,8))
     sns.scatterplot(data=epsilon_exp, x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'Ms_epsilon_residuals_plot_all.png']))
     plt.close()
 
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=epsilon_exp.query("predicted_type == False"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
+    sns.scatterplot(data=epsilon_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'Ms_epsilon_residuals_plot_known_type.png']))
     plt.close()
@@ -1629,17 +1654,17 @@ def make_parity_plots():
     exp_data = exp_data.sort_values('error')
 
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=exp_data.tail(50), x='martensite_start', y='error', hue='type', style='alloy_system', s=200, ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    sns.scatterplot(data=exp_data.tail(25), x='martensite_start', y='error', hue='Type', style='alloy_system', s=200, ax=ax)
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf-steel_highest_residuals_all.png']))
     plt.close()
 
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=exp_data.query("predicted_type == False").tail(50), x='martensite_start', y='error', hue='type', style='alloy_system', s=200, ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    sns.scatterplot(data=exp_data.query("`Type Prediction` == 'Known'").tail(25), x='martensite_start', y='error', hue='Type', style='alloy_system', s=200, ax=ax)
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf-steel_highest_residuals_known_type.png']))
     plt.close()
@@ -1652,8 +1677,8 @@ def make_parity_plots():
     sns.lineplot(x=line_vals, y=line_vals+sv_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-sv_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
     # ax.set_title("Stormvinter2012 Steel Lath and Plate Martensite Start Model")
 
     ax.text(400, 1200, f"RMSE: {round(sv_RMSE, 2)} K")
@@ -1661,14 +1686,14 @@ def make_parity_plots():
     fig.savefig(''.join([figure_dir, 'stormvinter_parity_plot_all.png']))
     plt.close()
 
-    sv_RMSE = np.sqrt(np.mean(storm_exp.query("predicted_type == False")['error']**2))
+    sv_RMSE = np.sqrt(np.mean(storm_exp.query("`Type Prediction` == 'Known'")['error']**2))
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=storm_exp.query("predicted_type == False"), x='martensite_start', y='storm_martensite_start', hue='alloy_system', ax=ax)
+    sns.scatterplot(data=storm_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='storm_martensite_start', hue='alloy_system', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+sv_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-sv_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ (K)')
     # ax.set_title("Stormvinter2012 Steel Lath and Plate Martensite Start Model")
 
     ax.text(400, 1200, f"RMSE: {round(sv_RMSE, 2)} K")
@@ -1679,23 +1704,45 @@ def make_parity_plots():
     fig, ax = plt.subplots(figsize=(12,8))
     sns.scatterplot(data=storm_exp, x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(storm_exp['martensite_start']))
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     # ax.set_title("Stormvinter2012 Steel Martensite Start Model Residuals")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'stormvinter_residual_plot_all.png']))
     plt.close()
 
     fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=storm_exp.query("predicted_type == False"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
+    sns.scatterplot(data=storm_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(storm_exp['martensite_start']))
-    ax.set_xlabel('Experimental Ms (K)')
-    ax.set_ylabel('Predicted Ms Error (K)')
+    ax.set_xlabel(r'Experimental M$M_\mathrm{s}$s (K)')
+    ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     # ax.set_title("Stormvinter2012 Steel Martensite Start Model Residuals")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'stormvinter_residual_plot_known_type.png']))
     plt.close()
 
+    # Recreate commercial steel parity plots from Stormvinter2012 to compare performance
+
+    exp_data['predicted_martensite_start'] = exp_data['mf_martensite_start']
+    exp_data['model_type'] = "This Work"
+    storm_exp['predicted_martensite_start'] = storm_exp['storm_martensite_start']
+    storm_exp['model_type'] = "Stormvinter"
+    all_exp_data = pd.concat([storm_exp, exp_data])
+
+    # Plot error versus number of components
+    exp_data['num_components'] = exp_data.apply(lambda row: len(row['components'])-1, axis=1)
+    exp_data['error'] = np.abs(exp_data['error'])
+    error_data = exp_data.sort_values('error', ascending=False)
+
+    fig, ax = plt.subplots(figsize=(12,8))
+    sns.barplot(data=exp_data, x='num_components', y='error', ax=ax)
+    ax.set_xlabel("Number of Components")
+    ax.set_ylabel("Error (K)")
+    fig.tight_layout()
+    fig.savefig('/'.join([figure_dir, "error_vs_components.png"]))
+    plt.close()
+    
+    print(f"MF total RMS Error: {combined_RMSE} K")
     print(f"MF Lath/Plate RMS Error: {mf_lp_RMSE} K")
     print(f"MF Epsilon RMS Error: {mf_eps_RMSE} K")
     print(f"Stormvinter RMS Error: {sv_RMSE} K")
@@ -1731,6 +1778,34 @@ def step_plot_wrapper(db):
     data['step_file'] = data.apply(lambda row: make_a_step_plot(row, db), axis=1)
     data.to_json(''.join([exp_data_dir, 'cleaned_exp_data_with_step.json']))
 
+def update_param_markdown():
+    # Update the current fitting parameters markdown file
+    model_param_dir = './model_params'
+    plate_params = pd.read_json('/'.join([model_param_dir, 'mf_plate_parameters.json']))
+    lath_params = pd.read_json('/'.join([model_param_dir, 'mf_lath_parameters.json']))
+    epsilon_params = pd.read_json('/'.join([model_param_dir, 'mf_epsilon_parameters.json']))
+    md_file = './model_parameters.md'
+
+    with open(md_file, 'w') as f:
+        f.write("# Instructions\n")
+        f.write("This file contains the current fitting parameters of the martensite-start temperature model. Each type of martensite is included. The fitting parameters are listed below by the binary (Fe-X) or ternary (Fe-X-Y) system. Parameters with more than value are for higher order fits.\n")
+        f.write("# Lath model terms:\n")
+        for term, fits in lath_params['mf_lath_fits'][0].items():
+            f.write(f"{term}: {fits[0]}")
+            f.write('\n')
+
+        f.write('\n')
+        f.write("# Plate model terms\n")
+        for term, fits in plate_params['mf_plate_fits'][0].items():
+            f.write(f"{term}: {fits[0]}")
+            f.write('\n')
+
+        f.write('\n')
+        f.write("Epsilon model terms:\n")
+        for term, fits in epsilon_params['mf_epsilon_fits'][0].items():
+            f.write(f"{term}: {fits[0]}")
+            f.write('\n')
+
 if __name__ == '__main__':
     pandarallel.initialize(nb_workers=nb_workers)
     args = ' '.join(sys.argv[1:])
@@ -1755,6 +1830,8 @@ if __name__ == '__main__':
     if 'plot' in args or 'curve fit' in args or 'all' in args:
         print("Making plots")
         make_plots()
+    if any(['markdown' in args, 'all' in args]):
+        update_param_markdown()
     if 'pags' in args or 'all' in args:
         print("Modeling PAGS effects.")
         model_pags(db)
@@ -1765,7 +1842,7 @@ if __name__ == '__main__':
     else:
         print("Anything else you want me to do?")
         print(f"Arguments were: {args}")
-        print("Options are 'curve fit', 'DG', 'martensite start', 'plot', 'project', 'refit', or 'all'.")
+        print("Options are 'curve fit', 'DG', 'martensite start', 'pags', 'parity', 'plot', 'predict type', 'project', 'refit', or 'all'.")
         print("Please try again.")
 
     end_time = time.perf_counter()
