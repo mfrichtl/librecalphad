@@ -13,7 +13,7 @@ comps = ['AL', 'FE', 'TI', 'VA']
 system = '-'.join(comps[0:3])
 temps = [1073, 1273]
 for temp in temps:
-    fig, ax = plt.subplots(figsize=(13,10), subplot_kw={'projection': 'triangular'})
+    fig, ax = plt.subplots(figsize=(8,6), subplot_kw={'projection': 'triangular'})
     conds = {v.T: temp, v.P: 101325, v.X(f"{comps[0]}"): (0, 1, 0.01), v.X(f"{comps[1]}"): (0, 1, 0.01)}
     ternary = TernaryStrategy(db, comps, phases, conds)
     ternary.initialize()
