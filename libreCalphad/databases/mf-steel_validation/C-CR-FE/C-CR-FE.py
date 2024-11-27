@@ -12,7 +12,7 @@ system = '-'.join(comps[0:3])
 temps = [500, 1273, 1348]
 for temp in temps:
     print(f"Plotting {temp}")
-    plt.figure(figsize=(20,20))
+    plt.figure(figsize=(6,4))
     conds = {v.T: temp, v.P: 101325, v.X('CR'): (0, 1, 0.01), v.X('C'): (0, 1, 0.01)}
     ternplot(db, comps, phases, conds, x=v.X('CR'), y=v.X('C'))
     plt.title(f"{system} system, {temp} K")

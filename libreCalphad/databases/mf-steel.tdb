@@ -16167,7 +16167,7 @@ PARAMETER L(M3C2_D510,CO,CR:C;0) 298.15
   -0.86*T;  6000 N                                                      14KAP!
 $ WANT TO RESTRICT FE SOLUBILITY IN CR3C2
 PARAMETER L(M3C2_D510,CR,FE:C;0) 298.15
-  +100*T;  6000 N                                                       24FRI!
+  +50000;  6000 N                                                       24FRI!
 PARAMETER L(M3C2_D510,CR,MO:C;0) 298.15
   +40000;  6000 N                                                       92QIU!
 PARAMETER L(M3C2_D510,CR,TI:C;0) 298.15
@@ -16343,7 +16343,7 @@ PARAMETER L(M7C3_D101,CR,V:C;0) 298.15
 PARAMETER L(M7C3_D101,FE,MN:C;0) 298.15
   +20157 -24.7104*T;  6000 N                                            11DJU!
 PARAMETER L(M7C3_D101,FE,MO:C;0) 298.15
-  -50000;  6000 N                                                       11POV!
+  -60000;  6000 N                                                       11POV!
 
 
 PARAMETER L(M7C3_D101,CR,FE,MO:C;0) 298.15
@@ -16459,9 +16459,8 @@ PARAMETER G(M23C6_D84,FE:CO:C;0) 298.15
   +20*GHSERFE# +3*GHSERCO# +6*GHSERCC#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,FE:CR:B;0) 298.15
   +20*GHSERFE# +3*GHSERCR# +6*GHSERBB#;  6000 N                         23FRI!
-$ NEEDED TO ADD +50*T TO PREVENT FE20CR3C6 FROM SHOWING UP IN TERNARY SYSTEM
 PARAMETER G(M23C6_D84,FE:CR:C;0) 298.15
-  +50*T +0.8695652*GFE23C6# +0.1304348*GCR23C6#;  6000 N                24FRI!
+  +0.8695652*GFE23C6# +0.1304348*GCR23C6#;  6000 N                     92LEEB!
 PARAMETER G(M23C6_D84,FE:FE:B;0) 298.15
   -300005 -29*T +23*GHSERFE# +6*GHSERBB#;  6000 N                       10PAN!
 PARAMETER G(M23C6_D84,FE:FE:C;0) 298.15
