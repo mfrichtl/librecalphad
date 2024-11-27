@@ -167,7 +167,8 @@ DATABASE_INFO The following systems are available:'
   B-TI      Witusiewicz (2008) and Witusiewicz (2016)'
   B-V       da Silva (2017)'
   C-CO      Guillermet (1988) and Kusoffsky (1997)'
-  C-CR      Andersson (1987), Lee (1992), Qiu (1992), and Khvan (2012)'
+  C-CR      Andersson (1987), Lee (1992), Qiu (1992), Khvan (2012), and
+            Frichtl (2024)'
   C-CU      Shubhank (2014) and Chen (2019)'
   C-FE      Gustafson (1985), Du (1993), Hallstedt (2010), Naraghi (2014),
             Jacob (2023)'
@@ -221,7 +222,8 @@ DATABASE_INFO The following systems are available:'
   FE-H      Zinkevich (2002) and Kim (2012)'
   FE-HF     Idbenali (2008) and Frichtl (2024)'
   FE-MN     Huang (1989) and Djurovic (2011)'
-  FE-MO     Andersson (1988), Du (2009), Rajkumar (2014) and Ostrowska (2020)'
+  FE-MO     Andersson (1988), Du (2009), Rajkumar (2014), Ostrowska (2020),
+            and Frichtl (2024)'
   FE-N      Frisk (1991), Du (1993), Qiu (1993), and Goehring (2016)'
   FE-NB     Lee (2001), Liu (2012), Khvan (2013), and Lu (2017)'
   FE-NI     Zhang (2009), Cacciamani (2010), Xiong (2011), and Ohnuma (2019)'
@@ -331,7 +333,8 @@ DATABASE_INFO The following systems are available:'
   C-CO-FE   Guillermet (1988)'
   C-CO-NI   Guillermet (1988)'
   C-CO-W    Guillermet (1989) and Markström (2005)'
-  C-CR-FE   Andersson (1988), Qiu (1992), Khvan (2014), and Jacob (2023)'
+  C-CR-FE   Andersson (1988), Qiu (1992), Khvan (2014), Jacob (2023), and 
+            Frichtl (2024)'
   C-CR-MO   Qiu (1992) and Bratberg (2005)'
   C-CR-MN   Lee (1993)'
   C-CR-NB   Khvan (2012)'
@@ -342,7 +345,7 @@ DATABASE_INFO The following systems are available:'
   C-CR-W    Ostrowska (2020)'
   C-CU-FE   Chen (2019)'
   C-FE-MN   Huang (1990), Huang (1991), and Djurovic (2011)'
-  C-FE-MO   Andersson (1988) and Hillert (1992)'
+  C-FE-MO   Andersson (1988), Hillert (1992), and Frichtl (2024)'
   C-FE-N    Göhring (2016)'
   C-FE-NB   Huang (1990)'
   C-FE-NI   Gabriel (1987), Liu (2020), and Jacob (2023)'
@@ -2317,9 +2320,9 @@ PARAMETER G(AL3M_D022,FE:AL;0) 298.15
 PARAMETER G(AL3M_D022,FE:CR;0) 298.15
   +3*GHSERFE# +GHSERCR#;  6000 N                                        24FRI!
 PARAMETER G(AL3M_D022,FE:FE;0) 298.15
-  +4*GFCCFE#;  6000 N                                                   24LIA!
+  +10 +3*GFCCFE# +GFCCFE#;  6000 N                                      24FRI!
 PARAMETER G(AL3M_D022,FE:MO;0) 298.15
-  +3*GHSERFE# +GHSERMO#;  6000 N                                        24FRI!
+  +20000 +3*GFCCFE# +GFCCMO#;  6000 N                                   24FRI!
 PARAMETER G(AL3M_D022,FE:NB;0) 298.15
   +3*GHSERFE# +GFCCNB#;  6000 N                                         24FRI!
 PARAMETER G(AL3M_D022,FE:TA;0) 298.15
@@ -2333,6 +2336,8 @@ PARAMETER G(AL3M_D022,MO:AL;0) 298.15
   +80000 +3*GHSERMO# +GHSERAL#;  6000 N                                 10CUP!
 PARAMETER G(AL3M_D022,MO:CR;0) 298.15
   +3*GHSERMO# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(AL3M_D022,MO:FE;0) 298.15
+  +3*GFCCMO# +GFCCMO#;  6000 N                                          24FRI!
 PARAMETER G(AL3M_D022,MO:MO;0) 298.15
   +80000 +3*GFCCMO# +GFCCMO#;  6000 N                                  95SAUB!
 PARAMETER G(AL3M_D022,MO:NB;0) 298.15
@@ -2359,6 +2364,8 @@ PARAMETER G(AL3M_D022,NI:AL;0) 298.15
   +3*GHSERNI# +GHSERAL#;  6000 N                                        24FRI!
 PARAMETER G(AL3M_D022,NI:CR;0) 298.15
   +3*GHSERNI# +GHSERCR#;  6000 N                                        24FRI!
+PARAMETER G(AL3M_D022,NI:FE;0) 298.15
+  +20000 +3*GHSERNI# +GHSERFE#;  6000 N                                 24FRI!
 PARAMETER G(AL3M_D022,NI:MO;0) 298.15
   +3*GHSERNI# +GHSERMO#;  6000 N                                        24FRI!
 PARAMETER G(AL3M_D022,NI:NB;0) 298.15
@@ -16051,7 +16058,7 @@ PHASE MC_SHP % 2 1 1 !
 CONSTITUENT MC_SHP : CR,FE,MO,W : C,N : !
 
 PARAMETER  G(MC_SHP,CR:C;0) 298.15
-  +GHSERCR# +GHSERCC#;  6000 N                                          24FRI!
+  +10000 +GHSERCR# +GHSERCC#;  6000 N                                   24FRI!
 PARAMETER G(MC_SHP,CR:N;0) 298.15
   -109470 +69.5*T;  6000 N                                              87HER!
 
@@ -16072,9 +16079,14 @@ PARAMETER G(MC_SHP,W:N;0) 298.15
   +GHSERW# +GHSERNN#;  6000 N                                           24FRI!
 
 
+PARAMETER L(MC_SHP,CR,FE:C;0) 298.15
+  +50000;  6000 N                                                       24FRI!
 PARAMETER L(MC_SHP,CR,FE:N;0) 298.15
   -2680400;  6000 N                                                     87HER!
-
+PARAMETER L(MC_SHP,CR,MO:C;0) 298.15
+  +50000;  6000 N                                                       24FRI!
+PARAMETER L(MC_SHP,FE,MO:C;0) 298.15
+  +50000;  6000 N                                                       24FRI!
 PARAMETER L(MC_SHP,MO,W:C;0) 298.15
   -2200;  6000 N                                                       88GUSC!
 
@@ -16330,8 +16342,12 @@ PARAMETER L(M7C3_D101,CR,V:C;0) 298.15
   
 PARAMETER L(M7C3_D101,FE,MN:C;0) 298.15
   +20157 -24.7104*T;  6000 N                                            11DJU!
+PARAMETER L(M7C3_D101,FE,MO:C;0) 298.15
+  -50000;  6000 N                                                       11POV!
 
 
+PARAMETER L(M7C3_D101,CR,FE,MO:C;0) 298.15
+  -170000;  6000 N                                                      11POV!
 PARAMETER L(M7C3_D101,CR,FE,NI:C;0) 298.15
   -323854;  6000 N                                                      91HIL!
 PARAMETER L(M7C3_D101,CR,FE,V:C;0) 298.15
@@ -16376,7 +16392,7 @@ PARAMETER G(M23C6_D84,CO:CR:B;0) 298.15
   +20*GHSERCO# +3*GHSERCR# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CO:CR:C;0) 298.15
   +0.8695652*GCO23C6# +0.1304348*GCR23C6#;  6000 N                      97KUS!
- PARAMETER G(M23C6_D84,CO:FE:B;0) 298.15
+PARAMETER G(M23C6_D84,CO:FE:B;0) 298.15
   +20*GHSERCO# +3*GHSERFE# +6*GHSERBB#;  6000 N                         23FRI!
 PARAMETER G(M23C6_D84,CO:FE:C;0) 298.15
   +20*GHSERCO# +3*GHSERFE# +6*GHSERCC#;  6000 N                         23FRI!
@@ -23874,6 +23890,8 @@ NUMBER  SOURCE
         system." Calphad 35.4 (2011): 479-491.'
 11HU    'Hu, Biao, et al. "Experimental investigation and thermodynamic 
         modeling of the Mn-Ni-Si system." Calphad 35.3 (2011): 346-354.'
+11POV   'Povoden-Karadeniz, E. Mat-Calc Fe open database, unpublished, 
+        https://www.matcalc.at/index.php/databases/open-databases, 2013.'
 11WIT   'Witusiewicz, V. T., et al. "Experimental study and thermodynamic 
         re-assessment of the binary Fe-Ta system." Intermetallics 19.7 (2011): 
         1059-1075.'
