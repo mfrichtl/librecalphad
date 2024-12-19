@@ -1259,7 +1259,7 @@ def make_plots():
                 sns.scatterplot(data=model_exp_data, x=x, y='DG', hue='type', ax=ax, style='reference', s=200)
                 sns.lineplot(data=model_projected_data, x=x, y='DG', hue='type', ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
-                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{\gamma \rightarrow \alpha}~\frac{\mathrm{J}} {\mathrm{mol}}$")
+                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{\alpha \rightarrow \gamma}~\frac{\mathrm{J}} {\mathrm{mol}}$")
 
                 fig.tight_layout()
                 fig.savefig(''.join([figure_dir, term, '_', martensite_type, '_DG.png']))
