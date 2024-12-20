@@ -1427,7 +1427,7 @@ def predict_type():
     X = classified_data.drop(drop_cols, axis=1)
     # For now the StandardScaler is reducing performance.
     #X = pd.DataFrame(scale.fit_transform(X[X.columns]), columns=X.columns)
-    X_train = X.sample(frac=0.8, random_state=12345)
+    X_train = X.sample(frac=0.8, random_state=654321)
     X_test = X.drop(X_train.index)
     Y_train = X_train.loc[:, 'type']
     Y_test = X_test.loc[:, 'type']
