@@ -26,7 +26,8 @@ import sys
 import time
 
 sns.set_style('whitegrid')
-sns.set_context('paper', font_scale=2)
+sns.set_context('paper')
+figsize = (6.5,4)
 dbf = 'mf-steel.tdb'
 max_num_conds_DG = 12  # stack smashing errors seem to be associated with too many conditions in a computation
 remove_list = ['FE', 'GE']  # Remove these from component lists, Fe removed because it is the dependent component in all subsequent calculations
@@ -1178,17 +1179,17 @@ def make_plots():
     model_data = pd.concat([mf_model_data, storm_model_data, t0_data]).sort_values(by='type')
 
     system_model_data = model_data.query("alloy_system == 'all'")
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=exp_data, x='martensite_start', y='DG', hue='type', ax=ax)
     sns.lineplot(data=system_model_data, x='martensite_start', y='DG', hue='type', ax=ax)
     # ax.set_title("Driving Force versus Ms Temperature")
     ax.set_xlabel("Martensite Start (K)")
-    ax.set_ylabel("Driving Force (J/mol)")
+    ax.set_ylabel(r"$\Delta G_\mathrm{m}^{x \rightarrow \gamma}~\left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'all_Ms.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=exp_data, x='martensite_start', y='DG', hue='alloy_system', ax=ax)
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'all_DG.png']))
@@ -1246,28 +1247,30 @@ def make_plots():
                     exp_type_query = ['epsilon']
                     model_DG_query = ['epsilon-mf']
                     model_Ms_query = ['epsilon-mf', 'T0-epsilon']
+                    label_var = '\\epsilon'
                 else:
                     exp_type_query = ['lath', 'plate']
                     model_DG_query = ['lath-mf', 'plate-mf', 'lath-storm', 'plate-storm']
                     model_Ms_query = ['lath-mf', 'plate-mf', 'T0-alpha', 'lath-storm', 'plate-storm']
+                    label_var = '\\alpha'
                 model_exp_data = system_exp_data.query("type in @exp_type_query")
                 if len(model_exp_data) == 0:  # system not modeled for this model type if this evaluates to true
                     continue
 
                 model_projected_data = model_data.query("alloy_system in @systems & projected_point == True & type in @model_DG_query")
-                fig, ax = plt.subplots(figsize=(12,8))
-                sns.scatterplot(data=model_exp_data, x=x, y='DG', hue='type', ax=ax, style='reference', s=200)
+                fig, ax = plt.subplots(figsize=figsize)
+                sns.scatterplot(data=model_exp_data, x=x, y='DG', hue='type', ax=ax, style='reference', s=50)
                 sns.lineplot(data=model_projected_data, x=x, y='DG', hue='type', ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
-                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{\alpha \rightarrow \gamma}~\frac{\mathrm{J}} {\mathrm{mol}}$")
+                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{var \rightarrow \gamma}~\left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$".replace('var', label_var))
 
                 fig.tight_layout()
                 fig.savefig(''.join([figure_dir, term, '_', martensite_type, '_DG.png']))
                 plt.close()
 
                 model_projected_data = model_data.query("alloy_system in @systems & projected_point == True & type in @model_Ms_query")
-                fig, ax = plt.subplots(figsize=(12,8))
-                sns.scatterplot(data=model_exp_data, x=x, y='martensite_start', hue='type', ax=ax, style='reference', s=200)
+                fig, ax = plt.subplots(figsize=figsize)
+                sns.scatterplot(data=model_exp_data, x=x, y='martensite_start', hue='type', ax=ax, style='reference', s=50)
                 sns.lineplot(data=model_projected_data, x=x, y='martensite_start', hue='type', ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
                 ax.set_ylabel("Martensite Start Temperature (K)")
@@ -1281,12 +1284,15 @@ def make_plots():
                 if 'plate' in model:
                     model_type = 'plate'
                     model_Ms_query = ['plate-mf', 'T0-alpha']
+                    label_var = '\\alpha'
                 if 'lath' in model:
                     model_type = 'lath'
                     model_Ms_query = ['lath-mf', 'T0-alpha']
+                    label_var = '\\alpha'
                 if 'epsilon' in model:
                     model_type = 'epsilon'
                     model_Ms_query = ['epsilon-mf', 'T0-epsilon']
+                    label_var = '\\epsilon'
                 if x == 'Mn' or x == 'Ni':  # want to switch axes
                     old_hue = hue
                     hue = x
@@ -1297,7 +1303,7 @@ def make_plots():
                     continue
                 # system_model_data = model_data.query(f"type in @model_Ms_query & alloy_system in @systems")
                 system_model_data = model_data.query(f"type == @model & alloy_system in @systems")
-                fig, ax = plt.subplots(figsize=(12,8))
+                fig, ax = plt.subplots(figsize=figsize)
                 sns.scatterplot(data=model_exp_data, x=x, y='martensite_start', hue=hue, ax=ax)
                 sns.lineplot(data=system_model_data, x=x, y='martensite_start', hue=hue, ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
@@ -1308,11 +1314,11 @@ def make_plots():
                 plt.close()
 
                 
-                fig, ax = plt.subplots(figsize=(12,8))
+                fig, ax = plt.subplots(figsize=figsize)
                 sns.scatterplot(data=model_exp_data, x=x, y='DG', hue=hue, ax=ax)
                 sns.lineplot(data=system_model_data, x=x, y='DG', hue=hue, ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
-                ax.set_ylabel("Driving Force (J/mol)")
+                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{var \rightarrow \gamma}~\left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$".replace('var', label_var))
                 # ax.set_title(f"{term} Driving Force for MF {model_type.capitalize()} Martensite Model")
                 fig.tight_layout()
                 fig.savefig(''.join([figure_dir, term, '_', model, '_DG.png']))
@@ -1437,7 +1443,7 @@ def predict_type():
     
     sns.set_theme('paper', font_scale=2)
     sns.set_style('white')
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     gpc = GaussianProcessClassifier(kernel=classifier_kernel)
     _ = gpc.fit(X_train, Y_train)
     R_squared = gpc.score(X_test, Y_test)
@@ -1523,8 +1529,8 @@ def make_parity_plots():
     # MF model, all martensite types
     combined_RMSE = np.sqrt(np.mean(exp_data['error']**2))
     line_vals = np.linspace(np.min(exp_data['martensite_start'])-15, np.max(exp_data['martensite_start'])+15)
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=exp_data, x='martensite_start', y='mf_martensite_start', hue='Type Prediction',  style='Type', s=100, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=exp_data, x='martensite_start', y='mf_martensite_start', hue='Type Prediction',  style='Type', s=50, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+combined_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-combined_RMSE, color='black', linestyle='--', ax=ax)
@@ -1537,8 +1543,8 @@ def make_parity_plots():
     plt.close()
 
     mf_combined_known_type_RMSE = np.sqrt(np.mean(exp_data.query("`Type Prediction` == 'Known Type'")['error']**2))
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=exp_data.query("`Type Prediction` == 'Known Type'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=100, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=exp_data.query("`Type Prediction` == 'Known Type'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=50, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_combined_known_type_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_combined_known_type_RMSE, color='black', linestyle='--', ax=ax)
@@ -1553,8 +1559,8 @@ def make_parity_plots():
     # MF model, lath  & plate
     mf_lp_RMSE = np.sqrt(np.mean(lath_plate_exp['error']**2))
     line_vals = np.linspace(np.min(lath_plate_exp['martensite_start'])-15, np.max(lath_plate_exp['martensite_start'])+15)
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=lath_plate_exp, x='martensite_start', y='mf_martensite_start', hue='Type Prediction', style='Type', s=100, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=lath_plate_exp, x='martensite_start', y='mf_martensite_start', hue='Type Prediction', style='Type', s=50, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_lp_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_lp_RMSE, color='black', linestyle='--', ax=ax)
@@ -1567,8 +1573,8 @@ def make_parity_plots():
     plt.close()
 
     mf_lp_known_type_RMSE = np.sqrt(np.mean(lath_plate_exp.query("`Type Prediction` == 'Known Type'")['error']**2))
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=lath_plate_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=100, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=lath_plate_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', s=50, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_lp_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_lp_RMSE, color='black', linestyle='--', ax=ax)
@@ -1583,8 +1589,8 @@ def make_parity_plots():
     # MF model, epsilon
     mf_eps_RMSE = np.sqrt(np.mean(epsilon_exp['error']**2))
     line_vals = np.linspace(np.min(epsilon_exp['martensite_start'])-15, np.max(epsilon_exp['martensite_start'])+15)
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=epsilon_exp, x='martensite_start', y='mf_martensite_start', hue='Type Prediction', s=100, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=epsilon_exp, x='martensite_start', y='mf_martensite_start', hue='Type Prediction', s=50, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_eps_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-mf_eps_RMSE, color='black', linestyle='--', ax=ax)
@@ -1597,7 +1603,7 @@ def make_parity_plots():
     plt.close()
 
     mf_eps_known_type_RMSE = np.sqrt(np.mean(epsilon_exp.query("`Type Prediction` == 'Known'")['error']**2))
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=epsilon_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='mf_martensite_start', hue='alloy_system', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals, ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+mf_eps_known_type_RMSE, color='black', linestyle='--', ax=ax)
@@ -1613,7 +1619,7 @@ def make_parity_plots():
     # systems = [sys for sys in exp_data['alloy_system'].unique() if 'Ni' in sys]
     # exp_data = exp_data.query("alloy_system in @systems")
     # MF model
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=lath_plate_exp, x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
@@ -1622,7 +1628,7 @@ def make_parity_plots():
     fig.savefig(''.join([figure_dir, 'Ms_lath-plate_residuals_plot_all.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=lath_plate_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
@@ -1631,7 +1637,7 @@ def make_parity_plots():
     fig.savefig(''.join([figure_dir, 'Ms_lath-plate_residuals_plot_known_type.png']))
     plt.close()
     
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=epsilon_exp, x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
@@ -1640,7 +1646,7 @@ def make_parity_plots():
     fig.savefig(''.join([figure_dir, 'Ms_epsilon_residuals_plot_all.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=epsilon_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(epsilon_exp['martensite_start']))
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
@@ -1653,16 +1659,16 @@ def make_parity_plots():
     exp_data.loc[:, 'error'] = np.abs(exp_data.loc[:, 'error'])
     exp_data = exp_data.sort_values('error')
 
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=exp_data.tail(25), x='martensite_start', y='error', hue='Type', style='alloy_system', s=200, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=exp_data.tail(25), x='martensite_start', y='error', hue='Type', style='alloy_system', s=50, ax=ax)
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
     ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf-steel_highest_residuals_all.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(12,8))
-    sns.scatterplot(data=exp_data.query("`Type Prediction` == 'Known'").tail(25), x='martensite_start', y='error', hue='Type', style='alloy_system', s=200, ax=ax)
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=exp_data.query("`Type Prediction` == 'Known'").tail(25), x='martensite_start', y='error', hue='Type', style='alloy_system', s=50, ax=ax)
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
     ax.set_ylabel(r'Predicted $M_\mathrm{s}$ Error (K)')
     fig.tight_layout()
@@ -1672,7 +1678,7 @@ def make_parity_plots():
     # Stormvinter model
     sv_RMSE = np.sqrt(np.mean(storm_exp['error']**2))
     line_vals = np.linspace(0, np.max(storm_exp['martensite_start']))
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=storm_exp, x='martensite_start', y='storm_martensite_start', hue='alloy_system', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+sv_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-sv_RMSE, color='black', linestyle='--', ax=ax)
@@ -1687,7 +1693,7 @@ def make_parity_plots():
     plt.close()
 
     sv_RMSE = np.sqrt(np.mean(storm_exp.query("`Type Prediction` == 'Known'")['error']**2))
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=storm_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='storm_martensite_start', hue='alloy_system', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals+sv_RMSE, color='black', linestyle='--', ax=ax)
     sns.lineplot(x=line_vals, y=line_vals-sv_RMSE, color='black', linestyle='--', ax=ax)
@@ -1701,7 +1707,7 @@ def make_parity_plots():
     fig.savefig(''.join([figure_dir, 'stormvinter_parity_plot_known_type.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=storm_exp, x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(storm_exp['martensite_start']))
     ax.set_xlabel(r'Experimental $M_\mathrm{s}$ (K)')
@@ -1711,7 +1717,7 @@ def make_parity_plots():
     fig.savefig(''.join([figure_dir, 'stormvinter_residual_plot_all.png']))
     plt.close()
 
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.scatterplot(data=storm_exp.query("`Type Prediction` == 'Known'"), x='martensite_start', y='error', hue='alloy_system', ax=ax)
     plt.hlines(0, 0, np.max(storm_exp['martensite_start']))
     ax.set_xlabel(r'Experimental M$M_\mathrm{s}$s (K)')
@@ -1734,7 +1740,7 @@ def make_parity_plots():
     exp_data['error'] = np.abs(exp_data['error'])
     error_data = exp_data.sort_values('error', ascending=False)
 
-    fig, ax = plt.subplots(figsize=(12,8))
+    fig, ax = plt.subplots(figsize=figsize)
     sns.barplot(data=exp_data, x='num_components', y='error', ax=ax)
     ax.set_xlabel("Number of Components")
     ax.set_ylabel("Error (K)")
