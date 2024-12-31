@@ -40,9 +40,11 @@ solute_threshold = 1e-12  # threshold below which I will discard a solute for pr
 mf_plate_baseline_fits = [2089]  # from my constant fit for Fe- alloys
 mf_lath_baseline_fits = [1249]  # from my constant fit for the Fe- alloys
 mf_epsilon_baseline_fits = [-75]
-mf_plate_PAGS_fits = [-57.02647348, 264.45553715]
-mf_lath_PAGS_fits = [-6.91419073, 9.49295022, 301.84731367 + 30]  # 30 J/mol to offset and make the energy contribution at 100 um be ~0
-mf_epsilon_PAGS_fits =  [7.17987277e+01, 3.14716030e-06, -1.71695704e-01, -4.79208177e+02]
+# PAGS fits using certain references. See code below for plots to find more information.
+# TODO: Break these out separate functions so they can be fit dynamically so they don't need to be hard-coded.
+mf_plate_PAGS_fits = [-57.66174052, 259.52648073]
+mf_lath_PAGS_fits = [1.65754133, -38.90842902, 300.39266453]  # 30 J/mol to offset and make the energy contribution at 100 um be ~0
+mf_epsilon_PAGS_fits =  [7.27409320e+01,  1.81920225e-06, -1.65812954e-01, -4.98269462e+02]
 
 exp_data_dir = './experimental_data/'
 figure_dir = './figures/'
@@ -1206,8 +1208,7 @@ def make_plots():
     all_terms = [term for term in list(dict.fromkeys(all_terms)) if term != 'martensite_start']
     color_dict = {'lath': 'blue', 'lath-mf': 'blue', 'lath-storm': 'blue', 'plate': 'orange', 'plate-mf': 'orange', 'plate-storm': 'orange', 
                   'epsilon': 'green', 'epsilon-mf': 'green', 'T0-alpha': 'black', 'T0-epsilon': 'black'}
-    # model_data['color'] = model_data.apply(lambda row: color_dict[row['type']], axis=1)
-    # exp_data['color'] = exp_data.apply(lambda row: color_dict[row['type']], axis=1)
+    
     for term in all_terms:
         models = []
         split_term = term.split('-')
@@ -1353,6 +1354,86 @@ def make_plots():
                 plt.xlabel(r"$x_\mathrm{hue}$".replace('hue', hue), size=19.2)
                 fig.write_image(''.join([figure_dir, term, '_', model, '_contour_DG.png']))
 
+    # Make PAGS plots
+    pags_exp_data = pd.read_json(''.join([exp_data_dir, 'predicted_martensite_start.json']))
+    ## Lath
+    def lath_fit(x, a, b, c):
+        return a*np.log(x**b) + c
+
+    ignored_references = ['Harmelin1982']  # Harmelin1982 only has a single point
+    fig_query = pags_exp_data.query("~PAGS.isnull() & type == 'lath' & predicted_type == False & reference not in @ignored_references").copy()
+    fig_query['offset_DG'] = 0.0
+    
+
+    fig,ax = plt.subplots(figsize=figsize)
+    for reference in fig_query['reference'].unique():
+        if reference in  ignored_references:
+            continue
+        fig_sub_query = fig_query.query("reference == @reference").copy()
+        fig_sub_query['offset_DG'] = fig_sub_query['DG_no_PAGS'] - np.min(fig_sub_query['DG_no_PAGS'])
+        fig_query.loc[fig_sub_query.index, 'offset_DG'] = fig_sub_query['offset_DG']
+    # fig_query = fig_query.query("offset_DG < 400").copy()
+    fig_query['offset_DG'] = fig_query['offset_DG'] + 30  # add 30 to make intercept at x=100 um ~ 0 J/mol
+    sns.scatterplot(data=fig_query, x='PAGS', y='offset_DG', hue='reference', ax=ax, s=50)
+    x_vals = np.linspace(1e-1, 150)
+    fits = curve_fit(lath_fit, xdata=fig_query['PAGS'], ydata=fig_query['offset_DG'], bounds=(-50, np.inf))  # Bounds needed for fit
+    print(f"Lath PAGS fits: {fits[0]}")
+    y_vals = [lath_fit(x, *fits[0]) for x in x_vals]
+    y_vals = [lath_fit(x, *mf_lath_PAGS_fits) for x in x_vals]
+    ax.plot(x_vals, y_vals)
+
+    ax.set_xlabel(r'Prior-Austenite Grain Size ($\mu$m)')
+    ax.set_ylabel(r'$\Delta G_\mathrm{m,lath}^{\alpha \rightarrow \gamma} \left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$')
+    fig.tight_layout()
+    fig.savefig(''.join([figure_dir, 'mf-lath-pags-model.png']))
+    plt.close()
+
+    ## Plate
+
+    def plate_fit(x, a, b):
+        return a*np.log(x) + b
+
+    han_data = pd.read_excel(''.join([exp_data_dir, './Hanumantharaju2018-PAGS.xlsx']))  # Include the data from [1] for now
+    han_data['offset_DG'] = han_data['DG']
+
+    fig, ax = plt.subplots(figsize=figsize)
+    sns.scatterplot(data=han_data, x='PAGS', y='offset_DG', hue='reference', ax=ax, s=50)
+    fits = curve_fit(plate_fit, han_data['PAGS'], han_data['offset_DG'], bounds=(-100, np.inf))
+    print(f"Plate PAGS fits: {fits[0]}")
+    x_vals = np.linspace(1e-2, np.max(han_data['PAGS']))
+    y_vals = [plate_fit(x, *mf_plate_PAGS_fits) for x in x_vals]
+    ax.plot(x_vals, y_vals)
+
+    ax.set_xlabel(r'Prior-Austenite Grain Size ($\mu$m)')
+    ax.set_ylabel(r'$\Delta G_\mathrm{m,plate}^{\alpha \rightarrow \gamma} \left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$')
+    fig.tight_layout()
+    fig.savefig(''.join([figure_dir, './mf-plate-pags-model.png']))
+    plt.close()
+
+    ## Epsilon
+
+    def eps_fit(x, a, b, c, d):
+        return a*np.log(x**b)**c + d
+
+    fig_query = pags_exp_data.query("~PAGS.isnull() & type == 'epsilon' & predicted_type == False").sort_values('error', ascending=False).copy()
+    fig_query['offset_DG'] = 0.0
+    fig,ax = plt.subplots(figsize=figsize)
+    for reference in fig_query['reference'].unique():
+        fig_sub_query = fig_query.query("reference == @reference").copy()
+        fig_sub_query['offset_DG'] = fig_sub_query['DG_no_PAGS'] - np.min(fig_sub_query['DG_no_PAGS'])
+        fig_query.loc[fig_sub_query.index, 'offset_DG'] = fig_sub_query['offset_DG']
+    sns.scatterplot(data=fig_query, x='PAGS', y='offset_DG', hue='reference', ax=ax, s=50)
+    fits = curve_fit(eps_fit, fig_query['PAGS'], fig_query['offset_DG'])
+    print(f"Epsilon PAGS fits: {fits[0]}")
+    x_vals = np.linspace(np.min(fig_query['PAGS']), np.max(fig_query['PAGS']))
+    y_vals = [eps_fit(x, *mf_epsilon_PAGS_fits) for x in x_vals]
+    ax.plot(x_vals, y_vals)
+
+    ax.set_xlabel(r'Prior-Austenite Grain Size ($\mu$m)')
+    ax.set_ylabel(r'$\Delta G_\mathrm{m}^{\epsilon \rightarrow \gamma} \left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$')
+    fig.tight_layout()
+    fig.savefig(''.join([figure_dir, './mf-epsilon-pags-model.png']))
+    plt.close()
 
 def load_exp_data():
     in_files = [''.join([exp_data_dir, 'martensite_start.ods']), ''.join([exp_data_dir, 'bhadeshia_data.ods'])]
