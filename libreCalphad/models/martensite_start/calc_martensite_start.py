@@ -1186,7 +1186,7 @@ def make_plots():
     sns.lineplot(data=system_model_data, x='martensite_start', y='DG', hue='type', ax=ax)
     # ax.set_title("Driving Force versus Ms Temperature")
     ax.set_xlabel("Martensite Start (K)")
-    ax.set_ylabel(r"$\Delta G_\mathrm{m}^{x \rightarrow \gamma}~\left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$")
+    ax.set_ylabel(r"$\Delta G_\mathrm{m}^{x \rightarrow \gamma} \quad \left(\mathrm{J} \thickspace \mathrm{mol}^{-1} \right)$")
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'all_Ms.png']))
     plt.close()
@@ -1263,7 +1263,7 @@ def make_plots():
                 sns.scatterplot(data=model_exp_data, x=x, y='DG', hue='type', ax=ax, style='reference', s=50)
                 sns.lineplot(data=model_projected_data, x=x, y='DG', hue='type', ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
-                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{var \rightarrow \gamma}~\left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$".replace('var', label_var))
+                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{var \rightarrow \gamma} \quad \left(\mathrm{J} \thickspace \mathrm{mol}^{-1} \right)$".replace('var', label_var))
 
                 fig.tight_layout()
                 fig.savefig(''.join([figure_dir, term, '_', martensite_type, '_DG.png']))
@@ -1319,7 +1319,7 @@ def make_plots():
                 sns.scatterplot(data=model_exp_data, x=x, y='DG', hue=hue, ax=ax)
                 sns.lineplot(data=system_model_data, x=x, y='DG', hue=hue, ax=ax)
                 ax.set_xlabel(r"$x_{sol}$".replace('sol', x))
-                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{var \rightarrow \gamma}~\left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$".replace('var', label_var))
+                ax.set_ylabel(r"$\Delta G_\mathrm{m}^{var \rightarrow \gamma} \quad \left(\mathrm{J} \thickspace \mathrm{mol}^{-1} \right)$".replace('var', label_var))
                 # ax.set_title(f"{term} Driving Force for MF {model_type.capitalize()} Martensite Model")
                 fig.tight_layout()
                 fig.savefig(''.join([figure_dir, term, '_', model, '_DG.png']))
@@ -1383,7 +1383,7 @@ def make_plots():
     ax.plot(x_vals, y_vals)
 
     ax.set_xlabel(r'Prior-Austenite Grain Size ($\mu$m)')
-    ax.set_ylabel(r'$\Delta G_\mathrm{m,lath}^{\alpha \rightarrow \gamma} \left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$')
+    ax.set_ylabel(r'$\Delta G_\mathrm{m,lath}^{\alpha \rightarrow \gamma} \quad \left(\mathrm{J} \thickspace \mathrm{mol}^{-1} \right)$')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, 'mf-lath-pags-model.png']))
     plt.close()
@@ -1405,7 +1405,7 @@ def make_plots():
     ax.plot(x_vals, y_vals)
 
     ax.set_xlabel(r'Prior-Austenite Grain Size ($\mu$m)')
-    ax.set_ylabel(r'$\Delta G_\mathrm{m,plate}^{\alpha \rightarrow \gamma} \left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$')
+    ax.set_ylabel(r'$\Delta G_\mathrm{m,plate}^{\alpha \rightarrow \gamma} \quad \left(\mathrm{J} \thickspace \mathrm{mol}^{-1} \right)$')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, './mf-plate-pags-model.png']))
     plt.close()
@@ -1430,7 +1430,7 @@ def make_plots():
     ax.plot(x_vals, y_vals)
 
     ax.set_xlabel(r'Prior-Austenite Grain Size ($\mu$m)')
-    ax.set_ylabel(r'$\Delta G_\mathrm{m}^{\epsilon \rightarrow \gamma} \left( \frac{\mathrm{J}}{\mathrm{mol}} \right)$')
+    ax.set_ylabel(r'$\Delta G_\mathrm{m}^{\epsilon \rightarrow \gamma} \quad \left(\mathrm{J} \thickspace \mathrm{mol}^{-1} \right)$')
     fig.tight_layout()
     fig.savefig(''.join([figure_dir, './mf-epsilon-pags-model.png']))
     plt.close()
