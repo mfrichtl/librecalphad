@@ -30,6 +30,7 @@ def get_plate_model_storm(conditions):
     components = get_components_from_conditions(conditions, dependent_component='FE')
     comp_dict = defaultdict(lambda: 0)
     for component in components:
+        assert v.W(component.upper()) not in conditions.keys(), "Molar fractions must be passed to martensite-start prediction models."
         if v.X(component.upper()) in conditions.keys():
             comp_dict.update({component.upper(): conditions[v.X(component.upper())]})
 
@@ -56,6 +57,7 @@ def get_lath_model_storm(conditions):
     components = get_components_from_conditions(conditions, dependent_component='FE')
     comp_dict = defaultdict(lambda: 0)
     for component in components:
+        assert v.W(component.upper()) not in conditions.keys(), "Molar fractions must be passed to martensite-start prediction models."
         if v.X(component) in conditions.keys():
             comp_dict.update({component: conditions[v.X(component)]})
     T = conditions[v.T]
@@ -86,6 +88,8 @@ def get_lath_model_mf(conditions, pags=np.nan):
     param_file = str(impresources.files('libreCalphad.models.martensite_start.model_params') / 'mf_lath_parameters.json')
     fits = pd.read_json(param_file)['mf_lath_fits'][0]
     components = get_components_from_conditions(conditions, dependent_component='FE')
+    for component in components:
+        assert v.W(component.upper()) not in conditions.keys(), "Molar fractions must be passed to martensite-start prediction models."
     energy_barrier, contrib_dict = get_model(components, conditions, fits, 'lath-mf', pags)
     return energy_barrier, contrib_dict
 
@@ -110,6 +114,8 @@ def get_plate_model_mf(conditions, pags=np.nan):
     param_file = str(impresources.files('libreCalphad.models.martensite_start.model_params') / 'mf_plate_parameters.json')
     fits = pd.read_json(param_file)['mf_plate_fits'][0]
     components = get_components_from_conditions(conditions, dependent_component='FE')
+    for component in components:
+        assert v.W(component.upper()) not in conditions.keys(), "Molar fractions must be passed to martensite-start prediction models."
     energy_barrier, contrib_dict = get_model(components, conditions, fits, 'plate-mf', pags)
     return energy_barrier, contrib_dict
 
@@ -134,6 +140,8 @@ def get_epsilon_model_mf(conditions, pags=np.nan):
     param_file = str(impresources.files('libreCalphad.models.martensite_start.model_params') / 'mf_epsilon_parameters.json')
     fits = pd.read_json(param_file)['mf_epsilon_fits'][0]
     components = get_components_from_conditions(conditions, dependent_component='FE')
+    for component in components:
+        assert v.W(component.upper()) not in conditions.keys(), "Molar fractions must be passed to martensite-start prediction models."
     energy_barrier, contrib_dict = get_model(components, conditions, fits, 'epsilon-mf', pags)
     return energy_barrier, contrib_dict
 
