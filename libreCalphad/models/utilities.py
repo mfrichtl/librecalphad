@@ -201,7 +201,7 @@ def get_components_from_conditions(conditions, dependent_component):
     components = [dependent_component, 'VA']
 
     for key, value in conditions.items():
-        if str(key).startswith('X'):
+        if str(key).startswith('X') or str(key).startswith('W'):
             components.append(str(key).split('_')[1])
     
     return components
