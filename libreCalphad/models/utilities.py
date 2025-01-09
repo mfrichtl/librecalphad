@@ -63,6 +63,7 @@ def parse_composition(row, dependent_element):
         material_col = 'material_wt%'
 
     # Parse hyphenated values
+    assert not pd.isnull(row[material_col]), "Passed inadequate material definition for parsing."
     split_mat = row[material_col].split('-')
     split_mat = [elem.lower() for elem in split_mat]
     assert dependent_element in split_mat, f"Did not identify the dependent component ({dependent_element}) in {split_mat}."

@@ -1,5 +1,5 @@
 from libreCalphad.models.martensite_start.martensite_start import get_lath_model_mf
-from libreCalphad.models.utilities import convert_conditions, get_components_from_conditions
+from libreCalphad.models.utilities import convert_conditions, get_components_from_conditions, parse_composition
 from numpy.testing import assert_raises
 from pycalphad import variables as v
 
@@ -18,3 +18,9 @@ def test_martensite_start_raises_error_on_weights():
     conditions = {v.W('C'): 0.01}
     with assert_raises(AssertionError):
         get_lath_model_mf(conditions)
+
+def test_pass_empty_material_definition():
+    # Make sure a proper material definition is passed to parser function.
+    test_row = {'material_at%': '', 'material_wt%': ''}
+    with assert_raises(AssertionError):
+        parse_composition(test_row, dependent_element='FE')
