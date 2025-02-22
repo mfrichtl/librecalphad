@@ -12,7 +12,7 @@ authors=[
     {name = 'Matt Frichtl'},
 ]
 dependencies = [
-    "pycalphad",
+    "pycalphad<=0.10.5",
     "pymatgen",
 ]
 description='Open-source Calphad databases and property models.'

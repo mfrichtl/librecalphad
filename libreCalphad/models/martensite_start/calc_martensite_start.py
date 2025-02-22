@@ -13,18 +13,37 @@ import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from pandarallel import pandarallel
 import pandas as pd
-import plotly.graph_objects as go
 from pycalphad import equilibrium, variables as v
 from scipy.optimize import Bounds, curve_fit, minimize
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.metrics import ConfusionMatrixDisplay
-import seaborn as sns
 import sys
 import time
 
+# Optional imports for training new models. Running this code without these will not work, but
+# these try-except clauses allow tests to pass successfully if the optional dependencies
+# are not installed.
+try:
+    from pandarallel import pandarallel
+except ImportError:
+    pandarallel = None
+    
+try:
+    import plotly.graph_objects as go
+except ImportError:
+    plotly = None
+
+try:
+    from sklearn.gaussian_process import GaussianProcessClassifier
+    from sklearn.gaussian_process.kernels import RBF
+    from sklearn.metrics import ConfusionMatrixDisplay
+except ImportError:
+    sklearn = None
+
+try:
+    import seaborn as sns
+except ImportError:
+    seaborn = None
+    
 sns.set_style('whitegrid')
 sns.set_context('paper')
 figsize = (6.5,4)
@@ -1894,7 +1913,8 @@ def update_param_markdown():
             f.write('\n')
 
 if __name__ == '__main__':
-    pandarallel.initialize(nb_workers=nb_workers)
+    if pandarallel is not None:
+        pandarallel.initialize(nb_workers=nb_workers)
     args = ' '.join(sys.argv[1:])
     start_time = time.perf_counter()
     db = load_database(dbf)
