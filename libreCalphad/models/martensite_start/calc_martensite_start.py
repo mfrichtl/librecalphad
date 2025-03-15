@@ -376,7 +376,7 @@ def calc_aus_comp(row, db):
         print(conditions)
         n += 1
 
-    soln_phases = eq.Phase.squeeze().values
+    soln_phases = [phase for phase in eq.Phase.squeeze().values if phase != ""]
     row["solutionizing_phases"] = soln_phases
 
     austenite_components = None
