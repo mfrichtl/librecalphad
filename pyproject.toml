@@ -34,13 +34,9 @@ classifiers=[
     'License :: OSI Approved :: GNU GPL v3',
 
     # Supported Python versions
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
 ]
 [project.optional-dependencies]
-propertyModels = ['kaleido', 'odfpy', 'pandarallel', 'scikit-learn', 'seaborn']
+propertyModels = ['kaleido', 'odfpy', 'pandarallel', 'scikit-learn', 'seaborn'
