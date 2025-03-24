@@ -6,6 +6,8 @@ temperature.
 """
 # TODO: Update to LC_martensite_start
 
+from espei.parameter_selection.fitting_steps import AbstractLinearPropertyStep
+from espei.parameter_selection.fitting_descriptions import ModelFittingDescription
 from libreCalphad.databases.db_utils import load_database
 from libreCalphad.models.utilities import (
     convert_conditions,
@@ -21,10 +23,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-from pycalphad import equilibrium, variables as v
+from pycalphad import equilibrium, Model, variables as v
 from scipy.optimize import Bounds, curve_fit, minimize
 import sys
 import time
+import tinydb
 
 # Optional imports for training new models. Running this code without these will not work, but
 # these try-except clauses allow tests to pass successfully if the optional dependencies
@@ -53,6 +56,47 @@ try:
     sns.set_context("paper")
 except ImportError:
     seaborn = None
+
+
+# Setup the pycalphad model for the MS temperature parameters
+class MartensiteStartModel(Model):
+    def build_phase(self, dbe):
+        super().build_phase(dbe)
+        phase = dbe.phases[self.phase_name]
+        param_search = dbe.search
+        for prop in ["MSL", "MSP", "MSE"]:
+            prop_param_query = (
+                (tinydb.where("phase_name") == phase.name)
+                & (tinydb.where("parameter_type") == prop)
+                & (tinydb.where("constituent_array").test(self._array_validity))
+            )
+            prop_val = self.redlich_kister_sum(phase, param_search, prop_param_query).subs(
+                dbe.symbols
+            )
+            setattr(self, prop, prop_val)
+
+
+# Now define the fitting descriptions
+class StepMartensiteStartLath(AbstractLinearPropertyStep):
+    parameter_name = "MSL"
+    data_types_read = "MSL"
+
+
+class StepMartensiteStartPlate(AbstractLinearPropertyStep):
+    parameter_name = "MSP"
+    data_types_read = "MSP"
+
+
+class StepMartensiteStartEpsilon(AbstractLinearPropertyStep):
+    parameter_name = "MSE"
+    data_types_read = "MSE"
+
+
+martensite_start_fiting_description = ModelFittingDescription(
+    [StepMartensiteStartLath, StepMartensiteStartPlate, StepMartensiteStartEpsilon],
+    model=MartensiteStartModel,
+)
+
 
 figsize = (6.5, 4)
 dbf = "mf-steel.tdb"

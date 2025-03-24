@@ -39,4 +39,4 @@ classifiers=[
     'Programming Language :: Python :: 3.12',
 ]
 [project.optional-dependencies]
-propertyModels = ['kaleido', 'odfpy', 'pandarallel', 'scikit-learn', 'seaborn'
+propertyModels = ['kaleido', 'espei', 'odfpy', 'pandarallel', 'scikit-learn', 'seaborn']
