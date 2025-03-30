@@ -1,0 +1,1 @@
+{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":692.8858110188,"X_MN":0.0202},"reference":"Shteynberg1977","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[1782.5678020476]]]}

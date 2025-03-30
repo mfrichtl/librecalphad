@@ -1,0 +1,1 @@
+{"components":["C","FE","VA"],"conditions":{"N":1,"P":101325,"T":671.3605263158,"X_C":0.0183308155},"reference":"Greninger1942","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE"],["C","VA"]]},"values":[[[1444.7128514299]]]}

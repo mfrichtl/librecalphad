@@ -1,0 +1,1 @@
+{"components":["FE","NI","VA"],"conditions":{"N":1,"P":101325,"T":380.6996672019,"X_NI":0.2469331439},"reference":"Hanson1920","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","NI"],["VA"]]},"values":[[[899.4624384856]]]}

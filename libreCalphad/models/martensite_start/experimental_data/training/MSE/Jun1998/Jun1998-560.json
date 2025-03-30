@@ -1,0 +1,1 @@
+{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":419.0085989258,"X_MN":0.1793978304},"reference":"Jun1998","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[113.2838726257]]]}

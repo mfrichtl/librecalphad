@@ -1,0 +1,1 @@
+{"components":["C","FE","NI","VA"],"conditions":{"N":1,"P":101325,"T":336.3720806492,"X_C":0.0011767464,"X_NI":0.2600672702},"reference":"Brofman1983","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","NI"],["C","VA"]]},"values":[[[683.8509477058]]]}

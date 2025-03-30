@@ -1,0 +1,1 @@
+{"components":["C","FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":373.7575318285,"X_C":0.004619142,"X_MN":0.1801570583},"reference":"Baik1997","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN"],["C","VA"]]},"values":[[[258.3048661828]]]}

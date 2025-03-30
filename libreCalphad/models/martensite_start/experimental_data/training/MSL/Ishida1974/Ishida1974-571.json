@@ -1,0 +1,1 @@
+{"components":["FE","NB","NI","VA"],"conditions":{"N":1,"P":101325,"T":564.15,"X_NB":0.0030999269,"X_NI":0.1819780764},"reference":"Ishida1974","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","NB","NI"],["VA"]]},"values":[[[1123.0228935383]]]}

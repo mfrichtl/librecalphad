@@ -1,0 +1,1 @@
+{"components":["C","CR","FE","MN","N","VA"],"conditions":{"N":1,"P":101325,"T":558.15,"X_C":0.000363966,"X_CR":0.1313646288,"X_MN":0.0009349618,"X_N":0.0162291847},"reference":"Lenel1987","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["CR","FE","MN"],["C","N","VA"]]},"values":[[[2701.8962439701]]]}

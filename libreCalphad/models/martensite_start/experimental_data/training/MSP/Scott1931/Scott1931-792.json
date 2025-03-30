@@ -1,0 +1,1 @@
+{"components":["C","FE","MN","SI","VA"],"conditions":{"N":1,"P":101325,"T":333.15,"X_C":0.0055256156,"X_MN":0.1832170699,"X_SI":0.0047260338},"reference":"Scott1931","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN","SI"],["C","VA"]]},"values":[[[1536.8538921642]]]}

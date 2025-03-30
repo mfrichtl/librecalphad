@@ -1,0 +1,1 @@
+{"components":["C","CR","FE","VA"],"conditions":{"N":1,"P":101325,"T":562.899408284,"X_C":0.0182,"X_CR":0.045},"reference":"Mirzayev1985","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["CR","FE"],["C","VA"]]},"values":[[[2703.5649348498]]]}

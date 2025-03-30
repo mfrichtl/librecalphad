@@ -1,0 +1,1 @@
+{"components":["FE","MN","TI","VA"],"conditions":{"N":1,"P":101325,"T":335.15,"X_MN":0.17,"X_TI":0.0139},"reference":"Ishida1974a","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN","TI"],["VA"]]},"values":[[[42.8807525974]]]}

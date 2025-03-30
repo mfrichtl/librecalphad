@@ -1333,7 +1333,7 @@ def fit_models(db, do_curve_fit=False, DG_refit=False):
                 systems.append(term)
     print(systems)
     exp_data = exp_data.query("alloy_system in @systems")
-    exp_data.to_json("".join([model_param_dir, "martensite_experimental_model_data.json"]))
+    exp_data.to_json("".join([model_param_dir, "martensite_experimental_model_training_data.json"]))
 
     model_params = pd.DataFrame([])
 
@@ -1759,7 +1759,7 @@ def project_models():
 def make_plots():
     sns.color_palette("viridis", as_cmap=True)
     exp_data = (
-        pd.read_json("".join([model_param_dir, "martensite_experimental_model_data.json"]))
+        pd.read_json("".join([model_param_dir, "martensite_experimental_model_training_data.json"]))
         .query("ignore == False & predicted_type == False")
         .sort_values(by="type")
     )
@@ -2806,8 +2806,6 @@ def update_param_markdown():
 
 
 def save_training_data_json():
-    # TODO: make this function save the training data in an ESPEI-compatible format per https://espei.org/tutorials/custom-model-parameter-selection/custom_model_parameter_selection.html
-
     def save_json_row(row):
         if row["ignore"]:
             return row
@@ -2817,20 +2815,56 @@ def save_training_data_json():
             "output",
             "phases",
             "reference",
+            "solver",
+            "values",
         ]
+        interstitials = ["B", "C", "H", "N", "O", "VA"]
+        type_dir = None
+        site_ratios = None
+        if row["type"] == "lath":
+            type_dir = "MSL"
+            row["phases"] = ["BCT_LATH"]
+            site_ratios = [1, 3]
+            row["output"] = "MSL"
+        elif row["type"] == "plate":
+            type_dir = "MSP"
+            site_ratios = [1, 3]
+            row["phases"] = ["BCT_PLATE"]
+            row["output"] = "MSP"
+        elif row["type"] == "epsilon":
+            type_dir = "MSE"
+            site_ratios = [1, 0.5]
+            row["phases"] = ["HCP_EPS"]
+            row["output"] = "MSE"
+        assert type_dir is not None and site_ratios is not None, f"Cannot identify type for {row}."
+        sublattice_configurations = [
+            [comp for comp in row["components"] if comp not in interstitials],
+            [comp for comp in row["components"] if comp in interstitials],
+        ]
+        row["solver"] = {
+            "mode": "manual",
+            "sublattice_site_ratios": site_ratios,
+            "sublattice_configurations": sublattice_configurations,
+        }
+        row["conditions"] = row["solutionizing_conditions"]
+        row["conditions"]["T"] = row["martensite_start"]
+        row["values"] = [[[row["DG"]]]]
 
-        if not os.path.isdir(os.path.join(exp_data_dir, row["reference"])):
-            os.makedirs(os.path.join(exp_data_dir, row["reference"]))
+        if not os.path.isdir(os.path.join(exp_data_dir, "training")):
+            os.makedirs(os.path.join(exp_data_dir, "training"))
+        if not os.path.isdir(os.path.join(exp_data_dir, "training", type_dir)):
+            os.makedirs(os.path.join(exp_data_dir, "training", type_dir))
+        if not os.path.isdir(os.path.join(exp_data_dir, "training", type_dir, row["reference"])):
+            os.makedirs(os.path.join(exp_data_dir, "training", type_dir, row["reference"]))
+        ref_dir = os.path.join(exp_data_dir, "training", type_dir, row["reference"])
+        index = row["index"]
         row = row.drop([col for col in row.index if col not in cols_to_keep])
-        row.to_json(
-            os.path.join(
-                exp_data_dir, row["reference"], row["reference"] + "-" + str(row["index"]) + ".json"
-            )
-        )
+        row.to_json(os.path.join(ref_dir, row["reference"] + "-" + str(index) + ".json"))
 
-    exp_data = pd.read_json("".join([exp_data_dir, "predicted_martensite_start.json"]))
+    exp_data = pd.read_json(
+        "".join([model_param_dir, "martensite_experimental_model_training_data.json"])
+    )
     exp_data.apply(lambda row: save_json_row(row), axis=1)
-    print(exp_data.columns)
 
 
 if __name__ == "__main__":
@@ -2870,7 +2904,7 @@ if __name__ == "__main__":
     if any(["parity" in args, "all" in args]):
         make_parity_plots()
     if "save json" in args:
-        save_json_data()
+        save_training_data_json()
     else:
         print("Anything else you want me to do?")
         print(f"Arguments were: {args}")

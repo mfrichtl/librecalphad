@@ -1,0 +1,1 @@
+{"components":["FE","MN","SI","VA"],"conditions":{"N":1,"P":101325,"T":437.0,"X_MN":0.1540670521,"X_SI":0.0521602878},"reference":"Yang2012","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN","SI"],["VA"]]},"values":[[[507.4708355451]]]}
