@@ -2805,41 +2805,20 @@ def update_param_markdown():
             f.write("\n")
 
 
-def save_json_data():
-    # Function to format and save experimental data as JSON files.
-    # The goal for this is to define and implement a standard JSON data format for property models.
+def save_training_data_json():
+    # TODO: make this function save the training data in an ESPEI-compatible format per https://espei.org/tutorials/custom-model-parameter-selection/custom_model_parameter_selection.html
 
     def save_json_row(row):
+        if row["ignore"]:
+            return row
         cols_to_keep = [
             "components",
             "conditions",
-            "disabled",
-            "index",
-            "inputs",
-            "model",
-            "outputs",
+            "output",
+            "phases",
             "reference",
         ]
-        row["disabled"] = row["ignore"]
-        row["model"] = "martensite_start"
-        row["inputs"] = {
-            "martensite_start": row["martensite_start"],
-            "martensite_type": row["type"],
-            "PAGS": row["PAGS"],
-            "parent_phase": row["parent"],
-            "predicted_type": row["predicted_type"],
-            "solutionizing_temperature": row["austenitization_temperature"],
-        }
-        row["outputs"] = {
-            "calculation_error": row["calc_error"],
-            "DG": row["DG"],
-            "error": row["error"],
-            "error_message": row["error_message"],
-            "LC_martensite_start": row["mf_martensite_start"],
-            "PAGS_energy": row["PAGS_energy"],
-            "solutioning_conditions": row["solutionizing_conditions"],
-            "solutionizing_phases": row["solutionizing_phases"],
-        }
+
         if not os.path.isdir(os.path.join(exp_data_dir, row["reference"])):
             os.makedirs(os.path.join(exp_data_dir, row["reference"]))
         row = row.drop([col for col in row.index if col not in cols_to_keep])
