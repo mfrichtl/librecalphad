@@ -1,1 +1,0 @@
-{"components":["FE","NI","VA"],"conditions":{"N":1,"P":101325,"T":334.0014497709,"X_NI":0.2737003014},"reference":"Peschard1925","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","NI"],["VA"]]},"values":[[[387.5200541034]]]}

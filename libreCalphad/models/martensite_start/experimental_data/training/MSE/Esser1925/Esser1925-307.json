@@ -1,1 +1,0 @@
-{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":427.5124161074,"X_MN":0.13135705},"reference":"Esser1925","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[133.6655688579]]]}

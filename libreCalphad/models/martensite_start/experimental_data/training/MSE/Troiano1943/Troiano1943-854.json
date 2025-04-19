@@ -1,1 +1,0 @@
-{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":418.5387227047,"X_MN":0.2038444687},"reference":"Troiano1943","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[46.9916864339]]]}

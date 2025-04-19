@@ -1,1 +1,0 @@
-{"components":["C","FE","MN","MO","SI","VA"],"conditions":{"N":1,"P":101325,"T":593.5,"X_C":0.0174095804,"X_MN":0.0149240293,"X_MO":0.002351566,"X_SI":0.0048981364},"reference":"Steven1956","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN","MO","SI"],["C","VA"]]},"values":[[[2489.5356480805]]]}

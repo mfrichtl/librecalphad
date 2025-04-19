@@ -1,1 +1,0 @@
-{"components":["FE","NI","VA"],"conditions":{"N":1,"P":101325,"T":531.0712916246,"X_NI":0.190218836},"reference":"Jones1949","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","NI"],["VA"]]},"values":[[[1220.9123901053]]]}

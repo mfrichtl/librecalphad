@@ -1,1 +1,0 @@
-{"components":["FE","MN","SI","VA"],"conditions":{"N":1,"P":101325,"T":335.0784219035,"X_MN":0.2609686326,"X_SI":0.0409237969},"reference":"Takaki1990","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN","SI"],["VA"]]},"values":[[[557.0191566778]]]}

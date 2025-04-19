@@ -1,1 +1,0 @@
-{"components":["FE","VA"],"conditions":{"N":1,"P":101325,"T":691.5728574608},"reference":"Mirzayev1973","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE"],["VA"]]},"values":[[[2128.3895071894]]]}

@@ -1,1 +1,0 @@
-{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":482.5459731544,"X_MN":0.0707692245},"reference":"Ishiwara1930","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[2493.6818043648]]]}

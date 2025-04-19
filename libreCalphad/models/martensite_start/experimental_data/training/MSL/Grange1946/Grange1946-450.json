@@ -1,1 +1,0 @@
-{"components":["C","FE","MN","SI","VA"],"conditions":{"N":1,"P":101325,"T":610.9277777778,"X_C":0.0160337973,"X_MN":0.0185282837,"X_SI":0.003722272},"reference":"Grange1946","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN","SI"],["C","VA"]]},"values":[[[2328.484366223]]]}

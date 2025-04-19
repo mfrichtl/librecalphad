@@ -1,0 +1,1 @@
+{"components": ["CR", "FE", "VA"], "reference": "Pascover1968", "phases": "BCT_LATH", "output": "MSL", "conditions": {"P": 101325, "N": 1, "T": 748.15}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["CR", "FE"], "VA"]], "sublattice_occupancies": [[[0.102372736, 0.8975533995], 1.0]]}, "values": [[[1475.3633071421]]]}

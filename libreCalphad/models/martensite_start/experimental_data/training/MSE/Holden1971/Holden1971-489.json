@@ -1,1 +1,0 @@
-{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":442.1233841722,"X_MN":0.1350006685},"reference":"Holden1971","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[71.8865519938]]]}

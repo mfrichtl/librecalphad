@@ -1,0 +1,1 @@
+{"components": ["FE", "MN", "VA"], "reference": "Walters1932", "phases": "HCP_EPS", "output": "MSE", "conditions": {"P": 101325, "N": 1, "T": 425.9739202658}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 0.5], "sublattice_configurations": [[["FE", "MN"], "VA"]], "sublattice_occupancies": [[[0.8384948977000001, 0.1615051023], 1.0]]}, "values": [[[88.6679413471]]]}

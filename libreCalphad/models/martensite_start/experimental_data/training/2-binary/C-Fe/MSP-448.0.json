@@ -1,0 +1,1 @@
+{"components": ["C", "FE", "VA"], "reference": "Oka1988", "phases": "BCT_PLATE", "output": "MSP", "conditions": {"P": 101325, "N": 1, "T": 448.0}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [["FE", ["C", "VA"]]], "sublattice_occupancies": [[0.9508283812, [0.01723816823737865, 0.9827618317626213]]]}, "values": [[[1478.0648772895]]]}

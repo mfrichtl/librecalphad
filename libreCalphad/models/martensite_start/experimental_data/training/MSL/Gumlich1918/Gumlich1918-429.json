@@ -1,1 +1,0 @@
-{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":602.0090604027,"X_MN":0.0425622731},"reference":"Gumlich1918","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[2074.6718734131]]]}

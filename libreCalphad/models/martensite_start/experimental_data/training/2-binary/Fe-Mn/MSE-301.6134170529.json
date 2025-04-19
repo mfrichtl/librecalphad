@@ -1,0 +1,1 @@
+{"components": ["FE", "MN", "VA"], "reference": "Cotes1995", "phases": "HCP_EPS", "output": "MSE", "conditions": {"P": 101325, "N": 1, "T": 301.6134170529}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 0.5], "sublattice_configurations": [[["FE", "MN"], "VA"]], "sublattice_occupancies": [[[0.745102692, 0.254897308], 1.0]]}, "values": [[[169.6832499597]]]}

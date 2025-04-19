@@ -1,1 +1,0 @@
-{"components":["FE","MN","VA"],"conditions":{"N":1,"P":101325,"T":506.7070469799,"X_MN":0.0955051034},"reference":"Esser1925","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN"],["VA"]]},"values":[[[1890.2023650402]]]}

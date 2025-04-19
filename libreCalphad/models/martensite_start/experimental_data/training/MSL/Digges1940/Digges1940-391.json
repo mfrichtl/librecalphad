@@ -1,1 +1,0 @@
-{"components":["C","FE","VA"],"conditions":{"N":1,"P":101325,"T":751.48,"X_C":0.0106050695},"reference":"Digges1940","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE"],["C","VA"]]},"values":[[[1241.9007534915]]]}

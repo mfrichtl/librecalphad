@@ -1,1 +1,0 @@
-{"components":["C","FE","MN","MO","VA"],"conditions":{"N":1,"P":101325,"T":589.0,"X_C":0.0183353846,"X_MN":0.0100213251,"X_MO":0.0005738503},"reference":"ASM1977","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN","MO"],["C","VA"]]},"values":[[[2630.9576820134]]]}

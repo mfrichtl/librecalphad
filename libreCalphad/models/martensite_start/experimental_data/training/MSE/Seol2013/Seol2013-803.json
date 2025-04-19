@@ -1,1 +1,0 @@
-{"components":["C","FE","MN","P","SI","VA"],"conditions":{"N":1,"P":101325,"T":353.15,"X_C":0.0060444327,"X_MN":0.1735033299,"X_P":0.0000805139,"X_SI":0.0000887939},"reference":"Seol2013","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN","P","SI"],["C","VA"]]},"values":[[[347.9630863647]]]}

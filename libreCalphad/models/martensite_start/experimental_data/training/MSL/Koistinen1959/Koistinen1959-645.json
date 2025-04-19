@@ -1,1 +1,0 @@
-{"components":["C","FE","VA"],"conditions":{"N":1,"P":101325,"T":688.0,"X_C":0.0169743218},"reference":"Koistinen1959","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE"],["C","VA"]]},"values":[[[1391.1824892188]]]}

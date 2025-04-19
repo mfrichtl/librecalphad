@@ -1,0 +1,1 @@
+{"components": ["CU", "FE", "VA"], "reference": "Raesanen1969", "phases": "BCT_LATH", "output": "MSL", "conditions": {"P": 101325, "N": 1, "T": 735.0649350649}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["CU", "FE"], "VA"]], "sublattice_occupancies": [[[0.05, 0.9500000000000001], 1.0]]}, "values": [[[1695.3114907759]]]}

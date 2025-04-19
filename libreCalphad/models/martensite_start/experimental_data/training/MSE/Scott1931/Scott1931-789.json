@@ -1,1 +1,0 @@
-{"components":["C","FE","MN","SI","VA"],"conditions":{"N":1,"P":101325,"T":343.15,"X_C":0.0034633859,"X_MN":0.1383105507,"X_SI":0.003752143},"reference":"Scott1931","phases":["HCP_EPS"],"output":"MSE","solver":{"mode":"manual","sublattice_site_ratios":[1,0.5],"sublattice_configurations":[["FE","MN","SI"],["C","VA"]]},"values":[[[466.8868603261]]]}

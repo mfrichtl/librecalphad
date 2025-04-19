@@ -1,1 +1,0 @@
-{"components":["C","FE","MN","NI","VA"],"conditions":{"N":1,"P":101325,"T":493.15,"X_C":0.0092862271,"X_MN":0.0047709216,"X_NI":0.1170574518},"reference":"Tanaka1972","phases":["BCT_LATH"],"output":"MSL","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE","MN","NI"],["C","VA"]]},"values":[[[2397.4489851245]]]}

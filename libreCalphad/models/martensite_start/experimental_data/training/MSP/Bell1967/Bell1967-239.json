@@ -1,1 +1,0 @@
-{"components":["FE","N","VA"],"conditions":{"N":1,"P":101325,"T":607.15,"X_N":0.0364544256},"reference":"Bell1967","phases":["BCT_PLATE"],"output":"MSP","solver":{"mode":"manual","sublattice_site_ratios":[1,3],"sublattice_configurations":[["FE"],["N","VA"]]},"values":[[[1309.6902668889]]]}
