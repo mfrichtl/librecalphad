@@ -101,6 +101,9 @@ def train_espei():
         [StepMartensiteStartLath, StepMartensiteStartPlate, StepMartensiteStartEpsilon],
         model=MartensiteStartModel,
     )
+    # Remove phase_models.json if it exists already
+    if os.path.exists(os.path.join(exp_data_dir, "training", "phase_models.json")):
+        os.remove(os.path.join(exp_data_dir, "training", "phase_models.json"))
     datasets = load_datasets(recursive_glob(os.path.join(exp_data_dir, "training")))
     # generate phase_models.json based on the training data
     components = []
@@ -108,32 +111,50 @@ def train_espei():
     for root, _, files in os.walk(os.path.join(exp_data_dir, "training")):
         for file in files:
             if file.endswith(".json") and file != "phase_models.json":
-                filename = os.path.join([root, file])
+                filename = os.path.join(root, file)
                 with open(filename, "r") as f:
                     data = json.load(f)
                     for comp in data["components"]:
                         if comp not in components:
                             components.append(comp)
-                    for phase in data["phases"]:
-                        if phase not in phases.keys():
-                            phases[phase] = {
-                                "sublattice_model": data["solver"]["sublattice_configurations"],
-                                "sublattice_site_ratios": data["solver"]["sublattice_site_ratios"],
-                            }
-                        else:
-                            for sl in range(len(data["solver"]["sublattice_model"])):
-                                for comp in data["solver"]["sublattice_configurations"][sl]:
-                                    if comp not in phases[phase]["sublattice_models"][sl]:
-                                        phases[phase]["sublattice_models"][sl].append(comp)
+                    phase = data["phases"]
+                    if phase not in phases.keys():
+                        phases[phase] = {
+                            "sublattice_model": data["solver"]["sublattice_configurations"],
+                            "sublattice_site_ratios": data["solver"]["sublattice_site_ratios"],
+                        }
+                    else:
+                        for sl in range(len(data["solver"]["sublattice_site_ratios"])):
+                            # Need to handle initiated phases without multiple occupancies on each sublattice
+                            if sl > len(phases[phase]["sublattice_model"]) - 1:
+                                phases[phase]["sublattice_model"].append([])
+                                continue
+                            if type(data["solver"]["sublattice_configurations"][0][sl]) == str:
+                                if (
+                                    data["solver"]["sublattice_configurations"][0][sl]
+                                    not in phases[phase]["sublattice_model"][sl]
+                                ):
+                                    phases[phase]["sublattice_model"][sl].append(
+                                        data["solver"]["sublattice_configurations"][0][sl]
+                                    )
+                            else:
+                                for comp in data["solver"]["sublattice_configurations"][0][sl]:
+                                    if comp not in phases[phase]["sublattice_model"][sl]:
+                                        phases[phase]["sublattice_model"][sl].append(comp)
+    phases["HCP_EPS"]["sublattice_model"][0].remove(
+        ["FE", "MN"]
+    )  # not sure why this is added like this
     phase_models = {"components": components, "phases": phases}
-    with open(os.path.join([exp_data_dir, "training", "phase_models.json"]), "w") as f:
+    with open(os.path.join(exp_data_dir, "training", "phase_models.json"), "w") as f:
         json.dump(phase_models, f)
     dbf = generate_parameters(
         phase_models, datasets, "SGTE91", "linear", martensite_start_fiting_description
     )
-    write_tdb(dbf, "./martensite_start.tdb")
+    with open("./martensite_start.tdb", "w") as f:
+        write_tdb(dbf, f)
 
 
+# TODO: Figure out why I only have the ideal mixing contributions in the TDB file.
 figsize = (6.5, 4)
 dbf = "mf-steel.tdb"
 max_num_conds_DG = (
