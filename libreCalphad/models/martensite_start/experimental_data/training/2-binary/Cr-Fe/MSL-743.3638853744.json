@@ -1,1 +1,0 @@
-{"components": ["CR", "FE", "VA"], "reference": "Mirzayev1985", "phases": "BCT_LATH", "output": "MSL", "conditions": {"P": 101325, "N": 1, "T": 743.3638853744}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["CR", "FE"], "VA"]], "sublattice_occupancies": [[[0.092, 0.908], 1.0]]}, "values": [[[1530.376645838]]]}

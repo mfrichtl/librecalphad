@@ -1,1 +1,0 @@
-{"components": ["FE", "NI", "VA"], "reference": "Shibata2006", "phases": "BCT_LATH", "output": "MSL", "conditions": {"P": 101325, "N": 1, "T": 434.0}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["FE", "NI"], "VA"]], "sublattice_occupancies": [[[0.7630128702000001, 0.2369871298], 1.0]]}, "values": [[[936.5996341123]]]}

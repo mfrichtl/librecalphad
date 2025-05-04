@@ -1,1 +1,0 @@
-{"components": ["FE", "NI", "VA"], "reference": "Goodenow1965", "phases": "BCT_LATH", "output": "MSL", "conditions": {"P": 101325, "N": 1, "T": 663.7}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["FE", "NI"], "VA"]], "sublattice_occupancies": [[[0.9112356713, 0.0883814331], 1.0]]}, "values": [[[1509.2071362356]]]}

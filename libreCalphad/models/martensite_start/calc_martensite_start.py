@@ -73,7 +73,8 @@ def train_espei():
             super().build_phase(dbe)
             phase = dbe.phases[self.phase_name]
             param_search = dbe.search
-            for prop in ["MSL", "MSP", "MSE"]:
+            # for prop in ["MSL", "MSP", "MSE"]:
+            for prop in ["MS"]:
                 prop_param_query = (
                     (tinydb.where("phase_name") == phase.name)
                     & (tinydb.where("parameter_type") == prop)
@@ -97,9 +98,16 @@ def train_espei():
         parameter_name = "MSE"
         data_types_read = "MSE"
 
+    class StepMartensiteStart(AbstractLinearPropertyStep):
+        parameter_name = "MS"
+        data_types_read = "MS"
+
+    # martensite_start_fiting_description = ModelFittingDescription(
+    #     [StepMartensiteStartLath, StepMartensiteStartPlate, StepMartensiteStartEpsilon],
+    #     model=MartensiteStartModel,
+    # )
     martensite_start_fiting_description = ModelFittingDescription(
-        [StepMartensiteStartLath, StepMartensiteStartPlate, StepMartensiteStartEpsilon],
-        model=MartensiteStartModel,
+        [StepMartensiteStart], model=MartensiteStartModel
     )
     # Remove phase_models.json if it exists already
     if os.path.exists(os.path.join(exp_data_dir, "training", "phase_models.json")):
@@ -107,51 +115,47 @@ def train_espei():
     datasets = load_datasets(recursive_glob(os.path.join(exp_data_dir, "training")))
     # generate phase_models.json based on the training data
     components = []
+    interstitials = ["B", "C", "H", "N", "O", "VA"]
+    # site_ratios = {"BCT_PLATE": [1, 3], "BCT_LATH": [1, 3], "HCP_EPS": [1, 0.5]}
+    site_ratios = {"BCC_A2": [1, 3], "HCP_A3": [1, 0.5]}
     phases = {}
+    for phase in list(site_ratios.keys()):
+        phases[phase] = {"sublattice_model": [[], []], "sublattice_site_ratios": site_ratios[phase]}
     for root, _, files in os.walk(os.path.join(exp_data_dir, "training")):
         for file in files:
             if file.endswith(".json") and file != "phase_models.json":
                 filename = os.path.join(root, file)
                 with open(filename, "r") as f:
                     data = json.load(f)
+                    phase = data["phases"][0]
                     for comp in data["components"]:
                         if comp not in components:
                             components.append(comp)
-                    phase = data["phases"]
-                    if phase not in phases.keys():
-                        phases[phase] = {
-                            "sublattice_model": data["solver"]["sublattice_configurations"],
-                            "sublattice_site_ratios": data["solver"]["sublattice_site_ratios"],
-                        }
-                    else:
-                        for sl in range(len(data["solver"]["sublattice_site_ratios"])):
-                            # Need to handle initiated phases without multiple occupancies on each sublattice
-                            if sl > len(phases[phase]["sublattice_model"]) - 1:
-                                phases[phase]["sublattice_model"].append([])
-                                continue
-                            if type(data["solver"]["sublattice_configurations"][0][sl]) == str:
-                                if (
-                                    data["solver"]["sublattice_configurations"][0][sl]
-                                    not in phases[phase]["sublattice_model"][sl]
-                                ):
-                                    phases[phase]["sublattice_model"][sl].append(
-                                        data["solver"]["sublattice_configurations"][0][sl]
-                                    )
-                            else:
-                                for comp in data["solver"]["sublattice_configurations"][0][sl]:
-                                    if comp not in phases[phase]["sublattice_model"][sl]:
-                                        phases[phase]["sublattice_model"][sl].append(comp)
-    phases["HCP_EPS"]["sublattice_model"][0].remove(
-        ["FE", "MN"]
-    )  # not sure why this is added like this
+                        if (
+                            comp not in interstitials
+                            and comp not in phases[phase]["sublattice_model"][0]
+                        ):
+                            phases[phase]["sublattice_model"][0].append(comp)
+                        if (
+                            comp in interstitials
+                            and comp not in phases[phase]["sublattice_model"][1]
+                        ):
+                            phases[phase]["sublattice_model"][1].append(comp)
+
     phase_models = {"components": components, "phases": phases}
     with open(os.path.join(exp_data_dir, "training", "phase_models.json"), "w") as f:
         json.dump(phase_models, f)
     dbf = generate_parameters(
-        phase_models, datasets, "SGTE91", "linear", martensite_start_fiting_description
+        phase_models,
+        datasets,
+        "SGTE91",
+        "linear",
+        fitting_description=martensite_start_fiting_description,
     )
     with open("./martensite_start.tdb", "w") as f:
         write_tdb(dbf, f)
+
+    return True
 
 
 # TODO: Figure out why I only have the ideal mixing contributions in the TDB file.
@@ -1391,210 +1395,210 @@ def fit_models(db, do_curve_fit=False, DG_refit=False):
     save_training_data_json(exp_data)  # save as individual json files for ESPEI
     print("Training with ESPEI")
     train_espei()
-    model_params = pd.DataFrame([])
-
-    # Plate model
-    plate_parameters = pd.DataFrame()
-    old_plate_parameters = pd.read_json("".join([model_param_dir, "mf_plate_parameters.json"]))
-    ignored_refs = list(
-        itertools.chain(
-            *[selected_ignore["plate"][key] for key in list(selected_ignore["plate"].keys())]
-        )
-    )
-    mf_plate_data = exp_data.query("type == 'plate' & reference not in @ignored_refs").reset_index(
-        drop=True
-    )
-    plate_terms = [term for term in list(conc_arrays["plate-mf"].keys())]
-    plate_terms.append("martensite_start")
-    plate_parameters["terms"] = [plate_terms]
-    plate_parameters["orders"] = [plate_orders]
-
-    assert all([term in list(plate_orders.keys()) for term in plate_terms]), (
-        "MF-plate model terms do not system parameters passed."
-    )
-    mf_plate_fits = fit_model(plate_orders, mf_plate_data, "plate")
-    plate_parameters["mf_plate_fits"] = [mf_plate_fits]
-    plate_time = time.time()
-    plate_parameters["model_version"] = plate_time
-    print("Plate Model")
-    print(mf_plate_fits)
-    plate_parameters.to_json("".join([model_param_dir, "mf_plate_parameters.json"]))
-
-    # Lath Model
-    lath_parameters = pd.DataFrame()
-    ignored_refs = list(
-        itertools.chain(
-            *[selected_ignore["lath"][key] for key in list(selected_ignore["lath"].keys())]
-        )
-    )
-    mf_lath_data = exp_data.query("type == 'lath' & reference not in @ignored_refs").reset_index(
-        drop=True
-    )
-    lath_terms = [term for term in list(conc_arrays["lath-mf"].keys())]
-    lath_terms.append("martensite_start")
-    lath_parameters["terms"] = [lath_terms]
-    lath_parameters["orders"] = [lath_orders]
-
-    assert all([term in list(lath_orders.keys()) for term in lath_terms])
-
-    mf_lath_fits = fit_model(lath_orders, mf_lath_data, "lath")
-    lath_parameters["mf_lath_fits"] = [mf_lath_fits]
-    lath_time = time.time()
-    print("Lath Model")
-    print(mf_lath_fits)
-
-    lath_parameters["model_version"] = lath_time
-    lath_parameters.to_json("".join([model_param_dir, "mf_lath_parameters.json"]))
-
-    # Epsilon model
-    epsilon_parameters = pd.DataFrame()
-    ignored_refs = list(
-        itertools.chain(
-            *[selected_ignore["epsilon"][key] for key in list(selected_ignore["epsilon"].keys())]
-        )
-    )
-    mf_epsilon_data = exp_data.query(
-        "type == 'epsilon' & reference not in @ignored_refs"
-    ).reset_index(drop=True)
-    epsilon_terms = [term for term in list(conc_arrays["epsilon-mf"].keys())]
-    epsilon_terms.append("martensite_start")
-    epsilon_parameters["terms"] = [epsilon_terms]
-
-    epsilon_parameters["orders"] = [epsilon_orders]
-    assert all([term in list(epsilon_orders.keys()) for term in epsilon_terms]), (
-        "MF-epsilon model terms do not match parameters passed."
-    )
-
-    mf_epsilon_fits = fit_model(epsilon_orders, mf_epsilon_data, "epsilon")
-    epsilon_parameters["mf_epsilon_fits"] = [mf_epsilon_fits]
-    print("Epsilon Model")
-    print(mf_epsilon_fits)
-
-    epsilon_parameters["model_version"] = lath_time
-    epsilon_parameters.to_json("".join([model_param_dir, "mf_epsilon_parameters.json"]))
-    model_types = ["lath-mf", "plate-mf", "plate-storm", "lath-storm", "epsilon-mf"]
-
-    if do_curve_fit:
-        # model_data = pd.DataFrame([])
-        if DG_refit:
-            t0_data = pd.DataFrame([], columns=["alloy_system"])
-        else:
-            t0_data = pd.read_json("".join([model_param_dir, "t0_model.json"]))
-
-        model_params["model_types"] = [model_types]
-        model_params["baseline_temperatures"] = [
-            np.linspace(
-                np.min(exp_data["martensite_start"]), np.max(exp_data["martensite_start"]), 350
-            )
-        ]
-
-        # Model baseline values that will be adjusted by RK polynomials of the alloying elements
-        print("Modeling baseline")
-        for temp in model_params["baseline_temperatures"][0]:
-            lath_baseline = mf_lath_baseline_fits[0]
-            # lath_baseline = mf_lath_baseline_fits[0] + mf_lath_baseline_fits[1]*temp
-            local_dict = {
-                "alloy_system": "all",
-                "type": "lath-mf",
-                "martensite_start": [temp],
-                "DG": [lath_baseline],
-                "conditions": [{v.N: 1, v.P: 101325}],
-                "components": [["FE", "VA"]],
-            }
-            # model_data = pd.concat([model_data, pd.DataFrame(local_dict)])
-            model_data = pd.DataFrame(local_dict)
-
-            # plate_baseline = mf_plate_fits['martensite_start'][0][0]
-            plate_baseline = mf_plate_baseline_fits[0]
-            local_dict.update({"type": "plate-mf", "DG": [plate_baseline]})
-            model_data = pd.concat([model_data, pd.DataFrame(local_dict)])
-
-            # epsilon_baseline = mf_epsilon_fits['martensite_start'][0][0] + mf_epsilon_fits['martensite_start'][0][1]*temp
-            # epsilon_baseline = mf_epsilon_fits['martensite_start'][0][0]
-            epsilon_baseline = mf_epsilon_baseline_fits[0]
-            # epsilon_baseline = mf_epsilon_baseline_fits[0] + mf_epsilon_baseline_fits[1]*temp + mf_epsilon_baseline_fits[2]*temp**2
-            local_dict.update({"type": "epsilon-mf", "DG": [epsilon_baseline]})
-            model_data = pd.concat([model_data, pd.DataFrame(local_dict)])
-
-        print("Modeling systems")
-        for model_type in list(conc_arrays.keys()):
-            if "storm" in model_type and DG_refit == False:
-                continue
-            systems = list(conc_arrays[model_type])
-            for system in systems:
-                split_system = system.split("-")
-                ordered_system = system.split("-")
-                # if model_type == 'epsilon-mf' and 'Mn' not in split_system:
-                #     ordered_system.append('Mn')
-                if "Fe" in ordered_system:
-                    ordered_system.remove("Fe")
-                ordered_system.sort()
-                ordered_system = "-".join(ordered_system)
-                ordered_system = "Fe-" + ordered_system
-                components = ["FE", "VA"]
-                if split_system[0] == "Fe":
-                    element0 = split_system[1]
-                    components.append(element0.upper())
-                    conc_array0 = conc_arrays[model_type][system]
-                    conc_array1 = [0]
-                    element1 = None
-                else:
-                    element0 = split_system[0]
-                    components.append(element0.upper())
-                    conc_array0 = conc_arrays[model_type][system][0]
-                    element1 = split_system[1]
-                    components.append(element1.upper())
-                    conc_array1 = conc_arrays[model_type][system][1]
-
-                model_dict = defaultdict(lambda: 0)
-                conditions = {v.N: 1, v.P: 101325}
-                for x in conc_array0:
-                    conditions.update({v.X(element0.upper()): x})
-                    for y in conc_array1:
-                        if element1 == None:
-                            model_dict["Fe"] = 1 - x
-                        else:
-                            conditions.update({v.X(element1.upper()): y})
-                        model_dict["alloy_system"] = ordered_system
-                        model_dict[element0] = [x]
-                        model_dict[element1] = [y]
-                        model_dict["conditions"] = [conditions.copy()]
-                        model_dict["database"] = [dbf]
-                        model_dict["type"] = model_type
-                        model_dict["components"] = [components]
-                        model_data = pd.concat([model_data, pd.DataFrame(model_dict)])
-                        if (
-                            model_type == "epsilon-mf" or model_type == "lath-mf"
-                        ):  # populate T0 temperatures for the two types that are needed
-                            model_dict["type"] = "T0-" + model_type.split("-")[0]
-                            t0_data = pd.concat([t0_data, pd.DataFrame(model_dict)])
-
-        model_data = model_data.reset_index(drop=True)
-        print(model_data["alloy_system"].unique())
-        data_to_fit = model_data.query("alloy_system != 'all'")
-        model_data = model_data.drop(data_to_fit.index)
-        data_to_fit.loc[:, "martensite_start"] = data_to_fit.parallel_apply(
-            lambda row: calc_model_Ms(row.copy(), db), axis=1
-        )
-        data_to_fit = data_to_fit.parallel_apply(lambda row: predict_DG(row.copy()), axis=1)
-        model_data = pd.concat([model_data, data_to_fit]).fillna(0)
-        model_data["projected_point"] = False
-        model_params.to_json("".join([model_param_dir, "martensite_model_parameters.json"]))
-        mf_model_data = model_data.query(
-            "type == 'lath-mf' or type == 'plate-mf' or type == 'epsilon-mf'"
-        )
-        mf_model_data.to_json("".join([model_param_dir, "martensite_model.json"]))
-        if DG_refit:
-            print("Fitting Stormvinter's model")
-            storm_model_data = model_data.query("type == 'lath-storm' or type == 'plate-storm'")
-            storm_model_data.to_json(
-                "".join([model_param_dir, "stormvinter_martensite_model.json"])
-            )
-            print("Recalculating T0 temperatures")
-            t0_data = t0_data.parallel_apply(lambda row: calc_t0(row.copy(), db), axis=1)
-            t0_data = t0_data.reset_index(drop=True)
-            t0_data.to_json("".join([model_param_dir, "t0_model.json"]))
-        print(model_data["alloy_system"].unique())
+    # model_params = pd.DataFrame([])
+    #
+    # # Plate model
+    # plate_parameters = pd.DataFrame()
+    # old_plate_parameters = pd.read_json("".join([model_param_dir, "mf_plate_parameters.json"]))
+    # ignored_refs = list(
+    #     itertools.chain(
+    #         *[selected_ignore["plate"][key] for key in list(selected_ignore["plate"].keys())]
+    #     )
+    # )
+    # mf_plate_data = exp_data.query("type == 'plate' & reference not in @ignored_refs").reset_index(
+    #     drop=True
+    # )
+    # plate_terms = [term for term in list(conc_arrays["plate-mf"].keys())]
+    # plate_terms.append("martensite_start")
+    # plate_parameters["terms"] = [plate_terms]
+    # plate_parameters["orders"] = [plate_orders]
+    #
+    # assert all([term in list(plate_orders.keys()) for term in plate_terms]), (
+    #     "MF-plate model terms do not system parameters passed."
+    # )
+    # mf_plate_fits = fit_model(plate_orders, mf_plate_data, "plate")
+    # plate_parameters["mf_plate_fits"] = [mf_plate_fits]
+    # plate_time = time.time()
+    # plate_parameters["model_version"] = plate_time
+    # print("Plate Model")
+    # print(mf_plate_fits)
+    # plate_parameters.to_json("".join([model_param_dir, "mf_plate_parameters.json"]))
+    #
+    # # Lath Model
+    # lath_parameters = pd.DataFrame()
+    # ignored_refs = list(
+    #     itertools.chain(
+    #         *[selected_ignore["lath"][key] for key in list(selected_ignore["lath"].keys())]
+    #     )
+    # )
+    # mf_lath_data = exp_data.query("type == 'lath' & reference not in @ignored_refs").reset_index(
+    #     drop=True
+    # )
+    # lath_terms = [term for term in list(conc_arrays["lath-mf"].keys())]
+    # lath_terms.append("martensite_start")
+    # lath_parameters["terms"] = [lath_terms]
+    # lath_parameters["orders"] = [lath_orders]
+    #
+    # assert all([term in list(lath_orders.keys()) for term in lath_terms])
+    #
+    # mf_lath_fits = fit_model(lath_orders, mf_lath_data, "lath")
+    # lath_parameters["mf_lath_fits"] = [mf_lath_fits]
+    # lath_time = time.time()
+    # print("Lath Model")
+    # print(mf_lath_fits)
+    #
+    # lath_parameters["model_version"] = lath_time
+    # lath_parameters.to_json("".join([model_param_dir, "mf_lath_parameters.json"]))
+    #
+    # # Epsilon model
+    # epsilon_parameters = pd.DataFrame()
+    # ignored_refs = list(
+    #     itertools.chain(
+    #         *[selected_ignore["epsilon"][key] for key in list(selected_ignore["epsilon"].keys())]
+    #     )
+    # )
+    # mf_epsilon_data = exp_data.query(
+    #     "type == 'epsilon' & reference not in @ignored_refs"
+    # ).reset_index(drop=True)
+    # epsilon_terms = [term for term in list(conc_arrays["epsilon-mf"].keys())]
+    # epsilon_terms.append("martensite_start")
+    # epsilon_parameters["terms"] = [epsilon_terms]
+    #
+    # epsilon_parameters["orders"] = [epsilon_orders]
+    # assert all([term in list(epsilon_orders.keys()) for term in epsilon_terms]), (
+    #     "MF-epsilon model terms do not match parameters passed."
+    # )
+    #
+    # mf_epsilon_fits = fit_model(epsilon_orders, mf_epsilon_data, "epsilon")
+    # epsilon_parameters["mf_epsilon_fits"] = [mf_epsilon_fits]
+    # print("Epsilon Model")
+    # print(mf_epsilon_fits)
+    #
+    # epsilon_parameters["model_version"] = lath_time
+    # epsilon_parameters.to_json("".join([model_param_dir, "mf_epsilon_parameters.json"]))
+    # model_types = ["lath-mf", "plate-mf", "plate-storm", "lath-storm", "epsilon-mf"]
+    #
+    # if do_curve_fit:
+    #     # model_data = pd.DataFrame([])
+    #     if DG_refit:
+    #         t0_data = pd.DataFrame([], columns=["alloy_system"])
+    #     else:
+    #         t0_data = pd.read_json("".join([model_param_dir, "t0_model.json"]))
+    #
+    #     model_params["model_types"] = [model_types]
+    #     model_params["baseline_temperatures"] = [
+    #         np.linspace(
+    #             np.min(exp_data["martensite_start"]), np.max(exp_data["martensite_start"]), 350
+    #         )
+    #     ]
+    #
+    #     # Model baseline values that will be adjusted by RK polynomials of the alloying elements
+    #     print("Modeling baseline")
+    #     for temp in model_params["baseline_temperatures"][0]:
+    #         lath_baseline = mf_lath_baseline_fits[0]
+    #         # lath_baseline = mf_lath_baseline_fits[0] + mf_lath_baseline_fits[1]*temp
+    #         local_dict = {
+    #             "alloy_system": "all",
+    #             "type": "lath-mf",
+    #             "martensite_start": [temp],
+    #             "DG": [lath_baseline],
+    #             "conditions": [{v.N: 1, v.P: 101325}],
+    #             "components": [["FE", "VA"]],
+    #         }
+    #         # model_data = pd.concat([model_data, pd.DataFrame(local_dict)])
+    #         model_data = pd.DataFrame(local_dict)
+    #
+    #         # plate_baseline = mf_plate_fits['martensite_start'][0][0]
+    #         plate_baseline = mf_plate_baseline_fits[0]
+    #         local_dict.update({"type": "plate-mf", "DG": [plate_baseline]})
+    #         model_data = pd.concat([model_data, pd.DataFrame(local_dict)])
+    #
+    #         # epsilon_baseline = mf_epsilon_fits['martensite_start'][0][0] + mf_epsilon_fits['martensite_start'][0][1]*temp
+    #         # epsilon_baseline = mf_epsilon_fits['martensite_start'][0][0]
+    #         epsilon_baseline = mf_epsilon_baseline_fits[0]
+    #         # epsilon_baseline = mf_epsilon_baseline_fits[0] + mf_epsilon_baseline_fits[1]*temp + mf_epsilon_baseline_fits[2]*temp**2
+    #         local_dict.update({"type": "epsilon-mf", "DG": [epsilon_baseline]})
+    #         model_data = pd.concat([model_data, pd.DataFrame(local_dict)])
+    #
+    #     print("Modeling systems")
+    #     for model_type in list(conc_arrays.keys()):
+    #         if "storm" in model_type and DG_refit == False:
+    #             continue
+    #         systems = list(conc_arrays[model_type])
+    #         for system in systems:
+    #             split_system = system.split("-")
+    #             ordered_system = system.split("-")
+    #             # if model_type == 'epsilon-mf' and 'Mn' not in split_system:
+    #             #     ordered_system.append('Mn')
+    #             if "Fe" in ordered_system:
+    #                 ordered_system.remove("Fe")
+    #             ordered_system.sort()
+    #             ordered_system = "-".join(ordered_system)
+    #             ordered_system = "Fe-" + ordered_system
+    #             components = ["FE", "VA"]
+    #             if split_system[0] == "Fe":
+    #                 element0 = split_system[1]
+    #                 components.append(element0.upper())
+    #                 conc_array0 = conc_arrays[model_type][system]
+    #                 conc_array1 = [0]
+    #                 element1 = None
+    #             else:
+    #                 element0 = split_system[0]
+    #                 components.append(element0.upper())
+    #                 conc_array0 = conc_arrays[model_type][system][0]
+    #                 element1 = split_system[1]
+    #                 components.append(element1.upper())
+    #                 conc_array1 = conc_arrays[model_type][system][1]
+    #
+    #             model_dict = defaultdict(lambda: 0)
+    #             conditions = {v.N: 1, v.P: 101325}
+    #             for x in conc_array0:
+    #                 conditions.update({v.X(element0.upper()): x})
+    #                 for y in conc_array1:
+    #                     if element1 == None:
+    #                         model_dict["Fe"] = 1 - x
+    #                     else:
+    #                         conditions.update({v.X(element1.upper()): y})
+    #                     model_dict["alloy_system"] = ordered_system
+    #                     model_dict[element0] = [x]
+    #                     model_dict[element1] = [y]
+    #                     model_dict["conditions"] = [conditions.copy()]
+    #                     model_dict["database"] = [dbf]
+    #                     model_dict["type"] = model_type
+    #                     model_dict["components"] = [components]
+    #                     model_data = pd.concat([model_data, pd.DataFrame(model_dict)])
+    #                     if (
+    #                         model_type == "epsilon-mf" or model_type == "lath-mf"
+    #                     ):  # populate T0 temperatures for the two types that are needed
+    #                         model_dict["type"] = "T0-" + model_type.split("-")[0]
+    #                         t0_data = pd.concat([t0_data, pd.DataFrame(model_dict)])
+    #
+    #     model_data = model_data.reset_index(drop=True)
+    #     print(model_data["alloy_system"].unique())
+    #     data_to_fit = model_data.query("alloy_system != 'all'")
+    #     model_data = model_data.drop(data_to_fit.index)
+    #     data_to_fit.loc[:, "martensite_start"] = data_to_fit.parallel_apply(
+    #         lambda row: calc_model_Ms(row.copy(), db), axis=1
+    #     )
+    #     data_to_fit = data_to_fit.parallel_apply(lambda row: predict_DG(row.copy()), axis=1)
+    #     model_data = pd.concat([model_data, data_to_fit]).fillna(0)
+    #     model_data["projected_point"] = False
+    #     model_params.to_json("".join([model_param_dir, "martensite_model_parameters.json"]))
+    #     mf_model_data = model_data.query(
+    #         "type == 'lath-mf' or type == 'plate-mf' or type == 'epsilon-mf'"
+    #     )
+    #     mf_model_data.to_json("".join([model_param_dir, "martensite_model.json"]))
+    #     if DG_refit:
+    #         print("Fitting Stormvinter's model")
+    #         storm_model_data = model_data.query("type == 'lath-storm' or type == 'plate-storm'")
+    #         storm_model_data.to_json(
+    #             "".join([model_param_dir, "stormvinter_martensite_model.json"])
+    #         )
+    #         print("Recalculating T0 temperatures")
+    #         t0_data = t0_data.parallel_apply(lambda row: calc_t0(row.copy(), db), axis=1)
+    #         t0_data = t0_data.reset_index(drop=True)
+    #         t0_data.to_json("".join([model_param_dir, "t0_model.json"]))
+    #     print(model_data["alloy_system"].unique())
 
 
 def model_pags(db):
@@ -2879,19 +2883,23 @@ def save_training_data_json(training_df):
         site_ratios = None
         if row["type"] == "lath":
             type_dir = "MSL"
-            row["phases"] = ["BCT_LATH"]
+            # row["phases"] = ["BCT_LATH"]
+            row["phases"] = ["BCC_A2"]
             site_ratios = [1, 3]
-            row["output"] = "MSL"
+            # row["output"] = "MSL"
         elif row["type"] == "plate":
             type_dir = "MSP"
             site_ratios = [1, 3]
-            row["phases"] = ["BCT_PLATE"]
+            # row["phases"] = ["BCT_PLATE"]
+            row["phases"] = ["BCC_A2"]
             row["output"] = "MSP"
         elif row["type"] == "epsilon":
             type_dir = "MSE"
             site_ratios = [1, 0.5]
-            row["phases"] = ["HCP_EPS"]
-            row["output"] = "MSE"
+            # row["phases"] = ["HCP_EPS"]
+            row["phases"] = ["HCP_A3"]
+            # row["output"] = "MSE"
+        row["output"] = "MS"
         assert type_dir is not None and site_ratios is not None, f"Cannot identify type for {row}."
         subs = [comp for comp in row["components"] if comp not in interstitials]
         ints = [comp for comp in row["components"] if comp in interstitials]
@@ -2924,8 +2932,10 @@ def save_training_data_json(training_df):
 
     # training_df.apply(lambda row: save_json_row(row), axis=1)
     print(training_df["alloy_system"].unique())
-    types_dict = {"lath": "MSL", "plate": "MSP", "epsilon": "MSE"}
-    phases_dict = {"lath": "BCT_LATH", "plate": "BCT_PLATE", "epsilon": "HCP_EPS"}
+    # types_dict = {"lath": "MSL", "plate": "MSP", "epsilon": "MSE"}
+    types_dict = {"lath": "MS", "plate": "MS", "epsilon": "MS"}
+    # phases_dict = {"lath": "BCT_LATH", "plate": "BCT_PLATE", "epsilon": "HCP_EPS"}
+    phases_dict = {"lath": ["BCC_A2"], "plate": ["BCC_A2"], "epsilon": ["HCP_A3"]}
     site_ratios_dict = {"lath": [1, 3], "plate": [1, 3], "epsilon": [1, 0.5]}
     if not os.path.isdir(os.path.join(exp_data_dir, "training", "1-unary")):
         os.makedirs(os.path.join(exp_data_dir, "training", "1-unary"))
@@ -2962,35 +2972,35 @@ def save_training_data_json(training_df):
         system_ints = [comp.upper() for comp in sorted_system if comp in interstitials]
         system_subs = [comp.upper() for comp in sorted_system if comp not in interstitials]
         for martensite_type in system_df["type"].unique():
-            out_dict = {}
             type_df = system_df.query("type == @martensite_type").reset_index(drop=True)
+            out_dict = {}
+            out_dict["components"] = [comp.upper() for comp in sorted_system]
+            out_dict["reference"] = list(type_df["reference"].unique())
+            out_file = os.path.join(system_path, f"{phases_dict[martensite_type]}.json")
+            out_dict["phases"] = phases_dict[martensite_type]
+            site_ratios = site_ratios_dict[martensite_type]
+            out_dict["output"] = types_dict[martensite_type]
+            out_dict["conditions"] = {
+                "P": 101325,
+                "N": 1,
+                "T": list(type_df["martensite_start"]),
+                # "T": 1200,
+            }
+
+            if len(system_subs) > 1 and len(system_ints) > 1:
+                sublattice_configurations = [system_subs, system_ints]
+            elif len(system_ints) > 1:
+                sublattice_configurations = [*system_subs, system_ints]
+            elif len(system_subs) > 1:
+                sublattice_configurations = [system_subs, *system_ints]
+            else:
+                sublattice_configurations = [*system_subs, *system_ints]
+            sublattice_configurations = list(
+                itertools.repeat(sublattice_configurations, len(type_df["martensite_start"]))
+            )
+            sublattice_occupancies = []
             for i in type_df.index:
                 entry = type_df.iloc[i]
-                out_dict["components"] = [comp.upper() for comp in sorted_system]
-                out_dict["reference"] = entry["reference"]
-                out_file = os.path.join(
-                    system_path, f"{types_dict[martensite_type]}-{entry['martensite_start']}.json"
-                )
-                out_dict["phases"] = phases_dict[martensite_type]
-                site_ratios = site_ratios_dict[martensite_type]
-                out_dict["output"] = types_dict[martensite_type]
-                out_dict["conditions"] = {
-                    "P": 101325,
-                    "N": 1,
-                    "T": entry["martensite_start"],
-                }
-                if len(system_subs) > 1 and len(system_ints) > 1:
-                    sublattice_configurations = [system_subs, system_ints]
-                elif len(system_ints) > 1:
-                    sublattice_configurations = [*system_subs, system_ints]
-                elif len(system_subs) > 1:
-                    sublattice_configurations = [system_subs, *system_ints]
-                else:
-                    sublattice_configurations = [*system_subs, *system_ints]
-                # sublattice_configurations = list(
-                # itertools.repeat(sublattice_configurations, len(type_df["martensite_start"]))
-                # )
-                sublattice_occupancies = []
                 this_subs_occupancy = []
                 this_ints_occupancy = []
                 va_conc = 1
@@ -3008,7 +3018,7 @@ def save_training_data_json(training_df):
                         if comp == "FE":
                             this_subs_occupancy.append(1 / site_ratios[0] * fe_conc)
                         else:
-                            comp_conc = type_df.iloc[i][comp]
+                            comp_conc = entry[comp]
                             this_subs_occupancy.append(1 / site_ratios[0] * comp_conc)
                     else:
                         if comp == "VA":
@@ -3016,7 +3026,7 @@ def save_training_data_json(training_df):
                                 1 - (1 / site_ratios[1] * (1 - va_conc) / va_conc)
                             )
                         else:
-                            comp_conc = type_df.iloc[i][comp]
+                            comp_conc = entry[comp]
                             this_ints_occupancy.append(1 / site_ratios[1] * comp_conc / va_conc)
                 if num_components == 1:  # Fe only
                     this_occupancy = [1, 0]
@@ -3029,15 +3039,97 @@ def save_training_data_json(training_df):
                 else:
                     this_occupancy = [*this_subs_occupancy, *this_ints_occupancy]
                 sublattice_occupancies.append(this_occupancy)
-                out_dict["solver"] = {
-                    "mode": "manual",
-                    "sublattice_site_ratios": site_ratios,
-                    "sublattice_configurations": [sublattice_configurations],
-                    "sublattice_occupancies": sublattice_occupancies,
-                }
-                out_dict["values"] = [[[entry["DG"]]]]
-                with open(out_file, "w") as f:
-                    json.dump(out_dict, f)
+            out_dict["solver"] = {
+                "mode": "manual",
+                "sublattice_site_ratios": site_ratios,
+                "sublattice_configurations": sublattice_configurations,
+                "sublattice_occupancies": sublattice_occupancies,
+            }
+            out_dict["values"] = [
+                [
+                    list(itertools.repeat(val, len(type_df["martensite_start"])))
+                    for val in type_df["DG"]
+                ]
+            ]
+            # out_dict["values"] = [[list(type_df["martensite_start"])]]
+            with open(out_file, "w") as f:
+                json.dump(out_dict, f)
+
+            # for i in type_df.index:
+            #     entry = type_df.iloc[i]
+            #     out_dict = {}
+            #     out_dict["components"] = [comp.upper() for comp in sorted_system]
+            #     out_dict["reference"] = entry["reference"]
+            #     out_file = os.path.join(
+            #         system_path, f"{types_dict[martensite_type]}-{entry['martensite_start']}.json"
+            #     )
+            #     out_dict["phases"] = phases_dict[martensite_type]
+            #     site_ratios = site_ratios_dict[martensite_type]
+            #     out_dict["output"] = types_dict[martensite_type]
+            #     out_dict["conditions"] = {
+            #         "P": 101325,
+            #         "N": 1,
+            #         "T": entry["martensite_start"],
+            #     }
+            #     if len(system_subs) > 1 and len(system_ints) > 1:
+            #         sublattice_configurations = [system_subs, system_ints]
+            #     elif len(system_ints) > 1:
+            #         sublattice_configurations = [*system_subs, system_ints]
+            #     elif len(system_subs) > 1:
+            #         sublattice_configurations = [system_subs, *system_ints]
+            #     else:
+            #         sublattice_configurations = [*system_subs, *system_ints]
+            #     # sublattice_configurations = list(
+            #     # itertools.repeat(sublattice_configurations, len(type_df["martensite_start"]))
+            #     # )
+            #     sublattice_occupancies = []
+            #     this_subs_occupancy = []
+            #     this_ints_occupancy = []
+            #     va_conc = 1
+            #     fe_conc = 1
+            #     for comp in sorted_system:
+            #         if comp == "FE" or comp == "VA":
+            #             continue
+            #         comp_conc = entry[comp]
+            #         if comp.upper() in system_subs:
+            #             fe_conc -= comp_conc
+            #         else:
+            #             va_conc -= comp_conc
+            #     for comp in sorted_system:
+            #         if comp.upper() in system_subs:
+            #             if comp == "FE":
+            #                 this_subs_occupancy.append(1 / site_ratios[0] * fe_conc)
+            #             else:
+            #                 comp_conc = type_df.iloc[i][comp]
+            #                 this_subs_occupancy.append(1 / site_ratios[0] * comp_conc)
+            #         else:
+            #             if comp == "VA":
+            #                 this_ints_occupancy.append(
+            #                     1 - (1 / site_ratios[1] * (1 - va_conc) / va_conc)
+            #                 )
+            #             else:
+            #                 comp_conc = type_df.iloc[i][comp]
+            #                 this_ints_occupancy.append(1 / site_ratios[1] * comp_conc / va_conc)
+            #     if num_components == 1:  # Fe only
+            #         this_occupancy = [1, 0]
+            #     if len(system_subs) > 1 and len(system_ints) > 1:
+            #         this_occupancy = [this_subs_occupancy, this_ints_occupancy]
+            #     elif len(system_ints) > 1:
+            #         this_occupancy = [*this_subs_occupancy, this_ints_occupancy]
+            #     elif len(system_subs) > 1:
+            #         this_occupancy = [this_subs_occupancy, *this_ints_occupancy]
+            #     else:
+            #         this_occupancy = [*this_subs_occupancy, *this_ints_occupancy]
+            #     sublattice_occupancies.append(this_occupancy)
+            #     out_dict["solver"] = {
+            #         "mode": "manual",
+            #         "sublattice_site_ratios": site_ratios,
+            #         "sublattice_configurations": [sublattice_configurations],
+            #         "sublattice_occupancies": sublattice_occupancies,
+            #     }
+            #     out_dict["values"] = [[[entry["DG"]]]]
+            #     with open(out_file, "w") as f:
+            #         json.dump(out_dict, f)
 
 
 if __name__ == "__main__":
@@ -3060,11 +3152,11 @@ if __name__ == "__main__":
     if "curve fit" in args or "all" in args:
         print("Refitting models")
         fit_models(db, do_curve_fit, DG_refit)
-        print("Projecting and interpolating.")
-        project_models()
-    if "plot" in args or "curve fit" in args or "all" in args:
-        print("Making plots")
-        make_plots()
+        # print("Projecting and interpolating.")
+        # project_models()
+    # if "plot" in args or "curve fit" in args or "all" in args:
+    # print("Making plots")
+    # make_plots()
     if any(["markdown" in args, "all" in args]):
         update_param_markdown()
     if "pags" in args or "all" in args:

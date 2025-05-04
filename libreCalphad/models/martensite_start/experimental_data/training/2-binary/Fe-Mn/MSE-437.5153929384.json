@@ -1,1 +1,0 @@
-{"components": ["FE", "MN", "VA"], "reference": "Gulyaev1978", "phases": "HCP_EPS", "output": "MSE", "conditions": {"P": 101325, "N": 1, "T": 437.5153929384}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 0.5], "sublattice_configurations": [[["FE", "MN"], "VA"]], "sublattice_occupancies": [[[0.8259514146, 0.1721162863], 1.0]]}, "values": [[[43.3831256714]]]}

@@ -1,1 +1,0 @@
-{"components": ["FE", "NI", "VA"], "reference": "Banerjee1968", "phases": "BCT_LATH", "output": "MSL", "conditions": {"P": 101325, "N": 1, "T": 592.5349099503}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["FE", "NI"], "VA"]], "sublattice_occupancies": [[[0.851, 0.149], 1.0]]}, "values": [[[1328.5791930196]]]}

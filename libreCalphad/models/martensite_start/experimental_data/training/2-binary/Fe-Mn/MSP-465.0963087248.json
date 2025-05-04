@@ -1,1 +1,0 @@
-{"components": ["FE", "MN", "VA"], "reference": "Gumlich1918", "phases": "BCT_PLATE", "output": "MSP", "conditions": {"P": 101325, "N": 1, "T": 465.0963087248}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 3], "sublattice_configurations": [[["FE", "MN"], "VA"]], "sublattice_occupancies": [[[0.9415047228000001, 0.0584952772], 1.0]]}, "values": [[[2851.9139953292]]]}

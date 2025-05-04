@@ -1,1 +1,0 @@
-{"components": ["FE", "MN", "VA"], "reference": "Lee2000", "phases": "HCP_EPS", "output": "MSE", "conditions": {"P": 101325, "N": 1, "T": 427.0542955326}, "solver": {"mode": "manual", "sublattice_site_ratios": [1, 0.5], "sublattice_configurations": [[["FE", "MN"], "VA"]], "sublattice_occupancies": [[[0.8275760607, 0.1724239393], 1.0]]}, "values": [[[67.0998999936]]]}
