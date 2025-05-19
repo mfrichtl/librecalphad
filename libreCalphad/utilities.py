@@ -8,6 +8,7 @@ def write_zpf_json(
     input_file,
     input_dict,
     values_dict,
+    dbf,
     out_file=None,
     broadcast_conditions=False,
     conditions=None,
@@ -23,6 +24,8 @@ def write_zpf_json(
                     The initial input dictionary with reference metadata and component list.
                 values_dict, dictionary
                     A dictionary containing metadata for the dataset.
+                dbf, pycalphad Database
+                    The database to use.
                 out_file, string or None, default value None
                     A string for the name of the output file. If None a default name based on the name of the input file is created.
                 broadcast_conditions, boolean, default value False
