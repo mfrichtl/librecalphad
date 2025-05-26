@@ -116,8 +116,8 @@ def train_espei():
     # generate phase_models.json based on the training data
     components = []
     interstitials = ["B", "C", "H", "N", "O", "VA"]
-    # site_ratios = {"BCT_PLATE": [1, 3], "BCT_LATH": [1, 3], "HCP_EPS": [1, 0.5]}
-    site_ratios = {"BCC_A2": [1, 3], "HCP_A3": [1, 0.5]}
+    site_ratios = {"BCT_PLATE": [1, 3], "BCT_LATH": [1, 3], "HCP_EPS": [1, 0.5]}
+    # site_ratios = {"BCC_A2": [1, 3], "HCP_A3": [1, 0.5]}
     phases = {}
     for phase in list(site_ratios.keys()):
         phases[phase] = {"sublattice_model": [[], []], "sublattice_site_ratios": site_ratios[phase]}
@@ -2883,21 +2883,21 @@ def save_training_data_json(training_df):
         site_ratios = None
         if row["type"] == "lath":
             type_dir = "MSL"
-            # row["phases"] = ["BCT_LATH"]
-            row["phases"] = ["BCC_A2"]
+            row["phases"] = ["BCT_LATH"]
+            # row["phases"] = ["BCC_A2"]
             site_ratios = [1, 3]
             # row["output"] = "MSL"
         elif row["type"] == "plate":
             type_dir = "MSP"
             site_ratios = [1, 3]
-            # row["phases"] = ["BCT_PLATE"]
-            row["phases"] = ["BCC_A2"]
+            row["phases"] = ["BCT_PLATE"]
+            # row["phases"] = ["BCC_A2"]
             row["output"] = "MSP"
         elif row["type"] == "epsilon":
             type_dir = "MSE"
             site_ratios = [1, 0.5]
-            # row["phases"] = ["HCP_EPS"]
-            row["phases"] = ["HCP_A3"]
+            row["phases"] = ["HCP_EPS"]
+            # row["phases"] = ["HCP_A3"]
             # row["output"] = "MSE"
         row["output"] = "MS"
         assert type_dir is not None and site_ratios is not None, f"Cannot identify type for {row}."
@@ -2934,8 +2934,8 @@ def save_training_data_json(training_df):
     print(training_df["alloy_system"].unique())
     # types_dict = {"lath": "MSL", "plate": "MSP", "epsilon": "MSE"}
     types_dict = {"lath": "MS", "plate": "MS", "epsilon": "MS"}
-    # phases_dict = {"lath": "BCT_LATH", "plate": "BCT_PLATE", "epsilon": "HCP_EPS"}
-    phases_dict = {"lath": ["BCC_A2"], "plate": ["BCC_A2"], "epsilon": ["HCP_A3"]}
+    phases_dict = {"lath": ["BCT_LATH"], "plate": ["BCT_PLATE"], "epsilon": ["HCP_EPS"]}
+    # phases_dict = {"lath": ["BCC_A2"], "plate": ["BCC_A2"], "epsilon": ["HCP_A3"]}
     site_ratios_dict = {"lath": [1, 3], "plate": [1, 3], "epsilon": [1, 0.5]}
     if not os.path.isdir(os.path.join(exp_data_dir, "training", "1-unary")):
         os.makedirs(os.path.join(exp_data_dir, "training", "1-unary"))
@@ -2976,7 +2976,7 @@ def save_training_data_json(training_df):
             out_dict = {}
             out_dict["components"] = [comp.upper() for comp in sorted_system]
             out_dict["reference"] = list(type_df["reference"].unique())
-            out_file = os.path.join(system_path, f"{phases_dict[martensite_type]}.json")
+            out_file = os.path.join(system_path, f"{phases_dict[martensite_type][0]}.json")
             out_dict["phases"] = phases_dict[martensite_type]
             site_ratios = site_ratios_dict[martensite_type]
             out_dict["output"] = types_dict[martensite_type]
