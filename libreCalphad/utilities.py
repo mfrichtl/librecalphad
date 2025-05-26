@@ -37,7 +37,7 @@ def write_zpf_json(
     """
 
     out_dict = input_dict.copy()
-    out_dict["broad_conditions"] = broadcast_conditions
+    out_dict["broadcast_conditions"] = broadcast_conditions
     out_dict["output"] = "ZPF"
     components = input_dict["components"]
     phases = []
@@ -101,6 +101,7 @@ def write_zpf_json(
                 segment_no += 1
             if not seg_nan:
                 values_string.append(temp_output)
+    out_dict["phases"] = phases
     out_dict["conditions"] = conditions
     out_dict["values"] = values_string
 
