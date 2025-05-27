@@ -1,7 +1,17 @@
 import json
+from libreCalphad.databases.db_utils import load_database
+import numpy as np
 import pandas as pd
 import pycalphad.variables as v
-from libreCalphad.databases.db_utils import load_database
+from scipy.optimize import minimize
+
+
+def convert_c_ratio(y_c: float) -> float:
+    def calc_c_ratio(x_c: float) -> float:
+        x_fe = 1 - x_c
+        return x_c / x_fe
+
+    return minimize(lambda x: np.abs(y_c - calc_c_ratio(x)), x0=y_c).x[0]
 
 
 def write_zpf_json(
@@ -93,7 +103,11 @@ def write_zpf_json(
                                 concentration = v.get_mole_fractions(
                                     conc_conditions, dependent_component, dbf
                                 )[v.X(ind_component)]
-                        # segment_output += f"[{concentration}]"
+                        elif segment_values["units"] == "C_ratio":
+                            concentration = convert_c_ratio(
+                                input_df.loc[i][segment_values["values"]]
+                            )
+                            print(concentration)
                     else:
                         concentration = None
                     segment_output.append([concentration])
