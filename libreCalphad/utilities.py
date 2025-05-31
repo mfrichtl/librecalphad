@@ -85,9 +85,7 @@ def write_zpf_json(
                     "component": value2["component"],
                     "values": value2["values"],
                 }
-                print(out_dict)
         out_df = out_df.dropna(how="any").reset_index(drop=True)
-        print(out_df)
 
         # Now build the output from the parsed dataframe and metadata already collected
         conditions["T"] = list(out_df[conditions["T"]].values)
@@ -110,9 +108,8 @@ def write_zpf_json(
             out_values.append(this_row)
         out_dict["values"] = out_values
         out_file = f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ZPF-"
-        out_file += f"{'-'.join([phase for phase in phases])}"
+        out_file += f"{'-'.join([phase for phase in phases])}-"
         out_file += input_dict["bibtex"] + ".json"
         with open(out_file, "w") as f:
-            print(out_dict)
             json.dump(out_dict, f, indent=4)
     return True
