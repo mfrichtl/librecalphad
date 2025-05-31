@@ -15,112 +15,104 @@ def convert_c_ratio(y_c: float) -> float:
 
 
 def write_zpf_json(
-    input_file,
-    input_dict,
-    values_dict,
+    input_file: str,
+    input_dict: dict,
+    values_dict: dict,
     dbf,
-    out_file=None,
     broadcast_conditions=False,
     conditions=None,
 ):
-    """
-    Function to write an ESPEI-style JSON file for ZPF data from a WebPlotDigitizer csv passed in as a Pandas DataFrame.
-    Currently assumes a standard isobaric phase diagram.
-    TODO: Allow for isochoric phase data with varying pressure.
-
-    Parameters: input_file, string
-                    Pointer to the input csv file.
-                input_dict, dictionary
-                    The initial input dictionary with reference metadata and component list.
-                values_dict, dictionary
-                    A dictionary containing metadata for the dataset.
-                dbf, pycalphad Database
-                    The database to use.
-                out_file, string or None, default value None
-                    A string for the name of the output file. If None a default name based on the name of the input file is created.
-                broadcast_conditions, boolean, default value False
-                    The broadcast_conditions boolean.
-                conditions, dictionary or None, default value None
-                    The pycalphad conditions dictionary. If none is provided, defaults to STP conditions.
-
-    Returns: True if success.
-    """
-
-    out_dict = input_dict.copy()
-    out_dict["broadcast_conditions"] = broadcast_conditions
-    out_dict["output"] = "ZPF"
-    components = input_dict["components"]
-    phases = []
-    if conditions is None:
-        conditions = {"P": 101325}  # Assume atmospheric pressure if not provided.
-    values_string = []
     input_df = pd.read_csv(
         input_file, skiprows=[1]
     )  # need to skip the second row that simply contains "X" and "Y"
-    for segment, value in values_dict.items():
-        temperatures = input_df[input_df[value["temperatures"]["column"]].notnull()][
-            value["temperatures"]["column"]
-        ].values
-        temp_unit = value["temperatures"]["units"]
-        if temp_unit == "degC":
-            temperatures += 273.15
-        if "T" not in list(conditions.keys()):
-            conditions["T"] = list(temperatures)
-        else:
-            conditions["T"].extend(list(temperatures))
-        for i in range(len(temperatures)):
-            temp_output = []
-            segment_no = 0
-            seg_nan = False
-            for segment_key, segment_values in value.items():
-                segment_output = []
-                if segment_key == "temperatures":
-                    segment_no += 1
-                    continue
-                else:
-                    this_phase = segment_values["phase"]
-                    if this_phase not in phases:
-                        phases.append(this_phase)
-                    segment_output.append(this_phase)
-                    ind_component = segment_values["component"]
-                    segment_output.append([ind_component])
-                    if segment_values["values"] != "null":
-                        concentration = input_df.loc[i][segment_values["values"]]
-                        if pd.isnull(
-                            concentration
-                        ):  # blank values from WPD will be NaN
-                            seg_nan = True
-                            continue
-                        elif segment_values["units"] == "weight_percent":
-                            concentration = (
-                                concentration / 100
-                            )  # convert to weight fraction
-                            if len(components) == 2:
-                                dependent_component = [
-                                    comp for comp in components if comp != ind_component
-                                ][0]
-                                conc_conditions = {v.W(ind_component): concentration}
-                                concentration = v.get_mole_fractions(
-                                    conc_conditions, dependent_component, dbf
-                                )[v.X(ind_component)]
-                        elif segment_values["units"] == "C_ratio":
-                            concentration = convert_c_ratio(
-                                input_df.loc[i][segment_values["values"]]
-                            )
-                            print(concentration)
-                    else:
-                        concentration = None
-                    segment_output.append([concentration])
-                temp_output.append(segment_output)
-                segment_no += 1
-            if not seg_nan:
-                values_string.append(temp_output)
-    out_dict["phases"] = phases
-    out_dict["conditions"] = conditions
-    out_dict["values"] = values_string
 
-    if out_file is None:
-        out_file = input_file[:-3] + "JSON"
-    with open(out_file, "w") as f:
-        json.dump(out_dict, f)
+    for key1, value1 in values_dict.items():
+        out_df = pd.DataFrame()
+        out_dict = input_dict.copy()
+        out_dict["broadcast_conditions"] = broadcast_conditions
+        out_dict["output"] = "ZPF"
+        components = input_dict["components"]
+        phases = []
+        out_dict["values"] = {}
+        if conditions is None:
+            conditions = {"P": 101325}  # Assume atmospheric pressure if not provided.
+
+        for key2, value2 in value1.items():
+            if value2["values"] is not None:
+                out_df[value2["values"]] = input_df[value2["values"]].copy()
+            if key2 == "temperatures":
+                out_df[value2["values"]] = out_df[value2["values"]].astype("float")
+                if value2["units"] == "degC":
+                    out_df[value2["values"]] += 273.15
+                conditions["T"] = value2["values"]
+            else:
+                this_phase = value2["phase"]
+                if this_phase not in phases:
+                    phases.append(this_phase)
+                if value2["values"] is not None:
+                    if value2["units"] == "weight_percent":
+                        out_df[value2["values"]] = (
+                            out_df[value2["values"]] / 100
+                        )  # convert to weight fraction
+                        if len(components) == 2 or (
+                            len(components) == 3 and "VA" in components
+                        ):
+                            # binary system
+                            dep_comp = [
+                                comp
+                                for comp in components
+                                if comp != "VA" and comp != value2["component"]
+                            ][0]
+                            out_df[value2["values"]] = out_df.apply(
+                                lambda row: v.get_mole_fractions(
+                                    {v.W(value2["component"]): row[value2["values"]]},
+                                    dep_comp,
+                                    dbf,
+                                )[v.X(value2["component"])],
+                                axis=1,
+                            )
+                        else:
+                            raise NotImplementedError(
+                                "Only binary systems are implemented"
+                            )
+                    elif value2["units"] == "C_ratio":
+                        out_df[value2["values"]] = out_df.apply(
+                            lambda row: convert_c_ratio(row[value2["values"]]), axis=1
+                        )
+                    else:
+                        pass  # already in molar fractions
+                out_dict["values"][this_phase] = {
+                    "component": value2["component"],
+                    "values": value2["values"],
+                }
+                print(out_dict)
+        out_df = out_df.dropna(how="any").reset_index(drop=True)
+        print(out_df)
+
+        # Now build the output from the parsed dataframe and metadata already collected
+        conditions["T"] = list(out_df[conditions["T"]].values)
+        out_dict["phases"] = phases
+        out_dict["conditions"] = conditions
+        out_values = []
+        for i in range(len(out_df)):
+            this_row = []
+            for phase, values in out_dict["values"].items():
+                this_val = []
+                this_val.append(phase)
+                this_val.append([out_dict["values"][phase]["component"]])
+                if out_dict["values"][phase]["values"] is not None:
+                    this_val.append(
+                        [out_df.loc[i][out_dict["values"][phase]["values"]]]
+                    )
+                else:
+                    this_val.append([None])
+                this_row.append(this_val)
+            out_values.append(this_row)
+        out_dict["values"] = out_values
+        out_file = f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ZPF-"
+        out_file += f"{'-'.join([phase for phase in phases])}"
+        out_file += input_dict["bibtex"] + ".json"
+        with open(out_file, "w") as f:
+            print(out_dict)
+            json.dump(out_dict, f, indent=4)
     return True
