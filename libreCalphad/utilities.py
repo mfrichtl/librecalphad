@@ -54,9 +54,7 @@ def write_zpf_json(
                         out_df[value2["values"]] = (
                             out_df[value2["values"]] / 100
                         )  # convert to weight fraction
-                        if len(components) == 2 or (
-                            len(components) == 3 and "VA" in components
-                        ):
+                        if len(components) == 2 or (len(components) == 3 and "VA" in components):
                             # binary system
                             dep_comp = [
                                 comp
@@ -72,9 +70,7 @@ def write_zpf_json(
                                 axis=1,
                             )
                         else:
-                            raise NotImplementedError(
-                                "Only binary systems are implemented"
-                            )
+                            raise NotImplementedError("Only binary systems are implemented")
                     elif value2["units"] == "C_ratio":
                         out_df[value2["values"]] = out_df.apply(
                             lambda row: convert_c_ratio(row[value2["values"]]), axis=1
@@ -99,9 +95,7 @@ def write_zpf_json(
                 this_val.append(phase)
                 this_val.append([out_dict["values"][phase]["component"]])
                 if out_dict["values"][phase]["values"] is not None:
-                    this_val.append(
-                        [out_df.loc[i][out_dict["values"][phase]["values"]]]
-                    )
+                    this_val.append([out_df.loc[i][out_dict["values"][phase]["values"]]])
                 else:
                     this_val.append([None])
                 this_row.append(this_val)
@@ -113,3 +107,93 @@ def write_zpf_json(
         with open(out_file, "w") as f:
             json.dump(out_dict, f, indent=4)
     return True
+
+
+def write_activity_json(
+    input_file,
+    input_dict,
+    values_dict,
+    dbf,
+    out_file=None,
+    broadcast_conditions=False,
+    conditions=None,
+):
+    """
+    Function to write an ESPEI-style JSON file for ZPF data from a WebPlotDigitizer csv passed in as a Pandas DataFrame.
+    Currently assumes a standard isobaric phase diagram.
+    TODO: Allow for isochoric phase data with varying pressure.
+
+    Parameters: input_file, string
+                    Pointer to the input csv file.
+                input_dict, dictionary
+                    The initial input dictionary with reference metadata and component list.
+                values_dict, dictionary
+                    A dictionary containing metadata for the dataset.
+                dbf, pycalphad Database
+                    The database to use.
+                out_file, string or None, default value None
+                    A string for the name of the output file. If None a default name based on the name of the input file is created.
+                broadcast_conditions, boolean, default value False
+                    The broadcast_conditions boolean.
+                conditions, dictionary or None, default value None
+                    The pycalphad conditions dictionary. If none is provided, defaults to STP conditions.
+
+    Returns: True if success.
+    """
+
+    input_df = pd.read_csv(input_file, skiprows=[1])
+    components = input_dict["components"]
+    phases = input_dict["phases"]
+    ref_phase = input_dict["reference_state"]["phases"][0]
+    conditions = {"P": 101325}
+    for key1, value1 in values_dict.items():
+        out_dict = input_dict.copy()
+        out_df = pd.DataFrame()
+        component = None
+        for key2, value2 in value1.items():
+            if key2 == "temperatures":
+                out_df["temperatures"] = input_df[value2["values"]].astype("float")
+                if value2["units"] == "degC":
+                    out_df["temperatures"] += 273.15
+            if key2.startswith("ACR_"):
+                out_dict["output"] = key2
+                component = key2.split("_")[-1]
+                conc_col = value2["concentration"]
+                act_col = value2["activity"]
+                out_df["concentration"] = input_df[conc_col].astype("float")
+                out_df["activity"] = input_df[act_col].astype("float")
+                if value2["units"] == "weight_percent":
+                    out_df["concentration"] = out_df["concentration"] / 100
+                    out_df["activity"] = out_df["activity"] / 100
+                    if len(components) == 2 or (len(components) == 3 and "VA" in components):
+                        dep_component = [
+                            comp for comp in components if comp != "VA" and comp != component
+                        ][0]
+                        out_df["concentration"] = out_df.apply(
+                            lambda row: v.get_mole_fractions(
+                                {v.W(component): row["concentration"]}, dep_component, dbf
+                            )[v.X(component)],
+                            axis=1,
+                        )
+                        out_df["activity"] = out_df.apply(
+                            lambda row: v.get_mole_fractions(
+                                {v.W(component): row["activity"]}, dep_component, dbf
+                            )[v.X(component)],
+                            axis=1,
+                        )
+
+        for temperature in out_df["temperatures"].unique():
+            out_sub = out_df.query("temperatures == @temperature")
+            out_dict["reference_state"]["T"] = temperature
+            conditions["T"] = temperature
+            conditions[f"X_{component}"] = list(out_sub["concentration"].values)
+            out_dict["conditions"] = conditions
+            out_dict["values"] = [[list(out_sub["activity"])]]
+            out_file = (
+                f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ACR_{component}-"
+            )
+            out_file += f"{'-'.join([phase for phase in phases if phase != ref_phase])}-"
+            out_file += f"{temperature}K-"
+            out_file += input_dict["bibtex"] + ".json"
+            with open(out_file, "w") as f:
+                json.dump(out_dict, f, indent=4)
