@@ -1,0 +1,13 @@
+system:
+  phase_models: phase_models.json
+  datasets: /home/matt/opt/ESPEI-datasets/datasets
+output:
+  output_db: LC-steels-thermo.tdb
+  verbosity: 2
+generate_parameters:
+  ref_state: SGTE91
+  excess_model: linear
+  aicc_penalty_factor:
+    LIQUID:
+      SM: 1.4
+      HM: 1.4

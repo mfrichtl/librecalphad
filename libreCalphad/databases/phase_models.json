@@ -1,0 +1,25 @@
+{
+  "components": ["C", "FE", "VA"],
+  "phases": {
+    "BCC_A2": {
+      "sublattice_model": [["FE"], ["C", "VA"]],
+      "sublattice_site_ratios": [1, 3]
+    },
+    "CEMENTITE_D011": {
+      "sublattice_model": [["FE"], ["C"]],
+      "sublattice_site_ratios": [3, 1]
+    },
+    "FCC_A1": {
+      "sublattice_model": [["FE"], ["C", "VA"]],
+      "sublattice_site_ratios": [1, 1]
+    },
+    "GRAPHITE": {
+      "sublattice_model": [["C"]],
+      "sublattice_site_ratios": [1]
+    },
+    "LIQUID": {
+      "sublattice_model": [["C", "FE"]],
+      "sublattice_site_ratios": [1]
+    }
+  }
+}
