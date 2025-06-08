@@ -1,0 +1,110 @@
+INFO:espei.espei_script - espei version       0.9.1.dev4+gca40de7.d20250607
+INFO:espei.espei_script - pycalphad version   0.11.0
+INFO:espei.espei_script - dask version        2025.3.0
+INFO:espei.espei_script - distributed version 2025.3.0
+INFO:espei.espei_script - symengine version   0.14.0
+INFO:espei.espei_script - emcee version       2.2.1
+INFO:espei.espei_script - If you use ESPEI for work presented in a publication, we ask that you cite the following paper:
+    B. Bocklund, R. Otis, A. Egorov, A. Obaied, I. Roslyakova, Z.-K. Liu, ESPEI for efficient thermodynamic database development, modification, and uncertainty quantification: application to Cu-Mg, MRS Commun. (2019) 1-10. doi:10.1557/mrc.2019.59.
+TRACE:espei.espei_script - Loading and checking datasets.
+TRACE:espei.espei_script - Finished checking datasets
+INFO:espei.espei_script - Not using a parallel scheduler. ESPEI is running MCMC on a single core.
+INFO:espei.error_functions.context - Fitting 4 degrees of freedom.
+TRACE:espei.error_functions.context - Getting residual object for ActivityResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ActivityResidual in 0.00 s
+TRACE:espei.error_functions.context - Getting residual object for FixedConfigurationPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for FixedConfigurationPropertyResidual in 0.02 s
+TRACE:espei.error_functions.context - Getting residual object for ZPFResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ZPFResidual in 0.14 s
+TRACE:espei.error_functions.context - Getting residual object for EquilibriumPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for EquilibriumPropertyResidual in 0.00 s
+INFO:espei.optimizers.opt_mcmc - Initializing a normal prior for the parameters.
+TRACE:espei.optimizers.opt_mcmc - Probability for initial parameters
+INFO:espei.espei_script - espei version       0.9.1.dev4+gca40de7.d20250607
+INFO:espei.espei_script - pycalphad version   0.11.0
+INFO:espei.espei_script - dask version        2025.3.0
+INFO:espei.espei_script - distributed version 2025.3.0
+INFO:espei.espei_script - symengine version   0.14.0
+INFO:espei.espei_script - emcee version       2.2.1
+INFO:espei.espei_script - If you use ESPEI for work presented in a publication, we ask that you cite the following paper:
+    B. Bocklund, R. Otis, A. Egorov, A. Obaied, I. Roslyakova, Z.-K. Liu, ESPEI for efficient thermodynamic database development, modification, and uncertainty quantification: application to Cu-Mg, MRS Commun. (2019) 1-10. doi:10.1557/mrc.2019.59.
+TRACE:espei.espei_script - Loading and checking datasets.
+TRACE:espei.espei_script - Finished checking datasets
+INFO:espei.espei_script - Not using a parallel scheduler. ESPEI is running MCMC on a single core.
+INFO:espei.error_functions.context - Fitting 4 degrees of freedom.
+TRACE:espei.error_functions.context - Getting residual object for ActivityResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ActivityResidual in 0.00 s
+TRACE:espei.error_functions.context - Getting residual object for FixedConfigurationPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for FixedConfigurationPropertyResidual in 0.02 s
+TRACE:espei.error_functions.context - Getting residual object for ZPFResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ZPFResidual in 0.14 s
+TRACE:espei.error_functions.context - Getting residual object for EquilibriumPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for EquilibriumPropertyResidual in 0.00 s
+INFO:espei.optimizers.opt_mcmc - Initializing a normal prior for the parameters.
+TRACE:espei.optimizers.opt_mcmc - Probability for initial parameters
+INFO:espei.espei_script - espei version       0.9.1.dev4+gca40de7.d20250607
+INFO:espei.espei_script - pycalphad version   0.11.0
+INFO:espei.espei_script - dask version        2025.3.0
+INFO:espei.espei_script - distributed version 2025.3.0
+INFO:espei.espei_script - symengine version   0.14.0
+INFO:espei.espei_script - emcee version       2.2.1
+INFO:espei.espei_script - If you use ESPEI for work presented in a publication, we ask that you cite the following paper:
+    B. Bocklund, R. Otis, A. Egorov, A. Obaied, I. Roslyakova, Z.-K. Liu, ESPEI for efficient thermodynamic database development, modification, and uncertainty quantification: application to Cu-Mg, MRS Commun. (2019) 1-10. doi:10.1557/mrc.2019.59.
+TRACE:espei.espei_script - Loading and checking datasets.
+TRACE:espei.espei_script - Finished checking datasets
+INFO:espei.espei_script - Not using a parallel scheduler. ESPEI is running MCMC on a single core.
+INFO:espei.error_functions.context - Fitting 4 degrees of freedom.
+TRACE:espei.error_functions.context - Getting residual object for ActivityResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ActivityResidual in 0.00 s
+TRACE:espei.error_functions.context - Getting residual object for FixedConfigurationPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for FixedConfigurationPropertyResidual in 0.02 s
+TRACE:espei.error_functions.context - Getting residual object for ZPFResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ZPFResidual in 0.14 s
+TRACE:espei.error_functions.context - Getting residual object for EquilibriumPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for EquilibriumPropertyResidual in 0.00 s
+INFO:espei.optimizers.opt_mcmc - Initializing a normal prior for the parameters.
+TRACE:espei.optimizers.opt_mcmc - Probability for initial parameters
+INFO:espei.espei_script - espei version       0.9.1.dev4+gca40de7.d20250607
+INFO:espei.espei_script - pycalphad version   0.11.0
+INFO:espei.espei_script - dask version        2025.3.0
+INFO:espei.espei_script - distributed version 2025.3.0
+INFO:espei.espei_script - symengine version   0.14.0
+INFO:espei.espei_script - emcee version       2.2.1
+INFO:espei.espei_script - If you use ESPEI for work presented in a publication, we ask that you cite the following paper:
+    B. Bocklund, R. Otis, A. Egorov, A. Obaied, I. Roslyakova, Z.-K. Liu, ESPEI for efficient thermodynamic database development, modification, and uncertainty quantification: application to Cu-Mg, MRS Commun. (2019) 1-10. doi:10.1557/mrc.2019.59.
+TRACE:espei.espei_script - Loading and checking datasets.
+TRACE:espei.espei_script - Finished checking datasets
+INFO:espei.espei_script - Not using a parallel scheduler. ESPEI is running MCMC on a single core.
+INFO:espei.error_functions.context - Fitting 4 degrees of freedom.
+TRACE:espei.error_functions.context - Getting residual object for ActivityResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ActivityResidual in 0.00 s
+TRACE:espei.error_functions.context - Getting residual object for FixedConfigurationPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for FixedConfigurationPropertyResidual in 0.02 s
+TRACE:espei.error_functions.context - Getting residual object for ZPFResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ZPFResidual in 0.14 s
+TRACE:espei.error_functions.context - Getting residual object for EquilibriumPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for EquilibriumPropertyResidual in 0.00 s
+INFO:espei.optimizers.opt_mcmc - Initializing a normal prior for the parameters.
+TRACE:espei.optimizers.opt_mcmc - Probability for initial parameters
+INFO:espei.espei_script - espei version       0.9.1.dev4+gca40de7.d20250607
+INFO:espei.espei_script - pycalphad version   0.11.0
+INFO:espei.espei_script - dask version        2025.3.0
+INFO:espei.espei_script - distributed version 2025.3.0
+INFO:espei.espei_script - symengine version   0.14.0
+INFO:espei.espei_script - emcee version       2.2.1
+INFO:espei.espei_script - If you use ESPEI for work presented in a publication, we ask that you cite the following paper:
+    B. Bocklund, R. Otis, A. Egorov, A. Obaied, I. Roslyakova, Z.-K. Liu, ESPEI for efficient thermodynamic database development, modification, and uncertainty quantification: application to Cu-Mg, MRS Commun. (2019) 1-10. doi:10.1557/mrc.2019.59.
+TRACE:espei.espei_script - Loading and checking datasets.
+TRACE:espei.espei_script - Finished checking datasets
+INFO:espei.espei_script - Not using a parallel scheduler. ESPEI is running MCMC on a single core.
+INFO:espei.error_functions.context - Fitting 4 degrees of freedom.
+TRACE:espei.error_functions.context - Getting residual object for ActivityResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ActivityResidual in 0.00 s
+TRACE:espei.error_functions.context - Getting residual object for FixedConfigurationPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for FixedConfigurationPropertyResidual in 0.03 s
+TRACE:espei.error_functions.context - Getting residual object for ZPFResidual
+TRACE:espei.error_functions.context - Finished getting residual object for ZPFResidual in 0.16 s
+TRACE:espei.error_functions.context - Getting residual object for EquilibriumPropertyResidual
+TRACE:espei.error_functions.context - Finished getting residual object for EquilibriumPropertyResidual in 0.00 s
+INFO:espei.optimizers.opt_mcmc - Initializing a normal prior for the parameters.
+TRACE:espei.optimizers.opt_mcmc - Probability for initial parameters

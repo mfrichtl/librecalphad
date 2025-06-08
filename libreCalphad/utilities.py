@@ -115,7 +115,6 @@ def write_activity_json(
     values_dict,
     dbf,
     out_file=None,
-    broadcast_conditions=False,
     conditions=None,
 ):
     """
@@ -197,3 +196,65 @@ def write_activity_json(
             out_file += input_dict["bibtex"] + ".json"
             with open(out_file, "w") as f:
                 json.dump(out_dict, f, indent=4)
+
+
+def write_energy_json(
+    input_file,
+    input_dict,
+    values_dict,
+    dbf,
+    out_file=None,
+    conditions=None,
+):
+    """
+    Function to write an ESPEI-style JSON file for non-equilibrium thermochemical data from a WebPlotDigitizer csv passed in as a Pandas DataFrame.
+    Currently assumes a standard isobaric conditions.
+    TODO: Allow for isochoric phase data with varying pressure.
+
+    Parameters: input_file, string
+                    Pointer to the input csv file.
+                input_dict, dictionary
+                    The initial input dictionary with reference metadata and component list.
+                values_dict, dictionary
+                    A dictionary containing metadata for the dataset.
+                dbf, pycalphad Database
+                    The database to use.
+                out_file, string or None, default value None
+                    A string for the name of the output file. If None a default name based on the name of the input file is created.
+                broadcast_conditions, boolean, default value False
+                    The broadcast_conditions boolean.
+                conditions, dictionary or None, default value None
+                    The pycalphad conditions dictionary. If none is provided, defaults to STP conditions.
+
+    Returns: True if success.
+    """
+
+    input_df = pd.read_csv(input_file, skiprows=[1])
+    components = input_dict["components"]
+    phases = input_dict["phases"]
+    conditions = {"P": 101325}
+
+    for keys1, values1 in values_dict.items():
+        out_dict = input_dict.copy()
+        out_df = pd.DataFrame()
+        for keys2, values2 in values1.items():
+            if keys2 == "temperatures":
+                out_df["temperatures"] = input_df[values2["values"]].astype("float")
+                if values2["units"] == "degC":
+                    out_df["temperatures"] += 273.15
+                conditions["T"] = list(out_df["temperatures"].values)
+            else:
+                out_df["values"] = input_df[values2["values"]].astype("float")
+                if values2["units"] == "calorie/mol":
+                    out_df["values"] = out_df["values"] * 4.184
+                out_dict["values"] = [[[val] for val in list(out_df["values"].values)]]
+
+    out_dict["conditions"] = conditions
+    if out_file is None:
+        out_file = "./"
+        out_file += "-".join([comp for comp in components if comp != "VA"])
+        out_file += "-" + out_dict["output"] + "-"
+        out_file += phases[0] + "-"
+        out_file += out_dict["bibtex"] + ".json"
+    with open(out_file, "w") as f:
+        json.dump(out_dict, f, indent=4)

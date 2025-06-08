@@ -13,6 +13,10 @@
       "sublattice_model": [["FE"], ["C", "VA"]],
       "sublattice_site_ratios": [1, 1]
     },
+    "GAS": {
+      "sublattice_model": [["H"]],
+      "sublattice_site_ratios": [1]
+    },
     "GRAPHITE": {
       "sublattice_model": [["C"]],
       "sublattice_site_ratios": [1]
