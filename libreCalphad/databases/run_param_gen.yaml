@@ -1,6 +1,7 @@
 system:
   phase_models: phase_models.json
-  datasets: /home/matt/opt/ESPEI-datasets/datasets
+  # datasets: /home/matt/opt/ESPEI-datasets/datasets
+  datasets: /Users/mattfrichtl/opt/ESPEI-datasets/datasets
 output:
   output_db: LC-steels-thermo.tdb
   verbosity: 2

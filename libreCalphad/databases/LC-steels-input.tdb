@@ -99,6 +99,13 @@ PARAMETER TC(BCC_A2,FE:C;0) 298.15 +1043; 6000 N 85GUS!
 PARAMETER BMAGN(BCC_A2,FE:VA;0) 298.15 +2.22; 6000 N 91DIN!
 PARAMETER TC(BCC_A2,FE:VA;0) 298.15 +1043; 6000 N 91DIN!
 
+$ -------------------- CEMENTITE_D011 --------------------------
+PHASE CEMENTITE_D011 %B 2 3 1 !
+CONSTITUENT CEMENTITE_D011 : FE : C : !
+
+PARAMETER BMAGN(CEMENTITE_D011,FE:C;0) 298.15 1.008;  6000 N !
+PARAMETER TC(CEMENTITE_D011,FE:C;0) 298.15  +485; 6000 N !
+
 $ ---------------------- FCC_A1 -----------------------------
 PHASE FCC_A1 %B 2 1 1 !
 CONSTITUENT FCC_A1 : FE : C,VA : !
@@ -117,4 +124,6 @@ NUMBER  SOURCE
         Scand. J. Metall. 14.5 (1985): 259-267.'
 91DIN   'Dinsdale, Alan T. "SGTE data for pure elements." Calphad 15.4 (1991): 
         317-425.'
+10HAL	'Hallstedt, Bengt, et al. "Thermodynamic properties of cementite 
+	(Fe3C)." Calphad 34.1 (2010): 129-133.
 !

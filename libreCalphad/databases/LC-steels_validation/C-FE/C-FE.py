@@ -3,8 +3,9 @@ from espei.datasets import load_datasets, recursive_glob
 from espei.plot import dataplot
 from libreCalphad.databases.db_utils import load_database
 import matplotlib.pyplot as plt
+from pycalphad import Workspace, variables as v
 from pycalphad.mapping import BinaryStrategy, plot_binary
-import pycalphad.variables as v
+from pycalphad.property_framework.metaproperties import IsolatedPhase
 import yaml
 
 db = load_database("LC-steels-thermo.tdb")
@@ -45,3 +46,27 @@ ax.set_xlim((0, 0.3))
 plt.tight_layout()
 plt.title(f"{comps[0]}-{comps[1]}, {date.today().strftime('%Y-%m-%d')}")
 plt.savefig(f"./{comps[0]}-{comps[1]}-metastable_phase_diagram.png")
+
+# Plot some energy calculations
+temps = [800, 1200, 1600]
+for temp in temps:
+    wks = Workspace(
+        db,
+        ["C", "FE", "VA"],
+        [phase for phase in list(db.phases)],
+        {v.X("C"): (0, 0.5, 0.01), v.T: temp, v.P: 101325, v.N: 1},
+    )
+    x = wks.get(v.X("C"))
+    fig, ax = plt.subplots()
+
+    for phase in wks.phases:
+        metastable_wks = wks.copy()
+        metastable_wks.phases = [phase]
+        prop_GM = IsolatedPhase(phase, metastable_wks)(f"GM({phase})")
+        prop_GM.display_name = f"GM({phase})"
+        prop_HM = IsolatedPhase(phase, metastable_wks)(f"HM({phase})")
+        prop_HM.display_name = f"HM({phase})"
+        ax.plot(x, wks.get(prop_GM), label=prop_GM.display_name)
+        ax.plot(x, wks.get(prop_HM), linestyle=":", label=prop_HM.display_name)
+    ax.legend()
+    plt.savefig(f"./energies-{temp}.png")
