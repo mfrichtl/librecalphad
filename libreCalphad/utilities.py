@@ -159,9 +159,12 @@ def write_activity_json(
         component = None
         for key2, value2 in value1.items():
             if key2 == "temperatures":
-                this_out_df["temperatures"] = input_df[value2["values"]].astype("float")
+                if value2["values"] in list(input_df.columns):
+                    this_temperature = input_df[value2["values"]].astype("float")
+                else:  # assume an actual temperature is provided
+                    this_temperature = value2["values"]
                 if value2["units"] == "degC":
-                    this_out_df["temperatures"] += 273.15
+                    this_temperature += 273.15
             if key2.startswith("ACR_"):
                 out_dict["output"] = key2
                 component = key2.split("_")[-1]
@@ -194,26 +197,27 @@ def write_activity_json(
                             )[v.X(component)],
                             axis=1,
                         )
+            this_out_df["temperatures"] = this_temperature
+            this_out_df = this_out_df.dropna(axis=0, how="any")
         if out_df.empty:
             out_df = this_out_df.copy()
         else:
             out_df = pd.concat([out_df, this_out_df])
 
-        for temperature in out_df["temperatures"].unique():
-            out_sub = out_df.query("temperatures == @temperature")
-            out_dict["reference_state"]["T"] = temperature
-            conditions["T"] = temperature
-            conditions[f"X_{component}"] = list(out_sub["concentration"].values)
-            out_dict["conditions"] = conditions
-            out_dict["values"] = [[list(out_sub["activity"])]]
-            out_file = f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ACR_{component}-"
-            out_file += (
-                f"{'-'.join([phase for phase in phases if phase != ref_phase])}-"
-            )
-            out_file += f"{temperature}K-"
-            out_file += input_dict["bibtex"] + ".json"
-            with open(out_file, "w") as f:
-                json.dump(out_dict, f, indent=4)
+    for temperature in out_df["temperatures"].unique():
+        out_sub = out_df.query("temperatures == @temperature")
+        print(out_sub)
+        out_dict["reference_state"]["T"] = temperature
+        conditions["T"] = temperature
+        conditions[f"X_{component}"] = list(out_sub["concentration"].values)
+        out_dict["conditions"] = conditions
+        out_dict["values"] = [[list(out_sub["activity"])]]
+        out_file = f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ACR_{component}-"
+        out_file += f"{'-'.join([phase for phase in phases if phase != ref_phase])}-"
+        out_file += f"{temperature}K-"
+        out_file += input_dict["bibtex"] + ".json"
+        with open(out_file, "w") as f:
+            json.dump(out_dict, f, indent=4)
 
 
 def write_energy_json(
@@ -221,7 +225,6 @@ def write_energy_json(
     input_dict,
     values_dict,
     dbf,
-    out_file=None,
     conditions=None,
 ):
     """
@@ -250,9 +253,9 @@ def write_energy_json(
     input_df = pd.read_csv(input_file, skiprows=[1])
     components = input_dict["components"]
     phases = input_dict["phases"]
-    conditions = {"P": 101325}
 
     for keys1, values1 in values_dict.items():
+        conditions = {"P": 101325}
         out_dict = input_dict.copy()
         out_df = pd.DataFrame()
         for keys2, values2 in values1.items():
@@ -262,32 +265,23 @@ def write_energy_json(
                     out_df["temperatures"] += 273.15
                 conditions["T"] = list(out_df["temperatures"].values)
             else:
+                out_dict["output"] = keys2
                 out_df["values"] = input_df[values2["values"]].astype("float")
-                if values2["units"] == "calorie/mol":
+                if values2["units"] == "cal/mol":
                     out_df["values"] = out_df["values"] * 4.184
+                elif values2["units"] == "kcal/mol":
+                    out_df["values"] = out_df["values"] * 4184
+                elif values2["units"] == "cal":
+                    out_df["units"] = out_df["values"] * 4.184 / values2["moles"]
+                elif values2["units"] == "kcal":
+                    out_df["units"] = out_df["values"] * 4184 / values2["moles"]
                 out_dict["values"] = [[[val] for val in list(out_df["values"].values)]]
 
-    out_dict["conditions"] = conditions
-    if out_file is None:
+        out_dict["conditions"] = conditions
         out_file = "./"
         out_file += "-".join([comp for comp in components if comp != "VA"])
         out_file += "-" + out_dict["output"] + "-"
         out_file += phases[0] + "-"
         out_file += out_dict["bibtex"] + ".json"
-    with open(out_file, "w") as f:
-        json.dump(out_dict, f, indent=4)
-    out_df = out_df.reset_index(drop=True)
-
-    for temperature in out_df["temperatures"].unique():
-        out_sub = out_df.query("temperatures == @temperature")
-        out_dict["reference_state"]["T"] = temperature
-        conditions["T"] = temperature
-        conditions[f"X_{component}"] = list(out_sub["concentration"].values)
-        out_dict["conditions"] = conditions
-        out_dict["values"] = [[list(out_sub["activity"])]]
-        out_file = f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ACR_{component}-"
-        out_file += f"{'-'.join([phase for phase in phases if phase != ref_phase])}-"
-        out_file += f"{temperature}K-"
-        out_file += input_dict["bibtex"] + ".json"
         with open(out_file, "w") as f:
             json.dump(out_dict, f, indent=4)
