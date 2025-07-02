@@ -275,6 +275,8 @@ def write_energy_json(
                     out_df["units"] = out_df["values"] * 4.184 / values2["moles"]
                 elif values2["units"] == "kcal":
                     out_df["units"] = out_df["values"] * 4184 / values2["moles"]
+                elif values2["units"] == "cal/gram-atom":
+                    pass  # future reservation for this conversion
                 out_dict["values"] = [[[val] for val in list(out_df["values"].values)]]
 
         out_dict["conditions"] = conditions
