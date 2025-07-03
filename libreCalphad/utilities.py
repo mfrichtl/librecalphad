@@ -14,6 +14,30 @@ def convert_c_ratio(y_c: float) -> float:
     return minimize(lambda x: np.abs(y_c - calc_c_ratio(x)), x0=y_c).x[0]
 
 
+def _format_espei_data_folder(espei_data_folder, components):
+    if espei_data_folder.endswith("/"):
+        espei_data_folder = espei_data_folder[:-1]
+    if all(
+        [
+            espei_data_folder.split("/")[-1] != "datasets",
+            espei_data_folder.split("/")[-2] != "datasets",
+        ]
+    ):
+        espei_data_folder = "/".join([espei_data_folder, "datasets"])
+    system = components.copy()
+    if "VA" in system:
+        system.remove("VA")
+        system.sort()
+    system = list(map(str.capitalize, system))
+    if len(system) == 2:
+        espei_data_folder += "/" + "2-binary" + "/"
+    if len(system) == 3:
+        espei_data_folder += "/" + "3-ternary" + "/"
+    system = "-".join(system)
+    espei_data_folder += system + "/"
+    return espei_data_folder
+
+
 def write_zpf_json(
     input_file: str,
     input_dict: dict,
@@ -21,17 +45,19 @@ def write_zpf_json(
     dbf,
     broadcast_conditions=False,
     conditions=None,
+    espei_data_folder=None,
 ):
     input_df = pd.read_csv(
         input_file, skiprows=[1]
     )  # need to skip the second row that simply contains "X" and "Y"
-
+    components = input_dict["components"]
+    if espei_data_folder is not None:
+        espei_data_folder = _format_espei_data_folder(espei_data_folder, components)
     for key1, value1 in values_dict.items():
         out_df = pd.DataFrame()
         out_dict = input_dict.copy()
         out_dict["broadcast_conditions"] = broadcast_conditions
         out_dict["output"] = "ZPF"
-        components = input_dict["components"]
         phases = []
         out_dict["values"] = {}
         if conditions is None:
@@ -112,6 +138,12 @@ def write_zpf_json(
         out_file += input_dict["bibtex"] + ".json"
         with open(out_file, "w") as f:
             json.dump(out_dict, f, indent=4)
+        if espei_data_folder is not None:
+            espei_data_folder += "zpf" + out_file[1:]
+            print("Saving to ESPEI-datasets at: " + espei_data_folder)
+            with open(espei_data_folder, "w") as f:
+                json.dump(out_dict, f, indent=4)
+
     return True
 
 
@@ -122,6 +154,7 @@ def write_activity_json(
     dbf,
     out_file=None,
     conditions=None,
+    espei_data_folder=None,
 ):
     """
     Function to write an ESPEI-style JSON file for ZPF data from a WebPlotDigitizer csv passed in as a Pandas DataFrame.
@@ -152,6 +185,9 @@ def write_activity_json(
     ref_phase = input_dict["reference_state"]["phases"][0]
     conditions = {"P": 101325}
     out_df = pd.DataFrame()
+    if espei_data_folder is not None:
+        espei_data_folder = _format_espei_data_folder(espei_data_folder, components)
+
     for key1, value1 in values_dict.items():
         out_dict = input_dict.copy()
         this_out_df = pd.DataFrame()
@@ -174,7 +210,7 @@ def write_activity_json(
                 this_out_df["activity"] = input_df[act_col].astype("float")
                 if value2["units"] == "weight_percent":
                     this_out_df["concentration"] = this_out_df["concentration"] / 100
-                    this_out_df["activity"] = out_df["activity"] / 100
+                    this_out_df["activity"] = this_out_df["activity"] / 100
                     if len(components) == 2 or (
                         len(components) == 3 and "VA" in components
                     ):
@@ -183,7 +219,7 @@ def write_activity_json(
                             for comp in components
                             if comp != "VA" and comp != component
                         ][0]
-                        this_out_df["concentration"] = out_df.apply(
+                        this_out_df["concentration"] = this_out_df.apply(
                             lambda row: v.get_mole_fractions(
                                 {v.W(component): row["concentration"]},
                                 dep_component,
@@ -206,7 +242,6 @@ def write_activity_json(
 
     for temperature in out_df["temperatures"].unique():
         out_sub = out_df.query("temperatures == @temperature")
-        print(out_sub)
         out_dict["reference_state"]["T"] = temperature
         conditions["T"] = temperature
         conditions[f"X_{component}"] = list(out_sub["concentration"].values)
@@ -218,6 +253,11 @@ def write_activity_json(
         out_file += input_dict["bibtex"] + ".json"
         with open(out_file, "w") as f:
             json.dump(out_dict, f, indent=4)
+        if espei_data_folder is not None:
+            this_espei_data_folder = espei_data_folder + "activity" + out_file[1:]
+            print("Saving to ESPEI-datasets at: " + this_espei_data_folder)
+            with open(this_espei_data_folder, "w") as f:
+                json.dump(out_dict, f, indent=4)
 
 
 def write_energy_json(
@@ -226,6 +266,7 @@ def write_energy_json(
     values_dict,
     dbf,
     conditions=None,
+    espei_data_folder=None,
 ):
     """
     Function to write an ESPEI-style JSON file for non-equilibrium thermochemical data from a WebPlotDigitizer csv passed in as a Pandas DataFrame.
@@ -253,6 +294,8 @@ def write_energy_json(
     input_df = pd.read_csv(input_file, skiprows=[1])
     components = input_dict["components"]
     phases = input_dict["phases"]
+    if espei_data_folder is not None:
+        espei_data_folder = _format_espei_data_folder(espei_data_folder, components)
 
     for keys1, values1 in values_dict.items():
         conditions = {"P": 101325}
@@ -287,3 +330,13 @@ def write_energy_json(
         out_file += out_dict["bibtex"] + ".json"
         with open(out_file, "w") as f:
             json.dump(out_dict, f, indent=4)
+        if espei_data_folder is not None:
+            this_espei_data_folder = (
+                espei_data_folder
+                + "non-equilibrium-thermochemical/"
+                + phases[0]
+                + out_file[1:]
+            )
+            print("Saving to ESPEI-datasets at: " + espei_data_folder)
+            with open(this_espei_data_folder, "w") as f:
+                json.dump(out_dict, f, indent=4)
