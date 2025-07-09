@@ -294,6 +294,11 @@ def write_energy_json(
     input_df = pd.read_csv(input_file, skiprows=[1])
     components = input_dict["components"]
     phases = input_dict["phases"]
+    # normalize to atoms per mole formula unit
+    if "atoms" in list(input_dict.keys()):
+        atoms = input_dict["atoms"]
+    else:
+        atoms = 1
     if espei_data_folder is not None:
         espei_data_folder = _format_espei_data_folder(espei_data_folder, components)
 
@@ -315,11 +320,15 @@ def write_energy_json(
                 elif values2["units"] == "kcal/mol":
                     out_df["values"] = out_df["values"] * 4184
                 elif values2["units"] == "cal":
-                    out_df["units"] = out_df["values"] * 4.184 / values2["moles"]
+                    out_df["values"] = out_df["values"] * 4.184
                 elif values2["units"] == "kcal":
-                    out_df["units"] = out_df["values"] * 4184 / values2["moles"]
+                    out_df["values"] = out_df["values"] * 4184
                 elif values2["units"] == "cal/gram-atom":
                     pass  # future reservation for this conversion
+                elif values2["units"] == "cal/mol/K":
+                    out_df["values"] = out_df["values"] * 4.184
+                # normalize to atoms per mole-formula unit
+                out_df["values"] = out_df["values"] / atoms
                 out_dict["values"] = [[[val] for val in list(out_df["values"].values)]]
 
         out_dict["conditions"] = conditions

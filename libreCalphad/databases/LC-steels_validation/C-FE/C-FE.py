@@ -1,6 +1,6 @@
 from datetime import date
 from espei.datasets import load_datasets, recursive_glob
-from espei.plot import dataplot
+from espei.plot import dataplot, plot_endmember, plot_interaction
 from libreCalphad.databases.db_utils import load_database
 import matplotlib.pyplot as plt
 from pycalphad import Workspace, variables as v
@@ -30,9 +30,6 @@ plt.savefig(f"./{comps[0]}-{comps[1]}-stable_phase_diagram.png")
 
 disabled_phases = ["GRAPHITE"]  # metastable next
 phases = [phase for phase in list(db.phases.keys()) if phase not in disabled_phases]
-with open("../../run_param_gen.yaml", "r") as f:
-    dataset_folder = yaml.safe_load(f)["system"]["datasets"]
-datasets = load_datasets(recursive_glob(dataset_folder))
 
 fig, ax = plt.subplots(figsize=(6, 4))
 comps = ["C", "FE", "VA"]
@@ -66,7 +63,18 @@ for temp in temps:
         prop_GM.display_name = f"GM({phase})"
         prop_HM = IsolatedPhase(phase, metastable_wks)(f"HM({phase})")
         prop_HM.display_name = f"HM({phase})"
+        prop_SM = IsolatedPhase(phase, metastable_wks)(f"SM({phase})")
+        prop_SM.display_name = f"SM({phase})"
         ax.plot(x, wks.get(prop_GM), label=prop_GM.display_name)
         ax.plot(x, wks.get(prop_HM), linestyle=":", label=prop_HM.display_name)
+        ax.plot(x, wks.get(prop_SM), linestyle="--", label=prop_SM.display_name)
     ax.legend()
     plt.savefig(f"./energies-{temp}.png")
+
+# specific interaction plots based on input data
+fig, ax = plt.subplots()
+plot_endmember(
+    db, comps, "CEMENTITE_D011", ("FE", "C"), "CPM_FORM", datasets=datasets, ax=ax
+)
+fig.tight_layout()
+plt.savefig("./CPM_FORM-CEMENTITE_D011.png")
