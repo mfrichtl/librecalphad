@@ -1,12 +1,14 @@
+from espei.datasets import load_datasets, recursive_glob
 import json
 from libreCalphad.databases.db_utils import load_database
 import numpy as np
 import pandas as pd
 import pycalphad.variables as v
 from scipy.optimize import minimize
+from tinydb import Query
 
 
-def convert_c_ratio(y_c: float) -> float:
+def _convert_c_ratio(y_c: float) -> float:
     def calc_c_ratio(x_c: float) -> float:
         x_fe = 1 - x_c
         return x_c / x_fe
@@ -103,7 +105,7 @@ def write_zpf_json(
                             )
                     elif value2["units"] == "C_ratio":
                         out_df[value2["values"]] = out_df.apply(
-                            lambda row: convert_c_ratio(row[value2["values"]]), axis=1
+                            lambda row: _convert_c_ratio(row[value2["values"]]), axis=1
                         )
                     else:
                         pass  # already in molar fractions
@@ -233,6 +235,54 @@ def write_activity_json(
                             )[v.X(component)],
                             axis=1,
                         )
+                elif value2["units"] == "mixed":
+                    # assume mixed units with unit definitions following |
+                    # This may be reported for gas equilibrium experiments
+                    concentration_unit = value2["concentration"].split("|")[1]
+                    if any(
+                        [
+                            concentration_unit == "weight_percent",
+                            concentration_unit == "wt%",
+                        ]
+                    ):
+                        this_out_df["concentration"] = (
+                            this_out_df["concentration"] / 100
+                        )
+                        if len(components) == 2 or (
+                            len(components) == 3 and "VA" in components
+                        ):
+                            dep_component = [
+                                comp
+                                for comp in components
+                                if comp != "VA" and comp != component
+                            ][0]
+                            this_out_df["concentration"] = this_out_df.apply(
+                                lambda row: v.get_mole_fractions(
+                                    {v.W(component): row["concentration"]},
+                                    dep_component,
+                                    dbf,
+                                )[v.X(component)],
+                                axis=1,
+                            )
+                    activity_unit = value2["activity"].split("|")[1]
+                    if any([activity_unit == "weight_percent", activity_unit == "wt%"]):
+                        if len(components) == 2 or (
+                            len(components) == 3 and "VA" in components
+                        ):
+                            dep_component = [
+                                comp
+                                for comp in components
+                                if comp != "VA" and comp != component
+                            ][0]
+                            this_out_df["activity"] = this_out_df.apply(
+                                lambda row: v.get_mole_fractions(
+                                    {v.W(component): row["activity"]},
+                                    dep_component,
+                                    dbf,
+                                )[v.X(component)],
+                                axis=1,
+                            )
+
             this_out_df["temperatures"] = this_temperature
             this_out_df = this_out_df.dropna(axis=0, how="any")
         if out_df.empty:
@@ -349,3 +399,35 @@ def write_energy_json(
             print("Saving to ESPEI-datasets at: " + espei_data_folder)
             with open(this_espei_data_folder, "w") as f:
                 json.dump(out_dict, f, indent=4)
+
+
+def calculate_energy_from_activity(espei_data_folder, components, phases):
+    """
+    Function to calculate energy from activity data
+    """
+
+    datasets = load_datasets(recursive_glob(espei_data_folder))
+    datasets = datasets.search(
+        (Query().components == components) & (Query().phases == phases)
+    )
+    activity_df = pd.DataFrame()
+    for dataset in datasets:
+        if dataset["output"].startswith("ACR"):
+            out_dict = {}
+            component = dataset["output"].split("_")[1]
+            concentrations = dataset["conditions"][f"X_{component}"]
+            temperature = dataset["conditions"]["T"]
+            pressure = dataset["conditions"]["P"]
+            activities = dataset["values"][0][0]
+            out_dict["concentrations"] = concentrations
+            out_dict["activity"] = activities
+            out_dict["component"] = np.repeat(component, len(activities))
+            out_dict["temperature"] = np.repeat(temperature, len(activities))
+            out_dict["pressure"] = np.repeat(pressure, len(activities))
+            out_dict["reference"] = dataset["reference"]
+            if activity_df.empty:
+                activity_df = pd.DataFrame.from_dict(out_dict)
+            else:
+                activity_df = pd.concat([activity_df, pd.DataFrame.from_dict(out_dict)])
+    activity_df["DG"] = 8.314463 * activity_df["temperature"] * activity_df["activity"]
+    return activity_df
