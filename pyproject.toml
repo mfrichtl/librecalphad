@@ -12,6 +12,8 @@ authors=[
     {name = 'Matt Frichtl'},
 ]
 dependencies = [
+    "ESPEI",
+    "ESPEI-datasets",
     "pycalphad<=0.10.5",
     "pymatgen",
 ]
