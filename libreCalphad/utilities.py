@@ -440,21 +440,27 @@ def calculate_energy_from_activity(espei_data_folder, components, phases):
 def fit_regular_solution_model(LC_DF):
     """
     Function to fit a regular solution model to Gibbs energy.
+    TODO: Generalize to fit more than binary systems.
     """
 
     def _regular_solution_fit(x, w):
-        DG = w * np.prod(x[:-1]) + R * x[-1] * np.sum(
-            [conc * np.log(conc) for conc in x[:-1]]
-        )
-        print(DG)
+        DG = w * x[0] * x[1] + R * x[2] * (x[0] * np.log(x[0]) + x[1] * np.log(x[1]))
         return DG
 
+    LC_DF["concentration"] += 1e-12  # need to handle 0 values
+    # x_values = np.array(
+    #     list(
+    #         zip(
+    #             LC_DF["concentration"], 1 - LC_DF["concentration"], LC_DF["temperature"]
+    #         )
+    #     )
+    # )
     x_values = np.vstack(
-        list(
-            zip(
-                LC_DF["concentration"], 1 - LC_DF["concentration"], LC_DF["temperature"]
-            )
-        )
+        [
+            LC_DF["concentration"],
+            1 - LC_DF["concentration"],
+            LC_DF["temperature"],
+        ]
     )
-    fits = curve_fit(_regular_solution_fit, xdata=x_values, ydata=LC_DF["DG"].values)
+    fits = curve_fit(_regular_solution_fit, xdata=x_values, ydata=LC_DF["DG"])
     print(fits)
