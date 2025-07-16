@@ -4,8 +4,11 @@ from libreCalphad.databases.db_utils import load_database
 import numpy as np
 import pandas as pd
 import pycalphad.variables as v
-from scipy.optimize import minimize
+from scipy.optimize import curve_fit, minimize
 from tinydb import Query
+
+
+R = 8.314463  # J/mol K
 
 
 def _convert_c_ratio(y_c: float) -> float:
@@ -415,12 +418,13 @@ def calculate_energy_from_activity(espei_data_folder, components, phases):
         if dataset["output"].startswith("ACR"):
             out_dict = {}
             component = dataset["output"].split("_")[1]
-            concentrations = dataset["conditions"][f"X_{component}"]
-            temperature = dataset["conditions"]["T"]
-            pressure = dataset["conditions"]["P"]
-            activities = dataset["values"][0][0]
-            out_dict["concentrations"] = concentrations
+            concentrations = np.array(dataset["conditions"][f"X_{component}"])
+            temperature = np.array(dataset["conditions"]["T"])
+            pressure = np.array(dataset["conditions"]["P"])
+            activities = np.array(dataset["values"][0][0])
+            out_dict["concentration"] = concentrations
             out_dict["activity"] = activities
+            out_dict["activity_coefficient"] = activities / concentrations
             out_dict["component"] = np.repeat(component, len(activities))
             out_dict["temperature"] = np.repeat(temperature, len(activities))
             out_dict["pressure"] = np.repeat(pressure, len(activities))
@@ -429,5 +433,28 @@ def calculate_energy_from_activity(espei_data_folder, components, phases):
                 activity_df = pd.DataFrame.from_dict(out_dict)
             else:
                 activity_df = pd.concat([activity_df, pd.DataFrame.from_dict(out_dict)])
-    activity_df["DG"] = 8.314463 * activity_df["temperature"] * activity_df["activity"]
+    activity_df["DG"] = R * activity_df["temperature"] * activity_df["activity"]
     return activity_df
+
+
+def fit_regular_solution_model(LC_DF):
+    """
+    Function to fit a regular solution model to Gibbs energy.
+    """
+
+    def _regular_solution_fit(x, w):
+        DG = w * np.prod(x[:-1]) + R * x[-1] * np.sum(
+            [conc * np.log(conc) for conc in x[:-1]]
+        )
+        print(DG)
+        return DG
+
+    x_values = np.vstack(
+        list(
+            zip(
+                LC_DF["concentration"], 1 - LC_DF["concentration"], LC_DF["temperature"]
+            )
+        )
+    )
+    fits = curve_fit(_regular_solution_fit, xdata=x_values, ydata=LC_DF["DG"].values)
+    print(fits)
