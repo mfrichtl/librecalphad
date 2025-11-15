@@ -2,6 +2,7 @@ from datetime import date
 from espei.datasets import load_datasets, recursive_glob
 from espei.plot import dataplot, plot_endmember, plot_interaction
 from libreCalphad.databases.db_utils import load_database
+from libreCalphad.models.thermodynamics import calculate_energy_from_activity
 import matplotlib.pyplot as plt
 from pycalphad import Workspace, variables as v
 from pycalphad.mapping import BinaryStrategy, plot_binary

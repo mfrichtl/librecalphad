@@ -1,11 +1,10 @@
-from espei.datasets import load_datasets, recursive_glob
+from copy import deepcopy
 import json
-from libreCalphad.databases.db_utils import load_database
+from libreCalphad.models.thermodynamics import fit_regular_solution_model
 import numpy as np
 import pandas as pd
-import pycalphad.variables as v
+from pycalphad import Database, equilibrium, variables as v
 from scipy.optimize import curve_fit, minimize
-from tinydb import Query
 
 
 R = 8.314463  # J/mol K
@@ -60,7 +59,7 @@ def write_zpf_json(
         espei_data_folder = _format_espei_data_folder(espei_data_folder, components)
     for key1, value1 in values_dict.items():
         out_df = pd.DataFrame()
-        out_dict = input_dict.copy()
+        out_dict = deepcopy(input_dict)
         out_dict["broadcast_conditions"] = broadcast_conditions
         out_dict["output"] = "ZPF"
         phases = []
@@ -295,7 +294,7 @@ def write_activity_json(
 
     for temperature in out_df["temperatures"].unique():
         out_sub = out_df.query("temperatures == @temperature")
-        out_dict["reference_state"]["T"] = temperature
+        out_dict["reference_state"]["conditions"]["T"] = temperature
         conditions["T"] = temperature
         conditions[f"X_{component}"] = list(out_sub["concentration"].values)
         out_dict["conditions"] = conditions
@@ -314,20 +313,20 @@ def write_activity_json(
 
 
 def write_energy_json(
-    input_file,
+    input_data,
     input_dict,
     values_dict,
-    dbf,
+    dbf=None,
     conditions=None,
     espei_data_folder=None,
 ):
     """
-    Function to write an ESPEI-style JSON file for non-equilibrium thermochemical data from a WebPlotDigitizer csv passed in as a Pandas DataFrame.
+    Function to write an ESPEI-style JSON file for non-equilibrium thermochemical data from a WebPlotDigitizer csv or a Pandas DataFrame.
     Currently assumes a standard isobaric conditions.
     TODO: Allow for isochoric phase data with varying pressure.
 
-    Parameters: input_file, string
-                    Pointer to the input csv file.
+    Parameters: input_data, string or pandas.DataFrame
+                    Pointer to the input csv file or a DataFrame containing columns identified in values_dict.
                 input_dict, dictionary
                     The initial input dictionary with reference metadata and component list.
                 values_dict, dictionary
@@ -336,15 +335,18 @@ def write_energy_json(
                     The database to use.
                 out_file, string or None, default value None
                     A string for the name of the output file. If None a default name based on the name of the input file is created.
-                broadcast_conditions, boolean, default value False
-                    The broadcast_conditions boolean.
                 conditions, dictionary or None, default value None
                     The pycalphad conditions dictionary. If none is provided, defaults to STP conditions.
 
     Returns: True if success.
     """
 
-    input_df = pd.read_csv(input_file, skiprows=[1])
+    if isinstance(input_data, str):
+        input_df = pd.read_csv(input_data, skiprows=[1])
+    else:
+        input_df = input_data
+    if isinstance(dbf, str):
+        dbf = Database(dbf)
     components = input_dict["components"]
     phases = input_dict["phases"]
     # normalize to atoms per mole formula unit
@@ -355,18 +357,63 @@ def write_energy_json(
     if espei_data_folder is not None:
         espei_data_folder = _format_espei_data_folder(espei_data_folder, components)
 
+    # Define non-mixing components in conditions in input dictionary
+    component_dict = {}
+    if "conditions" in list(input_dict.keys()):
+        for condition in list(input_dict.keys()):
+            if condition.startswith("X_"):
+                component_dict[condition] = input_dict[condition.split("_")[1]]
+    mixing_components = []
+
+    calc = False
+    site_fracs = {}
+    out_conditions = input_dict["conditions"].copy()
+    mixing = False
+
     for keys1, values1 in values_dict.items():
-        conditions = {"P": 101325}
-        out_dict = input_dict.copy()
+        for key, value in values1.items():
+            if key.startswith("X_") and isinstance(value, (int, float)):
+                component_dict[key] = value
+        out_dict = deepcopy(
+            input_dict
+        )  # need deep copy here to avoid mutating the input dict later
         out_df = pd.DataFrame()
+        if "model" in list(values1.keys()):
+            calc = True
         for keys2, values2 in values1.items():
             if keys2 == "temperatures":
                 out_df["temperatures"] = input_df[values2["values"]].astype("float")
                 if values2["units"] == "degC":
                     out_df["temperatures"] += 273.15
-                conditions["T"] = list(out_df["temperatures"].values)
+                out_conditions["T"] = list(out_df["temperatures"].values)
+            elif keys2.startswith("X_"):  # mixing concentrations passed
+                assert dbf is not None, (
+                    "Need to pass a pycalphad database file to calculate site fractions."
+                )
+                assert len(input_dict["phases"]) == 1, (
+                    "More than one phase passed for mixing calculation."
+                )
+                if "mixing_sublattice" in list(values2.keys()):
+                    mixing = True
+                mixing_component = keys2.split("_")[1]
+                mixing_components.append(mixing_component)
+                if values2["units"] == "molar_fraction":
+                    component_dict[mixing_component] = input_df[
+                        values2["values"]
+                    ].values
+                else:
+                    raise NotImplementedError(
+                        f"{values2['units']} not implemented yet."
+                    )
+                out_df[keys2] = component_dict[mixing_component]
+            elif keys2 == "model":
+                continue
             else:
                 out_dict["output"] = keys2
+                if calc:
+                    if "regular" in list(values1.values()):
+                        fits, input_df = fit_regular_solution_model(input_df)
+
                 out_df["values"] = input_df[values2["values"]].astype("float")
                 if values2["units"] == "cal/mol":
                     out_df["values"] = out_df["values"] * 4.184
@@ -382,85 +429,127 @@ def write_energy_json(
                     out_df["values"] = out_df["values"] * 4.184
                 # normalize to atoms per mole-formula unit
                 out_df["values"] = out_df["values"] / atoms
-                out_dict["values"] = [[[val] for val in list(out_df["values"].values)]]
 
-        out_dict["conditions"] = conditions
-        out_file = "./"
-        out_file += "-".join([comp for comp in components if comp != "VA"])
-        out_file += "-" + out_dict["output"] + "-"
-        out_file += phases[0] + "-"
-        out_file += out_dict["bibtex"] + ".json"
-        with open(out_file, "w") as f:
-            json.dump(out_dict, f, indent=4)
-        if espei_data_folder is not None:
-            this_espei_data_folder = (
-                espei_data_folder
-                + "non-equilibrium-thermochemical/"
-                + phases[0]
-                + out_file[1:]
-            )
-            print("Saving to ESPEI-datasets at: " + espei_data_folder)
-            with open(this_espei_data_folder, "w") as f:
+                if "mixing_sublattice" in list(values2.keys()):
+                    mixing = values2["mixing"]
+
+            if mixing:
+                if "conditions" in list(input_dict.keys()):
+                    eq_conditions = input_dict["conditions"].copy()
+                else:
+                    eq_conditions = {}
+                for cond, value in input_dict["conditions"].items():
+                    if cond == "P":
+                        eq_conditions[v.P] = value
+                    elif cond == "N":
+                        eq_conditions[v.N] = value
+                max_length = 0
+                for component, concentration in component_dict.items():
+                    if isinstance(concentration, np.ndarray):
+                        if len(concentration) > max_length:
+                            max_length = len(concentration)
+
+                sublattice_configurations = []
+                sublattice_occupancies = []
+                for i in out_df.index:
+                    for component, concentration in component_dict.items():
+                        if isinstance(concentration, np.ndarray):
+                            eq_conditions[v.X(component)] = concentration[i]
+                            out_df.loc[i, f"X_{component}"] = concentration[i]
+                        else:
+                            eq_conditions[v.X(component)] = concentration
+                            out_df.loc[i, f"X_{component}"] = concentration
+                        eq_conditions[v.T] = out_df.iloc[i]["temperatures"]
+                    eq = equilibrium(dbf, components, phases, eq_conditions)
+
+                    # Build sublattice occupancies array, assuming components in sublattice_configurations array are
+                    # sorted in same order as pycalphad equilibrium. This may be wrong.
+                    j = 0
+                    for sl in input_dict["solver"]["sublattice_configurations"]:
+                        if isinstance(sl, str):  # single-component sublattice
+                            this_site_frac = float(
+                                eq.sel(vertex=0).Y.squeeze().values[j]
+                            )
+                            out_df.loc[i, f"Y_{sl}"] = this_site_frac
+                            j += 1
+                        else:
+                            for component in sl:
+                                if j == 3:
+                                    breakpoint()
+                                this_site_frac = float(
+                                    eq.sel(vertex=0).Y.squeeze().values[j]
+                                )
+                                out_df.loc[i, f"Y_{component}"] = this_site_frac
+                                j += 1
+                mixing = False
+        out_conditions["T"] = []
+        sublattice_configurations = []
+        sublattice_occupancies = []
+        out_values = []
+        for temp in out_df["temperatures"].unique():
+            temp_df = out_df.query("temperatures == @temp")
+            out_conditions["T"] = temp
+            this_temp_occ = []
+            this_temp_conf = []
+            this_temp_values = []
+            for i in temp_df.index:
+                this_occ = []
+                for sl in input_dict["solver"]["sublattice_configurations"]:
+                    if isinstance(sl, str):
+                        this_occ.append(out_df.iloc[i][f"Y_{sl}"])
+                    else:
+                        sl_occ = []
+                        for component in sl:
+                            sl_occ.append(out_df.iloc[i][f"Y_{component}"])
+                        this_occ.append(sl_occ)
+                this_temp_occ.append(this_occ)
+                this_temp_conf.append(input_dict["solver"]["sublattice_configurations"])
+                this_temp_values.append(out_df.iloc[i]["values"])
+            out_values.append([this_temp_values])
+            sublattice_configurations.append(this_temp_conf)
+            sublattice_occupancies.append(this_temp_occ)
+
+            out_dict["conditions"] = out_conditions
+            out_dict["solver"]["sublattice_occupancies"] = this_temp_occ
+            out_dict["solver"]["sublattice_configurations"] = this_temp_conf
+            out_dict["values"] = [[this_temp_values]]
+            out_file = "./"
+            out_file += "-".join([comp for comp in components if comp != "VA"])
+            out_file += "-" + out_dict["output"] + "-"
+            out_file += phases[0] + "-"
+            out_file += f"{temp}K-"
+            out_file += out_dict["bibtex"] + ".json"
+            with open(out_file, "w") as f:
                 json.dump(out_dict, f, indent=4)
-
-
-def calculate_energy_from_activity(espei_data_folder, components, phases):
-    """
-    Function to calculate energy from activity data
-    """
-
-    datasets = load_datasets(recursive_glob(espei_data_folder))
-    datasets = datasets.search(
-        (Query().components == components) & (Query().phases == phases)
-    )
-    activity_df = pd.DataFrame()
-    for dataset in datasets:
-        if dataset["output"].startswith("ACR"):
-            out_dict = {}
-            component = dataset["output"].split("_")[1]
-            concentrations = np.array(dataset["conditions"][f"X_{component}"])
-            temperature = np.array(dataset["conditions"]["T"])
-            pressure = np.array(dataset["conditions"]["P"])
-            activities = np.array(dataset["values"][0][0])
-            out_dict["concentration"] = concentrations
-            out_dict["activity"] = activities
-            out_dict["activity_coefficient"] = activities / concentrations
-            out_dict["component"] = np.repeat(component, len(activities))
-            out_dict["temperature"] = np.repeat(temperature, len(activities))
-            out_dict["pressure"] = np.repeat(pressure, len(activities))
-            out_dict["reference"] = dataset["reference"]
-            if activity_df.empty:
-                activity_df = pd.DataFrame.from_dict(out_dict)
-            else:
-                activity_df = pd.concat([activity_df, pd.DataFrame.from_dict(out_dict)])
-    activity_df["DG"] = R * activity_df["temperature"] * activity_df["activity"]
-    return activity_df
-
-
-def fit_regular_solution_model(LC_DF):
-    """
-    Function to fit a regular solution model to Gibbs energy.
-    TODO: Generalize to fit more than binary systems.
-    """
-
-    def _regular_solution_fit(x, w):
-        DG = w * x[0] * x[1] + R * x[2] * (x[0] * np.log(x[0]) + x[1] * np.log(x[1]))
-        return DG
-
-    LC_DF["concentration"] += 1e-12  # need to handle 0 values
-    # x_values = np.array(
-    #     list(
-    #         zip(
-    #             LC_DF["concentration"], 1 - LC_DF["concentration"], LC_DF["temperature"]
-    #         )
-    #     )
-    # )
-    x_values = np.vstack(
-        [
-            LC_DF["concentration"],
-            1 - LC_DF["concentration"],
-            LC_DF["temperature"],
-        ]
-    )
-    fits = curve_fit(_regular_solution_fit, xdata=x_values, ydata=LC_DF["DG"])
-    print(fits)
+            if espei_data_folder is not None:
+                this_espei_data_folder = (
+                    espei_data_folder
+                    + "non-equilibrium-thermochemical/"
+                    + phases[0]
+                    + out_file[1:]
+                )
+                print("Saving to ESPEI-datasets at: " + espei_data_folder)
+                with open(this_espei_data_folder, "w") as f:
+                    json.dump(out_dict, f, indent=4)
+        # TODO: Separate the output files by temperature, like I had to do with the energy files above.
+        # out_dict["conditions"] = out_conditions
+        # out_dict["solver"]["sublattice_occupancies"] = sublattice_occupancies
+        # out_dict["solver"]["sublattice_configurations"] = sublattice_configurations
+        # out_dict["values"] = [out_values]
+        # out_file = "./"
+        # out_file += "-".join([comp for comp in components if comp != "VA"])
+        # out_file += "-" + out_dict["output"] + "-"
+        # out_file += phases[0] + "-"
+        # out_file += out_dict["bibtex"] + ".json"
+        # with open(out_file, "w") as f:
+        #     json.dump(out_dict, f, indent=4)
+        # if espei_data_folder is not None:
+        #     this_espei_data_folder = (
+        #         espei_data_folder
+        #         + "non-equilibrium-thermochemical/"
+        #         + phases[0]
+        #         + out_file[1:]
+        #     )
+        #     print("Saving to ESPEI-datasets at: " + espei_data_folder)
+        #     with open(this_espei_data_folder, "w") as f:
+        #         json.dump(out_dict, f, indent=4)
