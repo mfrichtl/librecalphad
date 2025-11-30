@@ -309,3 +309,4 @@ def fit_rk_temp_dependent(
     df = pd.concat([df, coeffs_per_point], axis=1)
 
     return a_vec, b_vec, df
+

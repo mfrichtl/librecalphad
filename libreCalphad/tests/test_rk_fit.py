@@ -18,7 +18,7 @@ def test_temp_dependence():
         element_A="FE",
         element_B="NI",
         elem_phase_map=elem_phase_map,
-        order=2,
+        RK_order=2,
     )
     rmse = np.sqrt(np.mean(diagnostics["residual"] ** 2))
     assert np.isclose(a_fit[0], 4502.46, rtol=1e-2)
