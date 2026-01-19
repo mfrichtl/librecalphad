@@ -13,8 +13,7 @@ authors=[
 ]
 dependencies = [
     "ESPEI",
-    "ESPEI-datasets",
-    "pycalphad<=0.10.5",
+    "pycalphad",
     "pymatgen",
 ]
 description='Open-source Calphad databases and property models.'
@@ -36,9 +35,9 @@ classifiers=[
     'License :: OSI Approved :: GNU GPL v3',
 
     # Supported Python versions
-    'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
 ]
 [project.optional-dependencies]
 propertyModels = ['kaleido', 'odfpy', 'pandarallel', 'scikit-learn', 'seaborn']
