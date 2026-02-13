@@ -20,12 +20,11 @@ fig, ax = plt.subplots(figsize=(6, 4))
 comps = ["C", "FE", "VA"]
 conditions = {v.T: (300, 4000, 20), v.P: 101325, v.N: 1, v.X("C"): (0, 1, 0.01)}
 binary = BinaryStrategy(db, comps, phases, conditions)
-binary.initialize()
 binary.do_map()
 plot_binary(binary, ax=ax)
 dataplot(comps, phases, conditions, datasets, ax=ax)
 ax.set_xlim((0, 0.3))
-plt.tight_layout()
+plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
 plt.title(f"{comps[0]}-{comps[1]}, {date.today().strftime('%Y-%m-%d')}")
 plt.savefig(f"./{comps[0]}-{comps[1]}-stable_phase_diagram.png")
 
@@ -36,12 +35,11 @@ fig, ax = plt.subplots(figsize=(6, 4))
 comps = ["C", "FE", "VA"]
 conditions = {v.T: (300, 4000, 20), v.P: 101325, v.N: 1, v.X("C"): (0, 1, 0.01)}
 binary = BinaryStrategy(db, comps, phases, conditions)
-binary.initialize()
 binary.do_map()
 plot_binary(binary, ax=ax)
 dataplot(comps, phases, conditions, datasets, ax=ax)
 ax.set_xlim((0, 0.3))
-plt.tight_layout()
+plt.legend(loc="upper left", bbox_to_anchor=(1, 1))
 plt.title(f"{comps[0]}-{comps[1]}, {date.today().strftime('%Y-%m-%d')}")
 plt.savefig(f"./{comps[0]}-{comps[1]}-metastable_phase_diagram.png")
 
@@ -55,7 +53,9 @@ for temp in temps:
         {v.X("C"): (0, 0.5, 0.01), v.T: temp, v.P: 101325, v.N: 1},
     )
     x = wks.get(v.X("C"))
-    fig, ax = plt.subplots()
+    figGM, axGM = plt.subplots()
+    figHM, axHM = plt.subplots()
+    figSM, axSM = plt.subplots()
 
     for phase in wks.phases:
         metastable_wks = wks.copy()
@@ -66,11 +66,20 @@ for temp in temps:
         prop_HM.display_name = f"HM({phase})"
         prop_SM = IsolatedPhase(phase, metastable_wks)(f"SM({phase})")
         prop_SM.display_name = f"SM({phase})"
-        ax.plot(x, wks.get(prop_GM), label=prop_GM.display_name)
-        ax.plot(x, wks.get(prop_HM), linestyle=":", label=prop_HM.display_name)
-        ax.plot(x, wks.get(prop_SM), linestyle="--", label=prop_SM.display_name)
-    ax.legend()
-    plt.savefig(f"./energies-{temp}.png")
+        axGM.plot(x, wks.get(prop_GM), label=prop_GM.display_name)
+        axHM.plot(x, wks.get(prop_HM), linestyle=":", label=prop_HM.display_name)
+        axSM.plot(x, wks.get(prop_SM), linestyle="--", label=prop_SM.display_name)
+    # ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
+    axGM.legend()
+    axHM.legend()
+    axSM.legend()
+    figGM.tight_layout()
+    figHM.tight_layout()
+    figSM.tight_layout()
+    figGM.savefig(f"./GM-{temp}.png")
+    figHM.savefig(f"./HM-{temp}.png")
+    figSM.savefig(f"./SM-{temp}.png")
+    # plt.savefig(f"./energies-{temp}.png")
 
 # specific interaction plots based on input data
 fig, ax = plt.subplots()

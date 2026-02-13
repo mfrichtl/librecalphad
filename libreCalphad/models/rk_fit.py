@@ -13,20 +13,15 @@ from pycalphad import variables as v
 R_J = 8.314462618  # J·mol‑1·K‑1
 
 
-# ==============================================================
-# 1️⃣  CALPHAD reference‑state Gibbs energy (supports custom phase)
-# ==============================================================
-
-
 def ref_gibbs_energy(
-    db_path: Union[str, Database],
+    db_path: str | Database,
     element: str,
     temperature: float,
-    phase_name: Optional[str] = None,
+    phase_name: str | None = None,
     pressure: float = 101325.0,
 ) -> float:
     """
-    Return the molar Gibbs energy (J/mol) of a pure element.
+    Return the molar Gibbs energy (J/mol) of a pure element reference phase.
 
     Parameters
     ----------
@@ -40,7 +35,7 @@ def ref_gibbs_energy(
         Name of the phase that represents the pure element.
         If None, the first available phase is used.
     pressure : float, optional
-        Pressure in Pascal (default = 1 atm).
+        Pressure in Pascal (default = 101325 Pa (1 atm)).
 
     Returns
     -------
@@ -80,15 +75,12 @@ def ref_gibbs_energy(
     return g_ref
 
 
-# ==============================================================
-# 2️⃣  Redlich‑Kister activity‑coefficient calculator (unchanged)
-# ==============================================================
-
-
 def rk_gamma(
     x_a: float, temperature: float, L_vals: List[float]
 ) -> Tuple[float, float]:
-    """Return (γ_A, γ_B) for a binary solid solution."""
+    """
+    Return the activity coefficients (γ_A, γ_B) for a binary solid solution.
+    """
     if not (0.0 < x_a < 1.0):
         raise ValueError("x_a must be between 0 and 1.")
     x_b = 1.0 - x_a
@@ -103,11 +95,6 @@ def rk_gamma(
     ln_gamma_b = (g_ex / (R_J * temperature)) + (x_a**2) * deriv / (R_J * temperature)
 
     return np.exp(ln_gamma_a), np.exp(ln_gamma_b)
-
-
-# ==============================================================
-# 3️⃣  Convert activities → excess Gibbs (uses CALPHAD refs)
-# ==============================================================
 
 
 def excess_gibbs_from_activities(
@@ -170,7 +157,9 @@ def excess_gibbs_from_activities(
 
 
 def rk_design_matrix(delta_x: np.ndarray, order: int) -> np.ndarray:
-    """Columns: [1, Δx, Δx², …, Δx^order] (temperature‑independent)."""
+    """
+    Columns: [1, Δx, Δx², …, Δx^order] (temperature‑independent).
+    """
     cols = [delta_x**p for p in range(order + 1)]
     return np.column_stack(cols)
 
@@ -309,4 +298,3 @@ def fit_rk_temp_dependent(
     df = pd.concat([df, coeffs_per_point], axis=1)
 
     return a_vec, b_vec, df
-

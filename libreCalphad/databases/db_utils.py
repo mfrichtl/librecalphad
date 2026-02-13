@@ -4,7 +4,7 @@ from io import StringIO
 from pycalphad import Database
 
 
-def load_database(files):
+def load_database(files: str | list[str]) -> Database:
     """
     Load a database file(s) from the databases directory and return a pycalphad Database object.
 
