@@ -1,3 +1,7 @@
+# ESPEI logging files
+ESPEI-log.txt
+mcmc-log.txt
+
 .DS_Store
 .vscode/
 *.pkl

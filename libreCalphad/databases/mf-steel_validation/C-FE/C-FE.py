@@ -21,7 +21,6 @@ fig, ax = plt.subplots(figsize=(6, 4))
 comps = ["C", "FE", "VA"]
 conditions = {v.T: (300, 2000, 20), v.P: 101325, v.N: 1, v.X("C"): (0, 1, 0.01)}
 binary = BinaryStrategy(db, comps, phases, conditions)
-binary.initialize()
 binary.do_map()
 plot_binary(binary, ax=ax)
 plt.tight_layout()
