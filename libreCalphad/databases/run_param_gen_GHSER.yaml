@@ -3,7 +3,7 @@ system:
   # datasets: /home/matt/opt/ESPEI-datasets/datasets
   datasets: /Users/mattfrichtl/opt/ESPEI-datasets/datasets
 output:
-  output_db: LC-steels-thermo.tdb
+  output_db: LC-steels-GHSER-input.tdb
   verbosity: 3
   logfile: ESPEI-log.txt
 generate_parameters:
@@ -13,4 +13,4 @@ generate_parameters:
     # LIQUID:
     #   SM: 1.4
     #   HM: 1.4
-  input_db: LC-steels-input.tdb
+  # input_db: LC-steels-input.tdb

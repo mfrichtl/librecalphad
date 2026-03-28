@@ -20,18 +20,22 @@ Notes: Assuming alpha == tau in [1]
     [3] - W. Xiong, Q. Chen, P. A. Korzhavyi, and M. Selleby, “An improved magnetic model for
     thermodynamic modeling,” Calphad, vol. 39, pp. 11–20, 2012.
 
+TODO: Add two-state Schottky model from Kaufman1963.
 TODO: Investigate adding a cutoff temperature to the bent-cable model so that it doesn't start from zero
 and introduce error to the Debye model at low temperatures.
 """
 
-from espei.datasets import load_datasets, recursive_glob
+from collections import OrderedDict
+import json
 from libreCalphad.databases.db_utils import load_database
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 from pycalphad import Workspace, as_property, calculate, variables as v
 from scipy.integrate import quad
 from scipy.optimize import curve_fit, minimize
+import symengine as se
 from tinydb import where
 import yaml
 
@@ -51,6 +55,34 @@ w2 = 9.0432e-1
 aD = 5.133e-2
 
 
+def _twostate_Cp(T_arr, dE):
+    def _calc_twostate_Cp(T, dE):
+        return (R * (dE / R * T) ** 2 * np.exp(dE / (R * T))) / (
+            g0 / g1 * np.exp(dE / (R * T)) + 1
+        ) ** 2
+
+    if isinstance(T_arr, (int, float)):
+        ret_arr = _calc_twostate_Cp(T_arr, dE)
+    else:
+        ret_arr = np.array([])
+        for T in T_arr:
+            ret_arr = np.append(ret_arr, _calc_twostate_Cp(T, dE))
+    return ret_arr
+
+
+def _twostate_gibbs(T_arr, dE):
+    def _calc_twostate_gibbs(T, dE):
+        return -R * T * np.log(1 + np.exp(-dE / (R * T)))
+
+    if isinstance(T_arr, (int, float)):
+        ret_arr = _calc_twostate_gibbs(T_arr, dE)
+    else:
+        ret_arr = np.array([])
+        for T in T_arr:
+            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(T, d))
+    return ret_arr
+
+
 def _holzapfel_debye_Cp(T_arr, thetaD):
     def _calc_holzapfel_Cp(x):
         term1 = 4 / aD * x**3 / (1 + x**3 / (aD * w0))
@@ -59,7 +91,7 @@ def _holzapfel_debye_Cp(T_arr, thetaD):
         term4 = w2 * (f2 / x) ** 2 * np.exp(-f2 / x) / (1 - np.exp(-f2 / x)) ** 2
         return 3 * R * np.sum([term1, term2, term3, term4])
 
-    if isinstance(T_arr, float):
+    if isinstance(T_arr, (int, float)):
         x = T_arr / thetaD
         ret_arr = _calc_holzapfel_Cp(x)
 
@@ -72,28 +104,38 @@ def _holzapfel_debye_Cp(T_arr, thetaD):
     return ret_arr
 
 
-def _holzapfel_enthalpy(T_arr, thetaD):
+def _holzapfel_enthalpy(T_arr, thetaD, ret_expr=False):
     def _calc_holzapfel_enthalpy(x, thetaD):
         term0 = 3 / 8
         term1 = x / aD * x**3 / (1 + x**3 / (aD * w0))
         term2 = w1 * f1 * np.exp(-f2 / x) / (1 - np.exp(-f1 / x))
         term3 = w2 * f2 * np.exp(-f2 / x) / (1 - np.exp(-f1 / x))
-        return 3 * R * thetaD * np.sum([term0, term1, term2, term3])
+        return thetaD * np.sum([term0, term1, term2, term3])
 
-    if isinstance(T_arr, float):
-        x = T_arr / thetaD
-        ret_arr = _calc_holzapfel_enthalpy(x, thetaD)
-    else:
-        ret_arr = np.array([])
-        for T in T_arr:
-            x = T / thetaD
-            H_holzapfel = _calc_holzapfel_enthalpy(x, thetaD)
-            ret_arr = np.append(ret_arr, H_holzapfel)
+    def _sympy_holzapfel_enthalpy(x, thetaD):
+        term0 = 3 / 8
+        term1 = x / aD * x**3 / (1 + x**3 / (aD * w0))
+        term2 = w1 * f1 * se.exp(-f2 / x) / (1 - se.exp(-f1 / x))
+        term3 = w2 * f2 * se.exp(-f2 / x) / (1 - se.exp(-f1 / x))
+        return thetaD * np.sum([term0, term1, term2, term3])
 
+    if T_arr is not None:
+        if isinstance(T_arr, (int, float)):
+            x = T_arr / thetaD
+            ret_arr = _calc_holzapfel_enthalpy(x, thetaD)
+        else:
+            ret_arr = np.array([])
+            for T in T_arr:
+                x = T / thetaD
+                H_holzapfel = _calc_holzapfel_enthalpy(x, thetaD)
+                ret_arr = np.append(ret_arr, H_holzapfel)
+    elif ret_expr:
+        x = v.T / thetaD
+        ret_arr = _sympy_holzapfel_enthalpy(x, thetaD)
     return ret_arr
 
 
-def _holzapfel_entropy(T_arr, thetaD):
+def _holzapfel_entropy(T_arr, thetaD, ret_expr=False):
     def _calc_holzapfel_entropy(x, thetaD):
         term1 = w0 / 3 * np.log(1 + x**3 / (aD * w0))
         term2 = 1 / aD * x**3 / (1 + x**3 / (aD * w0))
@@ -101,18 +143,52 @@ def _holzapfel_entropy(T_arr, thetaD):
         term4 = w1 * f1 / x * np.exp(-f1 / x) / (1 - np.exp(-f1 / x))
         term5 = -w2 * np.log(1 - np.exp(-f2 / x))
         term6 = w2 * f2 / x * np.exp(-f2 / x) / (1 - np.exp(-f2 / x))
-        return 3 * R * np.sum([term1, term2, term3, term4, term5, term6])
+        return np.sum([term1, term2, term3, term4, term5, term6])
 
-    if isinstance(T_arr, float):
-        x = T_arr / thetaD
-        ret_arr = _calc_holzapfel_entropy(x, thetaD)
-    else:
-        ret_arr = np.array([])
-        for T in T_arr:
-            x = T / thetaD
-            S_holzapfel = _calc_holzapfel_entropy(x, thetaD)
-            ret_arr = np.append(ret_arr, S_holzapfel)
+    def _sympy_holzapfel_entropy(x, thetaD):
+        term1 = w0 / 3 * se.log(1 + x**3 / (aD * w0))
+        term2 = 1 / aD * x**3 / (1 + x**3 / (aD * w0))
+        term3 = -w1 * se.log(1 - se.exp(-f1 / x))
+        term4 = w1 * f1 / x * se.exp(-f1 / x) / (1 - se.exp(-f1 / x))
+        term5 = -w2 * se.log(1 - se.exp(-f2 / x))
+        term6 = w2 * f2 / x * se.exp(-f2 / x) / (1 - se.exp(-f2 / x))
+        return np.sum([term1, term2, term3, term4, term5, term6])
+
+    if T_arr is not None:
+        if isinstance(T_arr, (int, float)):
+            x = T_arr / thetaD
+            ret_arr = _calc_holzapfel_entropy(x, thetaD)
+        else:
+            ret_arr = np.array([])
+            for T in T_arr:
+                x = T / thetaD
+                S_holzapfel = _calc_holzapfel_entropy(x, thetaD)
+                ret_arr = np.append(ret_arr, S_holzapfel)
+    elif ret_expr:
+        x = v.T / thetaD
+        ret_arr = _sympy_holzapfel_entropy(x, thetaD)
     return ret_arr
+
+
+def _holzapfel_gibbs(T_arr, thetaD, ret_expr=False):
+    if not ret_expr:
+        return (
+            3
+            * R
+            * (
+                _holzapfel_enthalpy(T_arr, thetaD, ret_expr)
+                - T_arr * _holzapfel_entropy(T_arr, thetaD, ret_expr)
+            )
+        )
+    else:
+        return (
+            3
+            * v.R
+            * (
+                _holzapfel_enthalpy(T_arr, thetaD, ret_expr)
+                - v.T * _holzapfel_entropy(T_arr, thetaD, ret_expr)
+            )
+        )
 
 
 def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
@@ -133,7 +209,7 @@ def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
             T - tau
         ) * _indfunc2(T, tau, gamma)
 
-    if isinstance(T_arr, float):
+    if isinstance(T_arr, (int, float)):
         return beta_1 * T_arr + beta_2 * _q(T_arr, tau, gamma)
     else:
         ret_arr = np.array([])
@@ -143,7 +219,7 @@ def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
         return ret_arr
 
 
-def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma):
+def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, retr_expr=False):
     a2h = -beta_2 / (12 * gamma) * (tau - gamma) ** 3
     a3h = beta_2 / 2 * (gamma**2 / 3 + tau**2)
     c1h = beta_1 / 2
@@ -161,17 +237,27 @@ def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma):
         else:
             return a3h + b3h * T + c3h * T**2
 
-    if isinstance(T_arr, float):
+    def _sympy_bcm_enthalpy(T, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h):
+        if T < tau - gamma:
+            return c1h * v.T**2
+        elif all([T >= tau - gamma, T <= tau + gamma]):
+            return a2h + b2h * v.T + c2h * v.T**2 + d2h * v.T**3
+        else:
+            return a3h + b3h * v.T + c3h * v.T**2
+
+    if isinstance(T_arr, (int, float)) and not retr_expr:
         ret_arr = _calc_bcm_enthalpy(T_arr, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
-    else:
+    elif not retr_expr:
         ret_arr = np.array([])
         for T in T_arr:
             H_bcm = _calc_bcm_enthalpy(T, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
             ret_arr = np.append(ret_arr, H_bcm)
+    elif isinstance(T_arr, (int, float)) and retr_expr:
+        ret_arr = _sympy_bcm_enthalpy(T_arr, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
     return ret_arr
 
 
-def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma):
+def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
     c1s = beta_1
     b2s = (tau - gamma) ** 2 * (
         3 / 8 * beta_2 / gamma - beta_2 / (4 * gamma) * np.log(tau - gamma)
@@ -195,25 +281,75 @@ def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma):
             res = b3s * T + c3s * T**2 + e3s * T * np.log(T)
         return res / T
 
-    if isinstance(T_arr, float):
+    def _sympy_bcm_entropy(T, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s):
+        b2s = (tau - gamma) ** 2 * (
+            3 / 8 * beta_2 / gamma - beta_2 / (4 * gamma) * se.log(tau - gamma)
+        )
+        b3s = -3 * beta_2 * tau / 2 - beta_2 / (4 * gamma) * (
+            (tau - gamma) ** 2 * se.log(tau - gamma)
+            - (tau + gamma) ** 2 * se.log(tau + gamma)
+        )
+        if T < tau - gamma:
+            res = c1s * v.T**2
+        elif all([T >= tau - gamma, T <= tau + gamma]):
+            res = b2s * v.T + c2s * v.T**2 + d2s * v.T**3 + e2s * v.T * se.log(v.T)
+        else:
+            res = b3s * v.T + c3s * v.T**2 + e3s * v.T * se.log(v.T)
+        return res / v.T
+
+    if isinstance(T_arr, (int, float)) and not ret_expr:
         ret_arr = _calc_bcm_entropy(T_arr, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s)
-    else:
+    elif not ret_expr:
         ret_arr = np.array([])
         for T in T_arr:
             S_bcm = _calc_bcm_entropy(T, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s)
             ret_arr = np.append(ret_arr, S_bcm)
+    elif isinstance(T_arr, (int, float)) and ret_expr:
+        ret_arr = _sympy_bcm_entropy(T_arr, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s)
     return ret_arr
 
 
+def _bent_cable_gibbs(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
+    if not ret_expr:
+        res = _bent_cable_enthalpy(
+            T_arr, beta_1, beta_2, tau, gamma, ret_expr
+        ) - T_arr * _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr)
+    else:
+        res = _bent_cable_enthalpy(
+            T_arr, beta_1, beta_2, tau, gamma, ret_expr
+        ) - v.T * _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr)
+    return res
+
+
 def _einstein_Cp(T, theta):
-    return 3 * R * (theta / T) ** 2 * np.exp(theta / T) / (np.exp(theta / T) - 1) ** 2
+    if isinstance(T, list):
+        T = np.array(T)
+    res = 3 * R * (theta / T) ** 2 * np.exp(theta / T) / (np.exp(theta / T) - 1) ** 2
+    res = np.nan_to_num(res)  # replace nan with 0
+    return res
+
+
+def _einstein_entropy(T, theta):
+    return (
+        3
+        * R
+        * (
+            theta / (2 * T) * np.cosh(theta / (2 * T)) / np.sinh(theta / (2 * T))
+            - np.log(2 * np.sinh(theta / 2 * T))
+        )
+    )
+
+
+def _einstein_gibbs(T, theta):
+    # Chen and Sundman
+    return 3 / 2 * R * theta + 3 * R * T * np.log(1 - np.exp(-theta / T))
 
 
 def _debye_Cp(T_arr, theta):
     def _integrand(x):
         return x**4 * np.exp(x) / (np.exp(x) - 1) ** 2
 
-    if isinstance(T_arr, float):
+    if isinstance(T_arr, (int, float)):
         ret_arr = 9 * R * (T_arr / theta) ** 3 * quad(_integrand, 0, theta / T_arr)
     else:
         ret_arr = np.array([])
@@ -244,7 +380,7 @@ def _xiong_Cp(T_arr, beta, p, Tc):
                 * (2 * tau**-7 + 2 / 3 * tau**-21 + 2 / 5 * tau**-35 + 2 / 7 * tau**-49)
             )
 
-    if isinstance(T_arr, float):
+    if isinstance(T_arr, (int, float)):
         tau = T_arr / Tc
         return R * tau * _g(tau, p) * np.log(beta + 1)
     else:
@@ -257,73 +393,22 @@ def _xiong_Cp(T_arr, beta, p, Tc):
 
 
 def _xiong_enthalpy(T_arr, beta, p, Tc):
-    # Incorrect. I think I messed up the integral
-    def _D(p):
-        return 0.33471979 + 0.49649686 * (1 / p - 1)
 
-    def _g_int(T, p, Tc):
-        tau = T / Tc
-        if tau <= 0:
-            return 0
-        elif tau <= 1:
-            coef = 0.63570895 / _D(p)
-            term1 = T**4 / (2 * Tc**3)
-            term2 = T**10 / (15 * Tc**9)
-            term3 = T**16 / (40 * Tc**15)
-            term4 = T**21 / (77 * Tc**21)
-            return coef * np.sum([term1, term2, term3, term4])
-        else:
-            coef = 1 / _D(p)
-            term1 = -(T**-6) / (3 * Tc**-7)
-            term2 = -(T**-20) / (30 * Tc**-21)
-            term3 = -(T**-34) / (85 * Tc**-35)
-            term4 = -(T**-48) / (168 * Tc**-49)
-            return coef * np.sum([term1, term2, term3, term4])
-
-    if isinstance(T_arr, float):
-        return R / (2 * Tc) * T_arr**2 * np.log(beta + 1) * _g_int(T_arr, p, Tc)
-    else:
-        ret_arr = np.array([])
-        for T in T_arr:
-            H_xiong = R / (2 * Tc) * T**2 * np.log(beta + 1) * _g_int(T, p, Tc)
-            ret_arr = np.append(ret_arr, H_xiong)
-        return ret_arr
+    return _xiong_gibbs(T_arr, beta, p, Tc) + T_arr * _xiong_entropy(T_arr, beta, p, Tc)
 
 
 def _xiong_entropy(T_arr, beta, p, Tc):
-    # Incorrect. I think I messed up the integral
-    def _D(p):
-        return 0.33471979 + 0.49649686 * (1 / p - 1)
-
-    def _g_int(T, p, Tc):
-        tau = T / Tc
-        if tau <= 0:
-            return 0
-        elif tau <= 1:
-            coef = 0.63570895 / _D(p)
-            term1 = T**4 / (2 * Tc**3)
-            term2 = T**10 / (15 * Tc**9)
-            term3 = T**16 / (40 * Tc**15)
-            term4 = T**21 / (77 * Tc**21)
-        else:
-            coef = 1 / _D(p)
-            term1 = -(T**-6) / (3 * Tc**-7)
-            term2 = -(T**-20) / (30 * Tc**-21)
-            term3 = -(T**-34) / (85 * Tc**-35)
-            term4 = -(T**-48) / (168 * Tc**-49)
-        return coef * np.sum([term1, term2, term3, term4])
-
-    if isinstance(T_arr, float):
-        return R / Tc * np.log(beta + 1) * _g_int(T_arr, p, Tc)
+    if isinstance(T_arr, (int, float)):
+        return R * np.log(beta + 1)
     else:
         ret_arr = np.array([])
         for T in T_arr:
-            S_xiong = R / Tc * np.log(beta + 1) * _g_int(T, p, Tc)
+            S_xiong = R * np.log(beta + 1)
             ret_arr = np.append(ret_arr, S_xiong)
         return ret_arr
 
 
-def _xiong_gibbs(T_arr, beta, p, Tc):
+def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
     # From Hao2024
     def _D(p):
         return 0.33471979 + 0.49649686 * (1 / p - 1)
@@ -344,22 +429,45 @@ def _xiong_gibbs(T_arr, beta, p, Tc):
             term4 = tau**-49 / 8232
         return coef * np.sum([term1, term2, term3, term4])
 
+    def _sympy_g_int(T, p, Tc):
+        tau = v.T / Tc
+        if T / Tc <= 1:
+            coef = 0.63570895 * (1 / p - 1)
+            term1 = tau**3 / 6
+            term2 = tau**9 / 135
+            term3 = tau**15 / 600
+            term4 = tau**21 / 1617
+        else:
+            coef = 1
+            term1 = tau**-7 / 21
+            term2 = tau**-21 / 630
+            term3 = tau**-35 / 2975
+            term4 = tau**-49 / 8232
+        return coef * np.sum([term1, term2, term3, term4])
+
     def _gmdo(T, beta, p, Tc):
         return -R * np.log(beta + 1) * (T - 0.38438376 * Tc / (p * _D(p)))
 
-    if isinstance(T_arr, float):
+    def _sympy_gmdo(T, beta, p, Tc):
+        return -R * se.log(beta + 1) * (v.T - 0.38438376 * Tc / (p * _D(p)))
+
+    if isinstance(T_arr, (int, float)) and not ret_expr:
         ret_arr = -R * T_arr / _D(p) * np.log(beta + 1) * _g_int(T_arr, p, Tc)
         +_gmdo(T_arr, beta, p, Tc)
-    else:
+    elif not ret_expr:
         ret_arr = np.array([])
         for T in T_arr:
             G_mag = -R * T / _D(p) * np.log(beta + 1) * _g_int(T, p, Tc)
             +_gmdo(T, beta, p, Tc)
             ret_arr = np.append(ret_arr, G_mag)
+    elif isinstance(T_arr, (int, float)) and ret_expr:
+        ret_arr = -v.R * v.T / _D(p) * se.log(beta + 1) * _sympy_g_int(
+            T_arr, p, Tc
+        ) + _sympy_gmdo(T_arr, beta, p, Tc)
     return ret_arr
 
 
-def calc_RSE(model_array, Cp_array):
+def _calc_RSE(model_array, Cp_array):
     num_SR_params = 5  # from the paper
     return np.sqrt(
         np.sum(np.square(model_array - Cp_array))
@@ -367,51 +475,66 @@ def calc_RSE(model_array, Cp_array):
     )
 
 
-def _fit_segmented_regression(
-    x, temperature_array, Cp_array, beta=None, p=None, Tc=None, use_einstein=False
-):
+def _fit_segmented_regression(x, arg_dict):
     """
     Function to perform the segmented regression to optimize all modeling parameters.
     x[0]: Debye or Einstein temperature
-    x[1]: beta_1
-    x[2]: beta_2
-    x[3]: tau
-    x[4]: gamma
+    x[1]: beta_1 -- BCM
+    x[2]: beta_2 -- BCM
+    x[3]: tau -- BCM
+    x[4]: gamma -- BCM
+    x[5]: beta -- Xiong model
+    x[6]: p -- Xiong model
+    x[7]: Tc/Tn -- Xiong model
     """
+
     model_Cp = 0
-    if not use_einstein:
-        model_Cp += _holzapfel_debye_Cp(temperature_array, x[0])
-    # if use_debye:
-    #     # Debye model
-    #     model_Cp = _debye_Cp(temperature_array, x[0])
-    else:
-        # Einstein model
-        model_Cp += _einstein_Cp(temperature_array, x[0])
-    if beta is not None:
-        # Assume magnetic model included
-        model_Cp += np.array([_xiong_Cp(T, beta, p, Tc) for T in temperature_array])
-    model_Cp += _bent_cable_Cp(temperature_array, x[1], x[2], x[3], x[4])
+    temperature_array = arg_dict["temperature_array"]
+    Cp_array = arg_dict["Cp_array"]
+    models = arg_dict["models"]
+    if "einstein" in list(models.keys()):
+        einstein_dict = models["einstein"]
+        assert "theta" in list(einstein_dict.keys()), (
+            "Einstein model specified without instructions for fitting theta."
+        )
+        theta_list = einstein_dict["theta"]
+        if "fit" in theta_list:
+            # x[0] Einstein temperature
+            model_Cp += _einstein_Cp(temperature_array, x[0])
+        elif "fix" in theta_list:
+            model_Cp += _einstein_Cp(temperature_array, theta_list[0])
+        else:
+            raise ValueError(
+                "Theta incorrectly specified. I don't know what you want to do."
+            )
+    elif "holzapfel" in list(models.keys()):
+        if isinstance(models["holzapfel"], dict):
+            model_Cp += _holzapfel_debye_Cp(
+                temperature_array, models["holzapfel"]["theta"]
+            )
+        else:
+            model_Cp += _holzapfel_debye_Cp(temperature_array, x[0])
+    # if beta is not None:
+    #     # Assume magnetic model included
+    #     model_Cp += _xiong_Cp(temperature_array, beta, p, Tc)
+    # model_Cp += _bent_cable_Cp(temperature_array, *x[1:])
 
-    return calc_RSE(model_Cp, Cp_array)
+    return _calc_RSE(model_Cp, Cp_array)
 
 
-def segmented_regression(
-    dataset_folder, components, phase, dbf=None, use_einstein=False
+def fit_segmented_regression(
+    datasets,
+    models,
 ):
     # TODO: Use the pycalphad DB for loading model properties.
+
     # Load CPM data for modeling
-    datasets = load_datasets(recursive_glob(dataset_folder))
-    if isinstance(phase, str):
-        phase = [phase]
-    query = (
-        (where("phases") == phase)
-        & (where("components") == components)
-        & (where("output") == "CPM")
-    )
-    search_results = datasets.search(query)
     df = pd.DataFrame()
     # CPM plotting
-    for result in search_results:
+    for result in datasets:
+        assert result["output"] == "CPM", (
+            f"Can only fit CPM data, but {result['output']} was passed."
+        )
         temps = result["conditions"]["T"]
         Cp = result["values"]
         this_df = pd.DataFrame(
@@ -427,53 +550,111 @@ def segmented_regression(
             df = pd.concat([df, this_df], ignore_index=True)
     df = df.sort_values("temperature")
 
+    param_index = []
+    params = []
+    arg_dict = {
+        "temperature_array": df["temperature"].values,
+        "Cp_array": df["Cp"].values,
+        "models": models,
+    }
+    bounds = []
+    if all(["einstein" in list(models.keys()), "holzapfel" in list(models.keys())]):
+        raise ValueError(
+            "Cannot specify both Einstein and Holzapfel (Debye) models. Pick one."
+        )
+    elif "einstein" in list(models.keys()):
+        einstein_model_dict = models["einstein"]
+        if "theta" in list(einstein_model_dict.keys()):
+            # param list format: [value, fit/fix
+            param_list = einstein_model_dict["theta"]
+            if "fit" in param_list:
+                param_index.append("theta_E")
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[2])
+                else:
+                    bounds.append((0, 1500))
+            elif "fix" in param_list:
+                pass  # nothing to do
+            else:
+                raise ValueError(f"Einstein model specified, but not set correctly.")
+    elif "holzapfel" in list(models.keys()):
+        if not isinstance(models["holzapfel"], dict):
+            param_index.append("theta_D")
+    if "xiong" in list(models.keys()):
+        xiong_params = models["xiong"]
+        if all([key in list(xiong_params.keys()) for key in ("Tc", "Tn")]):
+            param_index.append("Tc")
+
     # optimize the model parameters
-    # initialize with values for iron
-    x0 = [theta_Fe, 8.94e-3, 3.5e-2, 1.7e3, 9.6e1]
+    # initialize with values for iron, not sure how sensitive it will be
+    bounds = tuple(bounds)
+
     min_fits = minimize(
         _fit_segmented_regression,
-        x0=x0,
-        args=(
-            df["temperature"],
-            df["Cp"],
-            beta_Fe,
-            struct_fact_bcc,
-            Tc_Fe,
-            use_einstein,
-        ),
-        bounds=((1, 1500), (0, 0.1), (0, 0.1), (0, np.inf), (0, 500)),
+        x0=params,
+        args=arg_dict,
+        bounds=bounds,
         method="nelder-mead",
     )
 
-    return df, min_fits
+    return min_fits
 
 
-def calc_enthalpy(T_arr, Cp_fits, xiong_params=None):
-    if isinstance(T_arr, float):
+def get_segmented_regression_Cp(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
+    if xiong_params is not None:
+        for param in ["Tc", "p", "beta"]:
+            assert param in list(xiong_params.keys()), (
+                f"Xiong params dict missing {param}."
+            )
+    if isinstance(T_arr, (int, float)):
+        Cp = 0
+    else:
+        Cp = np.zeros(len(T_arr))
+    if use_einstein:
+        Cp += _einstein_Cp(T_arr, Cp_fits.x[0])
+    else:
+        Cp += _holzapfel_debye_Cp(T_arr, Cp_fits.x[0])
+    if xiong_params is not None:
+        Cp += _xiong_Cp(
+            T_arr, xiong_params["beta"], xiong_params["p"], xiong_params["Tc"]
+        )
+    Cp += _bent_cable_Cp(T_arr, *Cp_fits.x[1:])
+    return Cp
+
+
+def calc_enthalpy(T_arr, Cp_fits, xiong_params=None, use_einstein=False):
+    if isinstance(T_arr, (int, float)):
         enthalpy = 0
     else:
         enthalpy = np.zeros(len(T_arr))
+    if use_einstein:
+        raise NotImplementedError("Einstein enthalpy calculation not yet implemented.")
+
     enthalpy += _holzapfel_enthalpy(T_arr, *Cp_fits.x[:1])
-    # if xiong_params is not None:
-    # enthalpy += _xiong_enthalpy(T_arr, *xiong_params)
+    if xiong_params is not None:
+        enthalpy += _xiong_enthalpy(T_arr, *(list(xiong_params.values())))
     enthalpy += _bent_cable_enthalpy(T_arr, *Cp_fits.x[1:])
     return enthalpy
 
 
 def calc_entropy(T_arr, Cp_fits, xiong_params=None):
-    if isinstance(T_arr, float):
+    if isinstance(T_arr, (int, float)):
         entropy = 0
     else:
         entropy = np.zeros(len(T_arr))
     entropy += _holzapfel_entropy(T_arr, *Cp_fits.x[:1])
-    # if xiong_params is not None:
-    # entropy += _xiong_entropy(T_arr, *xiong_params)
+    if xiong_params is not None:
+        entropy += _xiong_entropy(T_arr, *list(xiong_params.values()))
     entropy += _bent_cable_entropy(T_arr, *Cp_fits.x[1:])
     return entropy
 
 
-def calc_gibbs_energy(T_arr, Cp_fits, xiong_params=None):
-    if isinstance(T_arr, float):
+def calc_gibbs_energy(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
+    if use_einstein:
+        raise NotImplementedError("Einstein Gibbs energy not yet implemented.")
+
+    if isinstance(T_arr, (int, float)):
         ret_arr = calc_enthalpy(T_arr, Cp_fits, xiong_params) - T_arr * calc_entropy(
             T_arr, Cp_fits, xiong_params
         )
@@ -485,5 +666,67 @@ def calc_gibbs_energy(T_arr, Cp_fits, xiong_params=None):
             )
             ret_arr = np.append(ret_arr, gibbs)
     if xiong_params is not None:
-        ret_arr += _xiong_gibbs(T_arr, *xiong_params)
+        ret_arr += _xiong_gibbs(T_arr, *list(xiong_params.values()))
     return ret_arr
+
+
+def create_espei_custom_refstate_stable(Cp_fits, use_einstein=False, xiong_params=None):
+    """
+    This function generates the endmember lattice stabilities based on the heat capacity fitting data.
+    Pycalphad currently implements the Einstein model, so using the Holzapfel approximation requires
+    incorporating it into the pycalphad base model. The Xiong model is also implemented in pycalphad
+    and does not need to be explicitly included in the expression.
+
+    This custom reference state therefore is the Gibbs energy expression from the bent-cable model.
+    Currently, for the best accuracy you should fit it using the Einstein model instead of Holzapfel.
+
+    TODO: Incorporate Holzapfel approximation into pycalphad.
+    """
+    critical_temperatures = [
+        1e-5,
+        Cp_fits[3] - Cp_fits[4],
+        Cp_fits[3] + Cp_fits[4],
+        10000.00,
+    ]
+    critical_temperatures.sort()
+
+    res = []
+    for i in range(1, len(critical_temperatures)):
+        # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
+        bcm_expr = _bent_cable_gibbs(
+            critical_temperatures[i] - 1.0, *Cp_fits[1:], ret_expr=True
+        )
+        this_res = (
+            bcm_expr,
+            se.And(v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]),
+        )
+        res.append(tuple(this_res))
+    res.append((0, True))
+
+    sympy_expr = se.Piecewise(*res)
+    return sympy_expr
+
+
+def upsert_custom_refstate_json(
+    refstate_file, element, Cp_fits, phase=None, xiong_params=None
+):
+    if os.path.exists(refstate_file):
+        with open(refstate_file, "r") as f:
+            custom_refstate = json.load(f)
+    else:
+        custom_refstate = {}
+
+    if phase is not None:
+        element_key = f"{element}-{phase}"
+    else:
+        element_key = element
+
+    # Need to update the functions used to create the reference state
+    custom_refstate[element_key] = {
+        "Cp_fits.x": Cp_fits.x.tolist(),
+        "Cp_fits.RSE": float(Cp_fits.fun),
+        "xiong_params": xiong_params,
+    }
+    with open(refstate_file, "w") as f:
+        json.dump(custom_refstate, f, indent=True)
+    return True
