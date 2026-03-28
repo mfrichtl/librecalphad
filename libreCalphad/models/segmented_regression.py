@@ -478,14 +478,6 @@ def _calc_RSE(model_array, Cp_array):
 def _fit_segmented_regression(x, arg_dict):
     """
     Function to perform the segmented regression to optimize all modeling parameters.
-    x[0]: Debye or Einstein temperature
-    x[1]: beta_1 -- BCM
-    x[2]: beta_2 -- BCM
-    x[3]: tau -- BCM
-    x[4]: gamma -- BCM
-    x[5]: beta -- Xiong model
-    x[6]: p -- Xiong model
-    x[7]: Tc/Tn -- Xiong model
     """
 
     model_Cp = 0
@@ -829,7 +821,7 @@ def create_espei_custom_refstate_stable(Cp_fits, use_einstein=False, xiong_param
 
 
 def upsert_custom_refstate_json(
-    refstate_file, element, Cp_fits, phase=None, xiong_params=None
+    refstate_file, element, Cp_fits, phase=None, model_dict=None
 ):
     if os.path.exists(refstate_file):
         with open(refstate_file, "r") as f:
@@ -846,8 +838,10 @@ def upsert_custom_refstate_json(
     custom_refstate[element_key] = {
         "Cp_fits.x": Cp_fits.x.tolist(),
         "Cp_fits.RSE": float(Cp_fits.fun),
-        "xiong_params": xiong_params,
     }
+    if model_dict is not None:
+        for key, value in model_dict.items():
+            custom_refstate[element_key][key] = value
     with open(refstate_file, "w") as f:
         json.dump(custom_refstate, f, indent=True)
     return True
