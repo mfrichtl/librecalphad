@@ -494,30 +494,61 @@ def _fit_segmented_regression(x, arg_dict):
     models = arg_dict["models"]
     if "einstein" in list(models.keys()):
         einstein_dict = models["einstein"]
-        assert "theta" in list(einstein_dict.keys()), (
-            "Einstein model specified without instructions for fitting theta."
-        )
         theta_list = einstein_dict["theta"]
         if "fit" in theta_list:
             # x[0] Einstein temperature
-            model_Cp += _einstein_Cp(temperature_array, x[0])
-        elif "fix" in theta_list:
+            idx = theta_list[-1]
+            model_Cp += _einstein_Cp(temperature_array, x[idx])
+        else:
             model_Cp += _einstein_Cp(temperature_array, theta_list[0])
-        else:
-            raise ValueError(
-                "Theta incorrectly specified. I don't know what you want to do."
-            )
     elif "holzapfel" in list(models.keys()):
-        if isinstance(models["holzapfel"], dict):
-            model_Cp += _holzapfel_debye_Cp(
-                temperature_array, models["holzapfel"]["theta"]
-            )
+        holzapfel_dict = models["holzapfel"]
+        theta_list = holzapfel_dict["theta"]
+        if "fit" in theta_list:
+            # x[0] Einstein temperature
+            idx = theta_list[-1]
+            model_Cp += _holzapfel_debye_Cp(temperature_array, x[idx])
         else:
-            model_Cp += _holzapfel_debye_Cp(temperature_array, x[0])
-    # if beta is not None:
-    #     # Assume magnetic model included
-    #     model_Cp += _xiong_Cp(temperature_array, beta, p, Tc)
-    # model_Cp += _bent_cable_Cp(temperature_array, *x[1:])
+            model_Cp += _holzapfel_debye_Cp(temperature_array, theta_list[0])
+    if "xiong" in list(models.keys()):
+        # Need beta, p, and Tc (or Tn)
+        xiong_dict = models["xiong"]
+        beta_list = xiong_dict["beta"]
+        if "fit" in beta_list:
+            idx = beta_list[-1]
+            beta = x[idx]
+        else:
+            beta = beta_list[0]
+
+        structure_factor_list = xiong_dict["p"]
+        if "fit" in structure_factor_list:
+            idx = structure_factor_list[-1]
+            structure_factor = x[idx]
+        else:
+            structure_factor = structure_factor_list[0]
+
+        if "Tc" in list(xiong_dict.keys()):
+            temp = "Tc"
+        else:
+            temp = "Tn"
+        critical_temp_list = xiong_dict[temp]
+        if "fit" in critical_temp_list:
+            idx = critical_temp_list[-1]
+            critical_temp = x[idx]
+        else:
+            critical_temp = critical_temp_list[0]
+        model_Cp += _xiong_Cp(temperature_array, beta, structure_factor, critical_temp)
+    if "bcm" in list(models.keys()):
+        bcm_dict = models["bcm"]
+        model_params = []
+        for param in ["beta_1", "beta_2", "tau", "gamma"]:
+            param_list = bcm_dict[param]
+            if "fit" in param_list:
+                idx = param_list[-1]
+                model_params.append(x[idx])
+            else:
+                model_params.append(param_list[0])
+        model_Cp += _bent_cable_Cp(temperature_array, *model_params)
 
     return _calc_RSE(model_Cp, Cp_array)
 
@@ -531,6 +562,7 @@ def fit_segmented_regression(
     # Load CPM data for modeling
     df = pd.DataFrame()
     # CPM plotting
+    assert len(datasets) > 0, "No datasets passed."
     for result in datasets:
         assert result["output"] == "CPM", (
             f"Can only fit CPM data, but {result['output']} was passed."
@@ -550,54 +582,143 @@ def fit_segmented_regression(
             df = pd.concat([df, this_df], ignore_index=True)
     df = df.sort_values("temperature")
 
-    param_index = []
+    arg_index = []
     params = []
     arg_dict = {
         "temperature_array": df["temperature"].values,
         "Cp_array": df["Cp"].values,
-        "models": models,
+    }
+    default_bounds = {
+        "theta": (0, 1500),
+        "beta": (0, 5),
+        "p": (0, 1),
+        "Tc": (0, 3000),
+        "Tn": (0, 3000),
+        "beta_1": (0, 1),
+        "beta_2": (0, 1),
+        "tau": (0, 3000),
+        "gamma": (0, 150),
     }
     bounds = []
+    i = 0
     if all(["einstein" in list(models.keys()), "holzapfel" in list(models.keys())]):
         raise ValueError(
             "Cannot specify both Einstein and Holzapfel (Debye) models. Pick one."
         )
     elif "einstein" in list(models.keys()):
         einstein_model_dict = models["einstein"]
-        if "theta" in list(einstein_model_dict.keys()):
+        assert "theta" in list(einstein_model_dict.keys()), (
+            "Einstein model specified without instructions for fitting theta."
+        )
+        # param list format: [value, fit/fix
+        param_list = einstein_model_dict["theta"]
+        if "fit" in param_list:
+            params.append(param_list[0])
+            if len(param_list) == 3:
+                bounds.append(param_list[2])
+            else:
+                bounds.append(default_bounds["theta"])
+            param_list.append(i)
+            i += 1
+        elif "fix" in param_list:
+            pass
+        else:
+            raise ValueError(f"Einstein model specified, but not set correctly.")
+    elif "holzapfel" in list(models.keys()):
+        holzapfel_model_dict = models["holzapfel"]
+        assert "theta" in list(holzapfel_model_dict.keys()), (
+            "Holzapfel-Debye model specified without instructions for fitting theta."
+        )
+        if "theta" in list(holzapfel_model_dict.keys()):
             # param list format: [value, fit/fix
-            param_list = einstein_model_dict["theta"]
+            param_list = holzapfel_model_dict["theta"]
             if "fit" in param_list:
-                param_index.append("theta_E")
                 params.append(param_list[0])
                 if len(param_list) == 3:
                     bounds.append(param_list[2])
                 else:
-                    bounds.append((0, 1500))
+                    bounds.append(default_bounds["theta"])
+                param_list.append(i)
+                i += 1
             elif "fix" in param_list:
                 pass  # nothing to do
             else:
-                raise ValueError(f"Einstein model specified, but not set correctly.")
-    elif "holzapfel" in list(models.keys()):
-        if not isinstance(models["holzapfel"], dict):
-            param_index.append("theta_D")
+                raise ValueError(
+                    f"Holzapfel-Debye model specified, but not set correctly."
+                )
     if "xiong" in list(models.keys()):
-        xiong_params = models["xiong"]
-        if all([key in list(xiong_params.keys()) for key in ("Tc", "Tn")]):
-            param_index.append("Tc")
+        xiong_model_dict = models["xiong"]
+        assert all(
+            [param in list(xiong_model_dict.keys()) for param in ("beta", "p")]
+        ), (
+            f"Xiong model requires 'beta' and 'p' parameters, you passed {list(xiong_model_dict.keys())}."
+        )
+        assert any(
+            [param in list(xiong_model_dict.keys()) for param in ("Tc", "Tn")]
+        ), (
+            f"Xiong model requires 'Tc' or 'Tn', you passed {list(xiong_model_dict.keys())}."
+        )
+        assert not all(
+            [param in list(xiong_model_dict.keys()) for param in ("Tc", "Tn")]
+        ), "Cannot specify both Tc and Tn for Xiong model."
+        for param in ["beta", "p", "Tc", "Tn"]:
+            if param == "Tc" and not "Tc" in list(xiong_model_dict.keys()):
+                continue
+            elif param == "Tn" and not "Tn" in list(xiong_model_dict.keys()):
+                continue
+            param_list = xiong_model_dict[param]
+            if "fit" in param_list:
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[2])
+                else:
+                    bounds.append(default_bounds[param])
+                param_list.append(i)
+                i += 1
+            elif "fix" in param_list:
+                pass
+            else:
+                raise ValueError(
+                    f"Xiong model specified, but not setup correctly for parameter [{param}]."
+                )
+    if "bcm" in list(models.keys()):
+        bcm_dict = models["bcm"]
+        for param in ["beta_1", "beta_2", "tau", "gamma"]:
+            if param not in list(bcm_dict.keys()):
+                raise ValueError(
+                    f"Bent-cable model specified without parameter [{param}]."
+                )
+            param_list = bcm_dict[param]
+            if "fit" in param_list:
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[2])
+                else:
+                    bounds.append(default_bounds[param])
+                param_list.append(i)
+                i += 1
+            elif "fix" in param_list:
+                pass
+            else:
+                raise ValueError(
+                    f"Bent-cable model specified, but no setup correctly for parameter [{param}]."
+                )
 
+    arg_dict["models"] = models
     # optimize the model parameters
     # initialize with values for iron, not sure how sensitive it will be
     bounds = tuple(bounds)
 
-    min_fits = minimize(
-        _fit_segmented_regression,
-        x0=params,
-        args=arg_dict,
-        bounds=bounds,
-        method="nelder-mead",
-    )
-
+    if len(params) > 0:
+        min_fits = minimize(
+            _fit_segmented_regression,
+            x0=params,
+            args=arg_dict,
+            bounds=bounds,
+            method="nelder-mead",
+        )
+    else:
+        min_fits = _fit_segmented_regression(params, arg_dict)
     return min_fits
 
 
