@@ -717,7 +717,13 @@ def fit_segmented_regression(
         )
     else:
         min_fits = _fit_segmented_regression(params, arg_dict)
-    return min_fits
+    # update the model dict to access the parameters
+    for model, mdict in models.items():
+        for param, param_list in mdict.items():
+            if "fit" in param_list:
+                # update the provided parameter with the fitted parameter
+                param_list[0] = min_fits.x[param_list[-1]]
+    return min_fits, models
 
 
 def get_segmented_regression_Cp(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
@@ -789,7 +795,7 @@ def calc_gibbs_energy(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
     return ret_arr
 
 
-def create_espei_custom_refstate_stable(Cp_fits, use_einstein=False, xiong_params=None):
+def create_espei_custom_refstate_stable(Cp_fits, model_dict):
     """
     This function generates the endmember lattice stabilities based on the heat capacity fitting data.
     Pycalphad currently implements the Einstein model, so using the Holzapfel approximation requires
@@ -801,25 +807,39 @@ def create_espei_custom_refstate_stable(Cp_fits, use_einstein=False, xiong_param
 
     TODO: Incorporate Holzapfel approximation into pycalphad.
     """
-    critical_temperatures = [
-        1e-5,
-        Cp_fits[3] - Cp_fits[4],
-        Cp_fits[3] + Cp_fits[4],
-        10000.00,
-    ]
+    critical_temperatures = [1e-5]
+    if "bcm" in list(model_dict.keys()):
+        bcm_dict = model_dict["bcm"]
+        tau = bcm_dict["tau"][0]
+        gamma = bcm_dict["gamma"][0]
+        beta_1 = bcm_dict["beta_1"][0]
+        beta_2 = bcm_dict["beta_2"][0]
+        (critical_temperatures.append(tau - gamma),)
+        (critical_temperatures.append(tau + gamma),)
+    critical_temperatures.append(10000.00)
+
     critical_temperatures.sort()
 
     res = []
+
     for i in range(1, len(critical_temperatures)):
         # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
-        bcm_expr = _bent_cable_gibbs(
-            critical_temperatures[i] - 1.0, *Cp_fits[1:], ret_expr=True
-        )
-        this_res = (
-            bcm_expr,
-            se.And(v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]),
-        )
-        res.append(tuple(this_res))
+        if "bcm" in list(model_dict.keys()):
+            bcm_expr = _bent_cable_gibbs(
+                critical_temperatures[i] - 1.0,
+                beta_1,
+                beta_2,
+                tau,
+                gamma,
+                ret_expr=True,
+            )
+            this_res = (
+                bcm_expr,
+                se.And(
+                    v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
+                ),
+            )
+            res.append(tuple(this_res))
     res.append((0, True))
 
     sympy_expr = se.Piecewise(*res)
