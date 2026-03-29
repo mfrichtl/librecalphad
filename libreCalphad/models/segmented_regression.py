@@ -37,6 +37,7 @@ from scipy.integrate import quad
 from scipy.optimize import curve_fit, minimize
 import symengine as se
 from tinydb import where
+import warnings
 import yaml
 
 R = 8.314472  # J/mol/K
@@ -76,16 +77,25 @@ def _twostate_Cp(T_arr, dE):
     return ret_arr
 
 
-def _twostate_gibbs(T_arr, dE):
+def _twostate_gibbs(T_arr, dE, ret_expr=False):
     def _calc_twostate_gibbs(T, dE):
+        if isinstance(dE, list):
+            dE = np.sum([dE[i] * T**i for i in range(len(dE))])
         return -R * T * np.log(1 + np.exp(-dE / (R * T)))
+
+    def _sympy_twostate_gibbs(T, dE):
+        if isinstance(dE, list):
+            dE = np.sum([dE[i] * v.T**i for i in range(len(dE))])
+        return -v.R * v.T * se.log(1 + se.exp(-dE / (v.R * v.T)))
 
     if isinstance(T_arr, (int, float)):
         ret_arr = _calc_twostate_gibbs(T_arr, dE)
+    elif ret_expr:
+        ret_arr = _sympy_twostate_gibbs(None, dE)
     else:
         ret_arr = np.array([])
         for T in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(T, d))
+            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(T, dE))
     return ret_arr
 
 
@@ -547,6 +557,22 @@ def _fit_segmented_regression(x, arg_dict):
             else:
                 model_params.append(param_list[0])
         model_Cp += _bent_cable_Cp(temperature_array, *model_params)
+    if "two-state" in list(models.keys()):
+        param_list = models["two-state"]["dE"]
+        if "fit" in param_list:
+            if isinstance(param_list[0], (float, int)):
+                idx = param_list[-1]
+                model_params.append(x[idx])
+            else:
+                idx_list = param_list[-1]
+                for j in idx_list:
+                    model_params.append(x[j])
+        else:
+            if isinstance(param_list[0], (float, int)):
+                model_params.append(param_list[0])
+            else:
+                for param in param_list[0]:
+                    model_params.append(param)
 
     return _calc_RSE(model_Cp, Cp_array)
 
@@ -556,6 +582,12 @@ def fit_segmented_regression(
     models,
 ):
     # TODO: Use the pycalphad DB for loading model properties.
+    implemented_models = ["einstein", "holzapfel", "xiong", "bcm", "two-state"]
+    for model in list(models.keys()):
+        if model not in implemented_models:
+            raise NotImplementedError(
+                f"{model} not implemented. Options are {implemented_models}"
+            )
 
     # Load CPM data for modeling
     df = pd.DataFrame()
@@ -596,6 +628,8 @@ def fit_segmented_regression(
         "beta_2": (0, 1),
         "tau": (0, 3000),
         "gamma": (0, 150),
+        "dE0": (0, 15000),
+        "dE1": (-100, 100),
     }
     bounds = []
     i = 0
@@ -702,6 +736,33 @@ def fit_segmented_regression(
                     f"Bent-cable model specified, but no setup correctly for parameter [{param}]."
                 )
 
+    if "two-state" in list(models.keys()):
+        param_list = models["two-state"]["dE"]
+        if "fit" in param_list:
+            if isinstance(param_list[0], (float, int)):
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[2])
+                else:
+                    bounds.append(default_bounds["dE0"])
+                param_list.append(i)
+                i += 1
+            else:  # Need to fit multiple parameters in a list because dE=f(T)
+                param_sublist = []
+                for j in range(len(param_list[0])):
+                    params.append(param_list[0][j])
+                    if len(param_list) == 3:
+                        bounds.append(param_list[2][j])
+                    else:
+                        bounds.append(default_bounds[f"dE{j}"])
+                    param_sublist.append(i)
+                    i += 1
+                param_list.append(param_sublist)
+        elif "fix" in param_list:
+            pass
+        else:
+            raise ValueError(f"Two-state model specified, but not setup correctly.")
+
     arg_dict["models"] = models
     # optimize the model parameters
     # initialize with values for iron, not sure how sensitive it will be
@@ -722,7 +783,11 @@ def fit_segmented_regression(
         for param, param_list in mdict.items():
             if "fit" in param_list:
                 # update the provided parameter with the fitted parameter
-                param_list[0] = min_fits.x[param_list[-1]]
+                if isinstance(param_list[-1], int):
+                    param_list[0] = min_fits.x[param_list[-1]]
+                else:
+                    for j in range(len(param_list[0])):
+                        param_list[0][j] = min_fits.x[param_list[-1][j]]
     return min_fits, models
 
 
