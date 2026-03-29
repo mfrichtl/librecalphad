@@ -56,8 +56,14 @@ aD = 5.133e-2
 
 
 def _twostate_Cp(T_arr, dE):
+    # assume for now dE is a f(T)
+    g0 = 1
+    g1 = 1
+
     def _calc_twostate_Cp(T, dE):
-        return (R * (dE / R * T) ** 2 * np.exp(dE / (R * T))) / (
+        if isinstance(dE, list):
+            dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+        return (R * (dE / (R * T)) ** 2 * g0 / g1 * np.exp(dE / (R * T))) / (
             g0 / g1 * np.exp(dE / (R * T)) + 1
         ) ** 2
 
