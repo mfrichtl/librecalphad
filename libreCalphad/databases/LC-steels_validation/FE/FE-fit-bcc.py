@@ -90,7 +90,7 @@ refstate_file = impresources.files("refstate") / "LCRefstates.json"
 
 # Add the fitted refstate results
 # Not passing the phase as a kwarg makes libreCalphad assume this is a stable phase Gibbs energy expression
-upsert_custom_refstate_json(refstate_file, "FE", min_fits, xiong_params=xiong_params)
+upsert_custom_refstate_json(refstate_file, "FE", min_fits, model_dict=model_dict)
 
 # Need to add the lattice stability for FE also, can directly write it to the json
 with open(refstate_file, "r") as f:
