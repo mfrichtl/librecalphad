@@ -886,7 +886,6 @@ def create_espei_custom_refstate_stable(model_dict):
     critical_temperatures.sort()
 
     res = []
-    breakpoint()
     for i in range(1, len(critical_temperatures)):
         # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
         if "bcm" in list(model_dict.keys()):
@@ -905,7 +904,6 @@ def create_espei_custom_refstate_stable(model_dict):
                 ),
             )
             res.append(tuple(this_res))
-        breakpoint
     res.append((0, True))
 
     sympy_expr = se.Piecewise(*res)
