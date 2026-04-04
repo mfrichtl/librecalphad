@@ -17,6 +17,7 @@ from libreCalphad.models.segmented_regression import (
 )
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 from pycalphad import Workspace, as_property, calculate, variables as v
 from pycalphad.mapping import BinaryStrategy, plot_binary
@@ -62,6 +63,16 @@ beta_1 = min_fits.x[model_dict["bcm"]["beta_1"][-1]]
 beta_2 = min_fits.x[model_dict["bcm"]["beta_2"][-1]]
 tau = min_fits.x[model_dict["bcm"]["tau"][-1]]
 gamma = min_fits.x[model_dict["bcm"]["gamma"][-1]]
+
+if os.path.exists("./_fitted_params.json"):
+    with open("./_fitted_params.json", "r") as f:
+        params_json = json.load(f)
+else:
+    params_json = {}
+params_json["FE"] = model_dict
+with open("./_fitted_params.json", "w") as f:
+    json.dump(params_json, f, indent=4)
+
 
 # H298 = calc_enthalpy(298.15, min_fits, xiong_params=xiong_params)
 # S298 = calc_entropy(298.15, min_fits, xiong_params=xiong_params)

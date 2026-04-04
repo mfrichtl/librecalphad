@@ -36,6 +36,7 @@ for result in search_results:
     )
 ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Isobaric Heat Capacity (J/mol-formula-K)")
+ax.legend()
 fig.tight_layout()
 plt.savefig(f"./CPM-CALC-FE-{phase[0]}.png")
 ax.set_xlim((0, 300))
@@ -47,3 +48,66 @@ ax.set_xscale("log")
 # ax.set_yscale("log")
 plt.savefig(f"./CPM-CALC-FE-{phase[0]}-0K.png")
 plt.close()
+
+# Enthalpy plotting
+
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "HM")
+)
+search_results = datasets.search(query)
+
+fig, ax = plt.subplots()
+calc_res = calculate(
+    dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="HM"
+)
+H298 = (
+    calculate(dbf, components, phase, T=298.15, P=101325, N=1, output="HM")
+    .HM.squeeze()
+    .values
+)
+ax.plot(calc_res.T, calc_res.HM.squeeze())
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze() + H298,
+        label=result["reference"],
+    )
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Enthalpy (J/mol-formula)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./HM-CALC-FE-{phase[0]}.png")
+plt.close()
+
+# Entropy plotting
+
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "SM")
+)
+search_results = datasets.search(query)
+
+fig, ax = plt.subplots()
+calc_res = calculate(
+    dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="SM"
+)
+S298 = (
+    calculate(dbf, components, phase, T=298.15, P=101325, N=1, output="SM")
+    .SM.squeeze()
+    .values
+)
+ax.plot(calc_res.T, calc_res.SM.squeeze())
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze() + S298,
+        label=result["reference"],
+    )
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Entropy (J/mol-formula-K)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./SM-CALC-FE-{phase[0]}.png")
