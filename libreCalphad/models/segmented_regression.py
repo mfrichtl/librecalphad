@@ -860,7 +860,7 @@ def calc_gibbs_energy(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
     return ret_arr
 
 
-def create_espei_custom_refstate_stable(Cp_fits, model_dict):
+def create_espei_custom_refstate_stable(model_dict):
     """
     This function generates the endmember lattice stabilities based on the heat capacity fitting data.
     Pycalphad currently implements the Einstein model, so using the Holzapfel approximation requires
@@ -879,14 +879,14 @@ def create_espei_custom_refstate_stable(Cp_fits, model_dict):
         gamma = bcm_dict["gamma"][0]
         beta_1 = bcm_dict["beta_1"][0]
         beta_2 = bcm_dict["beta_2"][0]
-        (critical_temperatures.append(tau - gamma),)
-        (critical_temperatures.append(tau + gamma),)
+        critical_temperatures.append(tau - gamma)
+        critical_temperatures.append(tau + gamma)
     critical_temperatures.append(10000.00)
 
     critical_temperatures.sort()
 
     res = []
-
+    breakpoint()
     for i in range(1, len(critical_temperatures)):
         # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
         if "bcm" in list(model_dict.keys()):
@@ -905,6 +905,7 @@ def create_espei_custom_refstate_stable(Cp_fits, model_dict):
                 ),
             )
             res.append(tuple(this_res))
+        breakpoint
     res.append((0, True))
 
     sympy_expr = se.Piecewise(*res)
