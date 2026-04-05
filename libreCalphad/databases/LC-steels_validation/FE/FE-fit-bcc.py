@@ -30,7 +30,7 @@ with open(param_gen_file, "r") as f:
     dataset_folder = yaml.safe_load(f)["system"]["datasets"]
 datasets = load_datasets(recursive_glob(dataset_folder))
 components = ["FE", "VA"]
-phase = ["FCC_A1"]
+phase = ["BCC_A2"]
 query = (
     (where("phases") == phase)
     & (where("components") == components)
@@ -46,23 +46,23 @@ Tc_Fe = 1043  # K, Curie temperature for Fe
 theta_Fe = 309  # K, Einstein temperature from Chen & Sundman
 model_dict = {
     "einstein": {"theta": [300, "fit"]},
-    "xiong": {"beta": [2.22, "fit"], "p": [0.37, "fit"], "Tc": [1043, "fit"]},
+    "xiong": {"beta": [2.22, "fix"], "p": [0.37, "fix"], "Tc": [1043, "fix"]},
     "bcm": {
         "beta_1": [0.01, "fit"],
         "beta_2": [0.04, "fit"],
-        "tau": [1750, "fit"],
+        "tau": [1750, "fit", (1200, 1600)],
         "gamma": [50, "fit"],
     },
 }
 min_fits, model_dict = fit_segmented_regression(search_results, model_dict)
-theta_Fe = min_fits.x[model_dict["einstein"]["theta"][-1]]
-beta_Fe = min_fits.x[model_dict["xiong"]["beta"][-1]]
-struct_fact_bcc = min_fits.x[model_dict["xiong"]["p"][-1]]
-Tc_Fe = min_fits.x[model_dict["xiong"]["Tc"][-1]]
-beta_1 = min_fits.x[model_dict["bcm"]["beta_1"][-1]]
-beta_2 = min_fits.x[model_dict["bcm"]["beta_2"][-1]]
-tau = min_fits.x[model_dict["bcm"]["tau"][-1]]
-gamma = min_fits.x[model_dict["bcm"]["gamma"][-1]]
+theta_Fe = model_dict["einstein"]["theta"][0]
+beta_Fe = model_dict["xiong"]["beta"][0]
+struct_fact_bcc = model_dict["xiong"]["p"][0]
+Tc_Fe = model_dict["xiong"]["Tc"][0]
+beta_1 = model_dict["bcm"]["beta_1"][0]
+beta_2 = model_dict["bcm"]["beta_2"][0]
+tau = model_dict["bcm"]["tau"][0]
+gamma = model_dict["bcm"]["gamma"][0]
 
 if os.path.exists("./_fitted_params.json"):
     with open("./_fitted_params.json", "r") as f:
@@ -91,7 +91,7 @@ print(f"beta_1={beta_1:3f}")
 print(f"beta_2={beta_2:3f}")
 print(f"tau={tau:3f}")
 print(f"gamma={gamma:3f}")
-print(f"RSE: {min_fits.fun:.4f} J/mol/K")
+print(f"RSE: {min_fits.fun:.4f} %")
 # print(f"H298: {H298}")
 # print(f"S298: {S298}")
 
@@ -114,7 +114,7 @@ with open(refstate_file, "w") as f:
 ser_file = impresources.files("refstate") / "LCSERparams.json"
 with open(ser_file, "r") as f:
     ser_dict = json.load(f)
-ser_dict["FE"] = {"phase": "BCC_A2", "mass": 55.847, "H298": H298, "S298": S298}
+# ser_dict["FE"] = {"phase": "BCC_A2", "mass": 55.847, "H298": H298, "S298": S298}
 with open(ser_file, "w") as f:
     json.dump(ser_dict, f, indent=True)
 # prepare arrays for plotting
@@ -132,7 +132,7 @@ df_model["cumulative_model"] = (
     + df_model["bent_cable_model"]
 )
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(8, 6))
 for dataset in search_results:
     ax.scatter(
         dataset["conditions"]["T"],
@@ -143,7 +143,7 @@ ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
 ax.plot(df_model["temperature"], df_model["bent_cable_model"], label="Bent Cable")
 ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative")
-ax.legend()
+ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 
 ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Heat Capacity (J/mol-K-atom)")

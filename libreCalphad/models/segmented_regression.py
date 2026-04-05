@@ -488,10 +488,7 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
 def _calc_RSE(model_array, Cp_array):
     num_SR_params = 5  # from the paper
     return np.sqrt(
-        np.sum(
-            np.square(np.nan_to_num((model_array - Cp_array) / Cp_array))
-            # / (len(model_array) - num_SR_params - 1)
-        )
+        np.sum(np.square(np.nan_to_num((model_array - Cp_array) / Cp_array)))
     )
 
 
@@ -631,7 +628,7 @@ def fit_segmented_regression(
         "beta_1": (0, 1),
         "beta_2": (0, 1),
         "tau": (0, 3000),
-        "gamma": (0, 1000),
+        "gamma": (1e-6, 1000),
         "dE0": (0, 15000),
         "dE1": (-100, 100),
     }

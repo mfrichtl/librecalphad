@@ -3,7 +3,7 @@ import importlib.resources as impresources
 from libreCalphad.databases.db_utils import load_database
 import matplotlib.pyplot as plt
 import numpy as np
-from pycalphad import calculate
+from pycalphad import calculate, equilibrium, variables as v
 from tinydb import where
 import yaml
 
@@ -14,10 +14,86 @@ with open(param_gen_file, "r") as f:
     dataset_folder = yaml.safe_load(f)["system"]["datasets"]
 datasets = load_datasets(recursive_glob(dataset_folder))
 components = ["FE", "VA"]
-phase = ["BCC_A2", "FCC_A1"]
+phases = ["BCC_A2", "FCC_A1"]
+temps = (0.5, 2000, 2)
+conditions = {v.T: temps, v.N: 1, v.P: 101325}
 
+# CPM data
+
+fig, ax = plt.subplots(figsize=(8, 6))
+eq_res = equilibrium(dbf, components, phases, conditions, output="heat_capacity")
+for phase in phases:
+    cpm_res = calculate(
+        dbf, components, phase, T=temps, P=101325, N=1, output="heat_capacity"
+    )
+    ax.plot(cpm_res.T, cpm_res.heat_capacity.squeeze(), label=phase)
+
+ax.plot(eq_res.T, eq_res.heat_capacity.squeeze(), label="equilibrium")
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Heat Capacity (J/mol-formula-K)")
+ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
+fig.tight_layout()
+fig.savefig("./all_heat_capacity.png")
+plt.close()
+
+# Gibbs energies
+
+fig, ax = plt.subplots(figsize=(8, 6))
+eq_res = equilibrium(dbf, components, phases, conditions)
+for phase in phases:
+    cpm_res = calculate(dbf, components, phase, T=temps, P=101325, N=1)
+    ax.plot(cpm_res.T, cpm_res.GM.squeeze(), label=phase)
+
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Gibbs Energy (J/mol-formula)")
+ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
+fig.tight_layout()
+fig.savefig("./all_gibbs.png")
+plt.close()
+
+# DG
 query = (
-    (where("phases") == phase)
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DG-BCC_A2-FCC_A1")
+)
+search_results = datasets.search(query)
+
+fig, ax = plt.subplots()
+DG_BCC_A2 = calculate(
+    dbf,
+    components,
+    "BCC_A2",
+    T=(0.5, 2000, 2),
+    P=101325,
+    N=1,
+)
+DG_FCC_A1 = calculate(
+    dbf,
+    components,
+    "FCC_A1",
+    T=(0.5, 2000, 2),
+    P=101325,
+    N=1,
+)
+
+ax.plot(DG_BCC_A2.T, (DG_FCC_A1.GM.squeeze() - DG_BCC_A2.GM.squeeze()))
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel(r"$\Delta G^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./DG-BCC_A2-FCC_A1.png")
+plt.close()
+
+# DH data
+query = (
+    (where("phases") == phases)
     & (where("components") == components)
     & (where("output") == "DH-BCC_A2-FCC_A1")
 )
@@ -44,66 +120,3 @@ ax.legend()
 fig.tight_layout()
 plt.savefig(f"./DH-BCC_A2-FCC_A1.png")
 plt.close()
-
-# # Enthalpy plotting
-#
-# query = (
-#     (where("phases") == phase)
-#     & (where("components") == components)
-#     & (where("output") == "HM")
-# )
-# search_results = datasets.search(query)
-#
-# fig, ax = plt.subplots()
-# calc_res = calculate(
-#     dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="HM"
-# )
-# H298 = (
-#     calculate(dbf, components, phase, T=298.15, P=101325, N=1, output="HM")
-#     .HM.squeeze()
-#     .values
-# )
-# ax.plot(calc_res.T, calc_res.HM.squeeze())
-# for result in search_results:
-#     ax.scatter(
-#         result["conditions"]["T"],
-#         np.array(result["values"]).squeeze() + H298,
-#         label=result["reference"],
-#     )
-# ax.set_xlabel("Temperature (K)")
-# ax.set_ylabel("Enthalpy (J/mol-formula)")
-# ax.legend()
-# fig.tight_layout()
-# plt.savefig(f"./HM-CALC-FE-{phase[0]}.png")
-# plt.close()
-#
-# # Entropy plotting
-#
-# query = (
-#     (where("phases") == phase)
-#     & (where("components") == components)
-#     & (where("output") == "SM")
-# )
-# search_results = datasets.search(query)
-#
-# fig, ax = plt.subplots()
-# calc_res = calculate(
-#     dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="SM"
-# )
-# S298 = (
-#     calculate(dbf, components, phase, T=298.15, P=101325, N=1, output="SM")
-#     .SM.squeeze()
-#     .values
-# )
-# ax.plot(calc_res.T, calc_res.SM.squeeze())
-# for result in search_results:
-#     ax.scatter(
-#         result["conditions"]["T"],
-#         np.array(result["values"]).squeeze() + S298,
-#         label=result["reference"],
-#     )
-# ax.set_xlabel("Temperature (K)")
-# ax.set_ylabel("Entropy (J/mol-formula-K)")
-# ax.legend()
-# fig.tight_layout()
-# plt.savefig(f"./SM-CALC-FE-{phase[0]}.png")
