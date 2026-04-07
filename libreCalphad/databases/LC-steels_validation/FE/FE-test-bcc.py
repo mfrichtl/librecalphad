@@ -53,7 +53,7 @@ plt.close()
 query = (
     (where("phases") == phase)
     & (where("components") == components)
-    & (where("output") == "HM")
+    & (where("output") == "DH")
 )
 search_results = datasets.search(query)
 
@@ -85,7 +85,7 @@ plt.close()
 query = (
     (where("phases") == phase)
     & (where("components") == components)
-    & (where("output") == "SM")
+    & (where("output") == "DS")
 )
 search_results = datasets.search(query)
 

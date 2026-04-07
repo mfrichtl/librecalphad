@@ -502,6 +502,7 @@ def _fit_segmented_regression(x, arg_dict):
     Cp_array = arg_dict["Cp_array"]
     models = arg_dict["models"]
     if "einstein" in list(models.keys()):
+        model_params = []
         einstein_dict = models["einstein"]
         theta_list = einstein_dict["theta"]
         if "fit" in theta_list:
@@ -511,6 +512,7 @@ def _fit_segmented_regression(x, arg_dict):
         else:
             model_Cp += _einstein_Cp(temperature_array, theta_list[0])
     elif "holzapfel" in list(models.keys()):
+        model_params = []
         holzapfel_dict = models["holzapfel"]
         theta_list = holzapfel_dict["theta"]
         if "fit" in theta_list:
@@ -520,6 +522,7 @@ def _fit_segmented_regression(x, arg_dict):
         else:
             model_Cp += _holzapfel_debye_Cp(temperature_array, theta_list[0])
     if "xiong" in list(models.keys()):
+        model_params = []
         # Need beta, p, and Tc (or Tn)
         xiong_dict = models["xiong"]
         beta_list = xiong_dict["beta"]
@@ -559,6 +562,7 @@ def _fit_segmented_regression(x, arg_dict):
                 model_params.append(param_list[0])
         model_Cp += _bent_cable_Cp(temperature_array, *model_params)
     if "two-state" in list(models.keys()):
+        model_params = []
         param_list = models["two-state"]["dE"]
         if "fit" in param_list:
             if isinstance(param_list[0], (float, int)):
@@ -574,6 +578,7 @@ def _fit_segmented_regression(x, arg_dict):
             else:
                 for param in param_list[0]:
                     model_params.append(param)
+        model_Cp += _twostate_Cp(temperature_array, model_params)
 
     return _calc_RSE(model_Cp, Cp_array)
 
