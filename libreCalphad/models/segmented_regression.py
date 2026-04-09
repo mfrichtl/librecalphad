@@ -57,16 +57,22 @@ aD = 5.133e-2
 
 
 def _twostate_Cp(T_arr, dE):
-    # assume for now dE is a f(T)
+    # Following the approach from Becker2013
     g0 = 1
     g1 = 1
 
     def _calc_twostate_Cp(T, dE):
+        if T == 0:
+            return 0
         if isinstance(dE, list):
-            dE = np.sum([dE[i] * T**i for i in range(len(dE))])
-        return (R * (dE / (R * T)) ** 2 * g0 / g1 * np.exp(dE / (R * T))) / (
-            g0 / g1 * np.exp(dE / (R * T)) + 1
-        ) ** 2
+            dE_sum = np.sum([dE[i] * T**i for i in range(len(dE))])
+            ddEdT = np.sum(
+                [dE[i + 1] * i * T ** (i - 1) for i in range(-1, len(dE) - 1)]
+            )
+            dH = -(T**2) * ddEdT
+            nom = R * (dE_sum / (R * T)) ** 2 * g0 / g1 * np.exp(dE_sum / (R * T))
+            num = (g0 / g1 * np.exp(dE_sum / (R * T)) + 1) ** 2
+            return nom / num
 
     if isinstance(T_arr, (int, float)):
         ret_arr = _calc_twostate_Cp(T_arr, dE)
@@ -100,8 +106,53 @@ def _twostate_gibbs(T_arr, dE, ret_expr=False):
     return ret_arr
 
 
+def _twostate_entropy(T_arr, dE, ret_expr=False):
+    # From Miodownik1970
+    g0 = 1
+    g1 = 1
+
+    def _calc_twostate_entropy(T, dE):
+        if isinstance(dE, list):
+            dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+        alpha = g1 / g0 * np.exp(-dE / (R * T))
+        return R * (np.log(1 + alpha) - alpha / (1 + alpha) * dE / (R * T))
+
+    def _sympy_twostate_entropy(T, dE):
+        if isinstance(dE, list):
+            dE = np.sum([dE[i] * v.T**i for i in range(len(dE))])
+        alpha = g1 / g0 * se.exp(-dE / (v.R * v.T))
+        return v.R * (se.log(1 + alpha) - alpha / (1 + alpha) * dE / (v.R * v.T))
+
+    if isinstance(T_arr, (int, float)):
+        ret_arr = _calc_twostate_entropy(T_arr, dE)
+    elif ret_expr:
+        ret_arr = _sympy_twostate_entropy(None, dE)
+    else:
+        ret_arr = np.array([])
+        for T in T_arr:
+            ret_arr = np.append(ret_arr, _calc_twostate_entropy(T, dE))
+    return ret_arr
+
+
+def _twostate_enthalpy(T_arr, dE, ret_expr=False):
+    if ret_expr:
+        ret_arr = v.T * _twostate_entropy(T_arr, dE, ret_expr)
+    else:
+        if isinstance(T_arr, (int, float)):
+            ret_arr = T_arr * _twostate_entropy(T_arr, dE, ret_expr)
+        else:
+            ret_arr = np.array([])
+            for T in T_arr:
+                ret_arr = np.append(
+                    ret_arr, T * _calc_twostate_entropy(T, dE, ret_expr)
+                )
+    return ret_arr
+
+
 def _holzapfel_debye_Cp(T_arr, thetaD):
     def _calc_holzapfel_Cp(x):
+        if x == 0:
+            return 0
         term1 = 4 / aD * x**3 / (1 + x**3 / (aD * w0))
         term2 = -3 / (aD**2 * w0) * x**6 / (1 + x**3 / (aD * w0)) ** 2
         term3 = w1 * (f1 / x) ** 2 * np.exp(-f1 / x) / (1 - np.exp(-f1 / x)) ** 2
@@ -228,11 +279,16 @@ def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
         ) * _indfunc2(T, tau, gamma)
 
     if isinstance(T_arr, (int, float)):
+        if T_arr == 0:
+            return 0
         return beta_1 * T_arr + beta_2 * _q(T_arr, tau, gamma)
     else:
         ret_arr = np.array([])
         for T in T_arr:
-            Cp = beta_1 * T + beta_2 * _q(T, tau, gamma)
+            if T == 0:
+                Cp = 0
+            else:
+                Cp = beta_1 * T + beta_2 * _q(T, tau, gamma)
             ret_arr = np.append(ret_arr, Cp)
         return ret_arr
 
@@ -399,13 +455,18 @@ def _xiong_Cp(T_arr, beta, p, Tc):
             )
 
     if isinstance(T_arr, (int, float)):
+        if T_arr == 0:
+            return 0
         tau = T_arr / Tc
         return R * tau * _g(tau, p) * np.log(beta + 1)
     else:
         ret_arr = np.array([])
         for T in T_arr:
-            tau = T / Tc
-            Cp = R * tau * _g(tau, p) * np.log(beta + 1)
+            if T == 0:
+                Cp = 0
+            else:
+                tau = T / Tc
+                Cp = R * tau * _g(tau, p) * np.log(beta + 1)
             ret_arr = np.append(ret_arr, Cp)
         return ret_arr
 

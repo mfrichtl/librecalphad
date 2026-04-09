@@ -10,6 +10,7 @@ from libreCalphad.models.segmented_regression import (
     _holzapfel_debye_Cp,
     _xiong_Cp,
     _twostate_Cp,
+    _twostate_gibbs,
     calc_enthalpy,
     calc_entropy,
     create_espei_custom_refstate_stable,
@@ -77,7 +78,7 @@ de1 = model_dict["two-state"]["dE"][0][1]
 # S298 = calc_entropy(298.15, min_fits, xiong_params=xiong_params)
 # initialize a dataframe for the model
 df_model = pd.DataFrame()
-df_model["temperature"] = np.linspace(1, 1600, num=1000)
+df_model["temperature"] = np.linspace(1, 2000, num=1000)
 
 print("Optimized model parameters:")
 print(f"Theta_E={theta_Fe:4f}")
@@ -154,3 +155,17 @@ ax.set_ylabel("Heat Capacity (J/mol-K-atom)")
 ax.legend()
 fig.tight_layout()
 fig.savefig("./FE-Cp-FCC_A1.png")
+
+fig, ax = plt.subplots()
+ax.plot(df_model["temperature"], df_model["two-state"])
+fig.tight_layout()
+fig.savefig("./FE-Cp-twostate-FCC_A1.png")
+
+# Gibbs energies
+df_model["two-state-gibbs"] = _twostate_gibbs(df_model["temperature"], [de0, de1])
+
+fig, ax = plt.subplots()
+ax.plot(df_model["temperature"], df_model["two-state-gibbs"], label="Two-State")
+ax.legend()
+fig.tight_layout()
+fig.savefig("./FE-Gibbs-FCC_A1.png")
