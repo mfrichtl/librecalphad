@@ -28,12 +28,12 @@ cpm_res = calculate(
     dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="heat_capacity"
 )
 ax.plot(cpm_res.T, cpm_res.heat_capacity.squeeze())
-# for result in search_results:
-#     ax.scatter(
-#         result["conditions"]["T"],
-#         np.array(result["values"]).squeeze(),
-#         label=result["reference"],
-#     )
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
 ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Isobaric Heat Capacity (J/mol-formula-K)")
 ax.legend()

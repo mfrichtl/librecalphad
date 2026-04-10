@@ -68,8 +68,17 @@ def _twostate_Cp(T_arr, dE):
     def _calc_twostate_Cp(temp, dE):
         dH = -(T**2) * (dE / T).diff(T)
         chi = se.exp(-dE / (R * T)) / (1 + se.exp(-dE / R * T))
-        twostate_Cp = np.float64((chi * dH.diff(T) + dH * chi.diff(T)).subs(T, temp))
-        return twostate_Cp
+        twostate_Cp = (
+            chi * dH.diff(T)
+            + R
+            * (dH / (R * T)) ** 2
+            * se.exp(-dE / (R * T))
+            / (1 + se.exp(-dE / (R * T))) ** 2
+        )
+        # twostate_Cp = np.float64((chi * dH.diff(T) + dH * chi.diff(T)).subs(T, temp))
+        # twostate_gibbs = -R * T * se.log(1 + se.exp(-dE / (R * T)))
+        # twostate_Cp = twostate_gibbs.diff(T, T).subs(T, temp)
+        return np.float64(twostate_Cp.subs(T, temp))
 
     if isinstance(T_arr, (int, float)):
         ret_arr = _calc_twostate_Cp(T_arr, dE)
@@ -89,7 +98,7 @@ def _twostate_gibbs(T_arr, dE, ret_expr=False):
     def _calc_twostate_gibbs(temp, dE):
         return np.float64((-R * T * se.log(1 + se.exp(-dE / (R * T)))).subs(T, temp))
 
-    def _sympy_twostate_gibbs(T, dE):
+    def _sympy_twostate_gibbs(temp, dE):
         if isinstance(dE, list):
             dE = np.sum([dE[i] * v.T**i for i in range(len(dE))])
         return -v.R * v.T * se.log(1 + se.exp(-dE / (v.R * v.T)))
