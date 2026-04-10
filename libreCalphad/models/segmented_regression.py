@@ -61,34 +61,33 @@ def _twostate_Cp(T_arr, dE):
     g0 = 1
     g1 = 1
 
-    def _calc_twostate_Cp(T, dE):
-        if T == 0:
-            return 0
-        if isinstance(dE, list):
-            dE_sum = np.sum([dE[i] * T**i for i in range(len(dE))])
-            ddEdT = np.sum(
-                [dE[i + 1] * i * T ** (i - 1) for i in range(-1, len(dE) - 1)]
-            )
-            dH = -(T**2) * ddEdT
-            nom = R * (dE_sum / (R * T)) ** 2 * g0 / g1 * np.exp(dE_sum / (R * T))
-            num = (g0 / g1 * np.exp(dE_sum / (R * T)) + 1) ** 2
-            return nom / num
+    T = se.symbols("T")
+    if isinstance(dE, list):
+        dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+
+    def _calc_twostate_Cp(temp, dE):
+        dH = -(T**2) * (dE / T).diff(T)
+        chi = se.exp(-dE / (R * T)) / (1 + se.exp(-dE / R * T))
+        twostate_Cp = np.float64((chi * dH.diff(T) + dH * chi.diff(T)).subs(T, temp))
+        return twostate_Cp
 
     if isinstance(T_arr, (int, float)):
         ret_arr = _calc_twostate_Cp(T_arr, dE)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_Cp(T, dE))
+        for temp in T_arr:
+            ret_arr = np.append(ret_arr, _calc_twostate_Cp(temp, dE))
     ret_arr = np.nan_to_num(ret_arr)
     return ret_arr
 
 
 def _twostate_gibbs(T_arr, dE, ret_expr=False):
-    def _calc_twostate_gibbs(T, dE):
-        if isinstance(dE, list):
-            dE = np.sum([dE[i] * T**i for i in range(len(dE))])
-        return -R * T * np.log(1 + np.exp(-dE / (R * T)))
+    T = se.symbols("T")
+    if isinstance(dE, list):
+        dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+
+    def _calc_twostate_gibbs(temp, dE):
+        return np.float64((-R * T * se.log(1 + se.exp(-dE / (R * T)))).subs(T, temp))
 
     def _sympy_twostate_gibbs(T, dE):
         if isinstance(dE, list):
@@ -101,8 +100,8 @@ def _twostate_gibbs(T_arr, dE, ret_expr=False):
         ret_arr = _sympy_twostate_gibbs(None, dE)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(T, dE))
+        for temp in T_arr:
+            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(temp, dE))
     return ret_arr
 
 
@@ -548,9 +547,7 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
 
 def _calc_RSE(model_array, Cp_array):
     num_SR_params = 5  # from the paper
-    return np.sqrt(
-        np.sum(np.square(np.nan_to_num((model_array - Cp_array) / Cp_array)))
-    )
+    return np.sqrt(np.sum(np.square(np.nan_to_num((model_array - Cp_array)))))
 
 
 def _fit_segmented_regression(x, arg_dict):
