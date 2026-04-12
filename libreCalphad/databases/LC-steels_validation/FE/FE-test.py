@@ -14,7 +14,7 @@ with open(param_gen_file, "r") as f:
     dataset_folder = yaml.safe_load(f)["system"]["datasets"]
 datasets = load_datasets(recursive_glob(dataset_folder))
 components = ["FE", "VA"]
-phases = ["BCC_A2", "FCC_A1"]
+phases = ["BCC_A2", "FCC_A1", "LIQUID"]
 temps = (0.5, 2000, 2)
 conditions = {v.T: temps, v.N: 1, v.P: 101325}
 
@@ -51,6 +51,7 @@ fig.tight_layout()
 fig.savefig("./all_gibbs.png")
 plt.close()
 
+phases = ["BCC_A2", "FCC_A1"]
 # DG
 query = (
     (where("phases") == phases)
@@ -58,6 +59,12 @@ query = (
     & (where("output") == "DG-BCC_A2-FCC_A1")
 )
 search_results = datasets.search(query)
+inv_query = (
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DG-FCC_A1-BCC_A2")
+)
+inv_search_results = datasets.search(inv_query)
 
 fig, ax = plt.subplots()
 DG_BCC_A2 = calculate(
@@ -84,6 +91,12 @@ for result in search_results:
         np.array(result["values"]).squeeze(),
         label=result["reference"],
     )
+for result in inv_search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        -np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
 ax.set_xlabel("Temperature (K)")
 ax.set_ylabel(r"$\Delta G^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)")
 ax.legend()
@@ -98,6 +111,13 @@ query = (
     & (where("output") == "DH-BCC_A2-FCC_A1")
 )
 search_results = datasets.search(query)
+
+inv_query = (
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DH-FCC_A1-BCC_A2")
+)
+inv_search_results = datasets.search(inv_query)
 
 fig, ax = plt.subplots()
 H_BCC_A2 = calculate(
@@ -114,6 +134,13 @@ for result in search_results:
         np.array(result["values"]).squeeze(),
         label=result["reference"],
     )
+for result in inv_search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        -np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+
 ax.set_xlabel("Temperature (K)")
 ax.set_ylabel(r"$\Delta H^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)")
 ax.legend()

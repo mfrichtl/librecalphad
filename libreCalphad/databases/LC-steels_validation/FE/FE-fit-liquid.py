@@ -19,9 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-from pycalphad import Workspace, as_property, calculate, variables as v
-from pycalphad.mapping import BinaryStrategy, plot_binary
-from pycalphad.property_framework.metaproperties import IsolatedPhase
+from pycalphad import variables as v
 from tinydb import where
 import yaml
 
@@ -30,7 +28,7 @@ with open(param_gen_file, "r") as f:
     dataset_folder = yaml.safe_load(f)["system"]["datasets"]
 datasets = load_datasets(recursive_glob(dataset_folder))
 components = ["FE", "VA"]
-phase = ["BCC_A2"]
+phase = ["LIQUID"]
 query = (
     (where("phases") == phase)
     & (where("components") == components)
@@ -69,7 +67,7 @@ if os.path.exists("./_fitted_params.json"):
         params_json = json.load(f)
 else:
     params_json = {}
-params_json["FE"].update({phase[0]: model_dict})
+params_json["FE"] = model_dict
 with open("./_fitted_params.json", "w") as f:
     json.dump(params_json, f, indent=4)
 

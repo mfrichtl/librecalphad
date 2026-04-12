@@ -20,7 +20,6 @@ Notes: Assuming alpha == tau in [1]
     [3] - W. Xiong, Q. Chen, P. A. Korzhavyi, and M. Selleby, “An improved magnetic model for
     thermodynamic modeling,” Calphad, vol. 39, pp. 11–20, 2012.
 
-TODO: Add two-state Schottky model from Kaufman1963.
 TODO: Investigate adding a cutoff temperature to the bent-cable model so that it doesn't start from zero
 and introduce error to the Debye model at low temperatures.
 """
@@ -56,14 +55,14 @@ w2 = 9.0432e-1
 aD = 5.133e-2
 
 
-def _twostate_Cp(T_arr, dE):
+def _twostate_Cp(T_arr, dE, coef_list):
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
 
     T = se.symbols("T")
     if isinstance(dE, list):
-        dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+        dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
 
     def _calc_twostate_Cp(temp, dE):
         dH = -(T**2) * (dE / T).diff(T)
@@ -75,9 +74,6 @@ def _twostate_Cp(T_arr, dE):
             * se.exp(-dE / (R * T))
             / (1 + se.exp(-dE / (R * T))) ** 2
         )
-        # twostate_Cp = np.float64((chi * dH.diff(T) + dH * chi.diff(T)).subs(T, temp))
-        # twostate_gibbs = -R * T * se.log(1 + se.exp(-dE / (R * T)))
-        # twostate_Cp = twostate_gibbs.diff(T, T).subs(T, temp)
         return np.float64(twostate_Cp.subs(T, temp))
 
     if isinstance(T_arr, (int, float)):
@@ -90,10 +86,10 @@ def _twostate_Cp(T_arr, dE):
     return ret_arr
 
 
-def _twostate_gibbs(T_arr, dE, ret_expr=False):
+def _twostate_gibbs(T_arr, dE, coef_list, ret_expr=False):
     T = se.symbols("T")
     if isinstance(dE, list):
-        dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+        dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
 
     def _calc_twostate_gibbs(temp, dE):
         return np.float64((-R * T * se.log(1 + se.exp(-dE / (R * T)))).subs(T, temp))
@@ -114,14 +110,14 @@ def _twostate_gibbs(T_arr, dE, ret_expr=False):
     return ret_arr
 
 
-def _twostate_entropy(T_arr, dE, ret_expr=False):
+def _twostate_entropy(T_arr, dE, coef_list, ret_expr=False):
     # From Miodownik1970
     g0 = 1
     g1 = 1
 
     def _calc_twostate_entropy(T, dE):
         if isinstance(dE, list):
-            dE = np.sum([dE[i] * T**i for i in range(len(dE))])
+            dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
         alpha = g1 / g0 * np.exp(-dE / (R * T))
         return R * (np.log(1 + alpha) - alpha / (1 + alpha) * dE / (R * T))
 
@@ -142,7 +138,7 @@ def _twostate_entropy(T_arr, dE, ret_expr=False):
     return ret_arr
 
 
-def _twostate_enthalpy(T_arr, dE, ret_expr=False):
+def _twostate_enthalpy(T_arr, dE, coef_list, ret_expr=False):
     if ret_expr:
         ret_arr = v.T * _twostate_entropy(T_arr, dE, ret_expr)
     else:
@@ -268,6 +264,141 @@ def _holzapfel_gibbs(T_arr, thetaD, ret_expr=False):
         )
 
 
+def _melt_Cp(T_arr, T_melt, a, b, c):
+    # following the approach of Chen and Sundman (2001)
+    if isinstance(T_arr, (int, float)):
+        if T_arr <= T_melt:
+            ret_arr = 0
+        else:
+            ret_arr = a + b * T_arr**-6 + c * T_arr**-12
+    else:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if temp <= T_melt:
+                Cp = 0
+            else:
+                Cp = a + b * temp**-6 + c * temp**-12
+            ret_arr = np.append(ret_arr, Cp)
+    return ret_arr
+
+
+def _melt_gibbs(T_arr, T_melt, a, b, c, ret_expr):
+    if isinstance(T_arr, (int, float)) and not ret_expr:
+        if T_arr <= T_melt:
+            ret_arr = 0
+        else:
+            ret_arr = (
+                a * T_arr * (1 - np.log(T_arr))
+                - b / 30 * T_arr**-5
+                - c / 132 * T_arr**-11
+            )
+    elif not ret_expr:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if temp <= T_melt:
+                GM = 0
+            else:
+                GM = (
+                    a * temp * (1 - np.log(temp))
+                    - b / 30 * temp**-5
+                    - c / 132 * temp**-11
+                )
+            ret_arr = np.append(ret_arr, GM)
+    else:
+        if T_arr <= T_melt:
+            ret_arr = 0
+        else:
+            ret_arr = (
+                a * v.T * (1 - se.log(v.T)) - b / 30 * v.T**-5 - c / 132 * v.T**-11
+            )
+    return ret_arr
+
+
+def _linear_Cp(T_arr, alpha, T_melt, Cp_max):
+    if isinstance(T_arr, (int, float)):
+        if T_arr <= T_melt:
+            ret_arr = alpha * T_arr
+        else:
+            ret_arr = 0
+    else:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if temp == 0:
+                Cp = 0
+            elif temp <= T_melt:
+                Cp = alpha * temp
+            else:
+                Cp = 0
+            ret_arr = np.append(ret_arr, Cp)
+    return ret_arr
+
+
+def _linear_enthalpy(T_arr, alpha, T_melt, ret_expr):
+    ah = alpha / 2
+    if isinstance(T_arr, (int, float)) and not ret_expr:
+        if T_arr <= T_melt:
+            ret_arr = ah * T_arr**2
+        else:
+            ret_arr = 0
+    elif not ret_expr:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if temp <= T_melt:
+                HM = aH * temp**2
+            else:
+                HM = 0
+            ret_arr = np.append(ret_arr, HM)
+    else:  # want symengine expression
+        if T_arr <= T_melt:
+            return ah * v.T**2
+        else:
+            return 0
+
+    return ret_arr
+
+
+def _linear_entropy(T_arr, alpha, T_melt, ret_expr):
+    aS = alpha
+    if isinstance(T_arr, (int, float)) and not ret_expr:
+        if T_arr <= T_melt:
+            ret_arr = aS * T_arr**2
+        else:
+            ret_arr = aS * T_melt**2
+    elif not ret_expr:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if temp <= T_melt:
+                SM = aS * T_arr**2
+            else:
+                SM = 0
+            ret_arr = np.append(ret_arr, SM)
+    else:  # symengine expression
+        if T_arr <= T_melt:
+            return aS * v.T**2
+        else:
+            return 0
+    return ret_arr
+
+
+def _linear_gibbs(T_arr, alpha, T_melt, ret_expr=False):
+    if isinstance(T_arr, (int, float)) and not ret_expr:
+        ret_arr = _linear_enthalpy(
+            T_arr, alpha, T_melt, ret_expr
+        ) - T_arr * _linear_entropy(T_arr, alpha, T_melt, ret_expr)
+    elif not ret_expr:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            GM = _linear_enthalpy(
+                temp, alpha, T_melt, ret_expr
+            ) - temp * _linear_entropy(temp, alpha, T_melt, ret_expr)
+            ret_arr = np.append(ret_arr, GM)
+    else:  # want symengine expression
+        return _linear_enthalpy(T_arr, alpha, T_melt, ret_expr) - v.T * _linear_entropy(
+            T_arr, alpha, T_melt, ret_expr
+        )
+    return ret_arr
+
+
 def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
     def _q(T, tau, gamma):
         def _indfunc1(T, tau, gamma):
@@ -301,7 +432,7 @@ def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
         return ret_arr
 
 
-def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, retr_expr=False):
+def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
     a2h = -beta_2 / (12 * gamma) * (tau - gamma) ** 3
     a3h = beta_2 / 2 * (gamma**2 / 3 + tau**2)
     c1h = beta_1 / 2
@@ -327,14 +458,14 @@ def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, retr_expr=False):
         else:
             return a3h + b3h * v.T + c3h * v.T**2
 
-    if isinstance(T_arr, (int, float)) and not retr_expr:
+    if isinstance(T_arr, (int, float)) and not ret_expr:
         ret_arr = _calc_bcm_enthalpy(T_arr, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
-    elif not retr_expr:
+    elif not ret_expr:
         ret_arr = np.array([])
         for T in T_arr:
             H_bcm = _calc_bcm_enthalpy(T, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
             ret_arr = np.append(ret_arr, H_bcm)
-    elif isinstance(T_arr, (int, float)) and retr_expr:
+    elif isinstance(T_arr, (int, float)) and ret_expr:
         ret_arr = _sympy_bcm_enthalpy(T_arr, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
     return ret_arr
 
@@ -568,6 +699,7 @@ def _fit_segmented_regression(x, arg_dict):
     temperature_array = arg_dict["temperature_array"]
     Cp_array = arg_dict["Cp_array"]
     models = arg_dict["models"]
+    melt_base_Cp = None
     if "einstein" in list(models.keys()):
         model_params = []
         einstein_dict = models["einstein"]
@@ -645,7 +777,54 @@ def _fit_segmented_regression(x, arg_dict):
             else:
                 for param in param_list[0]:
                     model_params.append(param)
-        model_Cp += _twostate_Cp(temperature_array, model_params)
+        model_Cp += _twostate_Cp(
+            temperature_array, model_params, models["two-state"]["dE"][1]
+        )
+    if "linear" in list(models.keys()):
+        linear_dict = models["linear"]
+        model_params = []
+        for param in ["alpha", "T_melt", "Cp_max"]:
+            param_list = linear_dict[param]
+            if "fit" in param_list:
+                idx = param_list[-1]
+                model_params.append(x[idx])
+            else:
+                model_params.append(param_list[0])
+        model_Cp += _linear_Cp(temperature_array, *model_params)
+    if "melt" in list(models.keys()):
+        melt_dict = models["melt"]
+        model_params = []
+        for param in ["T_melt", "a", "b", "c"]:
+            param_list = melt_dict[param]
+            if "fit" in param_list:
+                idx = param_list[-1]
+                model_params.append(x[idx])
+            else:
+                model_params.append(param_list[0])
+        if "liquid_Cp" not in list(melt_dict.keys()):
+            melt_base_Cp = np.max(model_Cp)
+        else:
+            melt_base_Cp = melt_dict["liquid_Cp"][0]
+        assert melt_base_Cp is not None, (
+            "Need to specify a base melt heat capacity in another method."
+        )
+        # Need to pad the Cp array to include some liquid temperatures and target Cp
+        base_melt_Cp_array = np.array(
+            [1 if temp > melt_dict["T_melt"][0] else 0 for temp in temperature_array]
+        )
+        while np.sum(base_melt_Cp_array) < 5:
+            if np.max(temperature_array) < melt_dict["T_melt"][0]:
+                temperature_array = np.append(temperature_array, melt_dict["T_melt"][0])
+            else:
+                temperature_array = np.append(
+                    temperature_array, np.max(temperature_array) + 100
+                )
+            base_melt_Cp_array = np.append(base_melt_Cp_array, 1)
+            model_Cp = np.append(model_Cp, melt_base_Cp)
+            Cp_array = np.append(Cp_array, melt_base_Cp)
+
+        base_melt_Cp_array = base_melt_Cp_array * melt_base_Cp
+        model_Cp += base_melt_Cp_array + _melt_Cp(temperature_array, *model_params)
 
     return _calc_RSE(model_Cp, Cp_array)
 
@@ -655,7 +834,15 @@ def fit_segmented_regression(
     models,
 ):
     # TODO: Use the pycalphad DB for loading model properties.
-    implemented_models = ["einstein", "holzapfel", "xiong", "bcm", "two-state"]
+    implemented_models = [
+        "bcm",
+        "einstein",
+        "holzapfel",
+        "linear",
+        "melt",
+        "two-state",
+        "xiong",
+    ]
     for model in list(models.keys()):
         if model not in implemented_models:
             raise NotImplementedError(
@@ -703,6 +890,13 @@ def fit_segmented_regression(
         "gamma": (1e-6, 1000),
         "dE0": (0, 15000),
         "dE1": (-100, 100),
+        "dE2": (-100, 100),
+        "alpha": (0, 1),
+        "T_melt": (250, 3000),
+        "Cp_max": (5, 100),
+        "a": (-50, 50),
+        "b": (-np.inf, np.inf),
+        "c": (-np.inf, np.inf),
     }
     bounds = []
     i = 0
@@ -810,12 +1004,14 @@ def fit_segmented_regression(
                 )
 
     if "two-state" in list(models.keys()):
+        # shape of two-state param list is [[coef_list], [term_list], [bound_list], fit/fix]
         param_list = models["two-state"]["dE"]
         if "fit" in param_list:
             if isinstance(param_list[0], (float, int)):
+                # Only a constant value supplied. Not sure if this will ever really happen
                 params.append(param_list[0])
-                if len(param_list) == 3:
-                    bounds.append(param_list[2])
+                if len(param_list) == 4:
+                    bounds.append(param_list[3])
                 else:
                     bounds.append(default_bounds["dE0"])
                 param_list.append(i)
@@ -824,8 +1020,8 @@ def fit_segmented_regression(
                 param_sublist = []
                 for j in range(len(param_list[0])):
                     params.append(param_list[0][j])
-                    if len(param_list) == 3:
-                        bounds.append(param_list[2][j])
+                    if len(param_list) == 4:
+                        bounds.append(param_list[3][j])
                     else:
                         bounds.append(default_bounds[f"dE{j}"])
                     param_sublist.append(i)
@@ -834,7 +1030,45 @@ def fit_segmented_regression(
         elif "fix" in param_list:
             pass
         else:
-            raise ValueError(f"Two-state model specified, but not setup correctly.")
+            raise ValueError(f"Two-state model specified but not setup correctly.")
+
+    if "linear" in list(models.keys()):
+        linear_dict = models["linear"]
+        for param in ["alpha", "T_melt", "Cp_max"]:
+            if param not in list(linear_dict.keys()):
+                raise ValueError(f"Linear model specified without parameter [{param}]")
+            param_list = linear_dict[param]
+            if "fit" in param_list:
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[2])
+                else:
+                    bounds.append(default_bounds[param])
+                param_list.append(i)
+                i += 1
+            elif "fix" in param_list:
+                pass
+            else:
+                raise ValueError(f"Linear model specified but not setup correctly.")
+
+    if "melt" in list(models.keys()):
+        melt_dict = models["melt"]
+        for param in ["T_melt", "a", "b", "c"]:
+            if param not in list(melt_dict.keys()):
+                raise ValueError(f"Melt model specified without parameter [{param}].")
+            param_list = melt_dict[param]
+            if "fit" in param_list:
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[2])
+                else:
+                    bounds.append(default_bounds[param])
+                param_list.append(i)
+                i += 1
+            elif "fix" in param_list:
+                pass
+            else:
+                raise ValueError(f"Melt model specified but not setup correctly.")
 
     arg_dict["models"] = models
     # optimize the model parameters
@@ -954,6 +1188,18 @@ def create_espei_custom_refstate_stable(model_dict):
         beta_2 = bcm_dict["beta_2"][0]
         critical_temperatures.append(tau - gamma)
         critical_temperatures.append(tau + gamma)
+    if "linear" in list(model_dict.keys()):
+        alpha = model_dict["linear"]["alpha"][0]
+        T_melt = model_dict["linear"]["T_melt"][0]
+        Cp_max = model_dict["linear"]["Cp_max"][0]
+        critical_temperatures.append(T_melt)
+    if "melt" in list(model_dict.keys()):
+        melt_a = model_dict["melt"]["a"][0]
+        melt_b = model_dict["melt"]["b"][0]
+        melt_c = model_dict["melt"]["c"][0]
+        T_melt = model_dict["melt"]["T_melt"][0]
+        if T_melt not in critical_temperatures:
+            critical_temperatures.append(T_melt)
     critical_temperatures.append(10000.00)
 
     critical_temperatures.sort()
@@ -962,6 +1208,7 @@ def create_espei_custom_refstate_stable(model_dict):
     for i in range(1, len(critical_temperatures)):
         # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
         if "bcm" in list(model_dict.keys()):
+            this_res = [0]
             bcm_expr = _bent_cable_gibbs(
                 critical_temperatures[i] - 1.0,
                 beta_1,
@@ -976,7 +1223,39 @@ def create_espei_custom_refstate_stable(model_dict):
                     v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
                 ),
             )
-            res.append(tuple(this_res))
+            if this_res[0] != 0:
+                res.append(tuple(this_res))
+        if "linear" in list(model_dict.keys()):
+            this_res = [0]
+            linear_expr = _linear_gibbs(
+                critical_temperatures[i] - 1.0, alpha, T_melt, ret_expr=True
+            )
+            this_res = (
+                linear_expr,
+                se.And(
+                    v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
+                ),
+            )
+            if this_res[0] != 0:
+                res.append(tuple(this_res))
+        if "melt" in list(model_dict.keys()):
+            this_res = [0]
+            melt_expr = _melt_gibbs(
+                critical_temperatures[i] - 1.0,
+                T_melt,
+                melt_a,
+                melt_b,
+                melt_c,
+                ret_expr=True,
+            )
+            this_res = (
+                melt_expr,
+                se.And(
+                    v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
+                ),
+            )
+            if this_res[0] != 0:
+                res.append(tuple(this_res))
     res.append((0, True))
 
     sympy_expr = se.Piecewise(*res)
@@ -1004,6 +1283,8 @@ def upsert_custom_refstate_json(
     }
     if model_dict is not None:
         for key, value in model_dict.items():
+            if key == "two-state":
+                value["dE"][1] = str(value["dE"][1])
             custom_refstate[element_key][key] = value
     with open(refstate_file, "w") as f:
         json.dump(custom_refstate, f, indent=True)
