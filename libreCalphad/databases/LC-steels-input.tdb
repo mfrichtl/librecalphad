@@ -65,6 +65,11 @@ $
 $ PARAMETER NT(FCC_A1,MN:VA;0) 298.15 +540;  6000 N 03WIT!
 $ PARAMETER TC(FCC_A1,MN:VA;0) 298.15 -1620; 6000 N 91DIN!
 
+# -- LIQUID --
+PHASE LIQUID %B 1 1 !
+CONSTITUENT LIQUID : FE : !
+PARAMETER BMAGN(LIQUID,FE;0) 1E-5 1.7;  10000 N 93GRI!
+PARAMETER TC(LIQUID,FE;0) 1E-5 200; 10000 N 01CHE!
 $ ----------------------------------------------------------------------------
 $ REFERENCES
 
@@ -74,6 +79,10 @@ NUMBER  SOURCE
         Scand. J. Metall. 14.5 (1985): 259-267.'
 91DIN   'Dinsdale, Alan T. "SGTE data for pure elements." Calphad 15.4 (1991): 
         317-425.'
+93GRI   'Grinstaff, Mark W. et al., "Magnetic properties of amorphous iron."
+	Phys. Rev. B, Vol 48, No 1, 1993.'
+01CHE   'Chin, Q., Sundman,  B., "Modeling thermodynamic properties for BCC,
+	FCC, liquid, and amorphous iron," J. Ph. Equil., Vol. 22, No. 6, 2001.'
 03WIT   'V. T. Witusiewicz, F. Sommer, and E. J. Mittemeijer, “Enthalpy of 
 	formation and heat capacity of Fe–Mn alloys,” Metall Mater Trans B,
 	vol. 34, no. 2, pp. 209–223, Apr. 2003, 
