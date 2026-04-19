@@ -1,5 +1,5 @@
 from espei.datasets import load_datasets, recursive_glob
-
+from importlib import reload
 import importlib.resources as impresources
 import json
 from libreCalphad.databases.db_utils import load_database
@@ -26,9 +26,11 @@ import pandas as pd
 from pycalphad import Workspace, as_property, calculate, variables as v
 from pycalphad.mapping import BinaryStrategy, plot_binary
 from pycalphad.property_framework.metaproperties import IsolatedPhase
+from scipy.optimize import curve_fit
 import symengine as se
 from tinydb import where
 import yaml
+
 
 param_gen_file = impresources.files("libreCalphad.databases") / "run_param_gen.yaml"
 with open(param_gen_file, "r") as f:
@@ -58,19 +60,19 @@ model_dict = {
         "p": [structure_factor, "fix"],
         "Tn": [Tn_Fe, "fix"],
     },
-    # "bcm": {
-    #     "beta_1": [0.01, "fit"],
-    #     "beta_2": [0.04, "fit"],
-    #     "tau": [1750, "fit"],
-    #     "gamma": [50, "fit"],
-    # },
-    "linear": {"alpha": [0.01, "fit"], "T_melt": [1811, "fix"], "Cp_max": [40, "fit"]},
+    "linear": {"alpha": [0.01, "fit"], "T_melt": [1811, "fix"]},
     "melt": {
         "T_melt": [1811, "fix"],
-        "liquid_Cp": [40, "fix"],
+        "liquid_Cp": [46, "fix"],
         "a": [-21, "fit"],
         "b": [9e18, "fit"],
         "c": [-1.5e37, "fit"],
+        "solid_enthalpy": [-27190.7, "fix"],
+        "solid_entropy": [-144.759, "fix"],
+    },
+    "offset": {
+        "enthalpy": [-2905.15, "fix"],
+        "entropy": [8.529, "fix"],
     },
     "two-state": {"dE": [[9.02352375e3, -2.4952226], [T**0, T**1], "fit"]},
 }
@@ -79,13 +81,8 @@ theta_Fe = model_dict["einstein"]["theta"][0]
 beta_Fe = model_dict["xiong"]["beta"][0]
 structure_factor = model_dict["xiong"]["p"][0]
 Tn_Fe = model_dict["xiong"]["Tn"][0]
-# beta_1 = model_dict["bcm"]["beta_1"][0]
-# beta_2 = model_dict["bcm"]["beta_2"][0]
-# tau = model_dict["bcm"]["tau"][0]
-# gamma = model_dict["bcm"]["gamma"][0]
 alpha = model_dict["linear"]["alpha"][0]
 T_melt = model_dict["linear"]["T_melt"][0]
-Cp_max = model_dict["linear"]["Cp_max"][0]
 melt_a = model_dict["melt"]["a"][0]
 melt_b = model_dict["melt"]["b"][0]
 melt_c = model_dict["melt"]["c"][0]
@@ -96,30 +93,19 @@ de1 = model_dict["two-state"]["dE"][0][1]
 # S298 = calc_entropy(298.15, min_fits, xiong_params=xiong_params)
 # initialize a dataframe for the model
 df_model = pd.DataFrame()
-df_model["temperature"] = np.linspace(1, 2000, num=1000)
+df_model["temperature"] = np.linspace(1, 3000, num=1000)
 
 print("Optimized model parameters:")
-print(f"Theta_E={theta_Fe:4f}")
-print("Xiong model parameters:")
-print(f"beta={beta_Fe}")
-print(f"structure factor={structure_factor}")
-print(f"Tn={Tn_Fe}")
-# print("Bent cable model")
-# print(f"beta_1={beta_1:3f}")
-# print(f"beta_2={beta_2:3f}")
-# print(f"tau={tau:3f}")
-# print(f"gamma={gamma:3f}")
-print("Linear model")
-print(f"alpha={alpha:3f}")
-print(f"T_melt={T_melt:3f}")
-print(f"Cp_max={Cp_max:3f}")
-print("Melting model")
-print(f"a={melt_a:3f}")
-print(f"b={melt_b:3f}")
-print(f"c={melt_c:3f}")
-print("Two-state model")
-print(f"dE0={de0:5f}")
-print(f"dE1={de1:5f}")
+for model, values in model_dict.items():
+    print(f"Model: {model}")
+    if model == "two-state":
+        out_str = "dE: "
+        for i in range(len(values["dE"][0])):
+            out_str += f"{values['dE'][0][i] * values['dE'][1][i]} "
+        print(out_str)
+    else:
+        for param_name, param_value in values.items():
+            print(f"{param_name}: {param_value[0]:4f}")
 print(f"RSE: {min_fits.fun:.4f} J/mol/K")
 # print(f"H298: {H298}")
 # print(f"S298: {S298}")
@@ -147,20 +133,19 @@ ser_file = impresources.files("refstate") / "LCSERparams.json"
 #     json.dump(ser_dict, f, indent=True)
 # prepare arrays for plotting
 # df_model["debye_model"] = _holzapfel_debye_Cp(df_model["temperature"], *min_fits.x[:1])
+
+import espei
+
 df_model["einstein_model"] = _einstein_Cp(df_model["temperature"], theta_Fe)
 df_model["magnetic_model"] = _xiong_Cp(
     df_model["temperature"], beta_Fe, structure_factor, Tn_Fe
 )
-# df_model["bent_cable_model"] = _bent_cable_Cp(
-#     df_model["temperature"], beta_1, beta_2, tau, gamma
-# )
-df_model["linear"] = _linear_Cp(df_model["temperature"], alpha, T_melt, Cp_max)
+df_model["linear"] = _linear_Cp(df_model["temperature"], alpha, T_melt)
 df_model["melt"] = _melt_Cp(df_model["temperature"], T_melt, melt_a, melt_b, melt_c)
 df_model["two-state"] = _twostate_Cp(df_model["temperature"], [de0, de1], [T**0, T**1])
 df_model["cumulative_model"] = (
     df_model["einstein_model"]
     + df_model["magnetic_model"]
-    # + df_model["bent_cable_model"]
     + df_model["linear"]
     + df_model["melt"]
     + df_model["two-state"]
@@ -176,7 +161,6 @@ for dataset in search_results:
     )
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
-# ax.plot(df_model["temperature"], df_model["bent_cable_model"], label="Bent Cable")
 ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
 ax.plot(df_model["temperature"], df_model["melt"], label="Melt")
 ax.plot(df_model["temperature"], df_model["two-state"], label="Two-state")

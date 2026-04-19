@@ -41,8 +41,20 @@ plt.close()
 fig, ax = plt.subplots(figsize=(8, 6))
 eq_res = equilibrium(dbf, components, phases, conditions)
 for phase in phases:
-    cpm_res = calculate(dbf, components, phase, T=temps, P=101325, N=1)
-    ax.plot(cpm_res.T, cpm_res.GM.squeeze(), label=phase)
+    query = (
+        (where("phases") == [phase])
+        & (where("components") == components)
+        & (where("output") == "GM")
+    )
+    search_results = datasets.search(query)
+    res = calculate(dbf, components, phase, T=temps, P=101325, N=1)
+    ax.plot(res.T, res.GM.squeeze(), label=phase)
+    for result in search_results:
+        ax.scatter(
+            result["conditions"]["T"],
+            np.array(result["values"]).squeeze(),
+            label=f"{phase}-{result['reference']}",
+        )
 
 ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Gibbs Energy (J/mol-formula)")
@@ -67,7 +79,7 @@ inv_query = (
 inv_search_results = datasets.search(inv_query)
 
 fig, ax = plt.subplots()
-DG_BCC_A2 = calculate(
+bcc_calc = calculate(
     dbf,
     components,
     "BCC_A2",
@@ -75,7 +87,7 @@ DG_BCC_A2 = calculate(
     P=101325,
     N=1,
 )
-DG_FCC_A1 = calculate(
+fcc_calc = calculate(
     dbf,
     components,
     "FCC_A1",
@@ -84,7 +96,7 @@ DG_FCC_A1 = calculate(
     N=1,
 )
 
-ax.plot(DG_BCC_A2.T, (DG_FCC_A1.GM.squeeze() - DG_BCC_A2.GM.squeeze()))
+ax.plot(bcc_calc.T, (fcc_calc.GM.squeeze() - bcc_calc.GM.squeeze()))
 for result in search_results:
     ax.scatter(
         result["conditions"]["T"],
@@ -120,14 +132,14 @@ inv_query = (
 inv_search_results = datasets.search(inv_query)
 
 fig, ax = plt.subplots()
-H_BCC_A2 = calculate(
+bcc_calc = calculate(
     dbf, components, "BCC_A2", T=(0.5, 2000, 2), P=101325, N=1, output="enthalpy"
 )
-H_FCC_A1 = calculate(
+fcc_calc = calculate(
     dbf, components, "FCC_A1", T=(0.5, 2000, 2), P=101325, N=1, output="enthalpy"
 )
 
-ax.plot(H_BCC_A2.T, (H_FCC_A1.enthalpy.squeeze() - H_BCC_A2.enthalpy.squeeze()))
+ax.plot(bcc_calc.T, (fcc_calc.enthalpy.squeeze() - bcc_calc.enthalpy.squeeze()))
 for result in search_results:
     ax.scatter(
         result["conditions"]["T"],
