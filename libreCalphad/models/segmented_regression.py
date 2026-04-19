@@ -41,6 +41,7 @@ import yaml
 
 R = 8.314472  # J/mol/K
 N = 6.02214076e23
+T = se.symbols("T")
 theta_Fe = 309  # Einstein temperature Chen & Sundman
 beta_Fe = 2.22
 struct_fact_bcc = 0.37
@@ -55,12 +56,72 @@ w2 = 9.0432e-1
 aD = 5.133e-2
 
 
+def calculate_offset(xdata, ydata):
+    def _find_offset(xdata, offset):
+        return offset + xdata
+
+    fits = curve_fit(_find_offset, xdata=xdata, ydata=ydata)
+    return fits
+
+
+def calculate_transition_energies(
+    dbf, components, phase, transition_temperature, output
+):
+    """
+    Function to calculate the energies at a phase transition where the Cp fitting method
+    needs to change. Gibbs energy expressions may need to include enthalpy and entropy
+    terms carried over from the lower-temperature phase to the higher-temperature phase
+    for continuity.
+    """
+
+    def _min_energy_difference(offset, args):
+        dbf = args["dbf"]
+        components = args["components"]
+        phase = args["phase"]
+        temp = args["transition_temperature"]
+        output = args["output"]
+        phase_1_calc = calculate(
+            dbf, components, phase, T=temp - 0.001, P=101325, N=1, output=output
+        )
+        phase_2_calc = calculate(
+            dbf, components, phase, T=temp + 0.001, P=101325, N=1, output=output
+        )
+        energy_1 = getattr(phase_1_calc, output).squeeze().values
+        energy_2 = getattr(phase_2_calc, output).squeeze().values
+        return np.abs(energy_1 - (energy_2 + offset))
+
+    min_args = {
+        "dbf": dbf,
+        "components": components,
+        "phase": phase,
+        "transition_temperature": transition_temperature,
+        "output": output,
+    }
+    min_fits = minimize(_min_energy_difference, x0=100, args=min_args)
+    return min_fits
+
+
+def _offset_gibbs(T_arr, offset_enthalpy, offset_entropy, ret_expr=False):
+    # This handles the constants lost during integration
+    ret_arr = 0
+    if isinstance(T_arr, (int, float)) and not ret_expr:
+        ret_arr = offset_enthalpy - offset_entropy * T_arr
+    elif not ret_expr:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            gibbs = offset_enthalpy - offset_entropy * temp
+            ret_arr = np.append(ret_arr, gibbs)
+    else:
+        ret_arr = offset_enthalpy - offset_entropy * v.T
+
+    return ret_arr
+
+
 def _twostate_Cp(T_arr, dE, coef_list):
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
 
-    T = se.symbols("T")
     if isinstance(dE, list):
         dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
 
@@ -87,7 +148,6 @@ def _twostate_Cp(T_arr, dE, coef_list):
 
 
 def _twostate_gibbs(T_arr, dE, coef_list, ret_expr=False):
-    T = se.symbols("T")
     if isinstance(dE, list):
         dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
 
@@ -133,8 +193,8 @@ def _twostate_entropy(T_arr, dE, coef_list, ret_expr=False):
         ret_arr = _sympy_twostate_entropy(None, dE)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_entropy(T, dE))
+        for temp in T_arr:
+            ret_arr = np.append(ret_arr, _calc_twostate_entropy(temp, dE))
     return ret_arr
 
 
@@ -146,9 +206,9 @@ def _twostate_enthalpy(T_arr, dE, coef_list, ret_expr=False):
             ret_arr = T_arr * _twostate_entropy(T_arr, dE, ret_expr)
         else:
             ret_arr = np.array([])
-            for T in T_arr:
+            for temp in T_arr:
                 ret_arr = np.append(
-                    ret_arr, T * _calc_twostate_entropy(T, dE, ret_expr)
+                    ret_arr, temp * _calc_twostate_entropy(temp, dE, ret_expr)
                 )
     return ret_arr
 
@@ -169,8 +229,8 @@ def _holzapfel_debye_Cp(T_arr, thetaD):
 
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            x = T / thetaD
+        for temp in T_arr:
+            x = temp / thetaD
             Cp = _calc_holzapfel_Cp(x)
             ret_arr = np.append(ret_arr, Cp)
     ret_arr = np.nan_to_num(ret_arr)
@@ -198,8 +258,8 @@ def _holzapfel_enthalpy(T_arr, thetaD, ret_expr=False):
             ret_arr = _calc_holzapfel_enthalpy(x, thetaD)
         else:
             ret_arr = np.array([])
-            for T in T_arr:
-                x = T / thetaD
+            for temp in T_arr:
+                x = temp / thetaD
                 H_holzapfel = _calc_holzapfel_enthalpy(x, thetaD)
                 ret_arr = np.append(ret_arr, H_holzapfel)
     elif ret_expr:
@@ -233,8 +293,8 @@ def _holzapfel_entropy(T_arr, thetaD, ret_expr=False):
             ret_arr = _calc_holzapfel_entropy(x, thetaD)
         else:
             ret_arr = np.array([])
-            for T in T_arr:
-                x = T / thetaD
+            for temp in T_arr:
+                x = temp / thetaD
                 S_holzapfel = _calc_holzapfel_entropy(x, thetaD)
                 ret_arr = np.append(ret_arr, S_holzapfel)
     elif ret_expr:
@@ -266,6 +326,7 @@ def _holzapfel_gibbs(T_arr, thetaD, ret_expr=False):
 
 def _melt_Cp(T_arr, T_melt, a, b, c):
     # following the approach of Chen and Sundman (2001)
+    # TODO: Try extending the linear/bcm and using this contribution to correct the total Cp
     if isinstance(T_arr, (int, float)):
         if T_arr <= T_melt:
             ret_arr = 0
@@ -282,13 +343,17 @@ def _melt_Cp(T_arr, T_melt, a, b, c):
     return ret_arr
 
 
-def _melt_gibbs(T_arr, T_melt, a, b, c, ret_expr):
+def _melt_gibbs(
+    T_arr, T_melt, a, b, c, solid_enthalpy=0, solid_entropy=0, ret_expr=False
+):
     if isinstance(T_arr, (int, float)) and not ret_expr:
         if T_arr <= T_melt:
             ret_arr = 0
         else:
             ret_arr = (
-                a * T_arr * (1 - np.log(T_arr))
+                solid_enthalpy
+                - solid_entropy * T_arr
+                + a * T_arr * (1 - np.log(T_arr))
                 - b / 30 * T_arr**-5
                 - c / 132 * T_arr**-11
             )
@@ -296,25 +361,31 @@ def _melt_gibbs(T_arr, T_melt, a, b, c, ret_expr):
         ret_arr = np.array([])
         for temp in T_arr:
             if temp <= T_melt:
-                GM = 0
+                gibbs = 0
             else:
-                GM = (
-                    a * temp * (1 - np.log(temp))
+                gibbs = (
+                    solid_enthalpy
+                    - solid_entropy * temp
+                    + a * temp * (1 - np.log(temp))
                     - b / 30 * temp**-5
                     - c / 132 * temp**-11
                 )
-            ret_arr = np.append(ret_arr, GM)
+            ret_arr = np.append(ret_arr, gibbs)
     else:
         if T_arr <= T_melt:
             ret_arr = 0
         else:
             ret_arr = (
-                a * v.T * (1 - se.log(v.T)) - b / 30 * v.T**-5 - c / 132 * v.T**-11
+                solid_enthalpy
+                - solid_entropy * v.T
+                + a * v.T * (1 - se.log(v.T))
+                - b / 30 * v.T**-5
+                - c / 132 * v.T**-11
             )
     return ret_arr
 
 
-def _linear_Cp(T_arr, alpha, T_melt, Cp_max):
+def _linear_Cp(T_arr, alpha, T_melt):
     if isinstance(T_arr, (int, float)):
         if T_arr <= T_melt:
             ret_arr = alpha * T_arr
@@ -323,9 +394,7 @@ def _linear_Cp(T_arr, alpha, T_melt, Cp_max):
     else:
         ret_arr = np.array([])
         for temp in T_arr:
-            if temp == 0:
-                Cp = 0
-            elif temp <= T_melt:
+            if temp <= T_melt:
                 Cp = alpha * temp
             else:
                 Cp = 0
@@ -344,10 +413,10 @@ def _linear_enthalpy(T_arr, alpha, T_melt, ret_expr):
         ret_arr = np.array([])
         for temp in T_arr:
             if temp <= T_melt:
-                HM = aH * temp**2
+                enthalpy = aH * temp**2
             else:
-                HM = 0
-            ret_arr = np.append(ret_arr, HM)
+                enthalpy = 0
+            ret_arr = np.append(ret_arr, enthalpy)
     else:  # want symengine expression
         if T_arr <= T_melt:
             return ah * v.T**2
@@ -358,23 +427,22 @@ def _linear_enthalpy(T_arr, alpha, T_melt, ret_expr):
 
 
 def _linear_entropy(T_arr, alpha, T_melt, ret_expr):
-    aS = alpha
     if isinstance(T_arr, (int, float)) and not ret_expr:
         if T_arr <= T_melt:
-            ret_arr = aS * T_arr**2
+            ret_arr = alpha * T_arr
         else:
-            ret_arr = aS * T_melt**2
+            ret_arr = 0
     elif not ret_expr:
         ret_arr = np.array([])
         for temp in T_arr:
             if temp <= T_melt:
-                SM = aS * T_arr**2
+                entropy = alpha * temp
             else:
-                SM = 0
-            ret_arr = np.append(ret_arr, SM)
+                entropy = 0
+            ret_arr = np.append(ret_arr, entropy)
     else:  # symengine expression
         if T_arr <= T_melt:
-            return aS * v.T**2
+            return alpha * v.T
         else:
             return 0
     return ret_arr
@@ -388,10 +456,10 @@ def _linear_gibbs(T_arr, alpha, T_melt, ret_expr=False):
     elif not ret_expr:
         ret_arr = np.array([])
         for temp in T_arr:
-            GM = _linear_enthalpy(
+            gibbs = _linear_enthalpy(
                 temp, alpha, T_melt, ret_expr
             ) - temp * _linear_entropy(temp, alpha, T_melt, ret_expr)
-            ret_arr = np.append(ret_arr, GM)
+            ret_arr = np.append(ret_arr, gibbs)
     else:  # want symengine expression
         return _linear_enthalpy(T_arr, alpha, T_melt, ret_expr) - v.T * _linear_entropy(
             T_arr, alpha, T_melt, ret_expr
@@ -399,40 +467,40 @@ def _linear_gibbs(T_arr, alpha, T_melt, ret_expr=False):
     return ret_arr
 
 
-def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma):
-    def _q(T, tau, gamma):
-        def _indfunc1(T, tau, gamma):
-            if np.abs(T - tau) <= gamma:
+def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma, T_melt):
+    def _q(temp, tau, gamma):
+        def _indfunc1(temp, tau, gamma):
+            if np.abs(temp - tau) <= gamma:
                 return 1
             else:
                 return 0
 
-        def _indfunc2(T, tau, gamma):
-            if T > tau + gamma:
+        def _indfunc2(temp, tau, gamma):
+            if temp > tau + gamma:
                 return 1
             else:
                 return 0
 
-        return ((T - tau + gamma) ** 2 / (4 * gamma)) * _indfunc1(T, tau, gamma) + (
-            T - tau
-        ) * _indfunc2(T, tau, gamma)
+        return ((temp - tau + gamma) ** 2 / (4 * gamma)) * _indfunc1(T, tau, gamma) + (
+            temp - tau
+        ) * _indfunc2(temp, tau, gamma)
 
     if isinstance(T_arr, (int, float)):
-        if T_arr == 0:
+        if T_arr == 0 or T_arr > T_melt:
             return 0
         return beta_1 * T_arr + beta_2 * _q(T_arr, tau, gamma)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            if T == 0:
+        for temp in T_arr:
+            if temp == 0 or temp > T_melt:
                 Cp = 0
             else:
-                Cp = beta_1 * T + beta_2 * _q(T, tau, gamma)
+                Cp = beta_1 * temp + beta_2 * _q(temp, tau, gamma)
             ret_arr = np.append(ret_arr, Cp)
         return ret_arr
 
 
-def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
+def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr=False):
     a2h = -beta_2 / (12 * gamma) * (tau - gamma) ** 3
     a3h = beta_2 / 2 * (gamma**2 / 3 + tau**2)
     c1h = beta_1 / 2
@@ -442,18 +510,18 @@ def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
     b3h = -beta_2 * tau
     d2h = beta_2 / (12 * gamma)
 
-    def _calc_bcm_enthalpy(T, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h):
-        if T < tau - gamma:
-            return c1h * T**2
-        elif all([T >= tau - gamma, T <= tau + gamma]):
-            return a2h + b2h * T + c2h * T**2 + d2h * T**3
+    def _calc_bcm_enthalpy(temp, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h):
+        if temp < tau - gamma:
+            return c1h * temp**2
+        elif all([temp >= tau - gamma, temp <= tau + gamma]):
+            return a2h + b2h * temp + c2h * temp**2 + d2h * temp**3
         else:
-            return a3h + b3h * T + c3h * T**2
+            return a3h + b3h * temp + c3h * temp**2
 
-    def _sympy_bcm_enthalpy(T, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h):
-        if T < tau - gamma:
+    def _sympy_bcm_enthalpy(temp, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h):
+        if temp < tau - gamma:
             return c1h * v.T**2
-        elif all([T >= tau - gamma, T <= tau + gamma]):
+        elif all([temp >= tau - gamma, temp <= tau + gamma]):
             return a2h + b2h * v.T + c2h * v.T**2 + d2h * v.T**3
         else:
             return a3h + b3h * v.T + c3h * v.T**2
@@ -462,15 +530,15 @@ def _bent_cable_enthalpy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
         ret_arr = _calc_bcm_enthalpy(T_arr, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
     elif not ret_expr:
         ret_arr = np.array([])
-        for T in T_arr:
-            H_bcm = _calc_bcm_enthalpy(T, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
+        for temp in T_arr:
+            H_bcm = _calc_bcm_enthalpy(temp, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
             ret_arr = np.append(ret_arr, H_bcm)
     elif isinstance(T_arr, (int, float)) and ret_expr:
         ret_arr = _sympy_bcm_enthalpy(T_arr, c1h, a2h, b2h, c2h, d2h, a3h, b3h, c3h)
     return ret_arr
 
 
-def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
+def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr=False):
     c1s = beta_1
     b2s = (tau - gamma) ** 2 * (
         3 / 8 * beta_2 / gamma - beta_2 / (4 * gamma) * np.log(tau - gamma)
@@ -485,16 +553,18 @@ def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
     e2s = beta_2 / (4 * gamma) * (tau - gamma) ** 2
     e3s = -beta_2 * tau
 
-    def _calc_bcm_entropy(T, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s):
-        if T < tau - gamma:
-            res = c1s * T**2
-        elif all([T >= tau - gamma, T <= tau + gamma]):
-            res = b2s * T + c2s * T**2 + d2s * T**3 + e2s * T * np.log(T)
+    def _calc_bcm_entropy(temp, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s, T_melt):
+        if temp < tau - gamma:
+            res = c1s * temp**2
+        elif all([temp >= tau - gamma, temp <= tau + gamma]):
+            res = b2s * temp + c2s * temp**2 + d2s * temp**3 + e2s * temp * np.log(temp)
+        elif all([temp > tau + gamma, temp < T_melt]):
+            res = b3s * temp + c3s * temp**2 + e3s * temp * np.log(temp)
         else:
-            res = b3s * T + c3s * T**2 + e3s * T * np.log(T)
-        return res / T
+            res = 0
+        return res / temp
 
-    def _sympy_bcm_entropy(T, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s):
+    def _sympy_bcm_entropy(temp, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s, T_melt):
         b2s = (tau - gamma) ** 2 * (
             3 / 8 * beta_2 / gamma - beta_2 / (4 * gamma) * se.log(tau - gamma)
         )
@@ -502,60 +572,81 @@ def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
             (tau - gamma) ** 2 * se.log(tau - gamma)
             - (tau + gamma) ** 2 * se.log(tau + gamma)
         )
-        if T < tau - gamma:
+        if temp < tau - gamma:
             res = c1s * v.T**2
-        elif all([T >= tau - gamma, T <= tau + gamma]):
+        elif all([temp >= tau - gamma, temp <= tau + gamma]):
             res = b2s * v.T + c2s * v.T**2 + d2s * v.T**3 + e2s * v.T * se.log(v.T)
-        else:
+        elif all([temp > tau + gamma, temp < T_melt]):
             res = b3s * v.T + c3s * v.T**2 + e3s * v.T * se.log(v.T)
+        else:
+            res = 0
         return res / v.T
 
     if isinstance(T_arr, (int, float)) and not ret_expr:
-        ret_arr = _calc_bcm_entropy(T_arr, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s)
+        ret_arr = _calc_bcm_entropy(
+            T_arr, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s, T_melt
+        )
     elif not ret_expr:
         ret_arr = np.array([])
-        for T in T_arr:
-            S_bcm = _calc_bcm_entropy(T, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s)
+        for temp in T_arr:
+            S_bcm = _calc_bcm_entropy(
+                temp, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s, T_melt
+            )
             ret_arr = np.append(ret_arr, S_bcm)
     elif isinstance(T_arr, (int, float)) and ret_expr:
-        ret_arr = _sympy_bcm_entropy(T_arr, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s)
+        ret_arr = _sympy_bcm_entropy(
+            T_arr, c1s, b2s, b3s, c2s, c3s, d2s, e2s, e3s, T_melt
+        )
     return ret_arr
 
 
-def _bent_cable_gibbs(T_arr, beta_1, beta_2, tau, gamma, ret_expr=False):
+def _bent_cable_gibbs(T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr=False):
     if not ret_expr:
         res = _bent_cable_enthalpy(
-            T_arr, beta_1, beta_2, tau, gamma, ret_expr
-        ) - T_arr * _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr)
+            T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr
+        ) - T_arr * _bent_cable_entropy(
+            T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr
+        )
     else:
         res = _bent_cable_enthalpy(
-            T_arr, beta_1, beta_2, tau, gamma, ret_expr
-        ) - v.T * _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, ret_expr)
+            T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr
+        ) - v.T * _bent_cable_entropy(
+            T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr
+        )
     return res
 
 
-def _einstein_Cp(T, theta):
-    if isinstance(T, list):
-        T = np.array(T)
-    res = 3 * R * (theta / T) ** 2 * np.exp(theta / T) / (np.exp(theta / T) - 1) ** 2
+def _einstein_Cp(temp, theta):
+    if isinstance(temp, list):
+        temp = np.array(temp)
+    res = (
+        3
+        * R
+        * (theta / temp) ** 2
+        * np.exp(theta / temp)
+        / (np.exp(theta / temp) - 1) ** 2
+    )
     res = np.nan_to_num(res)  # replace nan with 0
     return res
 
 
-def _einstein_entropy(T, theta):
+def _einstein_entropy(temp, theta):
     return (
         3
         * R
         * (
-            theta / (2 * T) * np.cosh(theta / (2 * T)) / np.sinh(theta / (2 * T))
-            - np.log(2 * np.sinh(theta / 2 * T))
+            theta
+            / (2 * temp)
+            * np.cosh(theta / (2 * temp))
+            / np.sinh(theta / (2 * temp))
+            - np.log(2 * np.sinh(theta / 2 * temp))
         )
     )
 
 
-def _einstein_gibbs(T, theta):
+def _einstein_gibbs(temp, theta):
     # Chen and Sundman
-    return 3 / 2 * R * theta + 3 * R * T * np.log(1 - np.exp(-theta / T))
+    return 3 / 2 * R * theta + 3 * R * temp * np.log(1 - np.exp(-theta / temp))
 
 
 def _debye_Cp(T_arr, theta):
@@ -566,8 +657,8 @@ def _debye_Cp(T_arr, theta):
         ret_arr = 9 * R * (T_arr / theta) ** 3 * quad(_integrand, 0, theta / T_arr)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            Cp = 9 * R * (T / theta) ** 3 * quad(_integrand, 0, theta / T)[0]
+        for temp in T_arr:
+            Cp = 9 * R * (temp / theta) ** 3 * quad(_integrand, 0, theta / temp)[0]
             ret_arr = np.append(ret_arr, Cp)
     return ret_arr
 
@@ -600,11 +691,11 @@ def _xiong_Cp(T_arr, beta, p, Tc):
         return R * tau * _g(tau, p) * np.log(beta + 1)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            if T == 0:
+        for temp in T_arr:
+            if temp == 0:
                 Cp = 0
             else:
-                tau = T / Tc
+                tau = temp / Tc
                 Cp = R * tau * _g(tau, p) * np.log(beta + 1)
             ret_arr = np.append(ret_arr, Cp)
         return ret_arr
@@ -620,7 +711,7 @@ def _xiong_entropy(T_arr, beta, p, Tc):
         return R * np.log(beta + 1)
     else:
         ret_arr = np.array([])
-        for T in T_arr:
+        for temp in T_arr:
             S_xiong = R * np.log(beta + 1)
             ret_arr = np.append(ret_arr, S_xiong)
         return ret_arr
@@ -631,9 +722,9 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
     def _D(p):
         return 0.33471979 + 0.49649686 * (1 / p - 1)
 
-    def _g_int(T, p, Tc):
-        tau = T / Tc
-        if T / Tc <= 1:
+    def _g_int(temp, p, Tc):
+        tau = temp / Tc
+        if temp / Tc <= 1:
             coef = 0.63570895 * (1 / p - 1)
             term1 = tau**3 / 6
             term2 = tau**9 / 135
@@ -647,9 +738,9 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
             term4 = tau**-49 / 8232
         return coef * np.sum([term1, term2, term3, term4])
 
-    def _sympy_g_int(T, p, Tc):
+    def _sympy_g_int(temp, p, Tc):
         tau = v.T / Tc
-        if T / Tc <= 1:
+        if temp / Tc <= 1:
             coef = 0.63570895 * (1 / p - 1)
             term1 = tau**3 / 6
             term2 = tau**9 / 135
@@ -663,10 +754,10 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
             term4 = tau**-49 / 8232
         return coef * np.sum([term1, term2, term3, term4])
 
-    def _gmdo(T, beta, p, Tc):
-        return -R * np.log(beta + 1) * (T - 0.38438376 * Tc / (p * _D(p)))
+    def _gmdo(temp, beta, p, Tc):
+        return -R * np.log(beta + 1) * (temp - 0.38438376 * Tc / (p * _D(p)))
 
-    def _sympy_gmdo(T, beta, p, Tc):
+    def _sympy_gmdo(temp, beta, p, Tc):
         return -R * se.log(beta + 1) * (v.T - 0.38438376 * Tc / (p * _D(p)))
 
     if isinstance(T_arr, (int, float)) and not ret_expr:
@@ -674,9 +765,9 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
         +_gmdo(T_arr, beta, p, Tc)
     elif not ret_expr:
         ret_arr = np.array([])
-        for T in T_arr:
-            G_mag = -R * T / _D(p) * np.log(beta + 1) * _g_int(T, p, Tc)
-            +_gmdo(T, beta, p, Tc)
+        for temp in T_arr:
+            G_mag = -R * temp / _D(p) * np.log(beta + 1) * _g_int(temp, p, Tc)
+            +_gmdo(temp, beta, p, Tc)
             ret_arr = np.append(ret_arr, G_mag)
     elif isinstance(T_arr, (int, float)) and ret_expr:
         ret_arr = -v.R * v.T / _D(p) * se.log(beta + 1) * _sympy_g_int(
@@ -695,17 +786,36 @@ def _fit_segmented_regression(x, arg_dict):
     Function to perform the segmented regression to optimize all modeling parameters.
     """
 
-    model_Cp = 0
     temperature_array = arg_dict["temperature_array"]
     Cp_array = arg_dict["Cp_array"]
     models = arg_dict["models"]
     melt_base_Cp = None
+    if "melt" in list(models.keys()):
+        # Need to pad the Cp array to include some liquid temperatures and target Cp
+        melt_dict = models["melt"]
+        temperature_array = np.append(temperature_array, melt_dict["T_melt"][0] + 500)
+        if "liquid_Cp" in list(melt_dict.keys()):
+            liq_Cp = melt_dict["liquid_Cp"][0]
+        else:
+            liq_Cp = Cp_array[-1]
+        Cp_array = np.append(Cp_array, liq_Cp)
+        while len(temperature_array[temperature_array > melt_dict["T_melt"][0]]) < 5:
+            # if np.max(temperature_array) < melt_dict["T_melt"][0]:
+            #     temperature_array = np.append(
+            #         temperature_array, melt_dict["T_melt"][0] + 500
+            #     )
+            # else:
+            temperature_array = np.append(
+                temperature_array, np.max(temperature_array) + 100
+            )
+            Cp_array = np.append(Cp_array, liq_Cp)
+
+    model_Cp = np.zeros(len(Cp_array))
     if "einstein" in list(models.keys()):
         model_params = []
         einstein_dict = models["einstein"]
         theta_list = einstein_dict["theta"]
         if "fit" in theta_list:
-            # x[0] Einstein temperature
             idx = theta_list[-1]
             model_Cp += _einstein_Cp(temperature_array, x[idx])
         else:
@@ -715,7 +825,6 @@ def _fit_segmented_regression(x, arg_dict):
         holzapfel_dict = models["holzapfel"]
         theta_list = holzapfel_dict["theta"]
         if "fit" in theta_list:
-            # x[0] Einstein temperature
             idx = theta_list[-1]
             model_Cp += _holzapfel_debye_Cp(temperature_array, x[idx])
         else:
@@ -752,7 +861,7 @@ def _fit_segmented_regression(x, arg_dict):
     if "bcm" in list(models.keys()):
         bcm_dict = models["bcm"]
         model_params = []
-        for param in ["beta_1", "beta_2", "tau", "gamma"]:
+        for param in ["beta_1", "beta_2", "tau", "gamma", "T_melt"]:
             param_list = bcm_dict[param]
             if "fit" in param_list:
                 idx = param_list[-1]
@@ -783,7 +892,7 @@ def _fit_segmented_regression(x, arg_dict):
     if "linear" in list(models.keys()):
         linear_dict = models["linear"]
         model_params = []
-        for param in ["alpha", "T_melt", "Cp_max"]:
+        for param in ["alpha", "T_melt"]:
             param_list = linear_dict[param]
             if "fit" in param_list:
                 idx = param_list[-1]
@@ -791,7 +900,9 @@ def _fit_segmented_regression(x, arg_dict):
             else:
                 model_params.append(param_list[0])
         model_Cp += _linear_Cp(temperature_array, *model_params)
+
     if "melt" in list(models.keys()):
+        # Now add the high-temp heat capacity model
         melt_dict = models["melt"]
         model_params = []
         for param in ["T_melt", "a", "b", "c"]:
@@ -808,24 +919,7 @@ def _fit_segmented_regression(x, arg_dict):
         assert melt_base_Cp is not None, (
             "Need to specify a base melt heat capacity in another method."
         )
-        # Need to pad the Cp array to include some liquid temperatures and target Cp
-        base_melt_Cp_array = np.array(
-            [1 if temp > melt_dict["T_melt"][0] else 0 for temp in temperature_array]
-        )
-        while np.sum(base_melt_Cp_array) < 5:
-            if np.max(temperature_array) < melt_dict["T_melt"][0]:
-                temperature_array = np.append(temperature_array, melt_dict["T_melt"][0])
-            else:
-                temperature_array = np.append(
-                    temperature_array, np.max(temperature_array) + 100
-                )
-            base_melt_Cp_array = np.append(base_melt_Cp_array, 1)
-            model_Cp = np.append(model_Cp, melt_base_Cp)
-            Cp_array = np.append(Cp_array, melt_base_Cp)
-
-        base_melt_Cp_array = base_melt_Cp_array * melt_base_Cp
-        model_Cp += base_melt_Cp_array + _melt_Cp(temperature_array, *model_params)
-
+        model_Cp += _melt_Cp(temperature_array, *model_params)
     return _calc_RSE(model_Cp, Cp_array)
 
 
@@ -840,6 +934,7 @@ def fit_segmented_regression(
         "holzapfel",
         "linear",
         "melt",
+        "offset",
         "two-state",
         "xiong",
     ]
@@ -887,12 +982,12 @@ def fit_segmented_regression(
         "beta_1": (0, 1),
         "beta_2": (0, 1),
         "tau": (0, 3000),
-        "gamma": (1e-6, 1000),
+        "gamma": (1e-6, 200),
         "dE0": (0, 15000),
         "dE1": (-100, 100),
         "dE2": (-100, 100),
         "alpha": (0, 1),
-        "T_melt": (250, 3000),
+        "T_melt": (250, 4000),
         "Cp_max": (5, 100),
         "a": (-50, 50),
         "b": (-np.inf, np.inf),
@@ -904,7 +999,7 @@ def fit_segmented_regression(
         raise ValueError(
             "Cannot specify both Einstein and Holzapfel (Debye) models. Pick one."
         )
-    elif "einstein" in list(models.keys()):
+    if "einstein" in list(models.keys()):
         einstein_model_dict = models["einstein"]
         assert "theta" in list(einstein_model_dict.keys()), (
             "Einstein model specified without instructions for fitting theta."
@@ -923,7 +1018,7 @@ def fit_segmented_regression(
             pass
         else:
             raise ValueError(f"Einstein model specified, but not set correctly.")
-    elif "holzapfel" in list(models.keys()):
+    if "holzapfel" in list(models.keys()):
         holzapfel_model_dict = models["holzapfel"]
         assert "theta" in list(holzapfel_model_dict.keys()), (
             "Holzapfel-Debye model specified without instructions for fitting theta."
@@ -982,7 +1077,7 @@ def fit_segmented_regression(
                 )
     if "bcm" in list(models.keys()):
         bcm_dict = models["bcm"]
-        for param in ["beta_1", "beta_2", "tau", "gamma"]:
+        for param in ["beta_1", "beta_2", "tau", "gamma", "T_melt"]:
             if param not in list(bcm_dict.keys()):
                 raise ValueError(
                     f"Bent-cable model specified without parameter [{param}]."
@@ -994,6 +1089,9 @@ def fit_segmented_regression(
                     bounds.append(param_list[2])
                 else:
                     bounds.append(default_bounds[param])
+                if param == "tau":
+                    bounds[-1] = (1e-5, bcm_dict["T_melt"][0] - 300)
+
                 param_list.append(i)
                 i += 1
             elif "fix" in param_list:
@@ -1034,7 +1132,7 @@ def fit_segmented_regression(
 
     if "linear" in list(models.keys()):
         linear_dict = models["linear"]
-        for param in ["alpha", "T_melt", "Cp_max"]:
+        for param in ["alpha", "T_melt"]:
             if param not in list(linear_dict.keys()):
                 raise ValueError(f"Linear model specified without parameter [{param}]")
             param_list = linear_dict[param]
@@ -1050,7 +1148,6 @@ def fit_segmented_regression(
                 pass
             else:
                 raise ValueError(f"Linear model specified but not setup correctly.")
-
     if "melt" in list(models.keys()):
         melt_dict = models["melt"]
         for param in ["T_melt", "a", "b", "c"]:
@@ -1157,9 +1254,9 @@ def calc_gibbs_energy(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
         )
     else:
         ret_arr = np.array([])
-        for T in T_arr:
-            gibbs = calc_enthalpy(T, Cp_fits, xiong_params) - T * calc_entropy(
-                T, Cp_fits, xiong_params
+        for temp in T_arr:
+            gibbs = calc_enthalpy(temp, Cp_fits, xiong_params) - temp * calc_entropy(
+                temp, Cp_fits, xiong_params
             )
             ret_arr = np.append(ret_arr, gibbs)
     if xiong_params is not None:
@@ -1182,24 +1279,44 @@ def create_espei_custom_refstate_stable(model_dict):
     critical_temperatures = [1e-5]
     if "bcm" in list(model_dict.keys()):
         bcm_dict = model_dict["bcm"]
+        bcm_args = []
+        bcm_kwargs = {"ret_expr": True}
+        bcm_args.append(bcm_dict["beta_1"][0])
+        bcm_args.append(bcm_dict["beta_2"][0])
         tau = bcm_dict["tau"][0]
+        bcm_args.append(tau)
         gamma = bcm_dict["gamma"][0]
-        beta_1 = bcm_dict["beta_1"][0]
-        beta_2 = bcm_dict["beta_2"][0]
+        bcm_args.append(gamma)
+        bcm_args.append(bcm_dict["T_melt"][0])
         critical_temperatures.append(tau - gamma)
         critical_temperatures.append(tau + gamma)
     if "linear" in list(model_dict.keys()):
-        alpha = model_dict["linear"]["alpha"][0]
+        linear_args = []
+        linear_kwargs = {"ret_expr": True}
+        linear_args.append(model_dict["linear"]["alpha"][0])
         T_melt = model_dict["linear"]["T_melt"][0]
-        Cp_max = model_dict["linear"]["Cp_max"][0]
-        critical_temperatures.append(T_melt)
-    if "melt" in list(model_dict.keys()):
-        melt_a = model_dict["melt"]["a"][0]
-        melt_b = model_dict["melt"]["b"][0]
-        melt_c = model_dict["melt"]["c"][0]
-        T_melt = model_dict["melt"]["T_melt"][0]
+        linear_args.append(T_melt)
         if T_melt not in critical_temperatures:
             critical_temperatures.append(T_melt)
+    if "melt" in list(model_dict.keys()):
+        melt_args = []
+        melt_kwargs = {"ret_expr": True}
+        T_melt = model_dict["melt"]["T_melt"][0]
+        melt_args.append(T_melt)
+        melt_args.append(model_dict["melt"]["a"][0])
+        melt_args.append(model_dict["melt"]["b"][0])
+        melt_args.append(model_dict["melt"]["c"][0])
+
+        for param in ["solid_enthalpy", "solid_entropy"]:
+            if param in list(model_dict["melt"].keys()):
+                melt_kwargs[param] = model_dict["melt"][param][0]
+        if T_melt not in critical_temperatures:
+            critical_temperatures.append(T_melt)
+    if "offset" in list(model_dict.keys()):
+        offset_args = []
+        offset_kwargs = {"ret_expr": True}
+        offset_args.append(model_dict["offset"]["enthalpy"][0])
+        offset_args.append(model_dict["offset"]["entropy"][0])
     critical_temperatures.append(10000.00)
 
     critical_temperatures.sort()
@@ -1207,55 +1324,41 @@ def create_espei_custom_refstate_stable(model_dict):
     res = []
     for i in range(1, len(critical_temperatures)):
         # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
+        this_res = 0
         if "bcm" in list(model_dict.keys()):
-            this_res = [0]
             bcm_expr = _bent_cable_gibbs(
-                critical_temperatures[i] - 1.0,
-                beta_1,
-                beta_2,
-                tau,
-                gamma,
-                ret_expr=True,
+                critical_temperatures[i] - 1.0, *bcm_args, **bcm_kwargs
             )
-            this_res = (
-                bcm_expr,
-                se.And(
-                    v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
-                ),
-            )
-            if this_res[0] != 0:
-                res.append(tuple(this_res))
+            this_res = this_res + bcm_expr
         if "linear" in list(model_dict.keys()):
-            this_res = [0]
             linear_expr = _linear_gibbs(
-                critical_temperatures[i] - 1.0, alpha, T_melt, ret_expr=True
+                critical_temperatures[i] - 1.0, *linear_args, **linear_kwargs
             )
-            this_res = (
-                linear_expr,
-                se.And(
-                    v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
-                ),
-            )
-            if this_res[0] != 0:
-                res.append(tuple(this_res))
+            this_res = this_res + linear_expr
         if "melt" in list(model_dict.keys()):
-            this_res = [0]
             melt_expr = _melt_gibbs(
-                critical_temperatures[i] - 1.0,
-                T_melt,
-                melt_a,
-                melt_b,
-                melt_c,
-                ret_expr=True,
+                critical_temperatures[i] - 1.0, *melt_args, **melt_kwargs
             )
-            this_res = (
-                melt_expr,
-                se.And(
-                    v.T >= critical_temperatures[i - 1], v.T < critical_temperatures[i]
-                ),
+            this_res = this_res + melt_expr
+
+        if "offset" in list(model_dict.keys()):
+            offset_expr = _offset_gibbs(
+                critical_temperatures[i] - 1.0, *offset_args, **offset_kwargs
             )
-            if this_res[0] != 0:
-                res.append(tuple(this_res))
+            this_res = this_res + offset_expr
+
+        if this_res != 0:
+            res.append(
+                tuple(
+                    (
+                        this_res,
+                        se.And(
+                            v.T >= critical_temperatures[i - 1],
+                            v.T < critical_temperatures[i],
+                        ),
+                    ),
+                )
+            )
     res.append((0, True))
 
     sympy_expr = se.Piecewise(*res)
