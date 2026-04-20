@@ -27,6 +27,7 @@ and introduce error to the Debye model at low temperatures.
 from collections import OrderedDict
 import json
 from libreCalphad.databases.db_utils import load_database
+from libreCalphad.models.utilities import identify_variables
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -35,13 +36,14 @@ from pycalphad import calculate, variables as v
 from scipy.integrate import quad
 from scipy.optimize import curve_fit, minimize
 import symengine as se
+import sympy as sp
 from tinydb import where
 import warnings
 import yaml
 
 R = 8.314472  # J/mol/K
 N = 6.02214076e23
-T = se.symbols("T")
+P, T = se.symbols("P T")
 # Holzapfel parameters
 w0 = 5.657e-2
 w1 = 3.911e-2
@@ -49,6 +51,31 @@ f1 = 4.155e-1
 f2 = 8.116e-1
 w2 = 9.0432e-1
 aD = 5.133e-2
+
+
+def _symbolic_Cp(T_arr, variable_values, expression, temp_bounds):
+    if isinstance(expression, str):
+        expression = sp.parse_expr(expression)
+        expression = se.sympify(expression)
+    # Assuming the other symbols besides T and P are variables to be fit
+    expr_symbols = [symbol for symbol in expression.free_symbols]
+
+    if isinstance(T_arr, (int, float)):
+        if all([T_arr > temp_bounds[0], T_arr <= temp_bounds[1]]):
+            symbol_values = identify_variables(expr_symbols, variable_values, T_arr)
+            ret_arr = np.float64(expression.subs(expr_symbols, symbol_values))
+        else:
+            ret_arr = 0
+    else:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if all([temp > temp_bounds[0], temp <= temp_bounds[1]]):
+                symbol_values = identify_variables(expr_symbols, variable_values, temp)
+                Cp = np.float64(expression.subs(expr_symbols, symbol_values))
+            else:
+                Cp = 0
+            ret_arr = np.append(ret_arr, Cp)
+    return ret_arr
 
 
 def _twostate_Cp(T_arr, dE, coef_list):
@@ -155,9 +182,9 @@ def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma, T_melt):
             else:
                 return 0
 
-        return ((temp - tau + gamma) ** 2 / (4 * gamma)) * _indfunc1(T, tau, gamma) + (
-            temp - tau
-        ) * _indfunc2(temp, tau, gamma)
+        return ((temp - tau + gamma) ** 2 / (4 * gamma)) * _indfunc1(
+            temp, tau, gamma
+        ) + (temp - tau) * _indfunc2(temp, tau, gamma)
 
     if isinstance(T_arr, (int, float)):
         if T_arr == 0 or T_arr > T_melt:
@@ -241,11 +268,11 @@ def _xiong_Cp(T_arr, beta, p, Tc):
 
 
 def _calc_RSE(model_array, Cp_array):
-    num_SR_params = 5  # from the paper
-    return np.sqrt(np.sum(np.square(np.nan_to_num((model_array - Cp_array)))))
+    error = np.sqrt(np.mean(np.square(np.nan_to_num((model_array - Cp_array)))))
+    return error
 
 
-def _fit_segmented_regression(x, arg_dict):
+def _fit_heat_capacity(x, arg_dict):
     """
     Function to perform the segmented regression to optimize all modeling parameters.
     """
@@ -384,10 +411,24 @@ def _fit_segmented_regression(x, arg_dict):
             "Need to specify a base melt heat capacity in another method."
         )
         model_Cp += _melt_Cp(temperature_array, *model_params)
+    if "symbolic" in list(models.keys()):
+        symbolic_dict = models["symbolic"]
+        model_params = []
+        for param, param_list in symbolic_dict.items():
+            if param == "expression" or param == "temp_bounds":
+                continue
+            idx = param_list[-1]
+            model_params.append(x[idx])
+        model_Cp = model_Cp + _symbolic_Cp(
+            temperature_array,
+            model_params,
+            symbolic_dict["expression"],
+            symbolic_dict["temp_bounds"],
+        )
     return _calc_RSE(model_Cp, Cp_array)
 
 
-def fit_segmented_regression(
+def fit_heat_capacity(
     datasets,
     models,
 ):
@@ -399,6 +440,7 @@ def fit_segmented_regression(
         "linear",
         "melt",
         "offset",
+        "symbolic",
         "two-state",
         "xiong",
     ]
@@ -408,27 +450,30 @@ def fit_segmented_regression(
                 f"{model} not implemented. Options are {implemented_models}"
             )
 
-    # Load CPM data for modeling
-    df = pd.DataFrame()
-    # CPM plotting
-    assert len(datasets) > 0, "No datasets passed."
-    for result in datasets:
-        assert result["output"] == "CPM", (
-            f"Can only fit CPM data, but {result['output']} was passed."
-        )
-        temps = result["conditions"]["T"]
-        Cp = result["values"]
-        this_df = pd.DataFrame(
-            {
-                "temperature": temps,
-                "Cp": np.array(Cp).squeeze(),
-                "reference": result["reference"],
-            }
-        )
-        if df.empty:
-            df = this_df
-        else:
-            df = pd.concat([df, this_df], ignore_index=True)
+    if not isinstance(datasets, pd.DataFrame):
+        # Load CPM data for modeling
+        df = pd.DataFrame()
+        # CPM plotting
+        assert len(datasets) > 0, "No datasets passed."
+        for result in datasets:
+            assert result["output"] == "CPM", (
+                f"Can only fit CPM data, but {result['output']} was passed."
+            )
+            temps = result["conditions"]["T"]
+            Cp = result["values"]
+            this_df = pd.DataFrame(
+                {
+                    "temperature": temps,
+                    "Cp": np.array(Cp).squeeze(),
+                    "reference": result["reference"],
+                }
+            )
+            if df.empty:
+                df = this_df
+            else:
+                df = pd.concat([df, this_df], ignore_index=True)
+    else:
+        df = datasets
     df = df.sort_values("temperature")
 
     arg_index = []
@@ -630,6 +675,18 @@ def fit_segmented_regression(
                 pass
             else:
                 raise ValueError(f"Melt model specified but not setup correctly.")
+    if "symbolic" in list(models.keys()):
+        symbolic_dict = models["symbolic"]
+        Cp_expr = symbolic_dict["expression"]
+        if "temp_bounds" not in list(symbolic_dict.keys()):
+            symbolic_dict["temp_bounds"] = (0, np.inf)
+        symbols = [symbol for symbol in Cp_expr.free_symbols if symbol not in (P, T)]
+        for symbol in symbols:
+            # Assume fitting all symbols not P and T
+            symbolic_dict[str(symbol)] = [10.0, "fit", i]
+            params.append(10.0)
+            bounds.append((-np.inf, np.inf))
+            i += 1
 
     arg_dict["models"] = models
     # optimize the model parameters
@@ -638,17 +695,19 @@ def fit_segmented_regression(
 
     if len(params) > 0:
         min_fits = minimize(
-            _fit_segmented_regression,
+            _fit_heat_capacity,
             x0=params,
             args=arg_dict,
             bounds=bounds,
             method="nelder-mead",
         )
     else:
-        min_fits = _fit_segmented_regression(params, arg_dict)
+        min_fits = _fit_heat_capacity(params, arg_dict)
     # update the model dict to access the parameters
     for model, mdict in models.items():
         for param, param_list in mdict.items():
+            if param == "expression":
+                continue
             if "fit" in param_list:
                 # update the provided parameter with the fitted parameter
                 if isinstance(param_list[-1], int):
@@ -657,25 +716,3 @@ def fit_segmented_regression(
                     for j in range(len(param_list[0])):
                         param_list[0][j] = min_fits.x[param_list[-1][j]]
     return min_fits, models
-
-
-def get_segmented_regression_Cp(T_arr, Cp_fits, use_einstein=False, xiong_params=None):
-    if xiong_params is not None:
-        for param in ["Tc", "p", "beta"]:
-            assert param in list(xiong_params.keys()), (
-                f"Xiong params dict missing {param}."
-            )
-    if isinstance(T_arr, (int, float)):
-        Cp = 0
-    else:
-        Cp = np.zeros(len(T_arr))
-    if use_einstein:
-        Cp += _einstein_Cp(T_arr, Cp_fits.x[0])
-    else:
-        Cp += _holzapfel_debye_Cp(T_arr, Cp_fits.x[0])
-    if xiong_params is not None:
-        Cp += _xiong_Cp(
-            T_arr, xiong_params["beta"], xiong_params["p"], xiong_params["Tc"]
-        )
-    Cp += _bent_cable_Cp(T_arr, *Cp_fits.x[1:])
-    return Cp

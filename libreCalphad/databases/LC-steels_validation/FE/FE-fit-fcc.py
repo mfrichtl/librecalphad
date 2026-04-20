@@ -3,22 +3,17 @@ from importlib import reload
 import importlib.resources as impresources
 import json
 from libreCalphad.databases.db_utils import load_database
-from libreCalphad.models.segmented_regression import (
+from libreCalphad.models.energy import upsert_custom_refstate_json
+from libreCalphad.models.heat_capacity import (
     _bent_cable_Cp,
     _debye_Cp,
     _einstein_Cp,
     _holzapfel_debye_Cp,
     _xiong_Cp,
     _twostate_Cp,
-    _twostate_gibbs,
     _linear_Cp,
-    _linear_gibbs,
     _melt_Cp,
-    calc_enthalpy,
-    calc_entropy,
-    fit_segmented_regression,
-    get_segmented_regression_Cp,
-    upsert_custom_refstate_json,
+    fit_heat_capacity,
 )
 import matplotlib.pyplot as plt
 import numpy as np
@@ -76,7 +71,7 @@ model_dict = {
     },
     "two-state": {"dE": [[9.02352375e3, -2.4952226], [T**0, T**1], "fit"]},
 }
-min_fits, model_dict = fit_segmented_regression(search_results, model_dict)
+min_fits, model_dict = fit_heat_capacity(search_results, model_dict)
 theta_Fe = model_dict["einstein"]["theta"][0]
 beta_Fe = model_dict["xiong"]["beta"][0]
 structure_factor = model_dict["xiong"]["p"][0]

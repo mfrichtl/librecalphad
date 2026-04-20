@@ -13,14 +13,15 @@ from libreCalphad.models.heat_capacity import (
     _holzapfel_debye_Cp,
     _xiong_Cp,
     _melt_Cp,
-    fit_segmented_regression,
-    get_segmented_regression_Cp,
+    _symbolic_Cp,
+    fit_heat_capacity,
 )
 import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
 from pycalphad import calculate, variables as v
+import symengine as se
 from tinydb import where
 import yaml
 
@@ -39,14 +40,13 @@ search_results = datasets.search(query)
 
 R = 8.314472
 # magnetic model constants
-beta_Fe = 2.22  # magnetic moment per atom Fe
-struct_fact_bcc = 0.37
-Tc_Fe = 1043  # K, Curie temperature for Fe
-theta_Fe = 309  # K, Einstein temperature from Chen & Sundman
+T_melt = 1811
+a, b, T = se.symbols("a b T")
 model_dict = {
     "einstein": {"theta": [300, "fit"]},
     "xiong": {"beta": [2.22, "fix"], "p": [0.37, "fix"], "Tc": [1043, "fix"]},
-    "linear": {"alpha": [0.01, "fit"], "T_melt": [1811, "fix"]},
+    # "linear": {"alpha": [0.01, "fit"], "T_melt": [1811, "fix"]},
+    "symbolic": {"expression": a * T + b * T**4, "temp_bounds": (0, 1811)},
     "melt": {
         "T_melt": [1811, "fix"],
         "liquid_Cp": [46, "fix"],
@@ -58,7 +58,13 @@ model_dict = {
     },
     "offset": {"enthalpy": [-1130.419885, "fix"], "entropy": [8.055879, "fix"]},
 }
-min_fits, model_dict = fit_segmented_regression(search_results, model_dict)
+min_fits, model_dict = fit_heat_capacity(search_results, model_dict)
+refstate_file = impresources.files("refstate") / "LCRefstates.json"
+
+# Add the fitted refstate results
+# Not passing the phase as a kwarg makes libreCalphad assume this is a stable phase Gibbs energy expression
+upsert_custom_refstate_json(refstate_file, "FE", min_fits, model_dict=model_dict)
+
 theta_Fe = model_dict["einstein"]["theta"][0]
 beta_Fe = model_dict["xiong"]["beta"][0]
 struct_fact_bcc = model_dict["xiong"]["p"][0]
@@ -68,17 +74,29 @@ Tc_Fe = model_dict["xiong"]["Tc"][0]
 # tau = model_dict["bcm"]["tau"][0]
 # gamma = model_dict["bcm"]["gamma"][0]
 # T_melt = model_dict["bcm"]["T_melt"][0]
-alpha = model_dict["linear"]["alpha"][0]
-T_melt = model_dict["linear"]["T_melt"][0]
+# alpha = model_dict["linear"]["alpha"][0]
+# T_melt = model_dict["linear"]["T_melt"][0]
 melt_a = model_dict["melt"]["a"][0]
 melt_b = model_dict["melt"]["b"][0]
 melt_c = model_dict["melt"]["c"][0]
+symbolic_values = [
+    value[0]
+    for key, value in model_dict["symbolic"].items()
+    if key not in ["expression", "temp_bounds"]
+]
+for key, value in model_dict["symbolic"].items():
+    if key == "expression":
+        # Need to do this for JSON formatting
+        value = str(value)
+    else:
+        key = str(key)
+        symbolic_values.append(value[0])
 
 if os.path.exists("./_fitted_params.json"):
     with open("./_fitted_params.json", "r") as f:
         params_json = json.load(f)
 else:
-    params_json = {}
+    params_json = {"FE": {}}
 params_json["FE"].update({phase[0]: model_dict})
 with open("./_fitted_params.json", "w") as f:
     json.dump(params_json, f, indent=4)
@@ -100,16 +118,14 @@ for model, values in model_dict.items():
         print(out_str)
     else:
         for param_name, param_value in values.items():
-            print(f"{param_name}: {param_value[0]:4f}")
+            if param_name == "expression":
+                print(f"{param_name}: {param_value}")
+            else:
+                print(f"{param_name}: {param_value[0]:4f}")
 print(f"RSE: {min_fits.fun:.4f} J/mol/K")
 
 # Save it to libreCalphad's custom refstate json file
 
-refstate_file = impresources.files("refstate") / "LCRefstates.json"
-
-# Add the fitted refstate results
-# Not passing the phase as a kwarg makes libreCalphad assume this is a stable phase Gibbs energy expression
-upsert_custom_refstate_json(refstate_file, "FE", min_fits, model_dict=model_dict)
 
 # Need to add the lattice stability for FE also, can directly write it to the json
 with open(refstate_file, "r") as f:
@@ -139,12 +155,19 @@ df_model["magnetic_model"] = _xiong_Cp(
 #     gamma,
 #     T_melt,
 # )
-df_model["linear"] = _linear_Cp(df_model["temperature"], alpha, T_melt)
+# df_model["linear"] = _linear_Cp(df_model["temperature"], alpha, T_melt)
 df_model["melt"] = _melt_Cp(df_model["temperature"], T_melt, melt_a, melt_b, melt_c)
+df_model["symbolic"] = _symbolic_Cp(
+    df_model["temperature"],
+    symbolic_values,
+    model_dict["symbolic"]["expression"],
+    model_dict["symbolic"]["temp_bounds"],
+)
 df_model["cumulative_model"] = (
     df_model["einstein_model"]
     + df_model["magnetic_model"]
-    + df_model["linear"]
+    # + df_model["linear"]
+    + df_model["symbolic"]
     + df_model["melt"]
 )
 
@@ -155,11 +178,12 @@ for dataset in search_results:
         np.array(dataset["values"]).squeeze(),
         label=dataset["reference"],
     )
-ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
+# ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
 ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative")
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
 ax.plot(df_model["temperature"], df_model["melt"], label="Melt")
+ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 
 ax.set_xlabel("Temperature (K)")
@@ -178,7 +202,8 @@ for dataset in search_results:
 
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
-ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
+# ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
+ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
 ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative")
 ax.legend()
 
@@ -199,7 +224,8 @@ for dataset in search_results:
     )
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
-ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
+# ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
+ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
 ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative")
 ax.legend()
 

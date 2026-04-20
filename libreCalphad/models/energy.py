@@ -5,6 +5,7 @@ Functions to calculate enthalpy, entropy, and Gibbs energies derived from models
 from collections import OrderedDict
 import json
 from libreCalphad.databases.db_utils import load_database
+from libreCalphad.models.utilities import identify_variables
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -13,13 +14,14 @@ from pycalphad import calculate, variables as v
 from scipy.integrate import quad
 from scipy.optimize import curve_fit, minimize
 import symengine as se
+import sympy as sp
 from tinydb import where
 import warnings
 import yaml
 
 R = 8.314472  # J/mol/K
 N = 6.02214076e23
-T = se.symbols("T")
+P, T = se.symbols("P T")
 
 
 def calculate_offset(xdata, ydata):
@@ -80,6 +82,41 @@ def _offset_gibbs(T_arr, offset_enthalpy, offset_entropy, ret_expr=False):
     else:
         ret_arr = offset_enthalpy - offset_entropy * v.T
 
+    return ret_arr
+
+
+def _symbolic_gibbs(T_arr, variable_values, Cp_expression, temp_bounds, ret_expr=False):
+    if "symengine" in str(type(Cp_expression)):
+        # need to convert to sympy to integrate
+        Cp_expression = sp.sympify(Cp_expression)
+    elif isinstance(Cp_expression, str):
+        Cp_expression = sp.parse_expr(Cp_expression)
+    expr_symbols = [symbol for symbol in Cp_expression.free_symbols]
+    enthalpy = Cp_expression.integrate(sp.sympify(T))
+    enthalpy = se.sympify(enthalpy)
+    entropy = (Cp_expression / sp.sympify(T)).integrate(sp.sympify(T))
+    entropy = se.sympify(entropy)
+
+    if isinstance(T_arr, (int, float)) and not ret_expr:
+        if all([T_arr > temp_bounds[0], T_arr <= temp_bounds[1]]):
+            symbol_values = identify_variables(expr_symbols, variable_values, T_arr)
+            ret_arr = (enthalpy - T * entropy).subs(expr_symbols, symbol_values)
+        else:
+            ret_arr = 0
+    elif not ret_expr:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if all([temp > temp_bounds[0], temp <= temp_bounds[1]]):
+                symbol_values = identify_variables(expr_symbols, variable_values, temp)
+                gibbs = (enthalpy - T * entropy).subs(expr_symbols, symbol_values)
+            else:
+                gibbs = 0
+            ret_arr = np.append(ret_arr, gibbs)
+    else:
+        if all([T_arr > temp_bounds[0], T_arr <= temp_bounds[1]]):
+            ret_arr = enthalpy - T * entropy
+        else:
+            ret_arr = 0
     return ret_arr
 
 
@@ -673,10 +710,16 @@ def upsert_custom_refstate_json(
         "Cp_fits.x": Cp_fits.x.tolist(),
         "Cp_fits.RSE": float(Cp_fits.fun),
     }
+    stringified_dict = {}
     if model_dict is not None:
         for key, value in model_dict.items():
             if key == "two-state":
                 value["dE"][1] = str(value["dE"][1])
+            elif key == "symbolic":
+                for key1, value1 in value.items():
+                    if key1 == "expression":
+                        value[key1] = str(value1)
+
             custom_refstate[element_key][key] = value
     with open(refstate_file, "w") as f:
         json.dump(custom_refstate, f, indent=True)
