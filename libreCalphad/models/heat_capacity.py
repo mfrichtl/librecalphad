@@ -411,8 +411,8 @@ def _fit_heat_capacity(x, arg_dict):
             "Need to specify a base melt heat capacity in another method."
         )
         model_Cp += _melt_Cp(temperature_array, *model_params)
-    if "symbolic" in list(models.keys()):
-        symbolic_dict = models["symbolic"]
+    for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
+        symbolic_dict = models[symbolic_key]
         model_params = []
         for param, param_list in symbolic_dict.items():
             if param == "expression" or param == "temp_bounds":
@@ -445,7 +445,7 @@ def fit_heat_capacity(
         "xiong",
     ]
     for model in list(models.keys()):
-        if model not in implemented_models:
+        if all([model not in implemented_models, "symbolic" not in model]):
             raise NotImplementedError(
                 f"{model} not implemented. Options are {implemented_models}"
             )
@@ -675,8 +675,8 @@ def fit_heat_capacity(
                 pass
             else:
                 raise ValueError(f"Melt model specified but not setup correctly.")
-    if "symbolic" in list(models.keys()):
-        symbolic_dict = models["symbolic"]
+    for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
+        symbolic_dict = models[symbolic_key]
         Cp_expr = symbolic_dict["expression"]
         if "temp_bounds" not in list(symbolic_dict.keys()):
             symbolic_dict["temp_bounds"] = (0, np.inf)
@@ -707,6 +707,7 @@ def fit_heat_capacity(
     for model, mdict in models.items():
         for param, param_list in mdict.items():
             if param == "expression":
+                mdict[param] = str(mdict[param])
                 continue
             if "fit" in param_list:
                 # update the provided parameter with the fitted parameter

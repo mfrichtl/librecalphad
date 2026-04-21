@@ -41,12 +41,16 @@ search_results = datasets.search(query)
 R = 8.314472
 # magnetic model constants
 T_melt = 1811
-a, b, T = se.symbols("a b T")
+a, b, c, T = se.symbols("a b c T")
 model_dict = {
     "einstein": {"theta": [300, "fit"]},
     "xiong": {"beta": [2.22, "fix"], "p": [0.37, "fix"], "Tc": [1043, "fix"]},
     # "linear": {"alpha": [0.01, "fit"], "T_melt": [1811, "fix"]},
-    "symbolic": {"expression": a * T + b * T**4, "temp_bounds": (0, 1811)},
+    "symbolic_LT": {"expression": b * T, "temp_bounds": (0, 1811)},
+    # "symbolic_HT": {
+    #     "expression": a * T * se.log(T) + b * T**-5 + c * T**-11,
+    #     "temp_bounds": (1811, np.inf),
+    # },
     "melt": {
         "T_melt": [1811, "fix"],
         "liquid_Cp": [46, "fix"],
@@ -79,18 +83,22 @@ Tc_Fe = model_dict["xiong"]["Tc"][0]
 melt_a = model_dict["melt"]["a"][0]
 melt_b = model_dict["melt"]["b"][0]
 melt_c = model_dict["melt"]["c"][0]
-symbolic_values = [
-    value[0]
-    for key, value in model_dict["symbolic"].items()
-    if key not in ["expression", "temp_bounds"]
-]
-for key, value in model_dict["symbolic"].items():
-    if key == "expression":
-        # Need to do this for JSON formatting
-        value = str(value)
-    else:
-        key = str(key)
-        symbolic_values.append(value[0])
+symbolic_dict = {}
+for model_name, mdict in model_dict.items():
+    if "symbolic" in model_name:
+        symbolic_values = [
+            value[0]
+            for key, value in mdict.items()
+            if key not in ["expression", "temp_bounds"]
+        ]
+        symbolic_dict[model_name] = {"values": symbolic_values}
+# for key, value in model_dict["symbolic"].items():
+#     if key == "expression":
+#         # Need to do this for JSON formatting
+#         value = str(value)
+#     else:
+#         key = str(key)
+#         symbolic_values.append(value[0])
 
 if os.path.exists("./_fitted_params.json"):
     with open("./_fitted_params.json", "r") as f:
@@ -157,17 +165,21 @@ df_model["magnetic_model"] = _xiong_Cp(
 # )
 # df_model["linear"] = _linear_Cp(df_model["temperature"], alpha, T_melt)
 df_model["melt"] = _melt_Cp(df_model["temperature"], T_melt, melt_a, melt_b, melt_c)
-df_model["symbolic"] = _symbolic_Cp(
-    df_model["temperature"],
-    symbolic_values,
-    model_dict["symbolic"]["expression"],
-    model_dict["symbolic"]["temp_bounds"],
-)
+df_model["cumulative_model"] = 0
+for symbolic_model, sdict in symbolic_dict.items():
+    df_model[symbolic_model] = _symbolic_Cp(
+        df_model["temperature"],
+        sdict["values"],
+        model_dict[symbolic_model]["expression"],
+        model_dict[symbolic_model]["temp_bounds"],
+    )
+    df_model["cumulative_model"] = (
+        df_model["cumulative_model"] + df_model[symbolic_model]
+    )
 df_model["cumulative_model"] = (
-    df_model["einstein_model"]
+    df_model["cumulative_model"]
+    + df_model["einstein_model"]
     + df_model["magnetic_model"]
-    # + df_model["linear"]
-    + df_model["symbolic"]
     + df_model["melt"]
 )
 
@@ -183,7 +195,10 @@ ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
 ax.plot(df_model["temperature"], df_model["melt"], label="Melt")
-ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
+# ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
+for model_name in list(model_dict.keys()):
+    if "symbolic" in model_name:
+        ax.plot(df_model["temperature"], df_model[model_name], label=model_name)
 ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
 
 ax.set_xlabel("Temperature (K)")
@@ -203,7 +218,11 @@ for dataset in search_results:
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
 # ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
-ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
+# ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
+ax.plot(df_model["temperature"], df_model["melt"], label="Melt")
+for model_name in list(model_dict.keys()):
+    if "symbolic" in model_name:
+        ax.plot(df_model["temperature"], df_model[model_name], label=model_name)
 ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative")
 ax.legend()
 
@@ -225,7 +244,11 @@ for dataset in search_results:
 ax.plot(df_model["temperature"], df_model["einstein_model"], label="Einstein")
 ax.plot(df_model["temperature"], df_model["magnetic_model"], label="Magnetic")
 # ax.plot(df_model["temperature"], df_model["linear"], label="Linear")
-ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
+# ax.plot(df_model["temperature"], df_model["symbolic"], label="symbolic")
+ax.plot(df_model["temperature"], df_model["melt"], label="Melt")
+for model_name in list(model_dict.keys()):
+    if "symbolic" in model_name:
+        ax.plot(df_model["temperature"], df_model[model_name], label=model_name)
 ax.plot(df_model["temperature"], df_model["cumulative_model"], label="Cumulative")
 ax.legend()
 
