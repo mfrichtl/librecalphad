@@ -1,7 +1,43 @@
 from importlib import resources as impresources
 import itertools
 from io import StringIO
-from pycalphad import Database
+import numpy as np
+from pycalphad import Database, variables as v
+import symengine as se
+from tinydb import where
+
+
+def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
+    query_params = {"theta": "THETA", "beta": "BMAGN", "Tc": "TC", "Tn": "NT"}
+    for model, model_values in model_dict.items():
+        for parameter, parameter_values in model_values.items():
+            if model in ["einstein", "xiong"]:
+                if parameter == "p":
+                    continue
+                param_type = query_params[parameter]
+                param_order = 0
+                query = (
+                    (where("phase_name") == phase)
+                    & (where("parameter_type") == param_type)
+                    & (where("constituent_array") == constituent_array)
+                )
+                dbf_query = dbf.search(query)
+                if model == "einstein":
+                    param_value = np.log(parameter_values[0])
+                else:
+                    param_value = parameter_values[0]
+                param_expr = se.Piecewise(
+                    (param_value, se.And(v.T >= 0, v.T < 10000)), (0, True)
+                )
+                new_parameter = {
+                    "phase_name": phase,
+                    "constituent_array": constituent_array,
+                    "parameter_type": param_type,
+                    "parameter_order": param_order,
+                    "parameter": param_expr,
+                }
+                dbf._parameters.upsert(new_parameter, query)
+    return dbf
 
 
 def load_database(files: str | list[str]) -> Database:
@@ -16,19 +52,19 @@ def load_database(files: str | list[str]) -> Database:
     """
 
     if type(files) == str:
-        dbf = str(impresources.files('libreCalphad.databases') / files)
+        dbf = str(impresources.files("libreCalphad.databases") / files)
     elif type(files) == list:
         dbf = StringIO()
         for file in files:
-            impfile = impresources.files('libreCalphad.databases') / file
-            with open(impfile, 'r') as f:
+            impfile = impresources.files("libreCalphad.databases") / file
+            with open(impfile, "r") as f:
                 for line in f.readlines():
                     dbf.write(line)
         dbf = dbf.getvalue()
     return Database(dbf)
 
 
-def check_endmembers(db, phase, ref='!'):
+def check_endmembers(db, phase, ref="!"):
     """
     Function to check for missing endmembers and initialize them with a simple sum of SER terms for each component.
     TODO: Allow for automatic testing of systems with new endmembers.
@@ -45,26 +81,28 @@ def check_endmembers(db, phase, ref='!'):
               missing_endmembers, list
                 A list of the new endmembers that were created. Useful for testing systems for compatibility.
     """
-    
+
     constituent_dict = {}
     site_dict = {}
     current_endmembers = {}
-    current_line = ''
+    current_line = ""
     complete_line = False
-    out_string = ''
+    out_string = ""
 
     with open(db) as f:
         for line in f.readlines():
             line = line.rstrip()
-            if line.lstrip().startswith('$'):  # comments and blank lines should not be processed
-                current_line = ''
+            if line.lstrip().startswith(
+                "$"
+            ):  # comments and blank lines should not be processed
+                current_line = ""
                 continue
             if line.endswith("'"):  # multi-line database info or reference
-                current_line = ''
+                current_line = ""
                 continue
-            if line == '':
+            if line == "":
                 continue
-            if line.endswith('!'):
+            if line.endswith("!"):
                 if complete_line:  # Should be a single line parameter
                     current_line = line
                 else:  # should be a mult-line parameter
@@ -75,13 +113,13 @@ def check_endmembers(db, phase, ref='!'):
                     current_line = line
                 else:  # Should be a middle line  of a multi-line parameter
                     current_line += line
-                current_line += '\n'
+                current_line += "\n"
                 complete_line = False
                 continue  # go to next line
-            
+
             # Need to make sure I understand the phase definition first
-            if current_line.startswith(f'PHASE {phase}'):
-                splitted_line = current_line.split(' ')
+            if current_line.startswith(f"PHASE {phase}"):
+                splitted_line = current_line.split(" ")
                 sl = 0
                 i = 0
                 for entry in splitted_line:
@@ -96,52 +134,70 @@ def check_endmembers(db, phase, ref='!'):
                     except:
                         continue
             # Next build the constituents on each sublattice
-            if current_line.startswith(f'CONSTITUENT {phase}'):  # get the constituent definitions
-                splitted_line = current_line.replace(' ', '').strip().split(':')
+            if current_line.startswith(
+                f"CONSTITUENT {phase}"
+            ):  # get the constituent definitions
+                splitted_line = current_line.replace(" ", "").strip().split(":")
                 sl = len(constituent_dict.keys())
                 for i in splitted_line:
-                    i = i.strip('\n')
-                    if len(i.split(',')) > 1:
-                        constituent_dict[sl] = i.strip('\n').split(',')
+                    i = i.strip("\n")
+                    if len(i.split(",")) > 1:
+                        constituent_dict[sl] = i.strip("\n").split(",")
                         sl += 1
-                    elif len(i) <= 2 and i != '!':  # single component sublattice
-                        constituent_dict[sl] = [i]  # brackets needed for compatibility with product function below
+                    elif len(i) <= 2 and i != "!":  # single component sublattice
+                        constituent_dict[sl] = [
+                            i
+                        ]  # brackets needed for compatibility with product function below
                         sl += 1
 
             # Now figure out which endmembers are present
-            if current_line.startswith(f'PARAMETER G({phase}'):
-                endmember = current_line.split(',')[1].split(';')[0]
+            if current_line.startswith(f"PARAMETER G({phase}"):
+                endmember = current_line.split(",")[1].split(";")[0]
                 # Check endmember definition formatting
-                assert len(endmember.split(' ')) == 1, f"Improperly formatted endmember -- {endmember}"
+                assert len(endmember.split(" ")) == 1, (
+                    f"Improperly formatted endmember -- {endmember}"
+                )
                 # Check to make sure this is a valid endmember
-                for i in range(len(endmember.split(':'))):
-                    component = endmember.split(':')[i]
-                    assert component in constituent_dict[i], f"Extra endmember identified, {endmember} \n {current_line} \n {constituent_dict[i]}"
+                for i in range(len(endmember.split(":"))):
+                    component = endmember.split(":")[i]
+                    assert component in constituent_dict[i], (
+                        f"Extra endmember identified, {endmember} \n {current_line} \n {constituent_dict[i]}"
+                    )
                 current_endmembers[endmember] = current_line
 
     # Next determine what endmembers need to be present
     required_endmembers = list(itertools.product(*list(constituent_dict.values())))
     missing_endmembers = []
     insert_blank_line = False
-    current_group_component = ''  # key on the second from the last sublattice for grouping
-    doubled_components = ['B', 'C', 'H', 'N', 'O', 'P', 'S']  # these components have a GHSERXX function definition for their SER
+    current_group_component = (
+        ""  # key on the second from the last sublattice for grouping
+    )
+    doubled_components = [
+        "B",
+        "C",
+        "H",
+        "N",
+        "O",
+        "P",
+        "S",
+    ]  # these components have a GHSERXX function definition for their SER
     for endmember in required_endmembers:
-        if current_group_component != endmember[num_sublattices-2]:
+        if current_group_component != endmember[num_sublattices - 2]:
             insert_blank_line = True
-            current_group_component = endmember[num_sublattices-2]
+            current_group_component = endmember[num_sublattices - 2]
         else:
             insert_blank_line = False
         if insert_blank_line:
-            out_string += '\n'
-        endmember = ':'.join(endmember)
+            out_string += "\n"
+        endmember = ":".join(endmember)
         if endmember not in list(current_endmembers.keys()):
             out_string += f"PARAMETER G({phase},{endmember};0) 298.15\n"
             missing_endmembers.append(endmember)
-            next_line = ' '
+            next_line = " "
             for i in site_dict.keys():
-                component = endmember.split(':')[i]
-                
-                if component == 'VA':
+                component = endmember.split(":")[i]
+
+                if component == "VA":
                     continue
                 if component in doubled_components:
                     component = component + component
@@ -149,16 +205,17 @@ def check_endmembers(db, phase, ref='!'):
                     next_line += f" +GHSER{component}#"
                 else:
                     next_line += f" +{site_dict[i]}*GHSER{component}#"
-            next_line += ';  6000 N'
+            next_line += ";  6000 N"
             while len(next_line) < 72:
-                next_line += ' '
-            next_line += ref + '\n'
+                next_line += " "
+            next_line += ref + "\n"
             out_string += next_line
         else:
             out_string += current_endmembers[endmember]
-            out_string += '\n'
-    
+            out_string += "\n"
+
     return out_string, missing_endmembers
+
 
 def find_missing_functions(db_file):
     """
@@ -166,7 +223,7 @@ def find_missing_functions(db_file):
 
     Parameters : db_file, string
                 String pointer to the database file.
-    
+
     Returns : missing_funcs, list
                 A list of the missing function definitions.
     """
@@ -176,8 +233,8 @@ def find_missing_functions(db_file):
 
     with open(db_file) as f:
         for line in f.readlines():
-            if 'FUNCTION' in line:  # function definitions
-                this_func = line.split(' ')[1]
+            if "FUNCTION" in line:  # function definitions
+                this_func = line.split(" ")[1]
                 if this_func in func_defs:
                     duplicate_funcs.append(this_func)
                 else:
@@ -185,9 +242,9 @@ def find_missing_functions(db_file):
 
     with open(db_file) as f:
         for line in f.readlines():
-            for term in line.split(' '):
-                if term.endswith('#'):
-                    split_term = term[1:].split('*')
+            for term in line.split(" "):
+                if term.endswith("#"):
+                    split_term = term[1:].split("*")
                     if len(split_term) > 1:
                         func = split_term[-1][:-1]
                     else:
