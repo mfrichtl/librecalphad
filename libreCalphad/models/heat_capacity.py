@@ -424,10 +424,7 @@ def _fit_heat_capacity(x, arg_dict):
     return _calc_RSE(model_Cp, Cp_array, x)
 
 
-def fit_heat_capacity(
-    datasets,
-    models,
-):
+def fit_heat_capacity(datasets, models, verbose=False):
     implemented_models = [
         "bcm",
         "einstein",
@@ -739,7 +736,8 @@ def fit_heat_capacity(
                 if key not in ["expression", "param_bounds", "temp_bounds"]
             ]
             models[model]["variable_values"] = symbolic_values
-    print_heat_capacity_fits(min_fits, models)
+    if verbose:
+        print_heat_capacity_fits(min_fits, models)
     return min_fits, models
 
 
