@@ -3,7 +3,7 @@ system:
   datasets: /home/matt/opt/ESPEI-datasets/datasets
   # datasets: /Users/mattfrichtl/opt/ESPEI-datasets/datasets
 output:
-  output_db: LC-steels-GHSER-input.tdb
+  output_db: LC-steels-GHSER-input.xml
   verbosity: 3
   logfile: ESPEI-log.txt
 generate_parameters:

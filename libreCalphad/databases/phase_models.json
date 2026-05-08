@@ -10,8 +10,8 @@
       "sublattice_site_ratios": [1, 1]
     },
     "LIQUID": {
-      "sublattice_model": [["FE"]],
-      "sublattice_site_ratios": [1]
+      "sublattice_model": [["FE"], ["FE"]],
+      "sublattice_site_ratios": [1, 1]
     }
   }
 }

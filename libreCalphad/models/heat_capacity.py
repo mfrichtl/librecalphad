@@ -25,7 +25,6 @@ and introduce error to the Debye model at low temperatures.
 """
 
 from collections import OrderedDict
-import json
 from libreCalphad.databases.db_utils import load_database
 from libreCalphad.models.utilities import identify_variables
 import matplotlib.pyplot as plt
@@ -53,7 +52,7 @@ w2 = 9.0432e-1
 aD = 5.133e-2
 
 
-def _symbolic_Cp(T_arr, variable_values, expression, temp_bounds):
+def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
     if isinstance(expression, str):
         expression = sp.parse_expr(expression)
         expression = se.sympify(expression)
@@ -78,7 +77,7 @@ def _symbolic_Cp(T_arr, variable_values, expression, temp_bounds):
     return ret_arr
 
 
-def _twostate_Cp(T_arr, dE, coef_list):
+def _twostate_Cp(T_arr=0, dE=0, coef_list=[]):
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
@@ -108,7 +107,7 @@ def _twostate_Cp(T_arr, dE, coef_list):
     return ret_arr
 
 
-def _holzapfel_debye_Cp(T_arr, thetaD):
+def _holzapfel_debye_Cp(T_arr=0, thetaD=0):
     def _calc_holzapfel_Cp(x):
         if x == 0:
             return 0
@@ -132,9 +131,8 @@ def _holzapfel_debye_Cp(T_arr, thetaD):
     return ret_arr
 
 
-def _melt_Cp(T_arr, T_melt, a, b, c):
+def _melt_Cp(T_arr=0, T_melt=0, a=0, b=0, c=0, **kwargs):
     # following the approach of Chen and Sundman (2001)
-    # TODO: Try extending the linear/bcm and using this contribution to correct the total Cp
     if isinstance(T_arr, (int, float)):
         if T_arr <= T_melt:
             ret_arr = 0
@@ -151,7 +149,7 @@ def _melt_Cp(T_arr, T_melt, a, b, c):
     return ret_arr
 
 
-def _linear_Cp(T_arr, alpha, T_melt):
+def _linear_Cp(T_arr=0, alpha=0, T_melt=0):
     if isinstance(T_arr, (int, float)):
         if T_arr <= T_melt:
             ret_arr = alpha * T_arr
@@ -168,7 +166,7 @@ def _linear_Cp(T_arr, alpha, T_melt):
     return ret_arr
 
 
-def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma, T_melt):
+def _bent_cable_Cp(T_arr=0, beta_1=0, beta_2=0, tau=0, gamma=0, T_melt=0):
     def _q(temp, tau, gamma):
         def _indfunc1(temp, tau, gamma):
             if np.abs(temp - tau) <= gamma:
@@ -201,21 +199,29 @@ def _bent_cable_Cp(T_arr, beta_1, beta_2, tau, gamma, T_melt):
         return ret_arr
 
 
-def _einstein_Cp(temp, theta):
-    if isinstance(temp, list):
-        temp = np.array(temp)
-    res = (
-        3
-        * R
-        * (theta / temp) ** 2
-        * np.exp(theta / temp)
-        / (np.exp(theta / temp) - 1) ** 2
-    )
-    res = np.nan_to_num(res)  # replace nan with 0
-    return res
+def _einstein_Cp(T_arr=0, theta=0):
+    if isinstance(T_arr, (int, float)):
+        if T_arr == 0:
+            ret_arr = 0
+    else:
+        ret_arr = np.array([])
+        for temp in T_arr:
+            if temp == 0:
+                Cp = 0
+            else:
+                Cp = (
+                    3
+                    * R
+                    * (theta / temp) ** 2
+                    * np.exp(theta / temp)
+                    / (np.exp(theta / temp) - 1) ** 2
+                )
+            ret_arr = np.append(ret_arr, Cp)
+    ret_arr = np.nan_to_num(ret_arr)  # replace nan with 0
+    return ret_arr
 
 
-def _debye_Cp(T_arr, theta):
+def _debye_Cp(T_arr=0, theta=0):
     def _integrand(x):
         return x**4 * np.exp(x) / (np.exp(x) - 1) ** 2
 
@@ -229,7 +235,7 @@ def _debye_Cp(T_arr, theta):
     return ret_arr
 
 
-def _xiong_Cp(T_arr, beta, p, Tc):
+def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0):
     def _D(p):
         return 0.33471979 + 0.49649686 * (1 / p - 1)
 
@@ -267,8 +273,15 @@ def _xiong_Cp(T_arr, beta, p, Tc):
         return ret_arr
 
 
-def _calc_RSE(model_array, Cp_array):
-    error = np.sqrt(np.mean(np.square(np.nan_to_num((model_array - Cp_array)))))
+def _calc_RSE(model_array, Cp_array, x):
+    # error = np.sqrt(np.mean(np.square(np.nan_to_num((model_array - Cp_array)))))
+    # error = np.sqrt(
+    #     np.sum(np.square(np.nan_to_num(model_array - Cp_array)))
+    #     / (len(Cp_array) - len(x) - 1)
+    # )
+    error = np.sqrt(
+        np.sum(np.square((np.nan_to_num((model_array - Cp_array) / Cp_array))))
+    )
     return error
 
 
@@ -281,25 +294,6 @@ def _fit_heat_capacity(x, arg_dict):
     Cp_array = arg_dict["Cp_array"]
     models = arg_dict["models"]
     melt_base_Cp = None
-    if "melt" in list(models.keys()):
-        # Need to pad the Cp array to include some liquid temperatures and target Cp
-        melt_dict = models["melt"]
-        temperature_array = np.append(temperature_array, melt_dict["T_melt"][0] + 500)
-        if "liquid_Cp" in list(melt_dict.keys()):
-            liq_Cp = melt_dict["liquid_Cp"][0]
-        else:
-            liq_Cp = Cp_array[-1]
-        Cp_array = np.append(Cp_array, liq_Cp)
-        while len(temperature_array[temperature_array > melt_dict["T_melt"][0]]) < 5:
-            # if np.max(temperature_array) < melt_dict["T_melt"][0]:
-            #     temperature_array = np.append(
-            #         temperature_array, melt_dict["T_melt"][0] + 500
-            #     )
-            # else:
-            temperature_array = np.append(
-                temperature_array, np.max(temperature_array) + 100
-            )
-            Cp_array = np.append(Cp_array, liq_Cp)
 
     model_Cp = np.zeros(len(Cp_array))
     if "einstein" in list(models.keys()):
@@ -308,18 +302,34 @@ def _fit_heat_capacity(x, arg_dict):
         theta_list = einstein_dict["theta"]
         if "fit" in theta_list:
             idx = theta_list[-1]
-            model_Cp += _einstein_Cp(temperature_array, x[idx])
+            model_Cp += _einstein_Cp(T_arr=temperature_array, theta=x[idx])
         else:
-            model_Cp += _einstein_Cp(temperature_array, theta_list[0])
+            model_Cp += _einstein_Cp(T_arr=temperature_array, theta=theta_list[0])
     elif "holzapfel" in list(models.keys()):
         model_params = []
         holzapfel_dict = models["holzapfel"]
         theta_list = holzapfel_dict["theta"]
         if "fit" in theta_list:
             idx = theta_list[-1]
-            model_Cp += _holzapfel_debye_Cp(temperature_array, x[idx])
+            model_Cp += _holzapfel_debye_Cp(T_arr=temperature_array, thetaD=x[idx])
         else:
-            model_Cp += _holzapfel_debye_Cp(temperature_array, theta_list[0])
+            model_Cp += _holzapfel_debye_Cp(
+                T_arr=temperature_array, thetaD=theta_list[0]
+            )
+    for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
+        symbolic_dict = models[symbolic_key]
+        model_params = []
+        for param, param_list in symbolic_dict.items():
+            if param in ["expression", "param_bounds", "temp_bounds"]:
+                continue
+            idx = param_list[-1]
+            model_params.append(x[idx])
+        model_Cp = model_Cp + _symbolic_Cp(
+            T_arr=temperature_array,
+            variable_values=model_params,
+            expression=symbolic_dict["expression"],
+            temp_bounds=symbolic_dict["temp_bounds"],
+        )
     if "xiong" in list(models.keys()):
         model_params = []
         # Need beta, p, and Tc (or Tn)
@@ -348,61 +358,61 @@ def _fit_heat_capacity(x, arg_dict):
             critical_temp = x[idx]
         else:
             critical_temp = critical_temp_list[0]
-        model_Cp += _xiong_Cp(temperature_array, beta, structure_factor, critical_temp)
+        model_Cp += _xiong_Cp(
+            T_arr=temperature_array, beta=beta, p=structure_factor, Tc=critical_temp
+        )
     if "bcm" in list(models.keys()):
         bcm_dict = models["bcm"]
-        model_params = []
+        model_params = {}
         for param in ["beta_1", "beta_2", "tau", "gamma", "T_melt"]:
             param_list = bcm_dict[param]
             if "fit" in param_list:
                 idx = param_list[-1]
-                model_params.append(x[idx])
+                model_params[param] = x[idx]
             else:
-                model_params.append(param_list[0])
-        model_Cp += _bent_cable_Cp(temperature_array, *model_params)
+                model_params[param] = param_list[0]
+        model_Cp += _bent_cable_Cp(T_arr=temperature_array, **model_params)
     if "two-state" in list(models.keys()):
-        model_params = []
         param_list = models["two-state"]["dE"]
+        model_params = {"dE": [], "coef_list": param_list[1]}
         if "fit" in param_list:
             if isinstance(param_list[0], (float, int)):
                 idx = param_list[-1]
-                model_params.append(x[idx])
+                model_params["dE"].append(x[idx])
             else:
                 idx_list = param_list[-1]
                 for j in idx_list:
-                    model_params.append(x[j])
+                    model_params["dE"].append(x[j])
         else:
             if isinstance(param_list[0], (float, int)):
-                model_params.append(param_list[0])
+                model_params["dE"].append(param_list[0])
             else:
                 for param in param_list[0]:
-                    model_params.append(param)
-        model_Cp += _twostate_Cp(
-            temperature_array, model_params, models["two-state"]["dE"][1]
-        )
+                    model_params["dE"].append(param)
+        model_Cp += _twostate_Cp(T_arr=temperature_array, **model_params)
     if "linear" in list(models.keys()):
         linear_dict = models["linear"]
-        model_params = []
+        model_params = {}
         for param in ["alpha", "T_melt"]:
             param_list = linear_dict[param]
             if "fit" in param_list:
                 idx = param_list[-1]
-                model_params.append(x[idx])
+                model_params[param] = x[idx]
             else:
-                model_params.append(param_list[0])
-        model_Cp += _linear_Cp(temperature_array, *model_params)
+                model_params[param] = param_list[0]
+        model_Cp += _linear_Cp(T_arr=temperature_array, **model_params)
 
     if "melt" in list(models.keys()):
         # Now add the high-temp heat capacity model
         melt_dict = models["melt"]
-        model_params = []
+        model_params = {}
         for param in ["T_melt", "a", "b", "c"]:
             param_list = melt_dict[param]
             if "fit" in param_list:
                 idx = param_list[-1]
-                model_params.append(x[idx])
+                model_params[param] = x[idx]
             else:
-                model_params.append(param_list[0])
+                model_params[param] = param_list[0]
         if "liquid_Cp" not in list(melt_dict.keys()):
             melt_base_Cp = np.max(model_Cp)
         else:
@@ -410,29 +420,14 @@ def _fit_heat_capacity(x, arg_dict):
         assert melt_base_Cp is not None, (
             "Need to specify a base melt heat capacity in another method."
         )
-        model_Cp += _melt_Cp(temperature_array, *model_params)
-    for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
-        symbolic_dict = models[symbolic_key]
-        model_params = []
-        for param, param_list in symbolic_dict.items():
-            if param == "expression" or param == "temp_bounds":
-                continue
-            idx = param_list[-1]
-            model_params.append(x[idx])
-        model_Cp = model_Cp + _symbolic_Cp(
-            temperature_array,
-            model_params,
-            symbolic_dict["expression"],
-            symbolic_dict["temp_bounds"],
-        )
-    return _calc_RSE(model_Cp, Cp_array)
+        model_Cp += _melt_Cp(T_arr=temperature_array, **model_params)
+    return _calc_RSE(model_Cp, Cp_array, x)
 
 
 def fit_heat_capacity(
     datasets,
     models,
 ):
-    # TODO: Use the pycalphad DB for loading model properties.
     implemented_models = [
         "bcm",
         "einstein",
@@ -475,6 +470,22 @@ def fit_heat_capacity(
     else:
         df = datasets
     df = df.sort_values("temperature")
+
+    if "melt" in list(models.keys()):
+        # Need to pad the Cp array to include some liquid temperatures and target Cp
+        melt_dict = models["melt"]
+        T_melt = melt_dict["T_melt"][0]
+        if "liquid_Cp" in list(melt_dict.keys()):
+            liq_Cp = melt_dict["liquid_Cp"][0]
+        else:
+            liq_Cp = df["Cp"][-1]
+        while len(df.query("temperature > @T_melt")) < 5:
+            new_entry = {
+                "temperature": [np.max(df["temperature"].values) + 300],
+                "Cp": [liq_Cp],
+                "reference": "melt",
+            }
+            df = pd.concat([df, pd.DataFrame(new_entry)])
 
     arg_index = []
     params = []
@@ -599,7 +610,7 @@ def fit_heat_capacity(
                 else:
                     bounds.append(default_bounds[param])
                 if param == "tau":
-                    bounds[-1] = (1e-5, bcm_dict["T_melt"][0] - 300)
+                    bounds[-1] = (0, bcm_dict["T_melt"][0] - 300)
 
                 param_list.append(i)
                 i += 1
@@ -685,7 +696,11 @@ def fit_heat_capacity(
             # Assume fitting all symbols not P and T
             symbolic_dict[str(symbol)] = [10.0, "fit", i]
             params.append(10.0)
-            bounds.append((-np.inf, np.inf))
+            if "param_bounds" in list(symbolic_dict.keys()):
+                if str(symbol) in list(symbolic_dict["param_bounds"].keys()):
+                    bounds.append(symbolic_dict["param_bounds"][str(symbol)])
+            else:
+                bounds.append((-np.inf, np.inf))
             i += 1
 
     arg_dict["models"] = models
@@ -700,6 +715,7 @@ def fit_heat_capacity(
             args=arg_dict,
             bounds=bounds,
             method="nelder-mead",
+            options={"adaptive": False, "maxiter": len(params) * 200},
         )
     else:
         min_fits = _fit_heat_capacity(params, arg_dict)
@@ -716,4 +732,33 @@ def fit_heat_capacity(
                 else:
                     for j in range(len(param_list[0])):
                         param_list[0][j] = min_fits.x[param_list[-1][j]]
+        if "symbolic" in model:
+            symbolic_values = [
+                value[0]
+                for key, value in mdict.items()
+                if key not in ["expression", "param_bounds", "temp_bounds"]
+            ]
+            models[model]["variable_values"] = symbolic_values
+    print_heat_capacity_fits(min_fits, models)
     return min_fits, models
+
+
+def print_heat_capacity_fits(min_fits, model_dict):
+    # Function to print the fitted parameters.
+    print("Optimized model parameters:")
+    for model, values in model_dict.items():
+        print(f"Model: {model}")
+        if model == "two-state":
+            out_str = "dE: "
+            for i in range(len(values["dE"][0])):
+                out_str += f"{values['dE'][0][i] * values['dE'][1][i]} "
+            print(out_str)
+        else:
+            for param_name, param_value in values.items():
+                if param_name == "expression":
+                    print(f"{param_name}: {param_value}")
+                elif param_name == "param_bounds":
+                    continue
+                else:
+                    print(f"{param_name}: {param_value[0]:4e}")
+    print(f"RSE: {min_fits.fun:.4f} J/mol/K")

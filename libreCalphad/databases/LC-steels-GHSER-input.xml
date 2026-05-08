@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<?xml-model href="database.rng" schematypens="http://relaxng.org/ns/structure/1.0" type="application/xml"?>
+<Database version="0">
+  <metadata>
+    <writer>pycalphad 0.11.1</writer>
+  </metadata>
+  <ChemicalElement id="FE" mass="55.847" reference_phase="BCC_A2" H298="3734.3729233192507" S298="13.886708522020232"/>
+  <ChemicalElement id="VA" mass="0.0" reference_phase="VACUUM" H298="0.0" S298="0.0"/>
+  <Expr id="GBCCFE">
+    <Interval in="T" lower="0.0" upper="10000.0">GHSERFE</Interval>
+  </Expr>
+  <Expr id="GHSERFE">
+    <Interval in="T" lower="0.0" upper="1811.0">-1130.419885 - 8.055879*T - T*(0.00639056692785408*T + 1.64768956331708e-13*T**4) + 0.00319528346392704*T**2 + 1.31815165065366e-13*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">-28573.219885 + 145.885121*T + 21.8840015929463*T*(1 - ln(T)) - 1.19515056922209e+36*T**(-11) + 5.82922595064349e+18*T**(-5)</Interval>
+  </Expr>
+  <Expr id="GHSERVA">0</Expr>
+  <Phase id="BCC_A2">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site id="1" ratio="3">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+    </Model>
+    <Parameter type="G">GBCCFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
+  </Phase>
+  <Phase id="FCC_A1">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site id="1" ratio="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+    </Model>
+    <Parameter type="G">GHSERFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
+  </Phase>
+  <Phase id="LIQUID">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+    </Model>
+    <Parameter type="G">GHSERFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
+  </Phase>
+</Database>

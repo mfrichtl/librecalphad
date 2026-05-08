@@ -13,4 +13,4 @@ generate_parameters:
     # LIQUID:
     #   SM: 1.4
     #   HM: 1.4
-  input_db: LC-steels-input.tdb
+  input_db: LC-steels-input.xml

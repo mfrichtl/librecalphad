@@ -69,18 +69,18 @@ def calculate_transition_energies(
     return min_fits
 
 
-def _offset_gibbs(T_arr, offset_enthalpy, offset_entropy, ret_expr=False):
+def _offset_gibbs(T_arr=0, enthalpy=0, entropy=0, ret_expr=False):
     # This handles the constants lost during integration
     ret_arr = 0
     if isinstance(T_arr, (int, float)) and not ret_expr:
-        ret_arr = offset_enthalpy - offset_entropy * T_arr
+        ret_arr = enthalpy - entropy * T_arr
     elif not ret_expr:
         ret_arr = np.array([])
         for temp in T_arr:
-            gibbs = offset_enthalpy - offset_entropy * temp
+            gibbs = enthalpy - entropy * temp
             ret_arr = np.append(ret_arr, gibbs)
     else:
-        ret_arr = offset_enthalpy - offset_entropy * v.T
+        ret_arr = enthalpy - entropy * v.T
 
     return ret_arr
 
@@ -112,9 +112,13 @@ def _symbolic_gibbs(T_arr, variable_values, Cp_expression, temp_bounds, ret_expr
             else:
                 gibbs = 0
             ret_arr = np.append(ret_arr, gibbs)
-    else:
+    else:  # want symbolic expression
+        if len(expr_symbols) > len(variable_values):
+            # remove T and P
+            # I think the order of them should still be good
+            expr_symbols = [symbol for symbol in expr_symbols if symbol not in [P, T]]
         if all([T_arr > temp_bounds[0], T_arr <= temp_bounds[1]]):
-            ret_arr = enthalpy - T * entropy
+            ret_arr = (enthalpy - T * entropy).subs(expr_symbols, variable_values)
         else:
             ret_arr = 0
     return ret_arr
@@ -274,7 +278,15 @@ def _holzapfel_gibbs(T_arr, thetaD, ret_expr=False):
 
 
 def _melt_gibbs(
-    T_arr, T_melt, a, b, c, solid_enthalpy=0, solid_entropy=0, ret_expr=False
+    T_arr=0,
+    T_melt=0,
+    a=0,
+    b=0,
+    c=0,
+    solid_enthalpy=0,
+    solid_entropy=0,
+    ret_expr=False,
+    **kwargs,
 ):
     if isinstance(T_arr, (int, float)) and not ret_expr:
         if T_arr <= T_melt:
@@ -361,7 +373,7 @@ def _linear_entropy(T_arr, alpha, T_melt, ret_expr):
     return ret_arr
 
 
-def _linear_gibbs(T_arr, alpha, T_melt, ret_expr=False):
+def _linear_gibbs(T_arr=0, alpha=0, T_melt=0, ret_expr=False):
     if isinstance(T_arr, (int, float)) and not ret_expr:
         ret_arr = _linear_enthalpy(
             T_arr, alpha, T_melt, ret_expr
@@ -480,7 +492,9 @@ def _bent_cable_entropy(T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr=Fals
     return ret_arr
 
 
-def _bent_cable_gibbs(T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr=False):
+def _bent_cable_gibbs(
+    T_arr=0, beta_1=0, beta_2=0, tau=0, gamma=0, T_melt=0, ret_expr=False
+):
     if not ret_expr:
         res = _bent_cable_enthalpy(
             T_arr, beta_1, beta_2, tau, gamma, T_melt, ret_expr
@@ -602,47 +616,63 @@ def create_espei_custom_refstate_stable(model_dict):
 
     TODO: Incorporate Holzapfel approximation into pycalphad.
     """
-    critical_temperatures = [1e-5]
+    critical_temperatures = [0]
     if "bcm" in list(model_dict.keys()):
         bcm_dict = model_dict["bcm"]
-        bcm_args = []
         bcm_kwargs = {"ret_expr": True}
-        bcm_args.append(bcm_dict["beta_1"][0])
-        bcm_args.append(bcm_dict["beta_2"][0])
+        for kwarg, value in bcm_dict.items():
+            bcm_kwargs[kwarg] = value[0]
+        # bcm_args.append(bcm_dict["beta_1"][0])
+        # bcm_args.append(bcm_dict["beta_2"][0])
         tau = bcm_dict["tau"][0]
-        bcm_args.append(tau)
+        # bcm_args.append(tau)
         gamma = bcm_dict["gamma"][0]
-        bcm_args.append(gamma)
-        bcm_args.append(bcm_dict["T_melt"][0])
+        # bcm_args.append(gamma)
+        # bcm_args.append(bcm_dict["T_melt"][0])
         critical_temperatures.append(tau - gamma)
         critical_temperatures.append(tau + gamma)
     if "linear" in list(model_dict.keys()):
-        linear_args = []
         linear_kwargs = {"ret_expr": True}
-        linear_args.append(model_dict["linear"]["alpha"][0])
-        T_melt = model_dict["linear"]["T_melt"][0]
-        linear_args.append(T_melt)
-        if T_melt not in critical_temperatures:
-            critical_temperatures.append(T_melt)
+        for kwarg, value in model_dict["linear"].items():
+            linear_kwargs[kwarg] = value[0]
+        # linear_args.append(model_dict["linear"]["alpha"][0])
+        # T_melt = model_dict["linear"]["T_melt"][0]
+        # linear_args.append(T_melt)
+        if "T_melt" in list(model_dict["linear"].keys()):
+            if model_dict["linear"]["T_melt"][0] not in critical_temperatures:
+                critical_temperatures.append(model_dict["linear"]["T_melt"][0])
+        # if T_melt not in critical_temperatures:
+        #     critical_temperatures.append(T_melt)
     if "melt" in list(model_dict.keys()):
-        melt_args = []
         melt_kwargs = {"ret_expr": True}
+        for kwarg, value in model_dict["melt"].items():
+            melt_kwargs[kwarg] = value[0]
         T_melt = model_dict["melt"]["T_melt"][0]
-        melt_args.append(T_melt)
-        melt_args.append(model_dict["melt"]["a"][0])
-        melt_args.append(model_dict["melt"]["b"][0])
-        melt_args.append(model_dict["melt"]["c"][0])
-
+        # melt_args.append(T_melt)
+        # melt_args.append(model_dict["melt"]["a"][0])
+        # melt_args.append(model_dict["melt"]["b"][0])
+        # melt_args.append(model_dict["melt"]["c"][0])
         for param in ["solid_enthalpy", "solid_entropy"]:
             if param in list(model_dict["melt"].keys()):
                 melt_kwargs[param] = model_dict["melt"][param][0]
         if T_melt not in critical_temperatures:
             critical_temperatures.append(T_melt)
     if "offset" in list(model_dict.keys()):
-        offset_args = []
         offset_kwargs = {"ret_expr": True}
-        offset_args.append(model_dict["offset"]["enthalpy"][0])
-        offset_args.append(model_dict["offset"]["entropy"][0])
+        for kwarg, value in model_dict["offset"].items():
+            offset_kwargs[kwarg] = value[0]
+        # offset_args.append(model_dict["offset"]["enthalpy"][0])
+        # offset_args.append(model_dict["offset"]["entropy"][0])
+    for symbolic_model in [
+        model for model in list(model_dict.keys()) if "symbolic" in model
+    ]:
+        symbolic_dict = model_dict[symbolic_model]
+        if "temp_bounds" in list(symbolic_dict.keys()):
+            bounds = symbolic_dict["temp_bounds"]
+            for temp in bounds:
+                if temp not in critical_temperatures:
+                    critical_temperatures.append(temp)
+
     critical_temperatures.append(10000.00)
 
     critical_temperatures.sort()
@@ -652,27 +682,41 @@ def create_espei_custom_refstate_stable(model_dict):
         # Don't need to include  Xiong parameters because pycalphad includes the Xiong model in its calculations
         this_res = 0
         if "bcm" in list(model_dict.keys()):
-            bcm_expr = _bent_cable_gibbs(
-                critical_temperatures[i] - 1.0, *bcm_args, **bcm_kwargs
-            )
+            bcm_kwargs["T_arr"] = critical_temperatures[i] - 1.0
+            bcm_expr = _bent_cable_gibbs(**bcm_kwargs)
             this_res = this_res + bcm_expr
         if "linear" in list(model_dict.keys()):
-            linear_expr = _linear_gibbs(
-                critical_temperatures[i] - 1.0, *linear_args, **linear_kwargs
-            )
+            linear_kwargs["T_arr"] = critical_temperatures[i] - 1.0
+            linear_expr = _linear_gibbs(**linear_kwargs)
             this_res = this_res + linear_expr
         if "melt" in list(model_dict.keys()):
-            melt_expr = _melt_gibbs(
-                critical_temperatures[i] - 1.0, *melt_args, **melt_kwargs
-            )
+            melt_kwargs["T_arr"] = critical_temperatures[i] - 1.0
+            melt_expr = _melt_gibbs(**melt_kwargs)
             this_res = this_res + melt_expr
-
         if "offset" in list(model_dict.keys()):
-            offset_expr = _offset_gibbs(
-                critical_temperatures[i] - 1.0, *offset_args, **offset_kwargs
-            )
+            offset_kwargs["T_arr"] = critical_temperatures[i] - 1.0
+            offset_expr = _offset_gibbs(**offset_kwargs)
             this_res = this_res + offset_expr
 
+        for symbolic_model in [
+            model for model in list(model_dict.keys()) if "symbolic" in model
+        ]:
+            symbolic_dict = model_dict[symbolic_model]
+            expression = sp.parse_expr(symbolic_dict["expression"])
+            expr_vars = [
+                str(variable)
+                for variable in expression.free_symbols
+                if str(variable) not in ["P", "T"]
+            ]
+            variable_values = [symbolic_dict[variable][0] for variable in expr_vars]
+            symbolic_expr = _symbolic_gibbs(
+                critical_temperatures[i] - 1.0,
+                variable_values,
+                expression,
+                temp_bounds=symbolic_dict["temp_bounds"],
+                ret_expr=True,
+            )
+            this_res = this_res + symbolic_expr
         if this_res != 0:
             res.append(
                 tuple(
