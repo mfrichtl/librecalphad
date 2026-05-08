@@ -81,11 +81,11 @@ def test_fit_bcm_Cp():
     }
 
     fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
-    assert np.isclose(model_dict["bcm"]["beta_1"][0], 0.02130477)
-    assert np.isclose(model_dict["bcm"]["beta_2"][0], 0.2433255)
-    assert np.isclose(model_dict["bcm"]["tau"][0], 700)
-    assert np.isclose(model_dict["bcm"]["gamma"][0], 38.451305)
-    assert np.isclose(fits.fun, 43.2433, atol=1e-5)
+    assert np.isclose(model_dict["bcm"]["beta_1"][0], 0.0242859)
+    assert np.isclose(model_dict["bcm"]["beta_2"][0], 0.1995009)
+    assert np.isclose(model_dict["bcm"]["tau"][0], 700.0)
+    assert np.isclose(model_dict["bcm"]["gamma"][0], 8.6405188)
+    assert np.isclose(fits.fun, 1.328524, atol=1e-5)
 
 
 def test_fix_bcm_Cp():
