@@ -78,6 +78,7 @@ def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
 
 
 def _twostate_Cp(T_arr=0, dE=0, coef_list=[]):
+    # TODO: update to use symbolic expression for dE similar to how the symbolic_Cp function works.
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
@@ -235,7 +236,7 @@ def _debye_Cp(T_arr=0, theta=0):
     return ret_arr
 
 
-def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0):
+def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0, Tn=0):
     def _D(p):
         return 0.33471979 + 0.49649686 * (1 / p - 1)
 
@@ -256,10 +257,14 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0):
                 * (2 * tau**-7 + 2 / 3 * tau**-21 + 2 / 5 * tau**-35 + 2 / 7 * tau**-49)
             )
 
+    if Tc == 0 and Tn != 0:
+        T_crit = Tn
+    else:
+        T_crit = Tc
     if isinstance(T_arr, (int, float)):
         if T_arr == 0:
             return 0
-        tau = T_arr / Tc
+        tau = T_arr / T_crit
         return R * tau * _g(tau, p) * np.log(beta + 1)
     else:
         ret_arr = np.array([])
@@ -267,7 +272,7 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0):
             if temp == 0:
                 Cp = 0
             else:
-                tau = temp / Tc
+                tau = temp / T_crit
                 Cp = R * tau * _g(tau, p) * np.log(beta + 1)
             ret_arr = np.append(ret_arr, Cp)
         return ret_arr

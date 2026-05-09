@@ -56,6 +56,10 @@ def plot_heat_capacity_from_models(
             model_Cp = hc._symbolic_Cp(**keyword_args)
         elif model == "offset":
             continue
+        elif model == "two-state":
+            keyword_args["dE"] = params["dE"][0]
+            keyword_args["coef_list"] = params["dE"][1]
+            model_Cp = hc._twostate_Cp(**keyword_args)
         else:
             for kwarg, value in params.items():
                 keyword_args[kwarg] = value[0]

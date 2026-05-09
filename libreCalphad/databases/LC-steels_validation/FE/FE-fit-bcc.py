@@ -68,14 +68,6 @@ model_dict = {
 }
 min_fits, model_dict = fit_heat_capacity(search_results, model_dict)
 
-theta_Fe = model_dict["einstein"]["theta"][0]
-beta_Fe = model_dict["xiong"]["beta"][0]
-struct_fact_bcc = model_dict["xiong"]["p"][0]
-Tc_Fe = model_dict["xiong"]["Tc"][0]
-melt_a = model_dict["melt"]["a"][0]
-melt_b = model_dict["melt"]["b"][0]
-melt_c = model_dict["melt"]["c"][0]
-
 fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
 fig.savefig("FE-BCC-CPM_fits.png")
 plt.close()
