@@ -128,3 +128,38 @@ def test_fit_symbolic_Cp():
     data_df = pd.DataFrame({"temperature": temps, "Cp": Cp_array, "reference": "test"})
     fits, model_dict = hc.fit_heat_capacity(data_df, model_dict)
     assert np.isclose(model_dict["symbolic"][str(a)][0], 0.25)
+
+
+def test_print_all_fixed_params():
+    data_file = impresources.files("libreCalphad.tests") / "test_einstein_data.json"
+    with open(data_file, "r") as f:
+        test_data = [json.load(f)]
+    model_dict = {"einstein": {"theta": [300, "fix"]}}
+    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict, verbose=True)
+
+
+def test_fix_twostate_Cp():
+    T = se.symbols("T")
+    data_file = impresources.files("libreCalphad.tests") / "test_twostate_data.json"
+    with open(data_file, "r") as f:
+        test_data = [json.load(f)]
+    model_dict = {
+        "two-state": {"dE": [[15000, -5, -1], [T**0, T**1, T * se.log(T)], "fix"]}
+    }
+    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
+    assert np.isclose(fits, 0, atol=1e-7)
+
+
+def test_fit_twostate_Cp():
+    T = se.symbols("T")
+    data_file = impresources.files("libreCalphad.tests") / "test_twostate_data.json"
+    with open(data_file, "r") as f:
+        test_data = [json.load(f)]
+    model_dict = {
+        "two-state": {"dE": [[10000, -2, -2], [T**0, T**1, T * se.log(T)], "fit"]}
+    }
+    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
+    assert np.isclose(model_dict["two-state"]["dE"][0][0], 15000, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["dE"][0][1], -5, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["dE"][0][2], -1, atol=1e-4)
+    assert np.isclose(fits.fun, 0, atol=1e-6)

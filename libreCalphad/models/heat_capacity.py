@@ -19,9 +19,6 @@ Notes: Assuming alpha == tau in [1]
 
     [3] - W. Xiong, Q. Chen, P. A. Korzhavyi, and M. Selleby, “An improved magnetic model for
     thermodynamic modeling,” Calphad, vol. 39, pp. 11–20, 2012.
-
-TODO: Investigate adding a cutoff temperature to the bent-cable model so that it doesn't start from zero
-and introduce error to the Debye model at low temperatures.
 """
 
 from collections import OrderedDict
@@ -279,11 +276,6 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0, Tn=0):
 
 
 def _calc_RSE(model_array, Cp_array, x):
-    # error = np.sqrt(np.mean(np.square(np.nan_to_num((model_array - Cp_array)))))
-    # error = np.sqrt(
-    #     np.sum(np.square(np.nan_to_num(model_array - Cp_array)))
-    #     / (len(Cp_array) - len(x) - 1)
-    # )
     error = np.sqrt(
         np.sum(np.square((np.nan_to_num((model_array - Cp_array) / Cp_array))))
     )
@@ -425,7 +417,7 @@ def _fit_heat_capacity(x, arg_dict):
         assert melt_base_Cp is not None, (
             "Need to specify a base melt heat capacity in another method."
         )
-        model_Cp += _melt_Cp(T_arr=temperature_array, **model_params)
+        model_Cp = model_Cp + _melt_Cp(T_arr=temperature_array, **model_params)
     return _calc_RSE(model_Cp, Cp_array, x)
 
 
@@ -477,17 +469,33 @@ def fit_heat_capacity(datasets, models, verbose=False):
         # Need to pad the Cp array to include some liquid temperatures and target Cp
         melt_dict = models["melt"]
         T_melt = melt_dict["T_melt"][0]
+        df = df.query("temperature <= @T_melt")
         if "liquid_Cp" in list(melt_dict.keys()):
             liq_Cp = melt_dict["liquid_Cp"][0]
         else:
-            liq_Cp = df["Cp"][-1]
-        while len(df.query("temperature > @T_melt")) < 5:
+            # Assume the last heat capacity measurement is liquid
+            liq_Cp = df["Cp"].values[-1]
+        inc_Cp = (liq_Cp - df["Cp"].values[-1]) / 5
+        i = 1
+        while i < 6:
+            # Add some Cp values between the maximum and liquid Cp values to
+            # make sure the curve is continuous between phases
+            new_temp = T_melt + 10 * i
+            new_Cp = df["Cp"].values[-1] + inc_Cp
             new_entry = {
-                "temperature": [np.max(df["temperature"].values) + 300],
-                "Cp": [liq_Cp],
+                "temperature": [new_temp],
+                "Cp": [new_Cp],
                 "reference": "melt",
             }
             df = pd.concat([df, pd.DataFrame(new_entry)])
+            i += 1
+        # Add some values far away
+        i = 0
+        while i < 5:
+            new_temp = np.max(df["temperature"]) + 100
+            new_entry = {"temperature": [new_temp], "Cp": [liq_Cp], "reference": "melt"}
+            df = pd.concat([df, pd.DataFrame(new_entry)])
+            i += 1
 
     arg_index = []
     params = []
@@ -505,7 +513,7 @@ def fit_heat_capacity(datasets, models, verbose=False):
         "beta_2": (0, 1),
         "tau": (0, 3000),
         "gamma": (1e-6, 200),
-        "dE0": (0, 15000),
+        "dE0": (0, 50000),
         "dE1": (-100, 100),
         "dE2": (-100, 100),
         "alpha": (0, 1),
@@ -764,4 +772,5 @@ def print_heat_capacity_fits(min_fits, model_dict):
                     continue
                 else:
                     print(f"{param_name}: {param_value[0]:4e}")
-    print(f"RSE: {min_fits.fun:.4f} J/mol/K")
+    if not isinstance(min_fits, np.float64):
+        print(f"RSE: {min_fits.fun:.4f} J/mol/K")

@@ -9,16 +9,7 @@ from libreCalphad.models.energy import (
     create_espei_custom_refstate_stable,
     upsert_custom_refstate_json,
 )
-from libreCalphad.models.heat_capacity import (
-    _linear_Cp,
-    _debye_Cp,
-    _einstein_Cp,
-    _holzapfel_debye_Cp,
-    _xiong_Cp,
-    _melt_Cp,
-    _symbolic_Cp,
-    fit_heat_capacity,
-)
+from libreCalphad.models.heat_capacity import fit_heat_capacity
 from libreCalphad.models.plotting import plot_heat_capacity_from_models
 import matplotlib.pyplot as plt
 import numpy as np
@@ -58,15 +49,15 @@ model_dict = {
     "melt": {
         "T_melt": [T_melt, "fix"],
         "liquid_Cp": [46, "fix"],
-        "a": [-21, "fit"],
-        "b": [9e18, "fit"],
-        "c": [-1.5e37, "fit"],
-        "solid_enthalpy": [-26235.4414026],
-        "solid_entropy": [-145.843236],
+        "a": [2.10474823e1, "fit"],
+        "b": [8.34548e19, "fit"],
+        "c": [-5.65116e39, "fit"],
+        "solid_enthalpy": [-19073.96376],
+        "solid_entropy": [-127.108],
     },
-    "offset": {"enthalpy": [534.107, "fix"], "entropy": [8.51916, "fix"]},
+    "offset": {"enthalpy": [521.731, "fix"], "entropy": [8.51916, "fix"]},
 }
-min_fits, model_dict = fit_heat_capacity(search_results, model_dict)
+min_fits, model_dict = fit_heat_capacity(search_results, model_dict, verbose=True)
 
 fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
 fig.savefig("FE-BCC-CPM_fits.png")
@@ -164,8 +155,12 @@ melt_calc_HM = calculate(
 melt_calc_SM = calculate(
     dbf, components, phase, T=T_melt - 0.01, P=101325, N=1, output="SM"
 )
+melt_calc_CPM = calculate(
+    dbf, components, phase, T=T_melt - 0.01, P=101325, N=1, output="heat_capacity"
+)
 print(f"Melt HM={melt_calc_HM.HM.squeeze().values}")
 print(f"Melt SM={melt_calc_SM.SM.squeeze().values}")
+print(f"Melt CPM={melt_calc_CPM.heat_capacity.squeeze().values}")
 
 melt_HM_min = calculate_transition_energies(dbf, components, phase, T_melt, "HM")
 print(f"Melt enthalpy offset required = {melt_HM_min.x[0]} J/mol-formula")

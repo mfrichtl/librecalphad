@@ -2,28 +2,20 @@ from espei.datasets import load_datasets, recursive_glob
 from importlib import reload
 import importlib.resources as impresources
 import json
-from libreCalphad.databases.db_utils import load_database
-from libreCalphad.models.energy import upsert_custom_refstate_json
-from libreCalphad.models.heat_capacity import (
-    _bent_cable_Cp,
-    _debye_Cp,
-    _einstein_Cp,
-    _holzapfel_debye_Cp,
-    _xiong_Cp,
-    _twostate_Cp,
-    _linear_Cp,
-    _melt_Cp,
-    fit_heat_capacity,
+from libreCalphad.databases.db_utils import load_database, upsert_db_param_from_models
+from libreCalphad.models.energy import (
+    calculate_offset,
+    calculate_transition_energies,
+    upsert_custom_refstate_json,
 )
+from libreCalphad.models.heat_capacity import fit_heat_capacity
 from libreCalphad.models.plotting import plot_heat_capacity_from_models
 import matplotlib.pyplot as plt
 import os
 import numpy as np
 import pandas as pd
-from pycalphad import Workspace, as_property, calculate, variables as v
-from pycalphad.mapping import BinaryStrategy, plot_binary
-from pycalphad.property_framework.metaproperties import IsolatedPhase
-from scipy.optimize import curve_fit
+from pycalphad import calculate, Database, variables as v
+import seaborn as sns
 import symengine as se
 from tinydb import where
 import yaml
@@ -44,7 +36,7 @@ query = (
 search_results = datasets.search(query)
 
 R = 8.314472
-a, T = se.symbols("a T")
+a, b, T = se.symbols("a b T")
 # magnetic model constants
 beta_Fe = 0.7  # magnetic moment per atom Fe
 structure_factor = 0.28
@@ -59,31 +51,30 @@ model_dict = {
         "Tn": [Tn_Fe, "fix"],
     },
     "symbolic": {
-        "expression": a * T,
-        "param_bounds": {"a": (-np.inf, np.inf)},
+        "expression": a * T + b * T**4,
+        "param_bounds": {"a": (3e-3, 7e-3), "b": (2e-13, 6e-13)},
         "temp_bounds": (0, T_melt),
     },
     "melt": {
         "T_melt": [1811, "fix"],
         "liquid_Cp": [46, "fix"],
-        "a": [-21, "fit"],
+        "a": [21, "fit"],
         "b": [9e18, "fit"],
         "c": [-1.5e37, "fit"],
-        "solid_enthalpy": [-27190.7, "fix"],
-        "solid_entropy": [-144.759, "fix"],
+        "solid_enthalpy": [-38246.0995, "fix"],
+        "solid_entropy": [-174.515, "fix"],
     },
     "offset": {
-        "enthalpy": [-2905.15, "fix"],
-        "entropy": [8.529, "fix"],
+        "enthalpy": [-2539.33, "fix"],
+        "entropy": [6.39016, "fix"],
     },
     "two-state": {"dE": [[9.02352375e3, -2.4952226], [T**0, T**1], "fit"]},
 }
-min_fits, model_dict = fit_heat_capacity(search_results, model_dict)
+min_fits, model_dict = fit_heat_capacity(search_results, model_dict, verbose=True)
 
 fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
 fig.savefig("FE-FCC-CPM_fits.png")
 plt.close()
-# initialize a dataframe for the model
 
 refstate_file = impresources.files("refstate") / "LCRefstates.json"
 
@@ -107,12 +98,397 @@ with open("./_fitted_params.json", "w") as f:
 
 import espei
 
+# Now let's update the input dbf
+input_db_file = impresources.files("libreCalphad.databases") / "LC-steels-input.xml"
+input_dbf = Database(input_db_file)
+# backup in case something goes wrong, it can delete all the parameters in the file
+input_db_bak = impresources.files("libreCalphad.databases") / "LC-steels-input.bak.xml"
+input_dbf.to_file(input_db_bak, if_exists="overwrite")
 
-# Gibbs energies
-# df_model["two-state-gibbs"] = _twostate_gibbs(df_model["temperature"], [de0, de1])
-#
-# fig, ax = plt.subplots()
-# ax.plot(df_model["temperature"], df_model["two-state-gibbs"], label="Two-State")
-# ax.legend()
-# fig.tight_layout()
-# fig.savefig("./FE-Gibbs-FCC_A1.png")
+species_dict = {sp.name: sp for sp in input_dbf.species}
+constituent_array = ((species_dict["FE"],), (species_dict["VA"],))
+input_dbf = upsert_db_param_from_models(
+    input_dbf, model_dict, phase[0], constituent_array
+)
+input_dbf.to_file(input_db_file, if_exists="overwrite")
+
+
+phase_model_file = impresources.files("libreCalphad.databases") / "phase_models.json"
+with open(phase_model_file, "r") as f:
+    phase_models = json.load(f)
+
+reload(espei)
+dbf = espei.generate_parameters(
+    phase_models, datasets, "LCRefState", "linear", dbf=input_dbf
+)
+db_file = impresources.files("libreCalphad.databases") / "LC-steels-thermo.xml"
+dbf.to_file(db_file, if_exists="overwrite")
+
+# now let's calculate some stuffs
+H298 = (
+    calculate(dbf, components, "BCC_A2", T=298.15, P=101325, N=1, output="HM")
+    .HM.squeeze()
+    .values
+)
+S298 = (
+    calculate(dbf, components, "BCC_A2", T=298.15, P=101325, N=1, output="SM")
+    .SM.squeeze()
+    .values
+)
+
+melt_calc_HM = calculate(
+    dbf, components, phase, T=T_melt - 0.01, P=101325, N=1, output="HM"
+)
+melt_calc_SM = calculate(
+    dbf, components, phase, T=T_melt - 0.01, P=101325, N=1, output="SM"
+)
+print(f"Melt HM={melt_calc_HM.HM.squeeze().values}")
+print(f"Melt SM={melt_calc_SM.SM.squeeze().values}")
+
+melt_HM_min = calculate_transition_energies(dbf, components, phase, T_melt, "HM")
+print(f"Melt enthalpy offset required = {melt_HM_min.x[0]} J/mol-formula")
+melt_SM_min = calculate_transition_energies(dbf, components, phase, T_melt, "SM")
+print(f"Melt entropy offset required = {-melt_SM_min.x[0]} J/mol-K-formula")
+
+# Plot CPM
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "CPM")
+)
+search_results = datasets.search(query)
+
+fig, ax = plt.subplots()
+cpm_res = calculate(
+    dbf, components, phase, T=(0.5, 3000, 2), P=101325, N=1, output="heat_capacity"
+)
+ax.plot(cpm_res.T, cpm_res.heat_capacity.squeeze())
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Isobaric Heat Capacity (J/mol-formula-K)")
+fig.tight_layout()
+plt.savefig(f"./CPM-CALC-FE-{phase[0]}.png")
+plt.close()
+
+# Enthalpy plotting
+
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "HM")
+)
+search_results = datasets.search(query)
+
+
+enthalpy_df = pd.DataFrame()
+for result in search_results:
+    res_dict = {
+        "T": result["conditions"]["T"],
+        "HM_meas": np.array(result["values"]).squeeze(),
+        "reference": result["reference"],
+    }
+    enthalpy_calc_arr = np.array([])
+    for temp in result["conditions"]["T"]:
+        enthalpy_calc = calculate(
+            dbf, components, phase, T=temp, P=101325, N=1, output="HM"
+        )
+        enthalpy_calc_arr = np.append(
+            enthalpy_calc_arr, enthalpy_calc.HM.squeeze().values
+        )
+    res_dict["HM_calc"] = enthalpy_calc_arr
+
+    if enthalpy_df.empty:
+        enthalpy_df = pd.DataFrame(res_dict)
+    else:
+        enthalpy_df = pd.concat(
+            [enthalpy_df, pd.DataFrame(res_dict)], ignore_index=True
+        )
+hm_fits = calculate_offset(enthalpy_df["HM_calc"], enthalpy_df["HM_meas"])
+print(
+    f"Enthalpy calculation is {hm_fits[0][0]} J/mol-formula different than measurements."
+)
+
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "DH")
+)
+search_results = datasets.search(query)
+
+for result in search_results:
+    res_dict = {
+        "T": result["conditions"]["T"],
+        "HM_meas": np.array(result["values"]).squeeze() - H298,
+        "reference": result["reference"],
+    }
+    enthalpy_calc_arr = np.array([])
+    for temp in result["conditions"]["T"]:
+        enthalpy_calc = calculate(
+            dbf, components, phase, T=temp, P=101325, N=1, output="HM"
+        )
+        enthalpy_calc_arr = np.append(
+            enthalpy_calc_arr, enthalpy_calc.HM.squeeze().values - H298
+        )
+    res_dict["HM_calc"] = enthalpy_calc_arr
+
+    if enthalpy_df.empty:
+        enthalpy_df = pd.DataFrame(res_dict)
+    else:
+        enthalpy_df = pd.concat(
+            [enthalpy_df, pd.DataFrame(res_dict)], ignore_index=True
+        )
+
+enthalpy_df["HM_error"] = enthalpy_df["HM_meas"] - enthalpy_df["HM_calc"]
+fig, ax = plt.subplots()
+calc_res = calculate(
+    dbf,
+    components,
+    phase,
+    T=(0.5, np.max(enthalpy_df["T"]) + 200, 2),
+    P=101325,
+    N=1,
+    output="HM",
+)
+ax.plot(calc_res.T, calc_res.HM.squeeze())
+sns.scatterplot(enthalpy_df, x="T", y="HM_meas", hue="reference", ax=ax)
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Enthalpy (J/mol-formula)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./HM-CALC-FE-{phase[0]}.png")
+plt.close()
+
+parity_array = np.linspace(
+    np.min(enthalpy_df["HM_meas"]) - 100, np.max(enthalpy_df["HM_meas"]) + 100
+)
+fig, ax = plt.subplots()
+sns.scatterplot(enthalpy_df, x="HM_meas", y="HM_calc", hue="reference", ax=ax)
+ax.plot(parity_array, parity_array)
+ax.set_xlabel("Measured Enthalpy (J/mol-formula)")
+ax.set_ylabel("Calculated Enthalpy (J/mol-formula)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./HM-parity_plot-FE-{phase[0]}.png")
+plt.close()
+
+fig, ax = plt.subplots()
+sns.scatterplot(enthalpy_df, x="T", y="HM_error", hue="reference", ax=ax)
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Enthalpy Error (J/mol-formula)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./HM-error_plot-FE-{phase[0]}.png")
+plt.close()
+
+# Entropy plotting
+
+entropy_df = pd.DataFrame()
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "SM")
+)
+search_results = datasets.search(query)
+
+fig, ax = plt.subplots()
+calc_res = calculate(
+    dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="SM"
+)
+ax.plot(calc_res.T, calc_res.SM.squeeze())
+for result in search_results:
+    res_dict = {
+        "T": result["conditions"]["T"],
+        "SM_meas": np.array(result["values"]).squeeze(),
+        "reference": result["reference"],
+    }
+    entropy_calc_arr = np.array([])
+    for temp in result["conditions"]["T"]:
+        entropy_calc = calculate(
+            dbf, components, phase, T=temp, P=101325, N=1, output="SM"
+        )
+        entropy_calc_arr = np.append(entropy_calc_arr, entropy_calc.SM.squeeze().values)
+    res_dict["SM_calc"] = entropy_calc_arr
+
+    if entropy_df.empty:
+        entropy_df = pd.DataFrame(res_dict)
+    else:
+        entropy_df = pd.concat([entropy_df, pd.DataFrame(res_dict)], ignore_index=True)
+sm_fits = calculate_offset(entropy_df["SM_calc"], entropy_df["SM_meas"])
+print(
+    f"Entropy calculation is {sm_fits[0][0]} J/mol-K-formula different than measurements."
+)
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "DS")
+)
+search_results = datasets.search(query)
+
+for result in search_results:
+    res_dict = {
+        "T": result["conditions"]["T"],
+        "SM_meas": np.array(result["values"]).squeeze() + S298,
+        "reference": result["reference"],
+    }
+    entropy_calc_arr = np.array([])
+    for temp in result["conditions"]["T"]:
+        entropy_calc = calculate(
+            dbf, components, phase, T=temp, P=101325, N=1, output="SM"
+        )
+        entropy_calc_arr = np.append(entropy_calc_arr, entropy_calc.SM.squeeze().values)
+    res_dict["SM_calc"] = entropy_calc_arr
+
+    if entropy_df.empty:
+        entropy_df = pd.DataFrame(res_dict)
+    else:
+        entropy_df = pd.concat([entropy_df, pd.DataFrame(res_dict)], ignore_index=True)
+
+
+entropy_df["SM_error"] = entropy_df["SM_meas"] - entropy_df["SM_calc"]
+
+fig, ax = plt.subplots()
+sns.scatterplot(entropy_df, x="T", y="SM_meas", hue="reference", ax=ax)
+ax.plot(calc_res.T, calc_res.SM.squeeze())
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Entropy (J/mol-formula-K)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./SM-CALC-FE-{phase[0]}.png")
+
+fig, ax = plt.subplots()
+sns.scatterplot(entropy_df, x="T", y="SM_error", hue="reference", ax=ax)
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Enthalpy Error (J/mol-K-formula)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./SM-error_plot-FE-{phase[0]}.png")
+plt.close()
+
+# Gibbs plotting
+query = (
+    (where("phases") == phase)
+    & (where("components") == components)
+    & (where("output") == "GM")
+)
+search_results = datasets.search(query)
+calc_res = calculate(
+    dbf, components, phase, T=(0.5, 2000, 2), P=101325, N=1, output="GM"
+)
+
+fig, ax = plt.subplots()
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+ax.plot(calc_res.T, calc_res.GM.squeeze())
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel("Gibbs energy (J/mol-formula)")
+ax.legend()
+fig.tight_layout()
+fig.savefig(f"./GM-CALC-{phase[0]}.png")
+
+
+# BCC_A2 - FCC_A1
+phases = ["BCC_A2", "FCC_A1"]
+# DG
+query = (
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DG-BCC_A2-FCC_A1")
+)
+search_results = datasets.search(query)
+inv_query = (
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DG-FCC_A1-BCC_A2")
+)
+inv_search_results = datasets.search(inv_query)
+
+fig, ax = plt.subplots()
+bcc_calc = calculate(
+    dbf,
+    components,
+    "BCC_A2",
+    T=(0.5, 2000, 2),
+    P=101325,
+    N=1,
+)
+fcc_calc = calculate(
+    dbf,
+    components,
+    "FCC_A1",
+    T=(0.5, 2000, 2),
+    P=101325,
+    N=1,
+)
+
+ax.plot(bcc_calc.T, (fcc_calc.GM.squeeze() - bcc_calc.GM.squeeze()))
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+for result in inv_search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        -np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel(r"$\Delta G^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./DG-BCC_A2-FCC_A1.png")
+plt.close()
+
+# DH data
+query = (
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DH-BCC_A2-FCC_A1")
+)
+search_results = datasets.search(query)
+
+inv_query = (
+    (where("phases") == phases)
+    & (where("components") == components)
+    & (where("output") == "DH-FCC_A1-BCC_A2")
+)
+inv_search_results = datasets.search(inv_query)
+
+fig, ax = plt.subplots()
+bcc_calc = calculate(
+    dbf, components, "BCC_A2", T=(0.5, 2000, 2), P=101325, N=1, output="enthalpy"
+)
+fcc_calc = calculate(
+    dbf, components, "FCC_A1", T=(0.5, 2000, 2), P=101325, N=1, output="enthalpy"
+)
+
+ax.plot(bcc_calc.T, (fcc_calc.enthalpy.squeeze() - bcc_calc.enthalpy.squeeze()))
+for result in search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+for result in inv_search_results:
+    ax.scatter(
+        result["conditions"]["T"],
+        -np.array(result["values"]).squeeze(),
+        label=result["reference"],
+    )
+
+ax.set_xlabel("Temperature (K)")
+ax.set_ylabel(r"$\Delta H^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)")
+ax.legend()
+fig.tight_layout()
+plt.savefig(f"./DH-BCC_A2-FCC_A1.png")
+plt.close()

@@ -750,10 +750,13 @@ def upsert_custom_refstate_json(
         element_key = element
 
     # Need to update the functions used to create the reference state
-    custom_refstate[element_key] = {
-        "Cp_fits.x": Cp_fits.x.tolist(),
-        "Cp_fits.RSE": float(Cp_fits.fun),
-    }
+    if not isinstance(Cp_fits, np.float64):
+        custom_refstate[element_key] = {
+            "Cp_fits.x": Cp_fits.x.tolist(),
+            "Cp_fits.RSE": float(Cp_fits.fun),
+        }
+    else:
+        custom_refstate[element_key] = {"Cp_fits.x": None, "Cp_fits.RSE": Cp_fits}
     stringified_dict = {}
     if model_dict is not None:
         for key, value in model_dict.items():

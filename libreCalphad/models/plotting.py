@@ -71,7 +71,7 @@ def plot_heat_capacity_from_models(
     df_model = pd.concat([df_model, pd.DataFrame(cpm_dict)])
 
     if fig is None:
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(8, 6))
     sns.scatterplot(data=exp_df, x="T", y="CPM", hue="reference", ax=ax)
     sns.lineplot(data=df_model, x="T", y="CPM", hue="model", ax=ax)
     ax.set_xlabel("Temperature (K)")

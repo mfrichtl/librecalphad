@@ -4,18 +4,26 @@ from io import StringIO
 import numpy as np
 from pycalphad import Database, variables as v
 import symengine as se
+import sympy as sp
 from tinydb import where
 
 
 def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
-    query_params = {"theta": "THETA", "beta": "BMAGN", "Tc": "TC", "Tn": "NT"}
+    query_params = {
+        "theta": "THETA",
+        "beta": "BMAGN",
+        "Tc": "TC",
+        "Tn": "NT",
+        "dE": "GD",
+    }
     for model, model_values in model_dict.items():
         for parameter, parameter_values in model_values.items():
-            if model in ["einstein", "xiong"]:
+            if model in ["einstein", "two-state", "xiong"]:
                 if parameter == "p":
                     continue
                 param_type = query_params[parameter]
                 param_order = 0
+
                 query = (
                     (where("phase_name") == phase)
                     & (where("parameter_type") == param_type)
@@ -24,6 +32,16 @@ def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
                 dbf_query = dbf.search(query)
                 if model == "einstein":
                     param_value = np.log(parameter_values[0])
+                elif model == "two-state":
+                    coef_list = parameter_values[0]
+                    symbol_list = parameter_values[1].strip("[]").split(", ")
+                    param_value = 0
+                    for i in range(len(coef_list)):
+                        if symbol_list[i] == "1":
+                            param_value = param_value + coef_list[i]
+                        else:
+                            symbol = sp.parse_expr(symbol_list[i])
+                            param_value = param_value + coef_list[i] * symbol
                 else:
                     param_value = parameter_values[0]
                 param_expr = se.Piecewise(
