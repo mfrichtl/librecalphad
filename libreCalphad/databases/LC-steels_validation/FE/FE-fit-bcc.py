@@ -34,30 +34,14 @@ query = (
 )
 search_results = datasets.search(query)
 
-R = 8.314472
-# magnetic model constants
-T_melt = 1811
-a, b, c, T = se.symbols("a b c T")
-model_dict = {
-    "einstein": {"theta": [309, "fit"]},
-    "xiong": {"beta": [2.22, "fix"], "p": [0.37, "fix"], "Tc": [1043, "fix"]},
-    "symbolic_LT": {
-        "expression": a * T + b * T**4,
-        "param_bounds": {"a": (5e-3, 7e-3), "b": (6.5e-13, 6.7e-13)},
-        "temp_bounds": (0, T_melt),
-    },
-    "melt": {
-        "T_melt": [T_melt, "fix"],
-        "liquid_Cp": [46, "fix"],
-        "a": [2.10474823e1, "fit"],
-        "b": [8.34548e19, "fit"],
-        "c": [-5.65116e39, "fit"],
-        "solid_enthalpy": [-19073.96376],
-        "solid_entropy": [-127.108],
-    },
-    "offset": {"enthalpy": [521.731, "fix"], "entropy": [8.51916, "fix"]},
-}
-min_fits, model_dict = fit_heat_capacity(search_results, model_dict, verbose=True)
+param_input_file = "FE-params.json"
+
+with open(param_input_file, "r") as f:
+    model_dict_input = json.load(f)
+min_fits, model_dict = fit_heat_capacity(
+    search_results, model_dict_input[phase[0]], verbose=True
+)
+T_melt = model_dict["melt"]["T_melt"][0]
 
 fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
 fig.savefig("FE-BCC-CPM_fits.png")
@@ -162,11 +146,20 @@ print(f"Melt HM={melt_calc_HM.HM.squeeze().values}")
 print(f"Melt SM={melt_calc_SM.SM.squeeze().values}")
 print(f"Melt CPM={melt_calc_CPM.heat_capacity.squeeze().values}")
 
+with open(param_input_file, "r") as f:
+    model_dict_input = json.load(f)
 melt_HM_min = calculate_transition_energies(dbf, components, phase, T_melt, "HM")
 print(f"Melt enthalpy offset required = {melt_HM_min.x[0]} J/mol-formula")
+# model_dict_input[phase[0]]["melt"]["solid_enthalpy"][0] = (
+#     model_dict_input[phase[0]]["melt"]["solid_enthalpy"][0] + melt_HM_min.x[0]
+# )
 melt_SM_min = calculate_transition_energies(dbf, components, phase, T_melt, "SM")
-print(f"Melt entropy offset required = {-melt_SM_min.x[0]} J/mol-K-formula")
-
+print(f"Melt entropy offset required = {melt_SM_min.x[0]} J/mol-K-formula")
+# model_dict_input[phase[0]]["melt"]["solid_entropy"][0] = (
+#     model_dict_input[phase[0]]["melt"]["solid_entropy"][0] + melt_SM_min.x[0]
+# )
+with open(param_input_file, "w") as f:
+    json.dump(model_dict_input, f, indent=4)
 # Plot CPM
 query = (
     (where("phases") == phase)

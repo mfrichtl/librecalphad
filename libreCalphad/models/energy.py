@@ -760,9 +760,7 @@ def upsert_custom_refstate_json(
     stringified_dict = {}
     if model_dict is not None:
         for key, value in model_dict.items():
-            if key == "two-state":
-                value["dE"][1] = str(value["dE"][1])
-            elif key == "symbolic":
+            if key in ["symbolic", "two-state"]:
                 for key1, value1 in value.items():
                     if key1 == "expression":
                         value[key1] = str(value1)

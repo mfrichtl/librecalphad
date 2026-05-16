@@ -50,12 +50,15 @@ aD = 5.133e-2
 
 
 def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
+    # TODO: Update this be the same as the two-state expression
     if isinstance(expression, str):
         expression = sp.parse_expr(expression)
         expression = se.sympify(expression)
     # Assuming the other symbols besides T and P are variables to be fit
     expr_symbols = [symbol for symbol in expression.free_symbols]
 
+    if len(temp_bounds) == 0:
+        temp_bounds = (0, 10000)
     if isinstance(T_arr, (int, float)):
         if all([T_arr > temp_bounds[0], T_arr <= temp_bounds[1]]):
             symbol_values = identify_variables(expr_symbols, variable_values, T_arr)
@@ -74,14 +77,11 @@ def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
     return ret_arr
 
 
-def _twostate_Cp(T_arr=0, dE=0, coef_list=[]):
+def _twostate_Cp(T_arr=0, expression=None, **kwargs):
     # TODO: update to use symbolic expression for dE similar to how the symbolic_Cp function works.
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
-
-    if isinstance(dE, list):
-        dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
 
     def _calc_twostate_Cp(temp, dE):
         dH = -(T**2) * (dE / T).diff(T)
@@ -96,11 +96,11 @@ def _twostate_Cp(T_arr=0, dE=0, coef_list=[]):
         return np.float64(twostate_Cp.subs(T, temp))
 
     if isinstance(T_arr, (int, float)):
-        ret_arr = _calc_twostate_Cp(T_arr, dE)
+        ret_arr = _calc_twostate_Cp(T_arr, expression)
     else:
         ret_arr = np.array([])
         for temp in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_Cp(temp, dE))
+            ret_arr = np.append(ret_arr, _calc_twostate_Cp(temp, expression))
     ret_arr = np.nan_to_num(ret_arr)
     return ret_arr
 
@@ -317,7 +317,12 @@ def _fit_heat_capacity(x, arg_dict):
         symbolic_dict = models[symbolic_key]
         model_params = []
         for param, param_list in symbolic_dict.items():
-            if param in ["expression", "param_bounds", "temp_bounds"]:
+            if param in [
+                "expression",
+                "param_bounds",
+                "temp_bounds",
+                "variable_values",
+            ]:
                 continue
             idx = param_list[-1]
             model_params.append(x[idx])
@@ -370,22 +375,22 @@ def _fit_heat_capacity(x, arg_dict):
                 model_params[param] = param_list[0]
         model_Cp += _bent_cable_Cp(T_arr=temperature_array, **model_params)
     if "two-state" in list(models.keys()):
-        param_list = models["two-state"]["dE"]
-        model_params = {"dE": [], "coef_list": param_list[1]}
-        if "fit" in param_list:
-            if isinstance(param_list[0], (float, int)):
+        # param_list = models["two-state"]["dE"]
+        model_params = models["two-state"]
+        for symbol in model_params["symbols"]:
+            param_list = model_params[symbol]
+            if "fit" in param_list:
                 idx = param_list[-1]
-                model_params["dE"].append(x[idx])
+                # model_params[symbol].append(x[idx])
+                model_params["expression"] = model_params["expression"].subs(
+                    symbol, x[idx]
+                )
             else:
-                idx_list = param_list[-1]
-                for j in idx_list:
-                    model_params["dE"].append(x[j])
-        else:
-            if isinstance(param_list[0], (float, int)):
-                model_params["dE"].append(param_list[0])
-            else:
-                for param in param_list[0]:
-                    model_params["dE"].append(param)
+                # model_params[symbol].append(param_list[0])
+                model_params["expression"] = model_params["expression"].subs(
+                    symbol, param_list[0]
+                )
+
         model_Cp += _twostate_Cp(T_arr=temperature_array, **model_params)
     if "linear" in list(models.keys()):
         linear_dict = models["linear"]
@@ -422,6 +427,7 @@ def _fit_heat_capacity(x, arg_dict):
 
 
 def fit_heat_capacity(datasets, models, verbose=False):
+    models = models.copy()
     implemented_models = [
         "bcm",
         "einstein",
@@ -475,6 +481,7 @@ def fit_heat_capacity(datasets, models, verbose=False):
         else:
             # Assume the last heat capacity measurement is liquid
             liq_Cp = df["Cp"].values[-1]
+        # Commented code below replaced with a single point 2000 K higher than the max temp provided 2026-05-16
         inc_Cp = (liq_Cp - df["Cp"].values[-1]) / 5
         i = 1
         while i < 6:
@@ -496,6 +503,12 @@ def fit_heat_capacity(datasets, models, verbose=False):
             new_entry = {"temperature": [new_temp], "Cp": [liq_Cp], "reference": "melt"}
             df = pd.concat([df, pd.DataFrame(new_entry)])
             i += 1
+        # new_entry = {
+        #     "temperature": [np.max(df["temperature"]) + 2000],
+        #     "Cp": [liq_Cp],
+        #     "reference": "melt",
+        # }
+        df = pd.concat([df, pd.DataFrame(new_entry)])
 
     arg_index = []
     params = []
@@ -633,32 +646,27 @@ def fit_heat_capacity(datasets, models, verbose=False):
 
     if "two-state" in list(models.keys()):
         # shape of two-state param list is [[coef_list], [term_list], [bound_list], fit/fix]
-        param_list = models["two-state"]["dE"]
-        if "fit" in param_list:
-            if isinstance(param_list[0], (float, int)):
-                # Only a constant value supplied. Not sure if this will ever really happen
-                params.append(param_list[0])
-                if len(param_list) == 4:
-                    bounds.append(param_list[3])
-                else:
-                    bounds.append(default_bounds["dE0"])
-                param_list.append(i)
+        model_dict = models["two-state"]
+        expression = sp.parse_expr(model_dict["expression"])
+        symbols = [
+            str(symbol) for symbol in expression.free_symbols if symbol not in (P, T)
+        ]
+        model_dict["symbols"] = symbols
+        model_dict["expression"] = expression
+        for symbol in symbols:
+            symbol_list = model_dict[str(symbol)]
+            if "fit" in symbol_list:
+                assert len(symbol_list) == 3, f"Symbol {symbol} not correctly setup."
+                params.append(symbol_list[0])
+                bounds.append(symbol_list[1])
+                symbol_list.append(i)
                 i += 1
-            else:  # Need to fit multiple parameters in a list because dE=f(T)
-                param_sublist = []
-                for j in range(len(param_list[0])):
-                    params.append(param_list[0][j])
-                    if len(param_list) == 4:
-                        bounds.append(param_list[3][j])
-                    else:
-                        bounds.append(default_bounds[f"dE{j}"])
-                    param_sublist.append(i)
-                    i += 1
-                param_list.append(param_sublist)
-        elif "fix" in param_list:
-            pass
-        else:
-            raise ValueError(f"Two-state model specified but not setup correctly.")
+            elif "fix" in symbol_list:
+                pass
+            else:
+                raise ValueError(
+                    f"Two-state model specified, but not setup correctly for symbol {symbol}."
+                )
 
     if "linear" in list(models.keys()):
         linear_dict = models["linear"]
@@ -687,7 +695,7 @@ def fit_heat_capacity(datasets, models, verbose=False):
             if "fit" in param_list:
                 params.append(param_list[0])
                 if len(param_list) == 3:
-                    bounds.append(param_list[2])
+                    bounds.append(param_list[1])
                 else:
                     bounds.append(default_bounds[param])
                 param_list.append(i)
@@ -699,19 +707,28 @@ def fit_heat_capacity(datasets, models, verbose=False):
     for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
         symbolic_dict = models[symbolic_key]
         Cp_expr = symbolic_dict["expression"]
+        if isinstance(Cp_expr, str):
+            Cp_expr = sp.parse_expr(Cp_expr)
         if "temp_bounds" not in list(symbolic_dict.keys()):
             symbolic_dict["temp_bounds"] = (0, np.inf)
         symbols = [symbol for symbol in Cp_expr.free_symbols if symbol not in (P, T)]
         for symbol in symbols:
             # Assume fitting all symbols not P and T
-            symbolic_dict[str(symbol)] = [10.0, "fit", i]
-            params.append(10.0)
-            if "param_bounds" in list(symbolic_dict.keys()):
-                if str(symbol) in list(symbolic_dict["param_bounds"].keys()):
-                    bounds.append(symbolic_dict["param_bounds"][str(symbol)])
+            param_list = symbolic_dict[str(symbol)]
+            if "fit" in param_list:
+                params.append(param_list[0])
+                if len(param_list) == 3:
+                    bounds.append(param_list[1])
+                else:
+                    bounds.append((-np.inf, np.inf))
+                param_list.append(i)
+                i += 1
+            elif "fix" in param_list:
+                pass
             else:
-                bounds.append((-np.inf, np.inf))
-            i += 1
+                raise ValueError(
+                    f"Symbolic model not specified correctly, {symbolic_key}."
+                )
 
     arg_dict["models"] = models
     # optimize the model parameters
@@ -761,8 +778,7 @@ def print_heat_capacity_fits(min_fits, model_dict):
         print(f"Model: {model}")
         if model == "two-state":
             out_str = "dE: "
-            for i in range(len(values["dE"][0])):
-                out_str += f"{values['dE'][0][i] * values['dE'][1][i]} "
+            out_str += values["expression"]
             print(out_str)
         else:
             for param_name, param_value in values.items():

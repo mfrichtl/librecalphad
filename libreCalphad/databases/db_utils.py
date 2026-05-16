@@ -21,7 +21,13 @@ def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
             if model in ["einstein", "two-state", "xiong"]:
                 if parameter == "p":
                     continue
-                param_type = query_params[parameter]
+                elif model == "two-state":
+                    if parameter == "expression":
+                        param_type = "GD"
+                    else:
+                        continue
+                else:
+                    param_type = query_params[parameter]
                 param_order = 0
 
                 query = (
@@ -33,15 +39,7 @@ def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
                 if model == "einstein":
                     param_value = np.log(parameter_values[0])
                 elif model == "two-state":
-                    coef_list = parameter_values[0]
-                    symbol_list = parameter_values[1].strip("[]").split(", ")
-                    param_value = 0
-                    for i in range(len(coef_list)):
-                        if symbol_list[i] == "1":
-                            param_value = param_value + coef_list[i]
-                        else:
-                            symbol = sp.parse_expr(symbol_list[i])
-                            param_value = param_value + coef_list[i] * symbol
+                    param_value = parameter_values
                 else:
                     param_value = parameter_values[0]
                 param_expr = se.Piecewise(
@@ -53,6 +51,7 @@ def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
                     "parameter_type": param_type,
                     "parameter_order": param_order,
                     "parameter": param_expr,
+                    "diffusing_species": v.Species(None),
                 }
                 dbf._parameters.upsert(new_parameter, query)
     return dbf

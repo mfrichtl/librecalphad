@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import sympy as sp
 from tinydb import where
 
 
@@ -57,8 +58,7 @@ def plot_heat_capacity_from_models(
         elif model == "offset":
             continue
         elif model == "two-state":
-            keyword_args["dE"] = params["dE"][0]
-            keyword_args["coef_list"] = params["dE"][1]
+            keyword_args["expression"] = sp.parse_expr(params["expression"])
             model_Cp = hc._twostate_Cp(**keyword_args)
         else:
             for kwarg, value in params.items():

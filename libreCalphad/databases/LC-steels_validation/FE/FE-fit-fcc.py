@@ -35,42 +35,11 @@ query = (
 )
 search_results = datasets.search(query)
 
-R = 8.314472
-a, b, T = se.symbols("a b T")
-# magnetic model constants
-beta_Fe = 0.7  # magnetic moment per atom Fe
-structure_factor = 0.28
-Tn_Fe = 67  # K, Curie/Neel temperature for Fe
-theta_Fe = 309  # K, Einstein temperature from Chen & Sundman
-T_melt = 1811
-model_dict = {
-    "einstein": {"theta": [300, "fit"]},
-    "xiong": {
-        "beta": [beta_Fe, "fix"],
-        "p": [structure_factor, "fix"],
-        "Tn": [Tn_Fe, "fix"],
-    },
-    "symbolic": {
-        "expression": a * T + b * T**4,
-        "param_bounds": {"a": (3e-3, 7e-3), "b": (2e-13, 6e-13)},
-        "temp_bounds": (0, T_melt),
-    },
-    "melt": {
-        "T_melt": [1811, "fix"],
-        "liquid_Cp": [46, "fix"],
-        "a": [21, "fit"],
-        "b": [9e18, "fit"],
-        "c": [-1.5e37, "fit"],
-        "solid_enthalpy": [-38246.0995, "fix"],
-        "solid_entropy": [-174.515, "fix"],
-    },
-    "offset": {
-        "enthalpy": [-2539.33, "fix"],
-        "entropy": [6.39016, "fix"],
-    },
-    "two-state": {"dE": [[9.02352375e3, -2.4952226], [T**0, T**1], "fit"]},
-}
+params_file = "./FE-params.json"
+with open(params_file, "r") as f:
+    model_dict = json.load(f)[phase[0]]
 min_fits, model_dict = fit_heat_capacity(search_results, model_dict, verbose=True)
+T_melt = model_dict["melt"]["T_melt"][0]
 
 fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
 fig.savefig("FE-FCC-CPM_fits.png")

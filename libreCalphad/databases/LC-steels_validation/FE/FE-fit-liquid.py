@@ -34,24 +34,8 @@ query = (
 )
 search_results = datasets.search(query)
 
-R = 8.314472
-# magnetic model constants
-beta_Fe = 1.70  # magnetic moment per atom Fe
-struct_fact = 0.25
-Tc_Fe = 200  # K, Curie temperature for Fe
-theta_Fe = 245  # K, Einstein temperature from Chen & Sundman
-T = se.symbols("T")
-model_dict = {
-    "einstein": {"theta": [theta_Fe, "fix"]},
-    "xiong": {
-        "beta": [beta_Fe, "fix"],
-        "p": [struct_fact, "fix"],
-        "Tc": [Tc_Fe, "fix"],
-    },
-    "two-state": {
-        "dE": [[4.27549478e4, -7.624, -1.08230446], [T**0, T**1, T * se.log(T)], "fix"]
-    },
-}
+with open("FE-params.json", "r") as f:
+    model_dict = json.load(f)[phase[0]]
 min_fits, model_dict = fit_heat_capacity(search_results, model_dict, verbose=True)
 
 fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
