@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<?xml-model href="database.rng" schematypens="http://relaxng.org/ns/structure/1.0" type="application/xml"?>
+<Database version="0">
+  <metadata>
+    <writer>pycalphad 0.11.1</writer>
+  </metadata>
+  <ChemicalElement id="FE" mass="55.847" reference_phase="BCC_A2" H298="3734.3729233192507" S298="13.886708522020232"/>
+  <ChemicalElement id="VA" mass="0.0" reference_phase="VACUUM" H298="0.0" S298="0.0"/>
+  <Phase id="BCC_A2">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1.0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site id="1" ratio="3.0">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <MagneticOrdering type="IHJ" structure_factor="0.37" afm_factor="0.0"/>
+    </Model>
+    <Parameter type="BMAGN">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">2.22</Interval>
+    </Parameter>
+    <Parameter type="TC">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">1043.0</Interval>
+    </Parameter>
+    <Parameter type="THETA">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">5.6803532254301</Interval>
+    </Parameter>
+  </Phase>
+  <Phase id="FCC_A1">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1.0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site id="1" ratio="1.0">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <MagneticOrdering type="IHJ" structure_factor="0.28" afm_factor="0.0"/>
+    </Model>
+    <Parameter type="BMAGN">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">0.7</Interval>
+    </Parameter>
+    <Parameter type="NT">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">67</Interval>
+    </Parameter>
+    <Parameter type="THETA">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">5.82452563577386</Interval>
+    </Parameter>
+    <Parameter type="GD">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+        <Site refid="1">
+          <Constituent refid="VA"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">9781.99072520532 - 3.89887161653813*T</Interval>
+    </Parameter>
+  </Phase>
+  <Phase id="LIQUID">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1.0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <MagneticOrdering type="IHJ" structure_factor="0.28" afm_factor="0.0"/>
+    </Model>
+    <Parameter type="BMAGN">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">1.7</Interval>
+    </Parameter>
+    <Parameter type="GD">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">15000.0 + 99.9*T - 13.2*T*ln(T)</Interval>
+    </Parameter>
+    <Parameter type="TC">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">200.0</Interval>
+    </Parameter>
+  </Phase>
+</Database>

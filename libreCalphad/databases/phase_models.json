@@ -9,6 +9,10 @@
       "sublattice_model": [["FE"], ["VA"]],
       "sublattice_site_ratios": [1, 1]
     },
+    "GAS": {
+      "sublattice_model": [["FE"]],
+      "sublattice_site_ratios": [1]
+    },
     "LIQUID": {
       "sublattice_model": [["FE"]],
       "sublattice_site_ratios": [1]
