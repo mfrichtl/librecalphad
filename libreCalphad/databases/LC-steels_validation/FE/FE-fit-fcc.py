@@ -177,10 +177,6 @@ for result in search_results:
         enthalpy_df = pd.concat(
             [enthalpy_df, pd.DataFrame(res_dict)], ignore_index=True
         )
-hm_fits = calculate_offset(enthalpy_df["HM_calc"], enthalpy_df["HM_meas"])
-print(
-    f"Enthalpy calculation is {hm_fits[0][0]} J/mol-formula different than measurements."
-)
 
 query = (
     (where("phases") == phase)
@@ -213,6 +209,14 @@ for result in search_results:
         )
 
 enthalpy_df["HM_error"] = enthalpy_df["HM_meas"] - enthalpy_df["HM_calc"]
+enthalpy_df = enthalpy_df.sort_values("T")
+
+hm_fits = calculate_offset(enthalpy_df["T"], enthalpy_df["HM_error"], order=3)
+print(
+    f"Enthalpy calculation is {hm_fits[0]} J/mol-formula different than measurements."
+)
+
+
 fig, ax = plt.subplots()
 calc_res = calculate(
     dbf,
@@ -287,10 +291,7 @@ for result in search_results:
         entropy_df = pd.DataFrame(res_dict)
     else:
         entropy_df = pd.concat([entropy_df, pd.DataFrame(res_dict)], ignore_index=True)
-sm_fits = calculate_offset(entropy_df["SM_calc"], entropy_df["SM_meas"])
-print(
-    f"Entropy calculation is {sm_fits[0][0]} J/mol-K-formula different than measurements."
-)
+
 query = (
     (where("phases") == phase)
     & (where("components") == components)
@@ -319,6 +320,12 @@ for result in search_results:
 
 
 entropy_df["SM_error"] = entropy_df["SM_meas"] - entropy_df["SM_calc"]
+entropy_df = entropy_df.sort_values("T")
+
+sm_fits = calculate_offset(entropy_df["T"], entropy_df["SM_error"], order=3)
+print(
+    f"Entropy calculation is {sm_fits[0]} J/mol-K-formula different than measurements."
+)
 
 fig, ax = plt.subplots()
 sns.scatterplot(entropy_df, x="T", y="SM_meas", hue="reference", ax=ax)

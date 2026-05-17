@@ -24,11 +24,32 @@ N = 6.02214076e23
 P, T = se.symbols("P T")
 
 
-def calculate_offset(xdata, ydata):
-    def _find_offset(xdata, offset):
-        return offset + xdata
+def calculate_offset(xdata, ydata, order=0):
+    def _calc_constant_offset(xdata, offset):
+        return offset
 
-    fits = curve_fit(_find_offset, xdata=xdata, ydata=ydata)
+    def _calc_linear_offset(xdata, m, b):
+        return np.array([m * x + b for x in xdata])
+
+    def _calc_quadratic_offset(xdata, a, b, c):
+        return np.array([a * x**2 + b * x + c for x in xdata])
+
+    def _calc_cubic_offset(xdata, a, b, c, d):
+        return np.array([a*x**3 + b*x**2 + c*x + d for x in xdata])
+
+    fits = None
+    if order == 0:
+        fits = curve_fit(_calc_constant_offset, xdata=xdata, ydata=ydata)
+    elif order == 1:
+        fits = curve_fit(_calc_linear_offset, xdata=xdata, ydata=ydata)
+    elif order == 2:
+        fits = curve_fit(_calc_quadratic_offset, xdata=xdata, ydata=ydata)
+    elif order == 3:
+        fits = curve_fit(_calc_cubic_offset, xdata=xdata, ydata=ydata)
+    else:
+        raise ValueError(
+            f"Order {order} not implemented for calculating offset energies."
+        )
     return fits
 
 
@@ -72,6 +93,10 @@ def calculate_transition_energies(
 def _offset_gibbs(T_arr=0, enthalpy=0, entropy=0, ret_expr=False):
     # This handles the constants lost during integration
     ret_arr = 0
+    if isinstance(enthalpy, str):
+        enthalpy = sp.parse_expr(enthalpy).subs("T", v.T)
+    if isinstance(entropy, str):
+        entropy = sp.parse_expr(entropy).subs("T", v.T)
     if isinstance(T_arr, (int, float)) and not ret_expr:
         ret_arr = enthalpy - entropy * T_arr
     elif not ret_expr:

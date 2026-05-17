@@ -101,7 +101,6 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-
       <Interval in="T" lower="0.0" upper="10000.0">5.73334127689775</Interval>
     </Parameter>
     <Parameter type="GD">

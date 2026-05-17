@@ -786,6 +786,8 @@ def print_heat_capacity_fits(min_fits, model_dict):
                     print(f"{param_name}: {param_value}")
                 elif param_name == "param_bounds":
                     continue
+                elif all([model == "offset", isinstance(param_value[0], str)]):
+                    print(f"{param_name}: {param_value[0]}")
                 else:
                     print(f"{param_name}: {param_value[0]:4e}")
     if not isinstance(min_fits, np.float64):

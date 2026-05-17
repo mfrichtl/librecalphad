@@ -10,8 +10,8 @@
     <Interval in="T" lower="0.0" upper="10000.0">GHSERFE</Interval>
   </Expr>
   <Expr id="GFCCFE">
-    <Interval in="T" lower="0.0" upper="1811.0">-2235.742 - 4.49242*T - T*(0.00567643505884174*T + 5e-14*T**4) + 0.00283821752942087*T**2 + 4e-14*T**5</Interval>
-    <Interval in="T" lower="1811.0" upper="10000.0">-11965.262 + 90.04728*T + 14.3900525219352*T*(1 - ln(T)) + 3.50216147149592e+38*T**(-11) - 4.01240062337097e+19*T**(-5)</Interval>
+    <Interval in="T" lower="0.0" upper="1811.0">-T*(0.00567643509858804*T + 5.00000000000003e-14*T**4) + 0.00283821754929402*T**2 + 4.00000000000003e-14*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">-9729.52 + 94.5397*T + 14.3900507191188*T*(1 - ln(T)) + 3.50216212075826e+38*T**(-11) - 4.01240158185319e+19*T**(-5)</Interval>
   </Expr>
   <Expr id="GHSERFE">
     <Interval in="T" lower="0.0" upper="1811.0">477.094 - 9.77906*T - T*(0.00643096625571005*T + 1.6285451870178e-13*T**4) + 0.00321548312785503*T**2 + 1.30283614961424e-13*T**5</Interval>
@@ -19,6 +19,7 @@
   </Expr>
   <Expr id="GHSERVA">0</Expr>
   <Expr id="GLIQFE">0</Expr>
+  <Expr id="VV0000">374899.0</Expr>
   <Phase id="BCC_A2">
     <Model type="CEF">
       <ConstituentArray>
@@ -130,6 +131,16 @@
       <Interval in="T" lower="0.0" upper="10000.0">9023.52375 - 2.4952226*T</Interval>
     </Parameter>
     <Parameter type="G">1.0*GFCCFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
+  </Phase>
+  <Phase id="GAS">
+    <Model type="CEF">
+      <ConstituentArray>
+        <Site id="0" ratio="1">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+    </Model>
+    <Parameter type="G">GHSERFE + VV0000<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
   </Phase>
   <Phase id="LIQUID">
     <Model type="CEF">
