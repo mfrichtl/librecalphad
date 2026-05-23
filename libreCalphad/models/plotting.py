@@ -59,6 +59,9 @@ def plot_heat_capacity_from_models(
             continue
         elif model == "two-state":
             keyword_args["expression"] = sp.parse_expr(params["expression"])
+            keyword_args["symbols"] = params["symbols"]
+            for symbol in params["symbols"]:
+                keyword_args[symbol] = params[symbol]
             model_Cp = hc._twostate_Cp(**keyword_args)
         else:
             for kwarg, value in params.items():
@@ -71,7 +74,7 @@ def plot_heat_capacity_from_models(
     df_model = pd.concat([df_model, pd.DataFrame(cpm_dict)])
 
     if fig is None:
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(10, 6))
     sns.scatterplot(data=exp_df, x="T", y="CPM", hue="reference", ax=ax)
     sns.lineplot(data=df_model, x="T", y="CPM", hue="model", ax=ax)
     ax.set_xlabel("Temperature (K)")

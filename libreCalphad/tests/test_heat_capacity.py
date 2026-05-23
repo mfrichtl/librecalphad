@@ -7,7 +7,10 @@ import symengine as se
 
 
 def test_fit_einstein_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_einstein_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_einstein_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {"einstein": {"theta": [250, "fit"]}}
@@ -16,7 +19,10 @@ def test_fit_einstein_Cp():
 
 
 def test_fix_einstein_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_einstein_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_einstein_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {"einstein": {"theta": [300, "fix"]}}
@@ -25,7 +31,10 @@ def test_fix_einstein_Cp():
 
 
 def test_fit_holzapfel_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_holzapfel_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_holzapfel_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {"holzapfel": {"theta": [250, "fit"]}}
@@ -34,7 +43,10 @@ def test_fit_holzapfel_Cp():
 
 
 def test_fix_holzapfel_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_holzapfel_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_holzapfel_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {"holzapfel": {"theta": [300, "fix"]}}
@@ -43,7 +55,10 @@ def test_fix_holzapfel_Cp():
 
 
 def test_fit_xiong_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_xiong_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_xiong_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {
@@ -56,7 +71,10 @@ def test_fit_xiong_Cp():
 
 
 def test_fix_xiong_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_xiong_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_xiong_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {
@@ -67,7 +85,10 @@ def test_fix_xiong_Cp():
 
 
 def test_fit_bcm_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_bcm_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_bcm_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {
@@ -89,7 +110,10 @@ def test_fit_bcm_Cp():
 
 
 def test_fix_bcm_Cp():
-    data_file = impresources.files("libreCalphad.tests") / "test_bcm_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_bcm_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {
@@ -119,19 +143,22 @@ def test_symbolic_Cp_calc():
     assert np.isclose(Cp_array[-1], 250)
 
 
-def test_fit_symbolic_Cp():
+def test_fit_symbolic_Cp_symengine_expression():
     temps = np.linspace(0, 1000)
     T, a = se.symbols("T a")
     Cp_func = a * T
     Cp_array = [np.float64(Cp_func.subs([T, a], [temp, 0.25])) for temp in temps]
-    model_dict = {"symbolic": {"expression": Cp_func}}
+    model_dict = {"symbolic": {"expression": Cp_func, "a": [0.25, "fix"]}}
     data_df = pd.DataFrame({"temperature": temps, "Cp": Cp_array, "reference": "test"})
     fits, model_dict = hc.fit_heat_capacity(data_df, model_dict)
     assert np.isclose(model_dict["symbolic"][str(a)][0], 0.25)
 
 
 def test_print_all_fixed_params():
-    data_file = impresources.files("libreCalphad.tests") / "test_einstein_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_einstein_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {"einstein": {"theta": [300, "fix"]}}
@@ -140,26 +167,65 @@ def test_print_all_fixed_params():
 
 def test_fix_twostate_Cp():
     T = se.symbols("T")
-    data_file = impresources.files("libreCalphad.tests") / "test_twostate_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_twostate_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {
-        "two-state": {"dE": [[15000, -5, -1], [T**0, T**1, T * se.log(T)], "fix"]}
+        "two-state": {
+            "expression": "a + b*T + c*T*log(T)",
+            "a": [15000, "fix"],
+            "b": [-5, "fix"],
+            "c": [-1, "fix"],
+        }
     }
     fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
     assert np.isclose(fits, 0, atol=1e-7)
 
 
-def test_fit_twostate_Cp():
+def test_fit_twostate_Cp_no_bounds():
     T = se.symbols("T")
-    data_file = impresources.files("libreCalphad.tests") / "test_twostate_data.json"
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_twostate_data.json"
+    )
     with open(data_file, "r") as f:
         test_data = [json.load(f)]
     model_dict = {
-        "two-state": {"dE": [[10000, -2, -2], [T**0, T**1, T * se.log(T)], "fit"]}
+        "two-state": {
+            "expression": "a + b*T + c*T*log(T)",
+            "a": [10000, "fit"],
+            "b": [-2, "fit"],
+            "c": [-2, "fit"],
+        }
     }
     fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
-    assert np.isclose(model_dict["two-state"]["dE"][0][0], 15000, atol=1e-4)
-    assert np.isclose(model_dict["two-state"]["dE"][0][1], -5, atol=1e-4)
-    assert np.isclose(model_dict["two-state"]["dE"][0][2], -1, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["a"][0], 15000, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["b"][0], -5, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["c"][0], -1, atol=1e-4)
+    assert np.isclose(fits.fun, 0, atol=1e-6)
+
+
+def test_fit_twostate_Cp_with_bounds():
+    T = se.symbols("T")
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_twostate_data.json"
+    )
+    with open(data_file, "r") as f:
+        test_data = [json.load(f)]
+    model_dict = {
+        "two-state": {
+            "expression": "a + b*T + c*T*log(T)",
+            "a": [10000, [7500, 17500], "fit"],
+            "b": [-2, [-10, 0], "fit"],
+            "c": [-2, [-5, 5], "fit"],
+        }
+    }
+    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
+    assert np.isclose(model_dict["two-state"]["a"][0], 15000, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["b"][0], -5, atol=1e-4)
+    assert np.isclose(model_dict["two-state"]["c"][0], -1, atol=1e-4)
     assert np.isclose(fits.fun, 0, atol=1e-6)

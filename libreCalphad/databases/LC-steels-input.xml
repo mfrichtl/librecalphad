@@ -113,7 +113,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">9023.52375 - 2.4952226*T</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">a + T*b</Interval>
     </Parameter>
   </Phase>
   <Phase id="LIQUID">

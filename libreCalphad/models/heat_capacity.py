@@ -77,11 +77,16 @@ def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
     return ret_arr
 
 
-def _twostate_Cp(T_arr=0, expression=None, **kwargs):
+def _twostate_Cp(T_arr=0, expression=None, symbols=None, **kwargs):
     # TODO: update to use symbolic expression for dE similar to how the symbolic_Cp function works.
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
+
+    subs_dict = {}
+    for symbol in symbols:
+        subs_dict[symbol] = kwargs[symbol][0]
+    expression = expression.subs(subs_dict)
 
     def _calc_twostate_Cp(temp, dE):
         dH = -(T**2) * (dE / T).diff(T)
@@ -324,8 +329,13 @@ def _fit_heat_capacity(x, arg_dict):
                 "variable_values",
             ]:
                 continue
-            idx = param_list[-1]
-            model_params.append(x[idx])
+            if "fit" in param_list:
+                idx = param_list[-1]
+                model_params.append(x[idx])
+            elif "fix" in param_list:
+                model_params.append(param_list[0])
+            else:
+                raise ValueError(f"{symoblic_key} parameter {param} incorrectly setup.")
         model_Cp = model_Cp + _symbolic_Cp(
             T_arr=temperature_array,
             variable_values=model_params,
@@ -376,20 +386,25 @@ def _fit_heat_capacity(x, arg_dict):
         model_Cp += _bent_cable_Cp(T_arr=temperature_array, **model_params)
     if "two-state" in list(models.keys()):
         # param_list = models["two-state"]["dE"]
-        model_params = models["two-state"]
-        for symbol in model_params["symbols"]:
-            param_list = model_params[symbol]
+        twostate_dict = models["two-state"]
+        model_params = {
+            "expression": twostate_dict["expression"],
+            "symbols": twostate_dict["symbols"],
+        }
+        for symbol in twostate_dict["symbols"]:
+            param_list = twostate_dict[symbol]
+            model_params[symbol] = []
             if "fit" in param_list:
                 idx = param_list[-1]
-                # model_params[symbol].append(x[idx])
-                model_params["expression"] = model_params["expression"].subs(
-                    symbol, x[idx]
-                )
+                model_params[symbol].append(x[idx])
+                # model_params["expression"] = model_params["expression"].subs(
+                #     symbol, x[idx]
+                # )
             else:
-                # model_params[symbol].append(param_list[0])
-                model_params["expression"] = model_params["expression"].subs(
-                    symbol, param_list[0]
-                )
+                model_params[symbol].append(param_list[0])
+                # model_params["expression"] = model_params["expression"].subs(
+                #     symbol, param_list[0]
+                # )
 
         model_Cp += _twostate_Cp(T_arr=temperature_array, **model_params)
     if "linear" in list(models.keys()):
@@ -656,9 +671,11 @@ def fit_heat_capacity(datasets, models, verbose=False):
         for symbol in symbols:
             symbol_list = model_dict[str(symbol)]
             if "fit" in symbol_list:
-                assert len(symbol_list) == 3, f"Symbol {symbol} not correctly setup."
                 params.append(symbol_list[0])
-                bounds.append(symbol_list[1])
+                if len(symbol_list) == 3:
+                    bounds.append(symbol_list[1])
+                else:
+                    bounds.append((-np.inf, np.inf))
                 symbol_list.append(i)
                 i += 1
             elif "fix" in symbol_list:
@@ -777,8 +794,14 @@ def print_heat_capacity_fits(min_fits, model_dict):
     for model, values in model_dict.items():
         print(f"Model: {model}")
         if model == "two-state":
+            expression = sp.sympify(values["expression"])
+            subs_dict = {}
+            for symbol in values["symbols"]:
+                subs_dict[symbol] = values[symbol][0]
+            expression = expression.subs(subs_dict)
             out_str = "dE: "
-            out_str += values["expression"]
+            out_str += str(expression)
+
             print(out_str)
         else:
             for param_name, param_value in values.items():

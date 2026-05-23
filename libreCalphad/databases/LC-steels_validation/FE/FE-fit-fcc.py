@@ -211,7 +211,7 @@ for result in search_results:
 enthalpy_df["HM_error"] = enthalpy_df["HM_meas"] - enthalpy_df["HM_calc"]
 enthalpy_df = enthalpy_df.sort_values("T")
 
-hm_fits = calculate_offset(enthalpy_df["T"], enthalpy_df["HM_error"], order=3)
+hm_fits = calculate_offset(enthalpy_df["T"], enthalpy_df["HM_error"], order=0)
 print(
     f"Enthalpy calculation is {hm_fits[0]} J/mol-formula different than measurements."
 )
@@ -322,7 +322,7 @@ for result in search_results:
 entropy_df["SM_error"] = entropy_df["SM_meas"] - entropy_df["SM_calc"]
 entropy_df = entropy_df.sort_values("T")
 
-sm_fits = calculate_offset(entropy_df["T"], entropy_df["SM_error"], order=3)
+sm_fits = calculate_offset(entropy_df["T"], entropy_df["SM_error"], order=0)
 print(
     f"Entropy calculation is {sm_fits[0]} J/mol-K-formula different than measurements."
 )
