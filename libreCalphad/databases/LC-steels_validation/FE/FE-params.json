@@ -9,15 +9,15 @@
         "xiong": {
             "beta": [
                 2.22,
-                "fix"
+                "fit"
             ],
             "p": [
                 0.37,
-                "fix"
+                "fit"
             ],
             "Tc": [
                 1043,
-                "fix"
+                "fit"
             ]
         },
         "symbolic_LT": {
@@ -70,10 +70,10 @@
                 "fit"
             ],
             "solid_enthalpy": [
-                -23766.4732
+                -18770.6355
             ],
             "solid_entropy": [
-                -140.668
+                -126.275
             ]
         },
         "offset": {

@@ -28,7 +28,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">2.22</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">2.7710038953695</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -40,7 +40,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">1043</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">1043.14999999993</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>

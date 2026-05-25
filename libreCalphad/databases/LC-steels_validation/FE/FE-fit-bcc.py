@@ -13,6 +13,7 @@ from libreCalphad.models.heat_capacity import fit_heat_capacity
 from libreCalphad.plotting import (
     plot_calculated_gibbs_energies,
     plot_calculated_heat_capacity,
+    plot_delta_energies,
     plot_heat_capacity_from_models,
 )
 import matplotlib.pyplot as plt
@@ -417,3 +418,87 @@ plot_calculated_gibbs_energies(
 )
 fig.savefig("GM-CALC-all_phases.png")
 plt.close()
+
+# BCC_A2 - FCC_A1
+dg_phases = ["BCC_A2", "FCC_A1"]
+# DG
+dg_conditions = {v.T: (0.5, 2000, 2), v.P: 101325, v.N: 1}
+fig, ax = plt.subplots()
+plot_delta_energies(
+    dbf, components, dg_phases, dg_conditions, datasets, output="GM", fig=fig, ax=ax
+)
+plt.savefig(f"./DG-BCC_A2-FCC_A1.png")
+plt.close()
+
+# DH data
+fig, ax = plt.subplots()
+plot_delta_energies(
+    dbf, components, dg_phases, conditions, datasets, output="HM", fig=fig, ax=ax
+)
+plt.savefig(f"./DH-BCC_A2-FCC_A1.png")
+plt.close()
+
+# error_df = pd.DataFrame(error_dict)
+fig, ax = plt.subplots()
+# sns.scatterplot(data=error_df, x="T", y="DH_error", hue="reference")
+# ax.set_xlabel("Temperature (K)")
+# ax.set_ylabel(
+#     r"Error in $\Delta H^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)"
+# )
+# ax.legend()
+# fig.tight_layout()
+plot_delta_energies(
+    dbf,
+    components,
+    dg_phases,
+    conditions,
+    datasets,
+    output="HM",
+    error=True,
+    fig=fig,
+    ax=ax,
+)
+plt.savefig(f"./DH-error-BCC_A2-FCC_A1.png")
+plt.close()
+
+# melting point
+transition_phases = ["BCC_A2", "LIQUID"]
+transition_temps = [1811]
+conditions = {v.N: 1, v.P: 101325}
+for temp in transition_temps:
+    conditions[v.T] = temp
+    phase_dict = {}
+    for phase in transition_phases:
+        phase_dict[phase] = {}
+        phase_dict[phase]["GM"] = calculate(
+            dbf,
+            components,
+            phase,
+            T=conditions[v.T],
+            P=conditions[v.P],
+            N=conditions[v.N],
+        ).GM.values.squeeze()
+        phase_dict[phase]["HM"] = calculate(
+            dbf,
+            components,
+            phase,
+            T=conditions[v.T],
+            P=conditions[v.P],
+            N=conditions[v.N],
+            output="HM",
+        ).HM.values.squeeze()
+        phase_dict[phase]["SM"] = calculate(
+            dbf,
+            components,
+            phase,
+            T=conditions[v.T],
+            P=conditions[v.P],
+            N=conditions[v.N],
+            output="SM",
+        ).SM.values.squeeze()
+    phase_dict["delta"] = {}
+    for energy_key in list(phase_dict[transition_phases[0]].keys()):
+        phase_dict["delta"][energy_key] = (
+            phase_dict[transition_phases[0]][energy_key]
+            - phase_dict[transition_phases[1]][energy_key]
+        )

@@ -10,12 +10,190 @@ from pycalphad import calculate, Database, equilibrium, variables as v
 from pycalphad.plot.utils import phase_legend
 import seaborn as sns
 import sympy as sp
-from tinydb import where
+from tinydb import database, where
+
+
+def plot_delta_energies(
+    dbf: Database,
+    components: list[str],
+    phases: list[str],
+    conditions: dict[v.StateVariable, float | list[float] | tuple[float]],
+    datasets: database.TinyDB,
+    output: str,
+    error: bool = False,
+    fig: plt.Figure | None = None,
+    ax: plt.Axes | None = None,
+):
+    """
+    Function to plot DG, DH, or DS values.
+    """
+    if output == "GM":
+        output_delta = "DG"
+    elif output == "HM":
+        output_delta = "DH"
+    elif output == "SM":
+        output_delta = "DS"
+    else:
+        raise ValueError(f"Unknown energy output {output} passed.")
+    query = (
+        (where("phases") == phases)
+        & (where("components") == components)
+        & (where("output") == f"{output_delta}-{phases[0]}-{phases[1]}")
+    )
+    search_results = datasets.search(query)
+    inv_query = (
+        (where("phases") == phases)
+        & (where("components") == components)
+        & (where("output") == f"{output_delta}-{phases[1]}-{phases[0]}")
+    )
+    inv_search_results = datasets.search(inv_query)
+
+    if all([fig is None, ax is None]):
+        fig, ax = plt.subplots()
+    p1_calc = calculate(
+        dbf,
+        components,
+        phases[0],
+        T=conditions[v.T],
+        P=conditions[v.P],
+        N=conditions[v.N],
+        output=output,
+    )
+    p2_calc = calculate(
+        dbf,
+        components,
+        phases[1],
+        T=conditions[v.T],
+        P=conditions[v.P],
+        N=conditions[v.N],
+        output=output,
+    )
+
+    if not error:
+        p1_vals = getattr(p1_calc, output).squeeze()
+        p2_vals = getattr(p2_calc, output).squeeze()
+        ax.plot(p1_calc.T, (p2_vals - p1_vals))
+    output_dict = {"T": [], "output": [], "reference": []}
+    for result in search_results:
+        if error:
+            for i in range(len(result["values"][0])):
+                if isinstance(result["conditions"]["T"], float):
+                    temp = result["conditions"]["T"]
+                else:
+                    temp = result["conditions"]["T"][i]
+                delta = result["values"][0][i][0]
+                this_i_p1_calc = calculate(
+                    dbf,
+                    components,
+                    phases[0],
+                    T=temp,
+                    P=conditions[v.P],
+                    N=conditions[v.N],
+                    output=output,
+                )
+                this_i_p2_calc = calculate(
+                    dbf,
+                    components,
+                    phases[1],
+                    T=temp,
+                    P=conditions[v.P],
+                    N=conditions[v.N],
+                    output=output,
+                )
+                this_i_err = (
+                    getattr(this_i_p2_calc, output).squeeze()
+                    - getattr(this_i_p1_calc, output).squeeze()
+                ).values - delta
+                output_dict["T"].append(temp)
+                output_dict["output"].append(this_i_err)
+                output_dict["reference"].append(result["reference"])
+        else:
+            output_dict["T"].extend(result["conditions"]["T"])
+            if (
+                isinstance(result["conditions"]["T"], float)
+                or len(result["conditions"]["T"]) == 1
+            ):
+                output_dict["output"].append(result["values"][0][0][0])
+                output_dict["reference"].append(result["reference"])
+            else:
+                try:
+                    output_dict["output"].extend(np.array(result["values"]).squeeze())
+                    output_dict["reference"].extend(
+                        [result["reference"] for i in result["conditions"]["T"]]
+                    )
+                except:
+                    breakpoint()
+    for result in inv_search_results:
+        if error:
+            for i in range(len(result["values"][0])):
+                if isinstance(result["conditions"]["T"], float):
+                    temp = result["conditions"]["T"]
+                else:
+                    temp = result["conditions"]["T"][i]
+                delta = -result["values"][0][i][0]
+                this_i_p1_calc = calculate(
+                    dbf,
+                    components,
+                    phases[0],
+                    T=temp,
+                    P=conditions[v.P],
+                    N=conditions[v.N],
+                    output=output,
+                )
+                this_i_p2_calc = calculate(
+                    dbf,
+                    components,
+                    phases[1],
+                    T=temp,
+                    P=conditions[v.P],
+                    N=conditions[v.N],
+                    output=output,
+                )
+                this_i_err = (
+                    getattr(this_i_p2_calc, output).squeeze()
+                    - getattr(this_i_p1_calc, output).squeeze()
+                ).values - delta
+                output_dict["T"].append(temp)
+                output_dict["output"].append(this_i_err)
+                output_dict["reference"].append(result["reference"])
+                # ax.scatter(temp, this_i_err, label=result["reference"])
+        else:
+            if (
+                isinstance(result["conditions"]["T"], float)
+                or len(result["conditions"]["T"]) == 1
+            ):
+                output_dict["T"].append(result["conditions"]["T"])
+                output_dict["output"].append(-np.array(result["values"]).squeeze())
+                output_dict["reference"].append(result["reference"])
+            else:
+                try:
+                    output_dict["T"].extend(result["conditions"]["T"])
+                    output_dict["output"].extend(-np.array(result["values"]).squeeze())
+                    output_dict["reference"].extend(
+                        [result["reference"] for i in result["conditions"]["T"]]
+                    )
+                except:
+                    breakpoint()
+
+    output_df = pd.DataFrame(output_dict)
+    sns.scatterplot(data=output_df, x="T", y="output", hue="reference", ax=ax)
+
+    ax.set_xlabel("Temperature (K)")
+    ax.set_ylabel(
+        r"$\Delta output^{\mathrm{alpha} \rightarrow \mathrm{gamma}}$ (J/mol)".replace(
+            "output", output
+        )
+        .replace("alpha", phases[0])
+        .replace("gamma", phases[1])
+    )
+    ax.legend()
+    fig.tight_layout()
+    return fig, ax
 
 
 def plot_heat_capacity_from_models(
     model_dict: dict[str, list[float | int] | str],
-    datasets,
+    datasets: database.TinyDB,
     phase: list[str] | None = None,
     components: list[str] | None = None,
     fig: plt.Figure | None = None,

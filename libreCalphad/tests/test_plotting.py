@@ -153,3 +153,39 @@ def test_plot_calculate_gibbs_energies_with_transition_temperature_printing():
     )
     assert isinstance(fig, mp.figure.Figure)
     assert isinstance(ax, mp.axes._axes.Axes)
+
+
+def test_plot_delta_energies():
+    db_file = (
+        impresources.files("libreCalphad.tests.test_database_files")
+        / "LC-steels-input.xml"
+    )
+    dbf = Database(db_file)
+    dataset_folder = impresources.files("libreCalphad.tests.test_datasets")
+    datasets = load_datasets(recursive_glob(str(dataset_folder)))
+    components = ["FE", "VA"]
+    phases = ["BCC_A2", "FCC_A1"]
+    conditions = {v.N: 1, v.T: (0, 2000, 10), v.P: 101325}
+    fig, ax = lcplt.plot_delta_energies(
+        dbf, components, phases, conditions, datasets, output="GM"
+    )
+    assert isinstance(fig, mp.figure.Figure)
+    assert isinstance(ax, mp.axes._axes.Axes)
+
+
+def test_plot_delta_energies_with_error():
+    db_file = (
+        impresources.files("libreCalphad.tests.test_database_files")
+        / "LC-steels-input.xml"
+    )
+    dbf = Database(db_file)
+    dataset_folder = impresources.files("libreCalphad.tests.test_datasets")
+    datasets = load_datasets(recursive_glob(str(dataset_folder)))
+    components = ["FE", "VA"]
+    phases = ["BCC_A2", "FCC_A1"]
+    conditions = {v.N: 1, v.T: (0, 2000, 10), v.P: 101325}
+    fig, ax = lcplt.plot_delta_energies(
+        dbf, components, phases, conditions, datasets, output="GM", error=True
+    )
+    assert isinstance(fig, mp.figure.Figure)
+    assert isinstance(ax, mp.axes._axes.Axes)
