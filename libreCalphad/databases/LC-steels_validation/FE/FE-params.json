@@ -70,19 +70,19 @@
                 "fit"
             ],
             "solid_enthalpy": [
-                -19929.86261
+                -23766.4732
             ],
             "solid_entropy": [
-                -129.748586
+                -140.668
             ]
         },
         "offset": {
             "enthalpy": [
-                477.094,
+                490,
                 "fix"
             ],
             "entropy": [
-                9.77906,
+                9.775,
                 "fix"
             ]
         }
@@ -165,21 +165,21 @@
                 "fit"
             ],
             "solid_enthalpy": [
-                -9729.52,
+                -16500.7186,
                 "fix"
             ],
             "solid_entropy": [
-                -94.5397,
+                -113.528,
                 "fix"
             ]
         },
         "offset": {
             "enthalpy": [
-		-2235.742,
+                -2565.371,
                 "fix"
             ],
             "entropy": [
-		4.52596506,
+                4.60647,
                 "fix"
             ]
         },
@@ -203,11 +203,87 @@
             ]
         }
     },
+    "GAS": {
+        "einstein": {
+            "theta": [
+                2000,
+                [
+                    1500,
+                    3500
+                ],
+                "fit"
+            ]
+        },
+        "offset": {
+            "enthalpy": [
+                394844.1823,
+                "fix"
+            ],
+            "entropy": [
+                172.37755,
+                "fix"
+            ]
+        },
+        "symbolic": {
+            "expression": "a*T + b*T**2",
+            "a": [
+                -0.001,
+                "fit"
+            ],
+            "b": [
+                0,
+                "fit"
+            ]
+        },
+        "two-state": {
+            "expression": "a + b*T",
+            "a": [
+                15000,
+                "fit"
+            ],
+            "b": [
+                -50,
+                "fit"
+            ]
+        }
+    },
     "LIQUID": {
         "einstein": {
             "theta": [
                 245,
                 "fix"
+            ]
+        },
+        "offset": {
+            "enthalpy": [
+                5196.399,
+                "fix"
+            ],
+            "entropy": [
+                3.95265,
+                "fix"
+            ]
+        },
+        "symbolic": {
+            "expression": "a*T",
+            "a": [
+                -0.001,
+                "fit"
+            ]
+        },
+        "two-state": {
+            "expression": "a + b*T + c*T*log(T)",
+            "a": [
+                42754.9478,
+                "fit"
+            ],
+            "b": [
+                -7.624,
+                "fit"
+            ],
+            "c": [
+                -1.08230446,
+                "fit"
             ]
         },
         "xiong": {
@@ -221,21 +297,6 @@
             ],
             "Tc": [
                 200,
-                "fix"
-            ]
-        },
-        "two-state": {
-            "expression": "a + b*T + c*T*log(T)",
-            "a": [
-                42754.9478,
-                "fix"
-            ],
-            "b": [
-                -7.624,
-                "fix"
-            ],
-            "c": [
-                -1.08230446,
                 "fix"
             ]
         }

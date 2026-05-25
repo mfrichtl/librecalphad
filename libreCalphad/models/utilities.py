@@ -6,6 +6,11 @@ from symengine import symbols
 
 
 def identify_variables(expr_symbols, variable_values, temp):
+    """
+    Function to identify the values of symbols in a list to distinguish between
+    temperature and pressure symbols.
+    """
+
     symbol_values = []
     temp_i = expr_symbols.index(symbols("T"))
     for i in range(len(expr_symbols)):

@@ -89,7 +89,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">67.0</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">67</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -113,34 +113,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">10604.9448599386 - 4.27444259289545*T</Interval>
-    </Parameter>
-  </Phase>
-  <Phase id="GAS">
-    <Model type="CEF">
-      <ConstituentArray>
-        <Site id="0" ratio="1.0">
-          <Constituent refid="FE"/>
-        </Site>
-      </ConstituentArray>
-    </Model>
-    <Parameter type="THETA">
-      <Order>0</Order>
-      <ConstituentArray>
-        <Site refid="0">
-          <Constituent refid="FE"/>
-        </Site>
-      </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">7.3132203870903</Interval>
-    </Parameter>
-    <Parameter type="GD">
-      <Order>0</Order>
-      <ConstituentArray>
-        <Site refid="0">
-          <Constituent refid="FE"/>
-        </Site>
-      </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">10561.0837727495 - 22.1078581555136*T</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">11089.3415156731 - 4.57184684525893*T</Interval>
     </Parameter>
   </Phase>
   <Phase id="LIQUID">
@@ -168,7 +141,7 @@
           <Constituent refid="FE"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">35147.9842200648 - 10.8683219791964*T - 0.485230049969997*T*ln(T)</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">15000.0 + 99.9*T - 13.2*T*ln(T)</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -178,15 +151,6 @@
         </Site>
       </ConstituentArray>
       <Interval in="T" lower="0.0" upper="10000.0">200.0</Interval>
-    </Parameter>
-    <Parameter type="THETA">
-      <Order>0</Order>
-      <ConstituentArray>
-        <Site refid="0">
-          <Constituent refid="FE"/>
-        </Site>
-      </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">5.50125821054473</Interval>
     </Parameter>
   </Phase>
 </Database>

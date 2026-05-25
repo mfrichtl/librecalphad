@@ -9,7 +9,11 @@ from libreCalphad.models.energy import (
     upsert_custom_refstate_json,
 )
 from libreCalphad.models.heat_capacity import fit_heat_capacity
-from libreCalphad.models.plotting import plot_heat_capacity_from_models
+from libreCalphad.plotting import (
+    plot_calculated_gibbs_energies,
+    plot_calculated_heat_capacity,
+    plot_heat_capacity_from_models,
+)
 import matplotlib.pyplot as plt
 import os
 import numpy as np
@@ -127,20 +131,25 @@ query = (
 )
 search_results = datasets.search(query)
 
-fig, ax = plt.subplots()
-cpm_res = calculate(
-    dbf, components, phase, T=(0.5, 3000, 2), P=101325, N=1, output="heat_capacity"
+search_results = datasets.search(query)
+phases = ["BCC_A2", "FCC_A1", "GAS", "LIQUID"]
+fig, ax = plt.subplots(figsize=(8, 6))
+plot_calculated_heat_capacity(
+    dbf, components, phases, {v.T: (0, 2500, 2), v.P: 101325, v.N: 1}, fig=fig, ax=ax
 )
-ax.plot(cpm_res.T, cpm_res.heat_capacity.squeeze())
-for result in search_results:
-    ax.scatter(
-        result["conditions"]["T"],
-        np.array(result["values"]).squeeze(),
-        label=result["reference"],
-    )
-ax.set_xlabel("Temperature (K)")
-ax.set_ylabel("Isobaric Heat Capacity (J/mol-formula-K)")
-fig.tight_layout()
+fig.savefig("CPM-CALC-all_phases.png")
+plt.close()
+
+fig, ax = plt.subplots(figsize=(8, 6))
+plot_calculated_heat_capacity(
+    dbf,
+    components,
+    phase,
+    {v.T: (0, 2500, 2), v.P: 101325, v.N: 1},
+    datasets=search_results,
+    fig=fig,
+    ax=ax,
+)
 plt.savefig(f"./CPM-CALC-FE-{phase[0]}.png")
 plt.close()
 
@@ -372,16 +381,16 @@ fig.savefig(f"./GM-CALC-{phase[0]}.png")
 
 
 # BCC_A2 - FCC_A1
-phases = ["BCC_A2", "FCC_A1"]
+dg_phases = ["BCC_A2", "FCC_A1"]
 # DG
 query = (
-    (where("phases") == phases)
+    (where("phases") == dg_phases)
     & (where("components") == components)
     & (where("output") == "DG-BCC_A2-FCC_A1")
 )
 search_results = datasets.search(query)
 inv_query = (
-    (where("phases") == phases)
+    (where("phases") == dg_phases)
     & (where("components") == components)
     & (where("output") == "DG-FCC_A1-BCC_A2")
 )
@@ -427,14 +436,14 @@ plt.close()
 
 # DH data
 query = (
-    (where("phases") == phases)
+    (where("phases") == dg_phases)
     & (where("components") == components)
     & (where("output") == "DH-BCC_A2-FCC_A1")
 )
 search_results = datasets.search(query)
 
 inv_query = (
-    (where("phases") == phases)
+    (where("phases") == dg_phases)
     & (where("components") == components)
     & (where("output") == "DH-FCC_A1-BCC_A2")
 )
@@ -467,4 +476,12 @@ ax.set_ylabel(r"$\Delta H^{\mathrm{\alpha} \rightarrow \mathrm{\gamma}}$ (J/mol)
 ax.legend()
 fig.tight_layout()
 plt.savefig(f"./DH-BCC_A2-FCC_A1.png")
+plt.close()
+
+fig, ax = plt.subplots(figsize=(6, 4))
+conditions = {v.T: (0.5, 4000, 5), v.P: 101325, v.N: 1}
+plot_calculated_gibbs_energies(
+    dbf, ["FE", "VA"], phases, conditions, print_transition_temps=True, fig=fig, ax=ax
+)
+fig.savefig("GM-CALC-all_phases.png")
 plt.close()

@@ -10,16 +10,22 @@
     <Interval in="T" lower="0.0" upper="10000.0">GHSERFE</Interval>
   </Expr>
   <Expr id="GFCCFE">
-    <Interval in="T" lower="0.0" upper="1811.0">-2235.742 - 4.52596506*T - T*(0.00445991125030325*T + 6.31765905841693e-14*T**4) + 0.00222995562515162*T**2 + 5.05412724673355e-14*T**5</Interval>
-    <Interval in="T" lower="1811.0" upper="10000.0">-11965.262 + 90.01373494*T + 13.8492006281555*T*(1 - ln(T)) + 3.46419607961055e+38*T**(-11) - 3.90003957045413e+19*T**(-5)</Interval>
+    <Interval in="T" lower="0.0" upper="1811.0">-2565.371 - 4.60647*T - T*(0.00478238935846481*T + 1.39509772869819e-13*T**4) + 0.0023911946792324*T**2 + 1.11607818295855e-13*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">-19066.0896 + 108.92153*T + 16.6929231868859*T*(1 - ln(T)) + 2.1671493067375e+38*T**(-11) - 2.43430335687255e+19*T**(-5)</Interval>
+  </Expr>
+  <Expr id="GGASFE">
+    <Interval in="T" lower="0.0" upper="10000.0">394844.1823 - 172.37755*T - T*(-0.00176471552422357*T + 3.72510815426124e-07*T**2) - 0.000882357762111787*T**2 + 2.48340543617416e-07*T**3</Interval>
+    <Interval in="T" lower="10000.0">394844.1823 - 172.37755*T - T*(-0.00176471552422357*T + 3.72510815426124e-07*T**2) - 0.000882357762111787*T**2 + 2.48340543617416e-07*T**3</Interval>
   </Expr>
   <Expr id="GHSERFE">
-    <Interval in="T" lower="0.0" upper="1811.0">477.094 - 9.77906*T - T*(0.00643096625571005*T + 1.6285451870178e-13*T**4) + 0.00321548312785503*T**2 + 1.30283614961424e-13*T**5</Interval>
-    <Interval in="T" lower="1811.0" upper="10000.0">-19452.76861 + 119.969526*T + 19.1757654467234*T*(1 - ln(T)) + 1.06727325852209e+38*T**(-11) - 1.16144182820286e+19*T**(-5)</Interval>
+    <Interval in="T" lower="0.0" upper="1811.0">490 - 9.775*T - T*(0.0064221980483152*T + 1.67499999999971e-13*T**4) + 0.0032110990241576*T**2 + 1.33999999999977e-13*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">-23276.4732 + 130.893*T + 20.5588525296273*T*(1 - ln(T)) + 2.95330187884918e+37*T**(-11) - 2.7257141218906e+18*T**(-5)</Interval>
   </Expr>
   <Expr id="GHSERVA">0</Expr>
-  <Expr id="GLIQFE">0</Expr>
-  <Expr id="VV0000">374899.0</Expr>
+  <Expr id="GLIQFE">
+    <Interval in="T" lower="0.0" upper="10000.0">5196.399 - 3.95265*T - 0.00283572450083808*T**2</Interval>
+    <Interval in="T" lower="10000.0">5196.399 - 3.95265*T - 0.00283572450083808*T**2</Interval>
+  </Expr>
   <Phase id="BCC_A2">
     <Model type="CEF">
       <ConstituentArray>
@@ -54,7 +60,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">1043.0</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">1043</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -104,7 +110,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">67</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">67.0</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -128,19 +134,37 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">a + T*b</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">10604.9448599386 - 4.27444259289545*T</Interval>
     </Parameter>
     <Parameter type="G">1.0*GFCCFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
   </Phase>
   <Phase id="GAS">
     <Model type="CEF">
       <ConstituentArray>
-        <Site id="0" ratio="1">
+        <Site id="0" ratio="1.0">
           <Constituent refid="FE"/>
         </Site>
       </ConstituentArray>
     </Model>
-    <Parameter type="G">GHSERFE + VV0000<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
+    <Parameter type="THETA">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">7.3132203870903</Interval>
+    </Parameter>
+    <Parameter type="GD">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">10561.0837727495 - 22.1078581555136*T</Interval>
+    </Parameter>
+    <Parameter type="G">1.0*GGASFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
   </Phase>
   <Phase id="LIQUID">
     <Model type="CEF">
@@ -167,7 +191,7 @@
           <Constituent refid="FE"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">15000.0 + 99.9*T - 13.2*T*ln(T)</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">35147.9842200648 - 10.8683219791964*T - 0.485230049969997*T*ln(T)</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -177,6 +201,15 @@
         </Site>
       </ConstituentArray>
       <Interval in="T" lower="0.0" upper="10000.0">200.0</Interval>
+    </Parameter>
+    <Parameter type="THETA">
+      <Order>0</Order>
+      <ConstituentArray>
+        <Site refid="0">
+          <Constituent refid="FE"/>
+        </Site>
+      </ConstituentArray>
+      <Interval in="T" lower="0.0" upper="10000.0">5.50125821054473</Interval>
     </Parameter>
     <Parameter type="G">1.0*GLIQFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
   </Phase>

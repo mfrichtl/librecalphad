@@ -10,7 +10,11 @@ from libreCalphad.models.energy import (
     upsert_custom_refstate_json,
 )
 from libreCalphad.models.heat_capacity import fit_heat_capacity
-from libreCalphad.models.plotting import plot_heat_capacity_from_models
+from libreCalphad.plotting import (
+    plot_calculated_gibbs_energies,
+    plot_calculated_heat_capacity,
+    plot_heat_capacity_from_models,
+)
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -167,30 +171,25 @@ query = (
     & (where("output") == "CPM")
 )
 search_results = datasets.search(query)
-
-fig, ax = plt.subplots()
-cpm_res = calculate(
-    dbf, components, "BCC_A2", T=(0.5, 3000, 2), P=101325, N=1, output="heat_capacity"
+phases = ["BCC_A2", "FCC_A1", "GAS", "LIQUID"]
+fig, ax = plt.subplots(figsize=(8, 6))
+plot_calculated_heat_capacity(
+    dbf, components, phases, {v.T: (0, 2500, 2), v.P: 101325, v.N: 1}, fig=fig, ax=ax
 )
-ax.plot(cpm_res.T, cpm_res.heat_capacity.squeeze())
-for result in search_results:
-    ax.scatter(
-        result["conditions"]["T"],
-        np.array(result["values"]).squeeze(),
-        label=result["reference"],
-    )
-ax.set_xlabel("Temperature (K)")
-ax.set_ylabel("Isobaric Heat Capacity (J/mol-formula-K)")
-fig.tight_layout()
-plt.savefig("./CPM-CALC-FE-BCC_A2.png")
-ax.set_xlim((0, 300))
-ax.set_ylim((0, 30))
-plt.savefig("./CPM-CALC-FE-BCC_A2-300K.png")
-ax.set_xlim((1e0, 1e2))
-ax.set_xscale("log")
-ax.set_ylim((1e-3, 1e1))
-ax.set_yscale("log")
-plt.savefig("./CPM-CALC-FE-BCC_A2-0K.png")
+fig.savefig("CPM-CALC-all_phases.png")
+plt.close()
+
+fig, ax = plt.subplots(figsize=(8, 6))
+plot_calculated_heat_capacity(
+    dbf,
+    components,
+    ["BCC_A2"],
+    {v.T: (0, 2500, 2), v.P: 101325, v.N: 1},
+    datasets=search_results,
+    fig=fig,
+    ax=ax,
+)
+plt.savefig(f"./CPM-CALC-FE-{phase[0]}.png")
 plt.close()
 
 # Enthalpy plotting
@@ -226,7 +225,8 @@ for result in search_results:
         enthalpy_df = pd.concat(
             [enthalpy_df, pd.DataFrame(res_dict)], ignore_index=True
         )
-hm_fits = calculate_offset(enthalpy_df["HM_calc"], enthalpy_df["HM_meas"])
+enthalpy_df["HM_error"] = enthalpy_df["HM_meas"] - enthalpy_df["HM_calc"]
+hm_fits = calculate_offset(enthalpy_df["T"], enthalpy_df["HM_error"])
 print(
     f"Enthalpy calculation is {hm_fits[0][0]} J/mol-formula different than measurements."
 )
@@ -261,7 +261,6 @@ for result in search_results:
             [enthalpy_df, pd.DataFrame(res_dict)], ignore_index=True
         )
 
-enthalpy_df["HM_error"] = enthalpy_df["HM_meas"] - enthalpy_df["HM_calc"]
 fig, ax = plt.subplots()
 calc_res = calculate(
     dbf,
@@ -336,7 +335,8 @@ for result in search_results:
         entropy_df = pd.DataFrame(res_dict)
     else:
         entropy_df = pd.concat([entropy_df, pd.DataFrame(res_dict)], ignore_index=True)
-sm_fits = calculate_offset(entropy_df["SM_calc"], entropy_df["SM_meas"])
+entropy_df["SM_error"] = entropy_df["SM_meas"] - entropy_df["SM_calc"]
+sm_fits = calculate_offset(entropy_df["T"], entropy_df["SM_error"])
 print(
     f"Entropy calculation is {sm_fits[0][0]} J/mol-K-formula different than measurements."
 )
@@ -366,8 +366,6 @@ for result in search_results:
     else:
         entropy_df = pd.concat([entropy_df, pd.DataFrame(res_dict)], ignore_index=True)
 
-
-entropy_df["SM_error"] = entropy_df["SM_meas"] - entropy_df["SM_calc"]
 
 fig, ax = plt.subplots()
 sns.scatterplot(entropy_df, x="T", y="SM_meas", hue="reference", ax=ax)
@@ -411,3 +409,11 @@ ax.set_ylabel("Gibbs energy (J/mol-formula)")
 ax.legend()
 fig.tight_layout()
 fig.savefig(f"./GM-CALC-{phase[0]}.png")
+
+fig, ax = plt.subplots(figsize=(6, 4))
+conditions = {v.T: (0.5, 4000, 5), v.P: 101325, v.N: 1}
+plot_calculated_gibbs_energies(
+    dbf, ["FE", "VA"], phases, conditions, print_transition_temps=True, fig=fig, ax=ax
+)
+fig.savefig("GM-CALC-all_phases.png")
+plt.close()

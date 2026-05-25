@@ -78,7 +78,6 @@ def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
 
 
 def _twostate_Cp(T_arr=0, expression=None, symbols=None, **kwargs):
-    # TODO: update to use symbolic expression for dE similar to how the symbolic_Cp function works.
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
@@ -496,7 +495,6 @@ def fit_heat_capacity(datasets, models, verbose=False):
         else:
             # Assume the last heat capacity measurement is liquid
             liq_Cp = df["Cp"].values[-1]
-        # Commented code below replaced with a single point 2000 K higher than the max temp provided 2026-05-16
         inc_Cp = (liq_Cp - df["Cp"].values[-1]) / 5
         i = 1
         while i < 6:
@@ -518,11 +516,6 @@ def fit_heat_capacity(datasets, models, verbose=False):
             new_entry = {"temperature": [new_temp], "Cp": [liq_Cp], "reference": "melt"}
             df = pd.concat([df, pd.DataFrame(new_entry)])
             i += 1
-        # new_entry = {
-        #     "temperature": [np.max(df["temperature"]) + 2000],
-        #     "Cp": [liq_Cp],
-        #     "reference": "melt",
-        # }
         df = pd.concat([df, pd.DataFrame(new_entry)])
 
     arg_index = []
@@ -532,7 +525,7 @@ def fit_heat_capacity(datasets, models, verbose=False):
         "Cp_array": df["Cp"].values,
     }
     default_bounds = {
-        "theta": (0, 1500),
+        "theta": (0, 2500),
         "beta": (0, 5),
         "p": (0, 1),
         "Tc": (0, 3000),
@@ -567,7 +560,7 @@ def fit_heat_capacity(datasets, models, verbose=False):
         if "fit" in param_list:
             params.append(param_list[0])
             if len(param_list) == 3:
-                bounds.append(param_list[2])
+                bounds.append(param_list[1])
             else:
                 bounds.append(default_bounds["theta"])
             param_list.append(i)
@@ -749,7 +742,6 @@ def fit_heat_capacity(datasets, models, verbose=False):
 
     arg_dict["models"] = models
     # optimize the model parameters
-    # initialize with values for iron, not sure how sensitive it will be
     bounds = tuple(bounds)
 
     if len(params) > 0:

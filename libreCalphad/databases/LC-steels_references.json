@@ -1,5 +1,16 @@
 {"FE": 
-	{"BCC_A2": 
-		{"xiong": 
-			{"p": "Xiong2012"}}}
+	{"BCC_A2": {
+		"xiong": 
+			{"p": "Xiong2012"}
+		}
+	},
+	"LIQUID": {
+		"einstein": {
+			"THETA": "Chen2001",
+		},
+		"xiong": {
+			"BMAGN": "Chen2001",
+			"NT": "Chen2001",
+			"p": "Xiong2012"
+		}
 }

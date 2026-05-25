@@ -7,34 +7,16 @@ from pycalphad import calculate, equilibrium, variables as v
 from tinydb import where
 import yaml
 
-dbf = load_database("LC-steels-thermo.tdb")
+dbf = load_database("LC-steels-thermo.xml")
 # dbf = load_database("LC-steels-input.tdb")
 param_gen_file = impresources.files("libreCalphad.databases") / "run_param_gen.yaml"
 with open(param_gen_file, "r") as f:
     dataset_folder = yaml.safe_load(f)["system"]["datasets"]
 datasets = load_datasets(recursive_glob(dataset_folder))
 components = ["FE", "VA"]
-phases = ["BCC_A2", "FCC_A1", "LIQUID"]
+phases = ["BCC_A2", "FCC_A1", "GAS", "LIQUID"]
 temps = (0.5, 2000, 2)
 conditions = {v.T: temps, v.N: 1, v.P: 101325}
-
-# CPM data
-
-fig, ax = plt.subplots(figsize=(8, 6))
-eq_res = equilibrium(dbf, components, phases, conditions, output="heat_capacity")
-for phase in phases:
-    cpm_res = calculate(
-        dbf, components, phase, T=temps, P=101325, N=1, output="heat_capacity"
-    )
-    ax.plot(cpm_res.T, cpm_res.heat_capacity.squeeze(), label=phase)
-
-ax.plot(eq_res.T, eq_res.heat_capacity.squeeze(), label="equilibrium")
-ax.set_xlabel("Temperature (K)")
-ax.set_ylabel("Heat Capacity (J/mol-formula-K)")
-ax.legend(loc="upper left", bbox_to_anchor=(1, 1))
-fig.tight_layout()
-fig.savefig("./all_heat_capacity.png")
-plt.close()
 
 # Gibbs energies
 

@@ -18,6 +18,18 @@ def test_fit_einstein_Cp():
     assert np.isclose(model_dict["einstein"]["theta"][0], 300)
 
 
+def test_fit_einstein_Cp_with_bounds():
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_einstein_data.json"
+    )
+    with open(data_file, "r") as f:
+        test_data = [json.load(f)]
+    model_dict = {"einstein": {"theta": [250, [200, 400], "fit"]}}
+    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
+    assert np.isclose(model_dict["einstein"]["theta"][0], 300)
+
+
 def test_fix_einstein_Cp():
     data_file = (
         impresources.files("libreCalphad.tests.test_heat_capacity_files")

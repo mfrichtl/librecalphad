@@ -35,7 +35,7 @@ def calculate_offset(xdata, ydata, order=0):
         return np.array([a * x**2 + b * x + c for x in xdata])
 
     def _calc_cubic_offset(xdata, a, b, c, d):
-        return np.array([a*x**3 + b*x**2 + c*x + d for x in xdata])
+        return np.array([a * x**3 + b * x**2 + c * x + d for x in xdata])
 
     fits = None
     if order == 0:
@@ -149,9 +149,13 @@ def _symbolic_gibbs(T_arr, variable_values, Cp_expression, temp_bounds, ret_expr
     return ret_arr
 
 
-def _twostate_gibbs(T_arr, dE, coef_list, ret_expr=False):
-    if isinstance(dE, list):
-        dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
+def _twostate_gibbs(T_arr, expression=None, symbols=None, ret_expr=False):
+    symbol_dict = {}
+    for symbol in symbols:
+        symbol_dict[symbol] = kwargs[symbol][0]
+    expression = expression.subs(symbol_dict)
+    # if isinstance(dE, list):
+    #     dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
 
     def _calc_twostate_gibbs(temp, dE):
         return np.float64((-R * T * se.log(1 + se.exp(-dE / (R * T)))).subs(T, temp))
@@ -162,13 +166,13 @@ def _twostate_gibbs(T_arr, dE, coef_list, ret_expr=False):
         return -v.R * v.T * se.log(1 + se.exp(-dE / (v.R * v.T)))
 
     if isinstance(T_arr, (int, float)):
-        ret_arr = _calc_twostate_gibbs(T_arr, dE)
+        ret_arr = _calc_twostate_gibbs(T_arr, expression)
     elif ret_expr:
-        ret_arr = _sympy_twostate_gibbs(None, dE)
+        ret_arr = _sympy_twostate_gibbs(None, expression)
     else:
         ret_arr = np.array([])
         for temp in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(temp, dE))
+            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(temp, expression))
     return ret_arr
 
 

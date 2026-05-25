@@ -40,6 +40,11 @@ def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
                     param_value = np.log(parameter_values[0])
                 elif model == "two-state":
                     param_value = parameter_values
+                    param_value = sp.parse_expr(param_value)
+                    symbol_dict = {}
+                    for symbol in model_values["symbols"]:
+                        symbol_dict[symbol] = model_values[symbol][0]
+                    param_value = param_value.subs(symbol_dict)
                 else:
                     param_value = parameter_values[0]
                 param_expr = se.Piecewise(
@@ -52,6 +57,7 @@ def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
                     "parameter_order": param_order,
                     "parameter": param_expr,
                     "diffusing_species": v.Species(None),
+                    "reference": None,
                 }
                 dbf._parameters.upsert(new_parameter, query)
     return dbf
