@@ -25,8 +25,12 @@
 
 ## Testing Guidelines
 
+- Create or update appropriate unit tests for each code change.
+- Tests should cover the requested behavior and relevant error cases.
+- Run the focused unit test or tests covering the change and confirm they pass before running the full test suite.
+- Run the complete test suite after focused tests pass.
+- Report the focused test command, full test-suite command, and their results.
 - Tests should be deterministic and independent of network access, local machine configuration, and execution order.
-- Cover the requested behavior and relevant error cases.
 - Do not weaken or remove existing tests merely to make a change pass.
 - Use temporary directories and fixtures for filesystem interactions where possible.
 
