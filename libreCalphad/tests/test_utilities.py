@@ -4,6 +4,7 @@ from libreCalphad.models.utilities import (
     convert_conditions,
     get_components_from_conditions,
     parse_composition,
+    trim_conditions,
 )
 from pycalphad import variables as v
 
@@ -32,3 +33,16 @@ def test_pass_empty_material_definition():
     test_row = {"material_at%": "", "material_wt%": ""}
     with pytest.raises(ValueError, match="dependent component"):
         parse_composition(test_row, dependent_element="FE")
+
+
+def test_trim_conditions_raises_error_when_only_protected_conditions_remain():
+    components = ["FE", "C", "VA"]
+    conditions = {v.T: 1000, v.P: 101325, v.X("C"): 0.01}
+
+    with pytest.raises(ValueError, match="Cannot reduce conditions"):
+        trim_conditions(
+            components,
+            conditions,
+            max_num_conditions=2,
+            always_keep_list=["C"],
+        )

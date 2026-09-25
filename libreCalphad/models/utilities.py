@@ -197,6 +197,10 @@ def trim_conditions(
                     The modified components list.
                 conditions, dictionary
                     The modificed conditions dictionary.
+
+    Raises: ValueError
+                If the requested number of conditions cannot be reached without
+                removing a component in always_keep_list.
     """
 
     if always_remove_list is None:
@@ -204,7 +208,6 @@ def trim_conditions(
     if always_keep_list is None:
         always_keep_list = []
 
-    n = 0
     original_conditions = conditions.copy()
     if (
         type(components) != np.ndarray
@@ -219,17 +222,23 @@ def trim_conditions(
                 components = np.delete(components, np.where(components == component))
                 conditions.pop(key)
 
-    while (
-        len(conditions) > max_num_conditions
-    ):  # pycalphad seems to crash with too many conditions, kept getting stack smashing errors
-        min_element = list(conditions.keys())[
-            list(conditions.values()).index(sorted(conditions.values())[n])
+    while len(conditions) > max_num_conditions:
+        removable_conditions = [
+            (key, value)
+            for key, value in conditions.items()
+            if str(key).startswith("X_")
+            and str(key).split("_")[1] not in always_keep_list
         ]
+        if not removable_conditions:
+            raise ValueError(
+                f"Cannot reduce conditions to {max_num_conditions} entries without "
+                f"removing protected components: {always_keep_list!r}."
+            )
+
+        min_element, _ = min(removable_conditions, key=lambda item: item[1])
         component = str(min_element).split("_")[1]
-        if component not in always_keep_list:
-            components = np.delete(components, np.where(components == component))
-            conditions.pop(min_element)
-        n += 1
+        components = np.delete(components, np.where(components == component))
+        conditions.pop(min_element)
 
     return components, conditions
 
