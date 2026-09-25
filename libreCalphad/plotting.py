@@ -194,7 +194,9 @@ def plot_delta_energies(
         .replace("alpha", phases[0])
         .replace("gamma", phases[1])
     )
-    ax.legend()
+    handles, labels = ax.get_legend_handles_labels()
+    if handles:
+        ax.legend()
     fig.tight_layout()
     return fig, ax
 

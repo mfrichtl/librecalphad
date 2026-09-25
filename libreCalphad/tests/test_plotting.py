@@ -1,3 +1,5 @@
+import warnings
+
 from espei.datasets import load_datasets, recursive_glob
 from importlib import resources as impresources
 from libreCalphad import plotting as lcplt
@@ -184,8 +186,10 @@ def test_plot_delta_energies_with_error():
     components = ["FE", "VA"]
     phases = ["BCC_A2", "FCC_A1"]
     conditions = {v.N: 1, v.T: (0, 2000, 10), v.P: 101325}
-    fig, ax = lcplt.plot_delta_energies(
-        dbf, components, phases, conditions, datasets, output="GM", error=True
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        fig, ax = lcplt.plot_delta_energies(
+            dbf, components, phases, conditions, datasets, output="GM", error=True
+        )
     assert isinstance(fig, mp.figure.Figure)
     assert isinstance(ax, mp.axes._axes.Axes)
