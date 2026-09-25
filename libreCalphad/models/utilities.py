@@ -43,31 +43,26 @@ def DG(db, components, phases, conditions, calc_opts=None):
 
     Returns: delta_g, float, J/mol
                 Float of the molar Gibbs energy difference, phases[0] - phases[1].
-                Returns np.nan if there is a calculation error.
     """
 
     if calc_opts is None:
         calc_opts = {}
 
     eq_GM = []
-    try:
-        for phase in phases:
-            eq_GM.append(
-                equilibrium(
-                    db,
-                    components,
-                    [phase],
-                    conditions,
-                    output="GM",
-                    calc_opts=calc_opts,
-                )
-                .GM.squeeze()
-                .values
+    for phase in phases:
+        eq_GM.append(
+            equilibrium(
+                db,
+                components,
+                [phase],
+                conditions,
+                output="GM",
+                calc_opts=calc_opts,
             )
-        return eq_GM[0] - eq_GM[1]
-    except Exception as e:
-        print(e)
-        return np.nan
+            .GM.squeeze()
+            .values
+        )
+    return eq_GM[0] - eq_GM[1]
 
 
 def parse_composition(row, dependent_element):
@@ -85,6 +80,9 @@ def parse_composition(row, dependent_element):
 
     Returns: row : Pandas Series
                 The modified row with the composition objects described above.
+
+    Raises: ValueError
+                If the composition definition cannot be parsed or is invalid.
     """
 
     comp_dict = {}
@@ -98,16 +96,17 @@ def parse_composition(row, dependent_element):
         weight_percent = True
         material_col = "material_wt%"
 
-    # Parse hyphenated values
-    assert not pd.isnull(row[material_col]), (
-        "Passed inadequate material definition for parsing."
-    )
+    if pd.isnull(row[material_col]):
+        raise ValueError("Passed inadequate material definition for parsing.")
+
     split_mat = row[material_col].split("-")
     split_mat = [elem.lower() for elem in split_mat]
-    assert dependent_element in split_mat, (
-        f"Did not identify the dependent component ({dependent_element}) in {split_mat}."
-    )
-    frac = 0
+    if dependent_element not in split_mat:
+        raise ValueError(
+            f"Did not identify the dependent component ({dependent_element}) in "
+            f"{split_mat}."
+        )
+
     components = []
     for value in split_mat:
         if value == dependent_element:
@@ -115,17 +114,15 @@ def parse_composition(row, dependent_element):
         elif value == "":
             continue
         else:
-            element = ""
-            for char in value:
-                if char.isalpha():
-                    element += char
+            element = "".join(char for char in value if char.isalpha())
             try:
                 frac = float(value.split(element)[0]) / 100
-                components.append(element.upper())
-            except Exception as e:
-                print(str(e))
-                print(f"Identified element: {element}")
-                print(row)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(
+                    f"Unable to parse composition entry {value!r} in "
+                    f"{row[material_col]!r}."
+                ) from exc
+            components.append(element.upper())
             comp_dict[element.capitalize()] = frac
 
     if "VA" not in components:
@@ -133,29 +130,31 @@ def parse_composition(row, dependent_element):
     row["components"] = components
     solute_fraction = np.sum(list(comp_dict.values()))
     comp_dict[dependent_element.capitalize()] = 1 - solute_fraction
-    comp_set = None
     alloy = []
     conditions = {}
+
     try:
         if weight_percent:
             comp_set = Composition.from_weight_dict(comp_dict)
         else:
             comp_set = Composition(comp_dict)
-        row["composition"] = comp_set
-        row["system"] = comp_set.chemical_system
-        for element, frac in comp_set.to_reduced_dict.items():
-            row[str(element)] = frac
-            # semi-arbitrary cutoff points for describing the alloy system, higher for substitutional elements
-            if element.lower() == dependent_element:
-                continue
-            elif element in interstitials and frac > 0.0005:
-                alloy.append(element.capitalize())
-            elif frac > solute_threshold:
-                alloy.append(element.capitalize())
+    except (TypeError, ValueError) as exc:
+        raise ValueError(
+            f"Unable to construct a composition from {row[material_col]!r}."
+        ) from exc
+
+    row["composition"] = comp_set
+    row["system"] = comp_set.chemical_system
+    for element, frac in comp_set.to_reduced_dict.items():
+        row[str(element)] = frac
+        # semi-arbitrary cutoff points for describing the alloy system, higher for substitutional elements
+        if element.lower() == dependent_element:
+            continue
+        elif element in interstitials and frac > 0.0005:
+            alloy.append(element.capitalize())
+        elif frac > solute_threshold:
+            alloy.append(element.capitalize())
         conditions.update({v.X(element.upper()): frac})
-    except Exception as e:
-        print(str(e))
-        print(row)
 
     alloy.sort()
     row["alloy_system"] = dependent_element.capitalize() + "-" + "-".join(alloy)
