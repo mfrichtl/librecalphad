@@ -393,10 +393,13 @@ def plot_calculated_gibbs_energies(
     return fig, ax
 
 
-def step_plot(db, components, conditions, disabled_phases=[], **fig_kw):
+def step_plot(db, components, conditions, disabled_phases=None, **fig_kw):
     """
     Function to make a step plot.
     """
+
+    if disabled_phases is None:
+        disabled_phases = []
 
     fig, ax = plt.subplots(**fig_kw)
 

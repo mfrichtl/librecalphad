@@ -26,7 +26,7 @@ def identify_variables(expr_symbols, variable_values, temp):
     return symbol_values
 
 
-def DG(db, components, phases, conditions, calc_opts={}):
+def DG(db, components, phases, conditions, calc_opts=None):
     """
     Function to calculate the Gibbs energy difference between two phases.
 
@@ -45,6 +45,9 @@ def DG(db, components, phases, conditions, calc_opts={}):
                 Float of the molar Gibbs energy difference, phases[0] - phases[1].
                 Returns np.nan if there is a calculation error.
     """
+
+    if calc_opts is None:
+        calc_opts = {}
 
     eq_GM = []
     try:
@@ -166,8 +169,8 @@ def trim_conditions(
     conditions,
     max_num_conditions=1000,
     solute_threshold=1e-12,
-    always_remove_list=[],
-    always_keep_list=[],
+    always_remove_list=None,
+    always_keep_list=None,
 ):
     """
     Function to trim conditions for a pycalphad calculation based on a variety of criteria. This is necessary because on certain occasions
@@ -196,6 +199,11 @@ def trim_conditions(
                 conditions, dictionary
                     The modificed conditions dictionary.
     """
+
+    if always_remove_list is None:
+        always_remove_list = []
+    if always_keep_list is None:
+        always_keep_list = []
 
     n = 0
     original_conditions = conditions.copy()
