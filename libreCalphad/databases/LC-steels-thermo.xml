@@ -18,8 +18,8 @@
     <Interval in="T" lower="10000.0">394844.1823 - 172.37755*T - T*(-0.00176471552422357*T + 3.72510815426124e-07*T**2) - 0.000882357762111787*T**2 + 2.48340543617416e-07*T**3</Interval>
   </Expr>
   <Expr id="GHSERFE">
-    <Interval in="T" lower="0.0" upper="1811.0">490 - 9.775*T - T*(0.00636051472053563*T + 1.63385089564618e-13*T**4) + 0.00318025736026782*T**2 + 1.30708071651695e-13*T**5</Interval>
-    <Interval in="T" lower="1811.0" upper="10000.0">-18280.6 + 116.5*T + 18.7256809823887*T*(1 - ln(T)) + 9.24904030738746e+37*T**(-11) - 1.2272820530714e+19*T**(-5)</Interval>
+    <Interval in="T" lower="0.0" upper="1811.0">800 - 12.1320053066597*T - T*(0.0063208150000317*T + 1.625e-13*T**4) + 0.00316040750001585*T**2 + 1.3e-13*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">-17432.5 + 112.68599469334*T + 18.5358679177243*T*(1 - ln(T)) + 1.06662738129399e+38*T**(-11) - 1.39635309008078e+19*T**(-5)</Interval>
   </Expr>
   <Expr id="GHSERVA">0</Expr>
   <Expr id="GLIQFE">
@@ -48,7 +48,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">2.7710038953695</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">2.77434263610604</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -60,7 +60,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">1043.14999999993</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">1043.14981995987</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -72,7 +72,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">5.73334127689775</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">5.68020739495522</Interval>
     </Parameter>
     <Parameter type="G">1.0*GBCCFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
   </Phase>

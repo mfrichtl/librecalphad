@@ -761,7 +761,9 @@ def fit_heat_capacity(datasets, models, verbose=False):
             if param == "expression":
                 mdict[param] = str(mdict[param])
                 continue
-            if "fit" in param_list:
+            if isinstance(param_list, float):
+                continue
+            elif "fit" in param_list:
                 # update the provided parameter with the fitted parameter
                 if isinstance(param_list[-1], int):
                     param_list[0] = min_fits.x[param_list[-1]]
@@ -800,6 +802,8 @@ def print_heat_capacity_fits(min_fits, model_dict):
                 if param_name == "expression":
                     print(f"{param_name}: {param_value}")
                 elif param_name == "param_bounds":
+                    continue
+                elif all([model == "offset", isinstance(param_value, float)]):
                     continue
                 elif all([model == "offset", isinstance(param_value[0], str)]):
                     print(f"{param_name}: {param_value[0]}")

@@ -21,7 +21,9 @@ import numpy as np
 import os
 import pandas as pd
 from pycalphad import calculate, Database, variables as v
+from scipy.optimize import minimize
 import seaborn as sns
+from skopt import gp_minimize
 import symengine as se
 from tinydb import where
 import yaml
@@ -462,43 +464,116 @@ plt.savefig(f"./DH-error-BCC_A2-FCC_A1.png")
 plt.close()
 
 # melting point
-transition_phases = ["BCC_A2", "LIQUID"]
-transition_temps = [1811]
-conditions = {v.N: 1, v.P: 101325}
-for temp in transition_temps:
-    conditions[v.T] = temp
-    phase_dict = {}
-    for phase in transition_phases:
-        phase_dict[phase] = {}
-        phase_dict[phase]["GM"] = calculate(
-            dbf,
-            components,
-            phase,
-            T=conditions[v.T],
-            P=conditions[v.P],
-            N=conditions[v.N],
-        ).GM.values.squeeze()
-        phase_dict[phase]["HM"] = calculate(
-            dbf,
-            components,
-            phase,
-            T=conditions[v.T],
-            P=conditions[v.P],
-            N=conditions[v.N],
-            output="HM",
-        ).HM.values.squeeze()
-        phase_dict[phase]["SM"] = calculate(
-            dbf,
-            components,
-            phase,
-            T=conditions[v.T],
-            P=conditions[v.P],
-            N=conditions[v.N],
-            output="SM",
-        ).SM.values.squeeze()
-    phase_dict["delta"] = {}
-    for energy_key in list(phase_dict[transition_phases[0]].keys()):
-        phase_dict["delta"][energy_key] = (
-            phase_dict[transition_phases[0]][energy_key]
-            - phase_dict[transition_phases[1]][energy_key]
-        )
+"""
+TODO: create a function to fine-tune the enthalpy and entropy offsets (E0) for each phase so that I
+can dial in the transition temperatures as close as possible.
+
+I think this will just require a single initial calculation of enthalpy and entropy for each phase in the transition and then a minimization of the energy differences by adjusting each phase enthalpy and entropy.
+
+I think I can simultaneously adjust this for multiple phases to get as close as possible for a given CPM fit of each phase.
+"""
+
+
+def _solve_for_HM_SM_offsets(x, dbf, components, transition_list, phase_dict):
+    # x[0]: phases[0] HM offset
+    # x[1]: phases[0] SM offset
+    # x[2]: phases[1] HM offset
+    # x[3]: phases[1] SM offset
+    # x[n-1]: phases[n] HM offset
+    # x[n]: phases[n] SM offset
+    gibbs_diffs = []
+    for transition_dict in transition_list:
+        conditions = transition_dict["conditions"]
+        phases = transition_dict["phases"]
+        gibbs_energies = []
+        for i in range(len(phases)):
+            phase = phases[i]
+            phase_energies = []
+            phase_idx = phase_dict[phase]["x_idx"]
+
+            gibbs_energies.append(
+                transition_dict[phase]["HM"]
+                + x[phase_idx[0]]
+                - conditions[v.T] * (transition_dict[phase]["SM"] + x[phase_idx[1]])
+            )
+            phase_dict[phase]["HM_offset"] = x[phase_idx[0]]
+            phase_dict[phase]["SM_offset"] = x[phase_idx[1]]
+            phase_dict[phase]["GM"] = gibbs_energies[i]
+        if len(gibbs_energies) == 2:
+            gibbs_diffs.append(np.abs(gibbs_energies[0] - gibbs_energies[1]))
+        else:
+            raise NotImplementedError(
+                f"Solving for transitions of {len(gibbs_energies)} phases not yet implemented"
+            )
+    return np.sqrt(np.mean(np.square(gibbs_diffs)))
+
+
+transition_list = [
+    {"conditions": {v.T: 1185, v.N: 1, v.P: 101325}, "phases": ["BCC_A2", "FCC_A1"]},
+    {"conditions": {v.T: 1667, v.N: 1, v.P: 101325}, "phases": ["BCC_A2", "FCC_A1"]},
+    {"conditions": {v.T: 1811, v.N: 1, v.P: 101325}, "phases": ["BCC_A2", "LIQUID"]},
+    {"conditions": {v.T: 3132, v.N: 1, v.P: 101325}, "phases": ["LIQUID", "GAS"]},
+]
+
+
+phase_dict = {}
+bounds = []
+for transition_dict in transition_list:
+    phases = transition_dict["phases"]
+    conditions = transition_dict["conditions"]
+    for phase in phases:
+        transition_dict[phase] = {"HM": 0, "SM": 0}
+        if phase not in list(phase_dict.keys()):
+            phase_dict[phase] = {
+                "x_idx": [
+                    2 * len(list(phase_dict.keys())),
+                    2 * len(list(phase_dict.keys())) + 1,
+                ]
+            }
+            bounds.append((-np.inf, np.inf))
+            bounds.append((-np.inf, np.inf))
+        for energy in ["HM", "SM"]:
+            calc_res = calculate(
+                dbf,
+                components,
+                phase,
+                T=conditions[v.T],
+                P=conditions[v.P],
+                N=conditions[v.N],
+                output=energy,
+            )
+            transition_dict[phase][energy] = getattr(calc_res, energy).values.squeeze()
+
+x0 = np.zeros(2 * len(list(phase_dict.keys())))
+min_fits = minimize(
+    _solve_for_HM_SM_offsets,
+    x0=x0,
+    args=(dbf, components, transition_list, phase_dict),
+    method="Nelder-Mead",
+    options={"adaptive": True, "disp": True},
+)
+# min_fits = gp_minimize(_solve_for_HM_SM_offsets, bounds, acq_func="EI", x0=x0)
+
+print(min_fits)
+print(phase_dict)
+with open(param_input_file, "r") as f:
+    model_dict_input = json.load(f)
+for phase, values in phase_dict.items():
+    offset_dict = model_dict_input[phase]["offset"]
+    for energy in ["HM", "SM"]:
+        offset_list = offset_dict[energy]
+        if f"{energy}_increment" in list(offset_dict.keys()):
+            last_inc = offset_dict[f"{energy}_increment"]
+        else:
+            last_inc = 0
+        if last_inc == phase_dict[phase][f"{energy}_offset"]:
+            # need to run the script again to update the calcs
+            continue
+        else:
+            offset_dict[energy] = [
+                offset_list[0] + phase_dict[phase][f"{energy}_offset"],
+                "fix",
+            ]
+            offset_dict[f"{energy}_increment"] = phase_dict[phase][f"{energy}_offset"]
+with open(param_input_file, "w") as f:
+    json.dump(model_dict_input, f, indent=4)

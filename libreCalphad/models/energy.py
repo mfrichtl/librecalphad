@@ -90,22 +90,22 @@ def calculate_transition_energies(
     return min_fits
 
 
-def _offset_gibbs(T_arr=0, enthalpy=0, entropy=0, ret_expr=False):
+def _offset_gibbs(T_arr=0, HM=0, SM=0, ret_expr=False):
     # This handles the constants lost during integration
     ret_arr = 0
-    if isinstance(enthalpy, str):
-        enthalpy = sp.parse_expr(enthalpy).subs("T", v.T)
-    if isinstance(entropy, str):
-        entropy = sp.parse_expr(entropy).subs("T", v.T)
+    if isinstance(HM, str):
+        HM = sp.parse_expr(HM).subs("T", v.T)
+    if isinstance(SM, str):
+        SM = sp.parse_expr(SM).subs("T", v.T)
     if isinstance(T_arr, (int, float)) and not ret_expr:
-        ret_arr = enthalpy - entropy * T_arr
+        ret_arr = HM - SM * T_arr
     elif not ret_expr:
         ret_arr = np.array([])
         for temp in T_arr:
-            gibbs = enthalpy - entropy * temp
+            gibbs = HM - SM * temp
             ret_arr = np.append(ret_arr, gibbs)
     else:
-        ret_arr = enthalpy - entropy * v.T
+        ret_arr = HM - SM * v.T
 
     return ret_arr
 
@@ -651,36 +651,22 @@ def create_espei_custom_refstate_stable(model_dict):
         bcm_kwargs = {"ret_expr": True}
         for kwarg, value in bcm_dict.items():
             bcm_kwargs[kwarg] = value[0]
-        # bcm_args.append(bcm_dict["beta_1"][0])
-        # bcm_args.append(bcm_dict["beta_2"][0])
         tau = bcm_dict["tau"][0]
-        # bcm_args.append(tau)
         gamma = bcm_dict["gamma"][0]
-        # bcm_args.append(gamma)
-        # bcm_args.append(bcm_dict["T_melt"][0])
         critical_temperatures.append(tau - gamma)
         critical_temperatures.append(tau + gamma)
     if "linear" in list(model_dict.keys()):
         linear_kwargs = {"ret_expr": True}
         for kwarg, value in model_dict["linear"].items():
             linear_kwargs[kwarg] = value[0]
-        # linear_args.append(model_dict["linear"]["alpha"][0])
-        # T_melt = model_dict["linear"]["T_melt"][0]
-        # linear_args.append(T_melt)
         if "T_melt" in list(model_dict["linear"].keys()):
             if model_dict["linear"]["T_melt"][0] not in critical_temperatures:
                 critical_temperatures.append(model_dict["linear"]["T_melt"][0])
-        # if T_melt not in critical_temperatures:
-        #     critical_temperatures.append(T_melt)
     if "melt" in list(model_dict.keys()):
         melt_kwargs = {"ret_expr": True}
         for kwarg, value in model_dict["melt"].items():
             melt_kwargs[kwarg] = value[0]
         T_melt = model_dict["melt"]["T_melt"][0]
-        # melt_args.append(T_melt)
-        # melt_args.append(model_dict["melt"]["a"][0])
-        # melt_args.append(model_dict["melt"]["b"][0])
-        # melt_args.append(model_dict["melt"]["c"][0])
         for param in ["solid_enthalpy", "solid_entropy"]:
             if param in list(model_dict["melt"].keys()):
                 melt_kwargs[param] = model_dict["melt"][param][0]
@@ -689,9 +675,8 @@ def create_espei_custom_refstate_stable(model_dict):
     if "offset" in list(model_dict.keys()):
         offset_kwargs = {"ret_expr": True}
         for kwarg, value in model_dict["offset"].items():
-            offset_kwargs[kwarg] = value[0]
-        # offset_args.append(model_dict["offset"]["enthalpy"][0])
-        # offset_args.append(model_dict["offset"]["entropy"][0])
+            if not isinstance(value, float):
+                offset_kwargs[kwarg] = value[0]
     for symbolic_model in [
         model for model in list(model_dict.keys()) if "symbolic" in model
     ]:
