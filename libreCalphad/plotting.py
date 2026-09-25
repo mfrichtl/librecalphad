@@ -121,8 +121,12 @@ def plot_delta_energies(
                     output_dict["reference"].extend(
                         [result["reference"] for i in result["conditions"]["T"]]
                     )
-                except:
-                    breakpoint()
+                except (IndexError, TypeError, ValueError) as exc:
+                    raise ValueError(
+                        "Unable to plot delta-energy dataset with reference "
+                        f"{result['reference']!r} for phases {phases!r}. "
+                        "Expected values compatible with the temperature conditions."
+                    ) from exc
     for result in inv_search_results:
         if error:
             for i in range(len(result["values"][0])):
@@ -172,8 +176,12 @@ def plot_delta_energies(
                     output_dict["reference"].extend(
                         [result["reference"] for i in result["conditions"]["T"]]
                     )
-                except:
-                    breakpoint()
+                except (IndexError, TypeError, ValueError) as exc:
+                    raise ValueError(
+                        "Unable to plot inverse delta-energy dataset with reference "
+                        f"{result['reference']!r} for phases {phases!r}. "
+                        "Expected values compatible with the temperature conditions."
+                    ) from exc
 
     output_df = pd.DataFrame(output_dict)
     sns.scatterplot(data=output_df, x="T", y="output", hue="reference", ax=ax)
@@ -355,8 +363,11 @@ def plot_calculated_gibbs_energies(
                 else:
                     try:
                         np.isnan(val)
-                    except:
-                        breakpoint()
+                    except TypeError as exc:
+                        raise ValueError(
+                            f"Unexpected phase value {val!r} at temperature "
+                            f"{temp.T.values!r}."
+                        ) from exc
     search_results = None
     for phase in phases:
         if datasets is not None:
