@@ -38,3 +38,9 @@
 
 - Update documentation when public APIs, configuration, command-line behavior, or user-facing workflows change.
 - Keep comments focused on intent and non-obvious decisions rather than restating code.
+
+## Repository instructions for coding agents
+
+- After each completed change to this repository, create a git commit containing that change before reporting completion. If a request involves multiple related edits, commit them together once they have been verified.
+- Before committing, inspect `git status`, `git diff`, and recent commits. Stage only files belonging to the change; leave unrelated or pre-existing work untouched.
+- Run checks appropriate to the change and use a concise commit message consistent with repository history. If checks or a commit fail, report the blocker rather than claiming the change is complete.
