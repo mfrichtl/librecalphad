@@ -167,3 +167,5 @@ dmypy.json
 cython_debug/
 
 .aider*
+.github/
+MANIFEST.in

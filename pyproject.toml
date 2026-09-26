@@ -1,8 +1,6 @@
 [build-system]
 requires = [
-    "cmake",
-    "setuptools",
-    "pytest",
+    "setuptools>=68",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -16,7 +14,17 @@ dependencies = [
     "ESPEI",
     "pycalphad",
     "pymatgen",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "PyYAML",
+    "scipy",
+    "seaborn",
+    "symengine",
+    "sympy",
+    "tinydb",
 ]
+requires-python = ">=3.11"
 description='Open-source Calphad databases and property models.'
 license={text = 'MIT'}
 #provides='libreCalphad'
@@ -33,7 +41,7 @@ classifiers=[
     'Topic :: Scientific/Engineering :: Chemistry',
 
     # Pick your license as you wish (should match "license" above)
-    'License :: OSI Approved :: GNU GPL v3',
+    'License :: OSI Approved :: MIT License',
 
     # Supported Python versions
     'Programming Language :: Python :: 3.11',
@@ -42,3 +50,20 @@ classifiers=[
 ]
 [project.optional-dependencies]
 propertyModels = ['kaleido', 'odfpy', 'pandarallel', 'scikit-learn', 'seaborn']
+test = ['pytest']
+
+[tool.setuptools.packages.find]
+namespaces = false
+include = ["libreCalphad*"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.package-data]
+"libreCalphad.databases" = ["*.tdb", "*.json"]
+"libreCalphad.models.martensite_start" = ["*.pkl"]
+"libreCalphad.models.martensite_start.model_params" = ["*.json"]
+"libreCalphad.tests.test_database_files" = ["*.tdb", "*.xml"]
+"libreCalphad.tests.test_datasets" = ["*.json"]
+"libreCalphad.tests.test_heat_capacity_files" = ["*.json"]
+"libreCalphad.tests" = ["*.csv"]

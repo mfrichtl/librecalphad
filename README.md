@@ -12,3 +12,10 @@ A martensite-start temperature model for steels is currently available. It still
 
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.
+
+To install the package and run its Python tests locally (Python 3.11–3.13):
+
+```sh
+python -m pip install '.[test]'
+python -m pytest -q libreCalphad/tests
+```
