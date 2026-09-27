@@ -22,6 +22,7 @@ Notes: Assuming alpha == tau in [1]
 """
 
 from collections import OrderedDict
+from copy import deepcopy
 from libreCalphad.databases.db_utils import load_database
 from libreCalphad.models.utilities import identify_variables
 import matplotlib.pyplot as plt
@@ -441,7 +442,7 @@ def _fit_heat_capacity(x, arg_dict):
 
 
 def fit_heat_capacity(datasets, models, verbose=False):
-    models = models.copy()
+    models = deepcopy(models)
     implemented_models = [
         "bcm",
         "einstein",

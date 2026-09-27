@@ -18,6 +18,23 @@ def test_fit_einstein_Cp():
     assert np.isclose(model_dict["einstein"]["theta"][0], 300)
 
 
+def test_repeated_fit_does_not_change_input_models():
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_einstein_data.json"
+    )
+    with open(data_file, "r") as f:
+        test_data = [json.load(f)]
+    models = {"einstein": {"theta": [250, "fit"]}}
+
+    _, first_fit = hc.fit_heat_capacity(test_data, models)
+    _, second_fit = hc.fit_heat_capacity(test_data, models)
+
+    assert models == {"einstein": {"theta": [250, "fit"]}}
+    assert np.isclose(first_fit["einstein"]["theta"][0], 300)
+    assert np.isclose(second_fit["einstein"]["theta"][0], 300)
+
+
 def test_fit_einstein_Cp_with_bounds():
     data_file = (
         impresources.files("libreCalphad.tests.test_heat_capacity_files")
