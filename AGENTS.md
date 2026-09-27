@@ -2,6 +2,8 @@
 
 ## General Instructions
 
+- Prioritize work on the LC-steels database. Treat known errors in `mf-steel.tdb` as out of scope unless a task explicitly asks to address them.
+- Do not investigate or add regression tests for results generated from `mf-steel.tdb` in `mf-steel_validation` unless explicitly requested. Continue to run and address failures in the existing test suite for code you change.
 - Make focused, minimal changes that directly address the requested task.
 - Preserve existing behavior unless the request explicitly requires changing it.
 - Follow the existing project structure, naming conventions, formatting, and coding style.
