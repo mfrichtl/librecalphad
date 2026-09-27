@@ -16,3 +16,13 @@ def test_symbolic_gibbs():
     assert np.isclose(gibbs, -10000)
     gibbs = en._symbolic_gibbs([0, 100], [2], Cp_f, temp_bounds)
     assert np.isclose(np.sum(gibbs), -10000)
+
+
+def test_create_espei_custom_refstate_stable_offset():
+    model_dict = {
+        "offset": {"enthalpy": [477.094, "fix"], "entropy": [9.77906, "fix"]}
+    }
+    gibbs = en.create_espei_custom_refstate_stable(model_dict)
+    assert np.isclose(
+        float(gibbs.subs(se.Symbol("T"), 300)), 477.094 - 9.77906 * 300
+    )

@@ -676,7 +676,8 @@ def create_espei_custom_refstate_stable(model_dict):
         offset_kwargs = {"ret_expr": True}
         for kwarg, value in model_dict["offset"].items():
             if not isinstance(value, float):
-                offset_kwargs[kwarg] = value[0]
+                offset_param = {"enthalpy": "HM", "entropy": "SM"}.get(kwarg, kwarg)
+                offset_kwargs[offset_param] = value[0]
     for symbolic_model in [
         model for model in list(model_dict.keys()) if "symbolic" in model
     ]:
