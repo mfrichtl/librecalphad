@@ -4,6 +4,8 @@
 
 - Prioritize work on the LC-steels database. Treat known errors in `mf-steel.tdb` as out of scope unless a task explicitly asks to address them.
 - Do not investigate or add regression tests for results generated from `mf-steel.tdb` in `mf-steel_validation` unless explicitly requested. Continue to run and address failures in the existing test suite for code you change.
+- For LC-steels assessments, fit experimental CPM data using `heat_capacity.py` and ESPEI-datasets before using ESPEI to fit the database. Do not directly adjust thermodynamic parameters unless explicitly requested.
+- Keep generated fit plots, fitted parameters, and database outputs separate from source inputs. Review results before using them downstream, and do not commit generated results unless explicitly requested.
 - Make focused, minimal changes that directly address the requested task.
 - Preserve existing behavior unless the request explicitly requires changing it.
 - Follow the existing project structure, naming conventions, formatting, and coding style.
@@ -39,6 +41,7 @@
 ## Documentation Guidelines
 
 - Update documentation when public APIs, configuration, command-line behavior, or user-facing workflows change.
+- Update `AGENTS.md` when new repository-specific guidance would be useful; keep it current as workflows and priorities evolve.
 - Keep comments focused on intent and non-obvious decisions rather than restating code.
 
 ## Repository instructions for coding agents
