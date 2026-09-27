@@ -60,7 +60,7 @@ include = ["libreCalphad*"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-"libreCalphad.databases" = ["*.tdb", "*.json"]
+"libreCalphad.databases" = ["*.tdb", "*.json", "LC-steels-thermo.xml"]
 "libreCalphad.models.martensite_start" = ["*.pkl"]
 "libreCalphad.models.martensite_start.model_params" = ["*.json"]
 "libreCalphad.tests.test_database_files" = ["*.tdb", "*.xml"]

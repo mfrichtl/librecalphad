@@ -8,7 +8,7 @@ from pycalphad.mapping import BinaryStrategy, plot_binary
 from pycalphad.property_framework.metaproperties import IsolatedPhase
 import yaml
 
-db = load_database("LC-steels-thermo.tdb")
+db = load_database("LC-steels-thermo.xml")
 with open("../../run_param_gen.yaml", "r") as f:
     dataset_folder = yaml.safe_load(f)["system"]["datasets"]
 datasets = load_datasets(recursive_glob(dataset_folder))

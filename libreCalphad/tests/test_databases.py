@@ -1,9 +1,14 @@
-from libreCalphad.databases.db_utils import upsert_db_param_from_models
+from libreCalphad.databases.db_utils import load_database, upsert_db_param_from_models
 import importlib.resources as impresources
 import numpy as np
 from pycalphad import Database
 import symengine as se
 from tinydb import where
+
+
+def test_load_lc_steels_thermo_xml():
+    dbf = load_database("LC-steels-thermo.xml")
+    assert {"BCC_A2", "FCC_A1", "LIQUID"} <= set(dbf.phases)
 
 
 def test_upsert_db_param_from_einstein_model():

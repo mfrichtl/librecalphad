@@ -19,7 +19,7 @@ def _lin_fit(x, m, b):
 
 
 df = pd.DataFrame()
-db = load_database("LC-steels-thermo.tdb")
+db = load_database("LC-steels-thermo.xml")
 disabled_phases = ["CEMENTITE_D011"]  # stable first
 phases = [phase for phase in list(db.phases.keys()) if phase not in disabled_phases]
 with open("../../run_param_gen.yaml", "r") as f:
