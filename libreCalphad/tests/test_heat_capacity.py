@@ -87,12 +87,21 @@ def test_fix_holzapfel_Cp():
 def test_melt_replaces_solid_and_approaches_liquid_capacity():
     temps = np.array([500.0, 1000.0, 2000.0, 1e6])
     solid = hc._holzapfel_debye_Cp(temps, thetaD=300)
-    liquid = hc._melt_Cp(temps[2:], T_melt=1000, a=46, b=1e19, c=0)
+    magnetic = hc._xiong_Cp(temps, beta=2, p=0.37, Tc=800)
+    correction = hc._melt_Cp(
+        temps[2:], T_melt=1000, a=46 - 3 * hc.R, b=1e19, c=0
+    )
+    liquid = solid[2:] + magnetic[2:] + correction
     data = pd.DataFrame(
-        {"temperature": temps, "Cp": [*solid[:2], *liquid], "reference": "test"}
+        {
+            "temperature": temps,
+            "Cp": [*(solid[:2] + magnetic[:2]), *liquid],
+            "reference": "test",
+        }
     )
     models = {
         "holzapfel": {"theta": [300, "fix"]},
+        "xiong": {"beta": [2, "fix"], "p": [0.37, "fix"], "Tc": [800, "fix"]},
         "melt": {
             "T_melt": [1000, "fix"],
             "liquid_Cp": [46, "fix"],
@@ -102,16 +111,16 @@ def test_melt_replaces_solid_and_approaches_liquid_capacity():
         },
     }
     fixed_models = deepcopy(models)
-    fixed_models["melt"]["a"] = [46, "fix"]
+    fixed_models["melt"]["a"] = [46 - 3 * hc.R, "fix"]
     args = {
         "temperature_array": temps,
         "Cp_array": data["Cp"].values,
         "models": fixed_models,
     }
     assert np.isclose(hc._fit_heat_capacity([], args), 0)
-    assert np.isclose(liquid[-1], 46)
+    assert np.isclose(liquid[-1], 46, atol=0.01)
     _, fitted = hc.fit_heat_capacity(data, models)
-    assert fitted["melt"]["a"] == [46, "fix"]
+    assert fitted["melt"]["a"] == [46 - 3 * hc.R, "fix"]
     assert models["melt"]["a"] == [20, "fit"]
 
 

@@ -14,7 +14,7 @@ def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order():
     models = {
         "melt": {
             "T_melt": [1000, "fix"],
-            "a": [46, "fix"],
+            "a": [46 - 3 * hc.R, "fix"],
             "b": [0, "fix"],
             "c": [0, "fix"],
         },
@@ -31,7 +31,10 @@ def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order():
     combined = [line for line in ax.lines if len(line.get_xdata()) == 1000][-1]
     temps = np.asarray(combined.get_xdata())
     capacities = np.asarray(combined.get_ydata())
-    assert np.allclose(capacities[temps > 1000], 46)
+    assert np.allclose(
+        capacities[temps > 1000],
+        hc._holzapfel_debye_Cp(temps[temps > 1000], 300) + 46 - 3 * hc.R,
+    )
     assert np.allclose(
         capacities[temps <= 1000],
         hc._holzapfel_debye_Cp(temps[temps <= 1000], 300),

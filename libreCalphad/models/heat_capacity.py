@@ -317,6 +317,7 @@ def _fit_heat_capacity(x, arg_dict):
             model_Cp += _holzapfel_debye_Cp(
                 T_arr=temperature_array, thetaD=theta_list[0]
             )
+    persistent_Cp = model_Cp.copy()
     for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
         symbolic_dict = models[symbolic_key]
         model_params = []
@@ -369,9 +370,11 @@ def _fit_heat_capacity(x, arg_dict):
             critical_temp = x[idx]
         else:
             critical_temp = critical_temp_list[0]
-        model_Cp += _xiong_Cp(
+        magnetic_Cp = _xiong_Cp(
             T_arr=temperature_array, beta=beta, p=structure_factor, Tc=critical_temp
         )
+        model_Cp += magnetic_Cp
+        persistent_Cp += magnetic_Cp
     if "bcm" in list(models.keys()):
         bcm_dict = models["bcm"]
         model_params = {}
@@ -429,10 +432,8 @@ def _fit_heat_capacity(x, arg_dict):
                 model_params[param] = x[idx]
             else:
                 model_params[param] = param_list[0]
-        if "liquid_Cp" in melt_dict:
-            model_params["a"] = melt_dict["liquid_Cp"][0]
         melt_mask = temperature_array > model_params["T_melt"]
-        model_Cp[melt_mask] = _melt_Cp(
+        model_Cp[melt_mask] = persistent_Cp[melt_mask] + _melt_Cp(
             T_arr=temperature_array[melt_mask], **model_params
         )
     return _calc_RSE(model_Cp, Cp_array, x)
@@ -697,7 +698,8 @@ def fit_heat_capacity(datasets, models, verbose=False):
     if "melt" in list(models.keys()):
         melt_dict = models["melt"]
         if "liquid_Cp" in melt_dict:
-            melt_dict["a"] = [melt_dict["liquid_Cp"][0], "fix"]
+            lattice_limit = 3 * R if "einstein" in models or "holzapfel" in models else 0
+            melt_dict["a"] = [melt_dict["liquid_Cp"][0] - lattice_limit, "fix"]
         for param in ["T_melt", "a", "b", "c"]:
             if param not in list(melt_dict.keys()):
                 raise ValueError(f"Melt model specified without parameter [{param}].")

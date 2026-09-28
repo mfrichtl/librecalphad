@@ -633,33 +633,6 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
     return ret_arr
 
 
-def _built_in_solid_gibbs_above_melt(model_dict, melt_temperature):
-    """Einstein and high-temperature Xiong terms supplied by pycalphad."""
-    result = 0
-    if "einstein" in model_dict:
-        theta = model_dict["einstein"]["theta"][0]
-        result += 1.5 * v.R * theta + 3 * v.R * v.T * se.log(
-            1 - se.exp(-theta / v.T)
-        )
-    if "xiong" in model_dict:
-        magnetic = model_dict["xiong"]
-        critical_temperature = magnetic.get("Tc", magnetic.get("Tn"))[0]
-        if critical_temperature >= melt_temperature:
-            raise ValueError("Xiong critical temperature must be below T_melt")
-        p = magnetic["p"][0]
-        beta = magnetic["beta"][0]
-        tau = v.T / critical_temperature
-        denominator = 0.33471979 + 0.49649686 * (1 / p - 1)
-        high_temperature_term = (
-            tau**-7 / 21
-            + tau**-21 / 630
-            + tau**-35 / 2975
-            + tau**-49 / 8232
-        )
-        result -= v.R * v.T * se.log(beta + 1) * high_temperature_term / denominator
-    return result
-
-
 def create_espei_custom_refstate_stable(model_dict):
     """
     This function generates the endmember lattice stabilities based on the heat capacity fitting data.
@@ -668,8 +641,9 @@ def create_espei_custom_refstate_stable(model_dict):
     and does not need to be explicitly included in the expression.
 
     Below melting, the custom reference state supplies the remaining Gibbs contributions.
-    Above melting, it cancels the built-in solid terms and replaces the solid heat capacity
-    with the melt expression, matching the Gibbs energy and entropy at T_melt.
+    Above melting, it retains the built-in solid terms and replaces the other solid
+    heat-capacity contributions with the melt expression, matching Gibbs energy and
+    entropy at T_melt.
     Currently, for the best accuracy you should fit it using the Einstein model instead of Holzapfel.
 
     TODO: Incorporate Holzapfel approximation into pycalphad.
@@ -725,8 +699,6 @@ def create_espei_custom_refstate_stable(model_dict):
     solid_expr = se.Integer(0)
     for i in range(1, len(critical_temperatures)):
         if "melt" in model_dict and critical_temperatures[i - 1] >= T_melt:
-            builtin = _built_in_solid_gibbs_above_melt(model_dict, T_melt)
-            solid_total = solid_expr + builtin
             melt_kwargs["T_arr"] = T_melt + 1
             melt_expr = _melt_gibbs(**melt_kwargs)
             melt_correction = melt_expr - melt_expr.subs({v.T: T_melt})
@@ -734,9 +706,8 @@ def create_espei_custom_refstate_stable(model_dict):
                 v.T - T_melt
             )
             this_res = (
-                solid_total.subs({v.T: T_melt})
-                + solid_total.diff(v.T).subs({v.T: T_melt}) * (v.T - T_melt)
-                - builtin
+                solid_expr.subs({v.T: T_melt})
+                + solid_expr.diff(v.T).subs({v.T: T_melt}) * (v.T - T_melt)
                 + melt_correction
             )
             res.append(

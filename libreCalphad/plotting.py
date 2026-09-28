@@ -245,6 +245,7 @@ def plot_heat_capacity_from_models(
     df_model = pd.DataFrame()
     temp_array = np.linspace(0, np.max(exp_df["T"]) + 500, num=1000)
     combined_Cp = np.zeros(len(temp_array))
+    persistent_Cp = np.zeros(len(temp_array))
 
     for model, params in model_dict.items():
         keyword_args = {"T_arr": temp_array}
@@ -273,10 +274,12 @@ def plot_heat_capacity_from_models(
         df_model = pd.concat([df_model, pd.DataFrame(cpm_dict)])
         if model != "melt":
             combined_Cp = combined_Cp + model_Cp
+            if model in ("einstein", "holzapfel", "xiong"):
+                persistent_Cp = persistent_Cp + model_Cp
     if "melt" in model_dict:
         melt_params = model_dict["melt"]
         melt_mask = temp_array > melt_params["T_melt"][0]
-        combined_Cp[melt_mask] = hc._melt_Cp(
+        combined_Cp[melt_mask] = persistent_Cp[melt_mask] + hc._melt_Cp(
             T_arr=temp_array[melt_mask],
             **{key: melt_params[key][0] for key in ("T_melt", "a", "b", "c")},
         )

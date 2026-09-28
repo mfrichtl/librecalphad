@@ -2,10 +2,10 @@ from importlib import resources as impresources
 import json
 from libreCalphad.databases.db_utils import load_database, upsert_db_param_from_models
 import libreCalphad.models.energy as en
+import libreCalphad.models.heat_capacity as hc
 import numpy as np
 import pandas as pd
 from pycalphad import Model, variables as v
-import pytest
 import symengine as se
 
 
@@ -34,7 +34,6 @@ def test_create_espei_custom_refstate_stable_offset():
 def test_melt_reference_state_matches_fitted_capacity_and_is_smooth():
     models = {
         "einstein": {"theta": [300, "fix"]},
-        "xiong": {"beta": [2, "fix"], "p": [0.37, "fix"], "Tc": [1000, "fix"]},
         "symbolic_LT": {
             "expression": "a*T",
             "temp_bounds": [0, 1811],
@@ -42,61 +41,71 @@ def test_melt_reference_state_matches_fitted_capacity_and_is_smooth():
         },
         "melt": {
             "T_melt": [1811, "fix"],
-            "a": [46, "fix"],
+            "a": [46 - 3 * hc.R, "fix"],
             "b": [1e20, "fix"],
             "c": [-1e39, "fix"],
         },
     }
     T = se.Symbol("T")
-    builtin = en._built_in_solid_gibbs_above_melt(models, 1811)
-    total = en.create_espei_custom_refstate_stable(models) + builtin
-    capacity = -T * total.diff(T, 2)
+    custom = en.create_espei_custom_refstate_stable(models)
+    capacity = -T * custom.diff(T, 2)
     for temperature in (1900, 3000, 9000):
-        expected = 46 + 1e20 * temperature**-6 - 1e39 * temperature**-12
+        expected = 46 - 3 * hc.R + 1e20 * temperature**-6 - 1e39 * temperature**-12
         assert np.isclose(float(capacity.subs({T: temperature})), expected, rtol=1e-5)
     assert np.isclose(
-        float(total.subs({T: 1811 - 1e-4})),
-        float(total.subs({T: 1811 + 1e-4})),
+        float(custom.subs({T: 1811 - 1e-4})),
+        float(custom.subs({T: 1811 + 1e-4})),
         atol=1,
     )
     assert np.isclose(
-        float(total.diff(T).subs({T: 1811 - 1e-4})),
-        float(total.diff(T).subs({T: 1811 + 1e-4})),
+        float(custom.diff(T).subs({T: 1811 - 1e-4})),
+        float(custom.diff(T).subs({T: 1811 + 1e-4})),
         atol=0.01,
     )
 
 
-def test_melt_reference_state_rejects_magnetic_transition_above_melting():
-    models = {
-        "xiong": {"beta": [2], "p": [0.37], "Tc": [2000]},
-        "offset": {"enthalpy": [100, "fix"], "entropy": [1, "fix"]},
-        "melt": {"T_melt": [1811], "a": [46], "b": [0], "c": [0]},
-    }
-    with pytest.raises(ValueError, match="critical temperature must be below T_melt"):
-        en.create_espei_custom_refstate_stable(models)
-
-
-def test_melt_cancellation_matches_pycalphad_fe_builtin_terms():
-    database = load_database("LC-steels-input.xml")
-    species = {item.name: item for item in database.species}
+def test_melt_reference_keeps_pycalphad_einstein_and_magnetic_heat_capacity():
     models = {
         "einstein": {"theta": [300]},
         "xiong": {"beta": [2], "p": [0.37], "Tc": [1000]},
+        "melt": {
+            "T_melt": [1811],
+            "a": [46 - 3 * hc.R],
+            "b": [1e20],
+            "c": [0],
+        },
     }
-    database = upsert_db_param_from_models(
+    database = load_database("LC-steels-input.xml")
+    species = {item.name: item for item in database.species}
+    upsert_db_param_from_models(
         database, models, "BCC_A2", ((species["FE"],), (species["VA"],))
     )
     phase = Model(database, ["FE", "VA"], "BCC_A2")
     builtins = phase.einstein_energy(database) + phase.magnetic_energy(database)
-    cancellation = en._built_in_solid_gibbs_above_melt(models, 1811)
+    builtin_capacity = -v.T * builtins.diff(v.T, 2)
+    custom = en.create_espei_custom_refstate_stable(models)
+    custom_capacity = -v.T * custom.diff(v.T, 2)
     for temperature in (1900, 3000, 9000):
         conditions = {
             v.T: temperature,
             v.SiteFraction("BCC_A2", 0, "FE"): 1,
             v.SiteFraction("BCC_A2", 1, "VA"): 1,
         }
-        assert np.isclose(
-            float(builtins.subs(conditions)),
-            float(cancellation.subs({v.T: temperature})),
-            atol=1e-6,
+        actual = float(builtin_capacity.subs(conditions)) + float(
+            custom_capacity.subs({v.T: temperature})
         )
+        tau = temperature / 1000
+        denominator = 0.33471979 + 0.49649686 * (1 / 0.37 - 1)
+        magnetic_capacity = (
+            2
+            * float(v.R)
+            * np.log(3)
+            / denominator
+            * (tau**-7 + tau**-21 / 3 + tau**-35 / 5 + tau**-49 / 7)
+        )
+        expected = (
+            hc._einstein_Cp(np.array([temperature]), theta=300)[0]
+            + magnetic_capacity
+            + hc._melt_Cp(temperature, T_melt=1811, a=46 - 3 * hc.R, b=1e20)
+        )
+        assert np.isclose(actual, expected, atol=0.001)
