@@ -295,7 +295,6 @@ def _fit_heat_capacity(x, arg_dict):
     temperature_array = arg_dict["temperature_array"]
     Cp_array = arg_dict["Cp_array"]
     models = arg_dict["models"]
-    melt_base_Cp = None
 
     model_Cp = np.zeros(len(Cp_array))
     if "einstein" in list(models.keys()):
@@ -430,14 +429,12 @@ def _fit_heat_capacity(x, arg_dict):
                 model_params[param] = x[idx]
             else:
                 model_params[param] = param_list[0]
-        if "liquid_Cp" not in list(melt_dict.keys()):
-            melt_base_Cp = np.max(model_Cp)
-        else:
-            melt_base_Cp = melt_dict["liquid_Cp"][0]
-        assert melt_base_Cp is not None, (
-            "Need to specify a base melt heat capacity in another method."
+        if "liquid_Cp" in melt_dict:
+            model_params["a"] = melt_dict["liquid_Cp"][0]
+        melt_mask = temperature_array > model_params["T_melt"]
+        model_Cp[melt_mask] = _melt_Cp(
+            T_arr=temperature_array[melt_mask], **model_params
         )
-        model_Cp = model_Cp + _melt_Cp(T_arr=temperature_array, **model_params)
     return _calc_RSE(model_Cp, Cp_array, x)
 
 
@@ -699,6 +696,8 @@ def fit_heat_capacity(datasets, models, verbose=False):
                 raise ValueError(f"Linear model specified but not setup correctly.")
     if "melt" in list(models.keys()):
         melt_dict = models["melt"]
+        if "liquid_Cp" in melt_dict:
+            melt_dict["a"] = [melt_dict["liquid_Cp"][0], "fix"]
         for param in ["T_melt", "a", "b", "c"]:
             if param not in list(melt_dict.keys()):
                 raise ValueError(f"Melt model specified without parameter [{param}].")

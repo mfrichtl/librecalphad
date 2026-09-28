@@ -3,9 +3,40 @@ import warnings
 from espei.datasets import load_datasets, recursive_glob
 from importlib import resources as impresources
 from libreCalphad import plotting as lcplt
+from libreCalphad.models import heat_capacity as hc
 import matplotlib as mp
+import numpy as np
 from pycalphad import Database, variables as v
 from tinydb import where
+
+
+def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order():
+    models = {
+        "melt": {
+            "T_melt": [1000, "fix"],
+            "a": [46, "fix"],
+            "b": [0, "fix"],
+            "c": [0, "fix"],
+        },
+        "holzapfel": {"theta": [300, "fix"]},
+    }
+    dataset = [
+        {
+            "conditions": {"T": [500, 1500]},
+            "values": [25, 46],
+            "reference": "test",
+        }
+    ]
+    fig, ax = lcplt.plot_heat_capacity_from_models(models, dataset)
+    combined = [line for line in ax.lines if len(line.get_xdata()) == 1000][-1]
+    temps = np.asarray(combined.get_xdata())
+    capacities = np.asarray(combined.get_ydata())
+    assert np.allclose(capacities[temps > 1000], 46)
+    assert np.allclose(
+        capacities[temps <= 1000],
+        hc._holzapfel_debye_Cp(temps[temps <= 1000], 300),
+    )
+    mp.pyplot.close(fig)
 
 
 def test_plot_heat_capacity_from_symbolic():

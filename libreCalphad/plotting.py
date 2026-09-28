@@ -266,11 +266,20 @@ def plot_heat_capacity_from_models(
             model_Cp = hc._twostate_Cp(**keyword_args)
         else:
             for kwarg, value in params.items():
-                keyword_args[kwarg] = value[0]
+                name = "thetaD" if model == "holzapfel" and kwarg == "theta" else kwarg
+                keyword_args[name] = value[0]
             model_Cp = function_dict[model](**keyword_args)
         cpm_dict["CPM"] = model_Cp
         df_model = pd.concat([df_model, pd.DataFrame(cpm_dict)])
-        combined_Cp = combined_Cp + model_Cp
+        if model != "melt":
+            combined_Cp = combined_Cp + model_Cp
+    if "melt" in model_dict:
+        melt_params = model_dict["melt"]
+        melt_mask = temp_array > melt_params["T_melt"][0]
+        combined_Cp[melt_mask] = hc._melt_Cp(
+            T_arr=temp_array[melt_mask],
+            **{key: melt_params[key][0] for key in ("T_melt", "a", "b", "c")},
+        )
     cpm_dict = {"T": temp_array, "model": "combined", "CPM": combined_Cp}
     df_model = pd.concat([df_model, pd.DataFrame(cpm_dict)])
 

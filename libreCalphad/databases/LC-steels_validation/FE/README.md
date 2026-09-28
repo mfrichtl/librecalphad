@@ -10,3 +10,5 @@ python libreCalphad/databases/LC-steels_validation/FE/fit_cpm.py \
 ```
 
 Choose `BCC_A2`, `FCC_A1`, `LIQUID`, or `GAS`. The command reads the phase settings from `FE-params.json` (override with `--params`) and selects matching Fe CPM datasets. It writes a fitted-parameters JSON file and a comparison plot to the output directory. Review the fit before using its parameters in the ESPEI workflow; the command does not update the database or reference states.
+
+For a phase with a `melt` model, the fit uses the solid heat capacity through `T_melt` and the melt expression above it. When `liquid_Cp` is specified, it fixes the melt expression's `a` parameter (its high-temperature limit), rather than fitting `a` separately.

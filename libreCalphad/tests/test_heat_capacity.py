@@ -1,5 +1,6 @@
 from importlib import resources as impresources
 import json
+from copy import deepcopy
 import libreCalphad.models.heat_capacity as hc
 import numpy as np
 import pandas as pd
@@ -81,6 +82,37 @@ def test_fix_holzapfel_Cp():
     model_dict = {"holzapfel": {"theta": [300, "fix"]}}
     fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
     assert np.isclose(fits, 0, atol=1e-5)
+
+
+def test_melt_replaces_solid_and_approaches_liquid_capacity():
+    temps = np.array([500.0, 1000.0, 2000.0, 1e6])
+    solid = hc._holzapfel_debye_Cp(temps, thetaD=300)
+    liquid = hc._melt_Cp(temps[2:], T_melt=1000, a=46, b=1e19, c=0)
+    data = pd.DataFrame(
+        {"temperature": temps, "Cp": [*solid[:2], *liquid], "reference": "test"}
+    )
+    models = {
+        "holzapfel": {"theta": [300, "fix"]},
+        "melt": {
+            "T_melt": [1000, "fix"],
+            "liquid_Cp": [46, "fix"],
+            "a": [20, "fit"],
+            "b": [1e19, "fix"],
+            "c": [0, "fix"],
+        },
+    }
+    fixed_models = deepcopy(models)
+    fixed_models["melt"]["a"] = [46, "fix"]
+    args = {
+        "temperature_array": temps,
+        "Cp_array": data["Cp"].values,
+        "models": fixed_models,
+    }
+    assert np.isclose(hc._fit_heat_capacity([], args), 0)
+    assert np.isclose(liquid[-1], 46)
+    _, fitted = hc.fit_heat_capacity(data, models)
+    assert fitted["melt"]["a"] == [46, "fix"]
+    assert models["melt"]["a"] == [20, "fit"]
 
 
 def test_fit_xiong_Cp():
