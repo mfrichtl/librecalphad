@@ -2,6 +2,7 @@ from espei.datasets import load_datasets, recursive_glob
 from importlib import reload
 import importlib.resources as impresources
 import json
+from libreCalphad.atomic_io import write_json_atomic, write_xml_atomic
 from libreCalphad.databases.db_utils import load_database, upsert_db_param_from_models
 from libreCalphad.models.energy import (
     calculate_offset,
@@ -60,8 +61,7 @@ if os.path.exists("./_fitted_params.json"):
 else:
     params_json = {"FE": {}}
 params_json["FE"].update({phase[0]: model_dict})
-with open("./_fitted_params.json", "w") as f:
-    json.dump(params_json, f, indent=4)
+write_json_atomic("./_fitted_params.json", params_json, indent=4)
 
 
 # Need to add the lattice stability for FE also, can directly write it to the json
@@ -69,16 +69,14 @@ refstate_file = impresources.files("refstate") / "LCRefstates.json"
 with open(refstate_file, "r") as f:
     refstate_dict = json.load(f)
 refstate_dict["FE-BCC_A2"] = "GHSERFE"
-with open(refstate_file, "w") as f:
-    json.dump(refstate_dict, f, indent=True)
+write_json_atomic(refstate_file, refstate_dict, indent=True)
 
 # and update the SER
 ser_file = impresources.files("refstate") / "LCSERparams.json"
 with open(ser_file, "r") as f:
     ser_dict = json.load(f)
 # ser_dict["FE"] = {"phase": "BCC_A2", "mass": 55.847, "H298": H298, "S298": S298}
-with open(ser_file, "w") as f:
-    json.dump(ser_dict, f, indent=True)
+write_json_atomic(ser_file, ser_dict, indent=True)
 
 # Update the refstate file
 refstate_file = impresources.files("refstate") / "LCRefstates.json"
@@ -98,7 +96,7 @@ constituent_array = ((species_dict["FE"],), (species_dict["VA"],))
 input_dbf = upsert_db_param_from_models(
     input_dbf, model_dict, "BCC_A2", constituent_array
 )
-input_dbf.to_file(input_db_file, if_exists="overwrite")
+write_xml_atomic(input_db_file, input_dbf)
 
 
 phase_model_file = impresources.files("libreCalphad.databases") / "phase_models.json"
@@ -110,7 +108,7 @@ dbf = espei.generate_parameters(
     phase_models, datasets, "LCRefState", "linear", dbf=input_dbf
 )
 db_file = impresources.files("libreCalphad.databases") / "LC-steels-thermo.xml"
-dbf.to_file(db_file, if_exists="overwrite")
+write_xml_atomic(db_file, dbf)
 
 # now let's calculate some stuffs
 H298 = (
@@ -133,8 +131,7 @@ LCSER_dict["FE"] = {
     "S298": float(S298),
 }
 
-with open(LCSER_json, "w") as f:
-    json.dump(LCSER_dict, f, indent=4)
+write_json_atomic(LCSER_json, LCSER_dict, indent=4)
 
 # Reload ESPEI to use his new refstate data
 # doesn't seem to work
@@ -165,8 +162,7 @@ print(f"Melt entropy offset required = {melt_SM_min.x[0]} J/mol-K-formula")
 # model_dict_input[phase[0]]["melt"]["solid_entropy"][0] = (
 #     model_dict_input[phase[0]]["melt"]["solid_entropy"][0] + melt_SM_min.x[0]
 # )
-with open(param_input_file, "w") as f:
-    json.dump(model_dict_input, f, indent=4)
+write_json_atomic(param_input_file, model_dict_input, indent=4)
 # Plot CPM
 query = (
     (where("phases") == phase)
@@ -575,5 +571,4 @@ for phase, values in phase_dict.items():
                 "fix",
             ]
             offset_dict[f"{energy}_increment"] = phase_dict[phase][f"{energy}_offset"]
-with open(param_input_file, "w") as f:
-    json.dump(model_dict_input, f, indent=4)
+write_json_atomic(param_input_file, model_dict_input, indent=4)

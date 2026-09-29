@@ -2,6 +2,7 @@ from espei.datasets import load_datasets, recursive_glob
 from importlib import reload
 import importlib.resources as impresources
 import json
+from libreCalphad.atomic_io import write_json_atomic, write_xml_atomic
 from libreCalphad.databases.db_utils import load_database, upsert_db_param_from_models
 from libreCalphad.models.energy import (
     calculate_offset,
@@ -66,8 +67,7 @@ if os.path.exists("./_fitted_params.json"):
 else:
     params_json = {"FE": {}}
 params_json["FE"].update({phase[0]: model_dict})
-with open("./_fitted_params.json", "w") as f:
-    json.dump(params_json, f, indent=4)
+write_json_atomic("./_fitted_params.json", params_json, indent=4)
 
 import espei
 
@@ -76,14 +76,14 @@ input_db_file = impresources.files("libreCalphad.databases") / "LC-steels-input.
 input_dbf = Database(input_db_file)
 # backup in case something goes wrong, it can delete all the parameters in the file
 input_db_bak = impresources.files("libreCalphad.databases") / "LC-steels-input.bak.xml"
-input_dbf.to_file(input_db_bak, if_exists="overwrite")
+write_xml_atomic(input_db_bak, input_dbf)
 
 species_dict = {sp.name: sp for sp in input_dbf.species}
 constituent_array = ((species_dict["FE"],), (species_dict["VA"],))
 input_dbf = upsert_db_param_from_models(
     input_dbf, model_dict, phase[0], constituent_array
 )
-input_dbf.to_file(input_db_file, if_exists="overwrite")
+write_xml_atomic(input_db_file, input_dbf)
 
 
 phase_model_file = impresources.files("libreCalphad.databases") / "phase_models.json"
@@ -95,7 +95,7 @@ dbf = espei.generate_parameters(
     phase_models, datasets, "LCRefState", "linear", dbf=input_dbf
 )
 db_file = impresources.files("libreCalphad.databases") / "LC-steels-thermo.xml"
-dbf.to_file(db_file, if_exists="overwrite")
+write_xml_atomic(db_file, dbf)
 
 # now let's calculate some stuffs
 H298 = (

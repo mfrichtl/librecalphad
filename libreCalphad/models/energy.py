@@ -4,6 +4,7 @@ Functions to calculate enthalpy, entropy, and Gibbs energies derived from models
 
 from collections import OrderedDict
 import json
+from libreCalphad.atomic_io import write_json_atomic
 from libreCalphad.databases.db_utils import load_database
 from libreCalphad.models.utilities import identify_variables
 import matplotlib.pyplot as plt
@@ -809,6 +810,5 @@ def upsert_custom_refstate_json(
                         value[key1] = str(value1)
 
             custom_refstate[element_key][key] = value
-    with open(refstate_file, "w") as f:
-        json.dump(custom_refstate, f, indent=True)
+    write_json_atomic(refstate_file, custom_refstate, indent=True)
     return True

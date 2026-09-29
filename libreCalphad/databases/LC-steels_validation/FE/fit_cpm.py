@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from espei.datasets import load_datasets, recursive_glob
+from libreCalphad.atomic_io import write_json_atomic
 from libreCalphad.models.heat_capacity import fit_heat_capacity
 from libreCalphad.plotting import plot_heat_capacity_from_models
 import matplotlib.pyplot as plt
@@ -51,8 +52,11 @@ def main(argv=None):
         fig.savefig(args.output_dir / f"FE-{args.phase}-CPM.png")
     finally:
         plt.close(fig)
-    with (args.output_dir / f"FE-{args.phase}-CPM-params.json").open("w") as f:
-        json.dump({args.phase: fitted_models}, f, indent=4)
+    write_json_atomic(
+        args.output_dir / f"FE-{args.phase}-CPM-params.json",
+        {args.phase: fitted_models},
+        indent=4,
+    )
 
 
 if __name__ == "__main__":

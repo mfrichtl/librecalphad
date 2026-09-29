@@ -1,5 +1,5 @@
 from copy import deepcopy
-import json
+from libreCalphad.atomic_io import write_json_atomic
 from libreCalphad.models.thermodynamics import fit_regular_solution_model
 import numpy as np
 import pandas as pd
@@ -140,13 +140,11 @@ def write_zpf_json(
         out_file = f"./{'-'.join([comp for comp in components if comp != 'VA'])}-ZPF-"
         out_file += f"{'-'.join([phase for phase in phases])}-"
         out_file += input_dict["bibtex"] + ".json"
-        with open(out_file, "w") as f:
-            json.dump(out_dict, f, indent=4)
+        write_json_atomic(out_file, out_dict, indent=4)
         if espei_data_folder is not None:
             espei_data_folder += "zpf" + out_file[1:]
             print("Saving to ESPEI-datasets at: " + espei_data_folder)
-            with open(espei_data_folder, "w") as f:
-                json.dump(out_dict, f, indent=4)
+            write_json_atomic(espei_data_folder, out_dict, indent=4)
 
     return True
 
@@ -303,13 +301,11 @@ def write_activity_json(
         out_file += f"{'-'.join([phase for phase in phases if phase != ref_phase])}-"
         out_file += f"{temperature}K-"
         out_file += input_dict["bibtex"] + ".json"
-        with open(out_file, "w") as f:
-            json.dump(out_dict, f, indent=4)
+        write_json_atomic(out_file, out_dict, indent=4)
         if espei_data_folder is not None:
             this_espei_data_folder = espei_data_folder + "activity" + out_file[1:]
             print("Saving to ESPEI-datasets at: " + this_espei_data_folder)
-            with open(this_espei_data_folder, "w") as f:
-                json.dump(out_dict, f, indent=4)
+            write_json_atomic(this_espei_data_folder, out_dict, indent=4)
 
 
 def write_energy_json(
@@ -519,8 +515,7 @@ def write_energy_json(
             out_file += phases[0] + "-"
             out_file += f"{temp}K-"
             out_file += out_dict["bibtex"] + ".json"
-            with open(out_file, "w") as f:
-                json.dump(out_dict, f, indent=4)
+            write_json_atomic(out_file, out_dict, indent=4)
             if espei_data_folder is not None:
                 this_espei_data_folder = (
                     espei_data_folder
@@ -529,8 +524,7 @@ def write_energy_json(
                     + out_file[1:]
                 )
                 print("Saving to ESPEI-datasets at: " + espei_data_folder)
-                with open(this_espei_data_folder, "w") as f:
-                    json.dump(out_dict, f, indent=4)
+                write_json_atomic(this_espei_data_folder, out_dict, indent=4)
         # TODO: Separate the output files by temperature, like I had to do with the energy files above.
         # out_dict["conditions"] = out_conditions
         # out_dict["solver"]["sublattice_occupancies"] = sublattice_occupancies
