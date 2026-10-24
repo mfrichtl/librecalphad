@@ -10,22 +10,16 @@
     <Interval in="T" lower="0.0" upper="10000.0">GHSERFE</Interval>
   </Expr>
   <Expr id="GFCCFE">
-    <Interval in="T" lower="0.0" upper="1811.0">-2565.371 - 4.60647*T - T*(0.00478238935846481*T + 1.39509772869819e-13*T**4) + 0.0023911946792324*T**2 + 1.11607818295855e-13*T**5</Interval>
-    <Interval in="T" lower="1811.0" upper="10000.0">-19066.0896 + 108.92153*T + 16.6929231868859*T*(1 - ln(T)) + 2.1671493067375e+38*T**(-11) - 2.43430335687255e+19*T**(-5)</Interval>
-  </Expr>
-  <Expr id="GGASFE">
-    <Interval in="T" lower="0.0" upper="10000.0">394844.1823 - 172.37755*T - T*(-0.00176471552422357*T + 3.72510815426124e-07*T**2) - 0.000882357762111787*T**2 + 2.48340543617416e-07*T**3</Interval>
-    <Interval in="T" lower="10000.0">394844.1823 - 172.37755*T - T*(-0.00176471552422357*T + 3.72510815426124e-07*T**2) - 0.000882357762111787*T**2 + 2.48340543617416e-07*T**3</Interval>
+    <Interval in="T" lower="0.0" upper="1811.0">197.05171082127 + 111.176645220473*T - T*(0.00544465084964879*T + 5.00000000000015e-14*T**4) + 0.0027223254248244*T**2 + 4.00000000000012e-14*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">175913.968260704 + 113.528*T + 21.056584*T*(1 - ln(T)) - (-1811 + T)*(112.986209254257 - 21.056584*ln(1811)) + 100.778554039867*(-1811 + T) - (189183.021102567 + 38133.473624*(1 - ln(1811))) + 6.39725928141672e+37*T**(-11) - 1.66666666666667e+17*T**(-5)</Interval>
   </Expr>
   <Expr id="GHSERFE">
-    <Interval in="T" lower="0.0" upper="1811.0">800 - 12.1320053066597*T - T*(0.0063208150000317*T + 1.625e-13*T**4) + 0.00316040750001585*T**2 + 1.3e-13*T**5</Interval>
-    <Interval in="T" lower="1811.0" upper="10000.0">-17432.5 + 112.68599469334*T + 18.5358679177243*T*(1 - ln(T)) + 1.06662738129399e+38*T**(-11) - 1.39635309008078e+19*T**(-5)</Interval>
+    <Interval in="T" lower="0.0" upper="1811.0">733.460112762427 + 78.5331841099847*T - T*(0.00631916847179987*T + 1.62500011428944e-13*T**4) + 0.00315958423589993*T**2 + 1.30000009143155e-13*T**5</Interval>
+    <Interval in="T" lower="1811.0" upper="10000.0">113728.896912436 + 124.818*T + 21.056584*T*(1 - ln(T)) - (-1811 + T)*(125.352130658305 - 21.056584*ln(1811)) + 65.3412272859697*(-1811 + T) - (207393.912152693 + 38133.473624*(1 - ln(1811))) + 1.29155807644084e+38*T**(-11) - 1.18229358835697e+19*T**(-5)</Interval>
   </Expr>
   <Expr id="GHSERVA">0</Expr>
-  <Expr id="GLIQFE">
-    <Interval in="T" lower="0.0" upper="10000.0">5196.399 - 3.95265*T - 0.00283572450083808*T**2</Interval>
-    <Interval in="T" lower="10000.0">5196.399 - 3.95265*T - 0.00283572450083808*T**2</Interval>
-  </Expr>
+  <Expr id="GLIQFE">0</Expr>
+  <Expr id="VV0000">320243.0</Expr>
   <Phase id="BCC_A2">
     <Model type="CEF">
       <ConstituentArray>
@@ -48,7 +42,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">2.77434263610604</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">2.79982477180367</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -60,7 +54,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">1043.14981995987</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">1045.64468657902</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -72,7 +66,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">5.68020739495522</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">5.68029852211981</Interval>
     </Parameter>
     <Parameter type="G">1.0*GBCCFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
   </Phase>
@@ -110,7 +104,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">67.0</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">67</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -134,7 +128,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">10604.9448599386 - 4.27444259289545*T</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">10119.1417965603 - 3.19148627072986*T</Interval>
     </Parameter>
     <Parameter type="G">1.0*GFCCFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site><Site refid="1"><Constituent refid="VA"/></Site></ConstituentArray></Parameter>
   </Phase>
@@ -164,7 +158,7 @@
       </ConstituentArray>
       <Interval in="T" lower="0.0" upper="10000.0">10561.0837727495 - 22.1078581555136*T</Interval>
     </Parameter>
-    <Parameter type="G">1.0*GGASFE<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
+    <Parameter type="G">1.0*GHSERFE + VV0000<Order>0</Order><ConstituentArray><Site refid="0"><Constituent refid="FE"/></Site></ConstituentArray></Parameter>
   </Phase>
   <Phase id="LIQUID">
     <Model type="CEF">

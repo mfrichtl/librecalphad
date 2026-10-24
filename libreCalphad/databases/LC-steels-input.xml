@@ -28,7 +28,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">2.77434263610604</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">2.79982477180367</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -40,7 +40,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">1043.14981995987</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">1045.64468657902</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -52,7 +52,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">5.68020739495522</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">5.68029852211981</Interval>
     </Parameter>
   </Phase>
   <Phase id="FCC_A1">
@@ -89,7 +89,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">67.0</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">67</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -113,7 +113,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">10604.9448599386 - 4.27444259289545*T</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">10119.1417965603 - 3.19148627072986*T</Interval>
     </Parameter>
   </Phase>
   <Phase id="GAS">
