@@ -227,16 +227,26 @@ def _einstein_Cp(T_arr=0, theta=0):
 
 
 def _debye_Cp(T_arr=0, theta=0):
-    def _integrand(x):
-        return x**4 * np.exp(x) / (np.exp(x) - 1) ** 2
+    """Calculate numerical Debye heat capacity for scalar or sequence temperatures."""
 
-    if isinstance(T_arr, (int, float)):
-        ret_arr = 9 * R * (T_arr / theta) ** 3 * quad(_integrand, 0, theta / T_arr)
+    def _integrand(x):
+        if x == 0:
+            return 0
+        # Equivalent to exp(x)/(exp(x)-1)**2 without positive-exponential overflow.
+        return x**4 * np.exp(-x) / np.expm1(-x) ** 2
+
+    def _calc_debye_Cp(temp):
+        if temp == 0:
+            return 0
+        integral = quad(_integrand, 0, theta / temp)[0]
+        return 9 * R * (temp / theta) ** 3 * integral
+
+    if np.isscalar(T_arr):
+        ret_arr = _calc_debye_Cp(T_arr)
     else:
         ret_arr = np.array([])
         for temp in T_arr:
-            Cp = 9 * R * (temp / theta) ** 3 * quad(_integrand, 0, theta / temp)[0]
-            ret_arr = np.append(ret_arr, Cp)
+            ret_arr = np.append(ret_arr, _calc_debye_Cp(temp))
     return ret_arr
 
 

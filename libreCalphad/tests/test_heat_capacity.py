@@ -101,6 +101,76 @@ def test_einstein_Cp_defaults_to_zero_temperature():
     assert hc._einstein_Cp() == 0
 
 
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize(
+    "temperature,capacity_over_R",
+    [
+        (0, 0.0),
+        (50, 0.796790667335548624),
+        (300, 2.855196407109838342),
+        (1500, 2.994008560858668753),
+    ],
+)
+@pytest.mark.parametrize("scalar_type", [int, float, np.int64, np.float32, np.float64])
+def test_debye_Cp_scalar_matches_reference(temperature, capacity_over_R, scalar_type):
+    # Reference: 50-digit quadrature of x**4 / (4*sinh(x/2)**2), theta = 300 K.
+    result = hc._debye_Cp(scalar_type(temperature), theta=300)
+
+    assert np.isscalar(result)
+    assert result == pytest.approx(hc.R * capacity_over_R)
+    assert result == pytest.approx(hc._debye_Cp([temperature], theta=300)[0])
+
+
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize(
+    "temperatures",
+    [
+        [],
+        [0, 50, 300, 1500],
+        (0, 50, 300, 1500),
+        np.array([0.0, 50.0, 300.0, 1500.0]),
+    ],
+)
+def test_debye_Cp_sequence_preserves_values_and_shape(temperatures):
+    expected = hc.R * np.array(
+        [0.0, 0.796790667335548624, 2.855196407109838342, 2.994008560858668753]
+        if len(temperatures)
+        else []
+    )
+
+    result = hc._debye_Cp(temperatures, theta=300)
+
+    assert isinstance(result, np.ndarray)
+    assert result.shape == expected.shape
+    np.testing.assert_allclose(result, expected, rtol=1e-12, atol=0)
+
+
+@pytest.mark.filterwarnings("error")
+def test_debye_Cp_defaults_to_zero_temperature():
+    assert hc._debye_Cp() == 0
+
+
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize("temperature,theta", [(3.0, 300.0), (1.0, 1000.0)])
+def test_debye_Cp_low_temperature_limit(temperature, theta):
+    expected = 12 * np.pi**4 / 5 * hc.R * (temperature / theta) ** 3
+
+    assert hc._debye_Cp(temperature, theta=theta) == pytest.approx(
+        expected, rel=1e-10, abs=0
+    )
+    np.testing.assert_allclose(
+        hc._debye_Cp([temperature], theta=theta), [expected], rtol=1e-10, atol=0
+    )
+
+
+@pytest.mark.filterwarnings("error")
+def test_debye_Cp_high_temperature_limit():
+    assert hc._debye_Cp(3e10, theta=300) == pytest.approx(3 * hc.R, rel=1e-12)
+    np.testing.assert_allclose(
+        hc._debye_Cp([3e10], theta=300), [3 * hc.R], rtol=1e-12, atol=0
+    )
+
+
 def test_fit_einstein_Cp():
     data_file = (
         impresources.files("libreCalphad.tests.test_heat_capacity_files")
