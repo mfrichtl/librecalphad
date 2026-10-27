@@ -171,6 +171,118 @@ def test_debye_Cp_high_temperature_limit():
     )
 
 
+@pytest.fixture
+def debye_data():
+    # Independent Debye reference values at theta = 300 K, as above.
+    return pd.DataFrame(
+        {
+            "temperature": [0.0, 50.0, 300.0, 1500.0],
+            "Cp": hc.R
+            * np.array(
+                [0.0, 0.796790667335548624, 2.855196407109838342, 2.994008560858668753]
+            ),
+            "reference": "synthetic Debye",
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    "theta,expected",
+    [
+        ([250, "fit"], 300),
+        ([250, [200, 400], "fit"], 300),
+        ([250, [200, 280], "fit"], 280),
+    ],
+)
+def test_fit_debye_Cp(debye_data, theta, expected):
+    models = {"debye": {"theta": theta}}
+    original = deepcopy(models)
+
+    fits, fitted = hc.fit_heat_capacity(debye_data, models)
+
+    assert fits.success
+    assert fitted["debye"]["theta"][0] == pytest.approx(expected, abs=1e-3)
+    assert models == original
+
+
+@pytest.mark.parametrize("espei_format", [False, True])
+def test_fix_debye_Cp(debye_data, espei_format):
+    data = debye_data
+    if espei_format:
+        data = [
+            {
+                "output": "CPM",
+                "conditions": {"T": debye_data["temperature"].tolist()},
+                "values": debye_data["Cp"].tolist(),
+                "reference": "synthetic Debye",
+            }
+        ]
+    models = {"debye": {"theta": [300, "fix"]}}
+
+    fits, fitted = hc.fit_heat_capacity(data, models)
+
+    assert fits == pytest.approx(0, abs=1e-12)
+    assert fitted == models
+
+
+def test_repeated_debye_fit_does_not_change_input_models(debye_data):
+    models = {"debye": {"theta": [250, "fit"]}}
+
+    _, first = hc.fit_heat_capacity(debye_data, models)
+    _, second = hc.fit_heat_capacity(debye_data, models)
+
+    assert models == {"debye": {"theta": [250, "fit"]}}
+    assert first == second
+
+
+def test_fit_debye_with_symbolic_contribution(debye_data):
+    data = debye_data.copy()
+    data["Cp"] += 0.01 * data["temperature"]
+    models = {
+        "debye": {"theta": [250, "fit"]},
+        "symbolic": {"expression": "a*T", "a": [0.005, "fit"]},
+    }
+
+    fits, fitted = hc.fit_heat_capacity(data, models)
+
+    assert fits.success
+    assert fitted["debye"]["theta"][0] == pytest.approx(300, abs=0.01)
+    assert fitted["symbolic"]["a"][0] == pytest.approx(0.01, rel=1e-4)
+    assert fits.fun == pytest.approx(0, abs=1e-5)
+
+
+@pytest.mark.parametrize("other_lattice", ["einstein", "holzapfel"])
+def test_fit_debye_rejects_multiple_lattice_models(debye_data, other_lattice):
+    models = {
+        "debye": {"theta": [300, "fix"]},
+        other_lattice: {"theta": [300, "fix"]},
+    }
+
+    with pytest.raises(ValueError, match="multiple lattice models"):
+        hc.fit_heat_capacity(debye_data, models)
+
+
+@pytest.mark.parametrize(
+    "parameters,match",
+    [
+        ({}, "requires instructions"),
+        ({"theta": [300]}, "must be \\[value"),
+        ({"theta": [300, "invalid"]}, "must be \\[value"),
+        ({"theta": [0, "fix"]}, "finite and positive"),
+        ({"theta": [-1, "fit"]}, "finite and positive"),
+        ({"theta": [np.nan, "fix"]}, "finite and positive"),
+        ({"theta": [np.inf, "fit"]}, "finite and positive"),
+        ({"theta": [250, [0, 400], "fit"]}, "bounds must be positive"),
+        ({"theta": [250, [400, 200], "fit"]}, "bounds must be positive"),
+        ({"theta": [250, [300, 400], "fit"]}, "contain the initial theta"),
+        ({"theta": [250, [200], "fit"]}, "bounds must be positive"),
+    ],
+)
+def test_fit_debye_rejects_invalid_parameters(debye_data, parameters, match):
+    with pytest.raises(ValueError, match=match):
+        hc.fit_heat_capacity(debye_data, {"debye": parameters})
+
+
 def test_fit_einstein_Cp():
     data_file = (
         impresources.files("libreCalphad.tests.test_heat_capacity_files")
@@ -248,9 +360,15 @@ def test_fix_holzapfel_Cp():
     assert np.isclose(fits, 0, atol=1e-5)
 
 
-def test_melt_replaces_solid_and_approaches_liquid_capacity():
+@pytest.mark.parametrize(
+    "lattice_model,lattice_function",
+    [("holzapfel", hc._holzapfel_debye_Cp), ("debye", hc._debye_Cp)],
+)
+def test_melt_replaces_solid_and_approaches_liquid_capacity(
+    lattice_model, lattice_function
+):
     temps = np.array([500.0, 1000.0, 2000.0, 1e6])
-    solid = hc._holzapfel_debye_Cp(temps, thetaD=300)
+    solid = lattice_function(temps, 300)
     magnetic = hc._xiong_Cp(temps, beta=2, p=0.37, Tc=800)
     correction = hc._melt_Cp(
         temps[2:], T_melt=1000, a=46 - 3 * hc.R, b=1e19, c=0
@@ -264,7 +382,7 @@ def test_melt_replaces_solid_and_approaches_liquid_capacity():
         }
     )
     models = {
-        "holzapfel": {"theta": [300, "fix"]},
+        lattice_model: {"theta": [300, "fix"]},
         "xiong": {"beta": [2, "fix"], "p": [0.37, "fix"], "Tc": [800, "fix"]},
         "melt": {
             "T_melt": [1000, "fix"],

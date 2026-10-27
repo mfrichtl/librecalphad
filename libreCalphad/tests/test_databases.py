@@ -2,6 +2,7 @@ from libreCalphad.databases.db_utils import load_database, upsert_db_param_from_
 import importlib.resources as impresources
 import numpy as np
 from pycalphad import Database
+import pytest
 import symengine as se
 from tinydb import where
 
@@ -26,6 +27,19 @@ def test_upsert_db_param_from_einstein_model():
     search = dbf.search(query)
     assert len(search) == 1
     assert np.isclose(300, np.exp(float(search[0]["parameter"].args[0])))
+
+
+def test_upsert_debye_model_rejected_before_database_changes():
+    dbf = Database()
+    models = {
+        "xiong": {"beta": [2, "fix"], "p": [0.37, "fix"], "Tc": [1000, "fix"]},
+        "debye": {"theta": [300, "fix"]},
+    }
+
+    with pytest.raises(NotImplementedError, match="Debye database export"):
+        upsert_db_param_from_models(dbf, models, "BCC_A2", (("FE",), ("VA",)))
+
+    assert dbf._parameters.all() == []
 
 
 def test_upsert_db_param_from_xiong_model():

@@ -7,10 +7,17 @@ from libreCalphad.models import heat_capacity as hc
 import matplotlib as mp
 import numpy as np
 from pycalphad import Database, variables as v
+import pytest
 from tinydb import where
 
 
-def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order():
+@pytest.mark.parametrize(
+    "lattice_model,lattice_function",
+    [("holzapfel", hc._holzapfel_debye_Cp), ("debye", hc._debye_Cp)],
+)
+def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order(
+    lattice_model, lattice_function
+):
     models = {
         "melt": {
             "T_melt": [1000, "fix"],
@@ -18,7 +25,7 @@ def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order():
             "b": [0, "fix"],
             "c": [0, "fix"],
         },
-        "holzapfel": {"theta": [300, "fix"]},
+        lattice_model: {"theta": [300, "fix"]},
     }
     dataset = [
         {
@@ -33,13 +40,40 @@ def test_plot_melt_combined_curve_replaces_solid_regardless_of_model_order():
     capacities = np.asarray(combined.get_ydata())
     assert np.allclose(
         capacities[temps > 1000],
-        hc._holzapfel_debye_Cp(temps[temps > 1000], 300) + 46 - 3 * hc.R,
+        lattice_function(temps[temps > 1000], 300) + 46 - 3 * hc.R,
     )
     assert np.allclose(
         capacities[temps <= 1000],
-        hc._holzapfel_debye_Cp(temps[temps <= 1000], 300),
+        lattice_function(temps[temps <= 1000], 300),
     )
     mp.pyplot.close(fig)
+
+
+def test_plot_fitted_debye_heat_capacity():
+    temperatures = [50.0, 300.0, 1500.0]
+    capacities = hc.R * np.array(
+        [0.796790667335548624, 2.855196407109838342, 2.994008560858668753]
+    )
+    dataset = [
+        {
+            "output": "CPM",
+            "conditions": {"T": temperatures},
+            "values": capacities.tolist(),
+            "reference": "synthetic Debye",
+        }
+    ]
+    _, models = hc.fit_heat_capacity(dataset, {"debye": {"theta": [250, "fit"]}})
+
+    fig, ax = lcplt.plot_heat_capacity_from_models(models, dataset)
+    try:
+        curves = [line for line in ax.lines if len(line.get_xdata()) == 1000]
+        assert len(curves) == 2
+        for line in curves:
+            temperatures = np.asarray(line.get_xdata())
+            expected = hc._debye_Cp(temperatures, theta=models["debye"]["theta"][0])
+            np.testing.assert_allclose(line.get_ydata(), expected)
+    finally:
+        mp.pyplot.close(fig)
 
 
 def test_plot_heat_capacity_from_symbolic():

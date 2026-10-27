@@ -9,6 +9,11 @@ from tinydb import where
 
 
 def upsert_db_param_from_models(dbf, model_dict, phase, constituent_array):
+    if "debye" in model_dict:
+        raise NotImplementedError(
+            "Numerical Debye database export is not implemented. Pycalphad THETA "
+            "parameters describe the Einstein model, not the Debye model."
+        )
     query_params = {
         "theta": "THETA",
         "beta": "BMAGN",

@@ -342,6 +342,10 @@ def _fit_heat_capacity(x, arg_dict):
             model_Cp += _holzapfel_debye_Cp(
                 T_arr=temperature_array, thetaD=theta_list[0]
             )
+    elif "debye" in models:
+        theta_list = models["debye"]["theta"]
+        theta = x[theta_list[-1]] if "fit" in theta_list else theta_list[0]
+        model_Cp += _debye_Cp(T_arr=temperature_array, theta=theta)
     persistent_Cp = model_Cp.copy()
     for symbolic_key in [key for key in list(models.keys()) if "symbolic" in key]:
         symbolic_dict = models[symbolic_key]
@@ -465,9 +469,16 @@ def _fit_heat_capacity(x, arg_dict):
 
 
 def fit_heat_capacity(datasets, models, verbose=False):
+    """Fit Cp models, selecting at most one Einstein, Holzapfel, or Debye lattice.
+
+    Numerical Debye uses ``{"debye": {"theta": [value, "fit"]}}`` (or ``"fix"``).
+    Optional bounds precede ``"fit"`` and must be positive and contain the initial
+    theta. Debye fitting and plotting do not provide a Gibbs/database export.
+    """
     models = deepcopy(models)
     implemented_models = [
         "bcm",
+        "debye",
         "einstein",
         "holzapfel",
         "linear",
@@ -570,9 +581,12 @@ def fit_heat_capacity(datasets, models, verbose=False):
     }
     bounds = []
     i = 0
-    if all(["einstein" in list(models.keys()), "holzapfel" in list(models.keys())]):
+    lattice_models = [
+        name for name in ("einstein", "holzapfel", "debye") if name in models
+    ]
+    if len(lattice_models) > 1:
         raise ValueError(
-            "Cannot specify both Einstein and Holzapfel (Debye) models. Pick one."
+            "Cannot specify multiple lattice models (Einstein, Holzapfel, Debye). Pick one."
         )
     if "einstein" in list(models.keys()):
         einstein_model_dict = models["einstein"]
@@ -615,6 +629,28 @@ def fit_heat_capacity(datasets, models, verbose=False):
                 raise ValueError(
                     f"Holzapfel-Debye model specified, but not set correctly."
                 )
+    if "debye" in models:
+        if "theta" not in models["debye"]:
+            raise ValueError("Debye model requires instructions for fitting theta.")
+        param_list = models["debye"]["theta"]
+        if len(param_list) not in (2, 3) or param_list[-1] not in ("fit", "fix"):
+            raise ValueError(
+                "Debye theta must be [value, 'fit' or 'fix'], optionally with bounds."
+            )
+        if not np.isfinite(param_list[0]) or param_list[0] <= 0:
+            raise ValueError("Debye theta must be finite and positive.")
+        if param_list[-1] == "fit":
+            theta_bounds = param_list[1] if len(param_list) == 3 else (1e-6, 2500)
+            if len(theta_bounds) != 2 or not (
+                0 < theta_bounds[0] <= param_list[0] <= theta_bounds[1]
+            ):
+                raise ValueError(
+                    "Debye theta bounds must be positive, ordered, and contain the initial theta."
+                )
+            params.append(param_list[0])
+            bounds.append(theta_bounds)
+            param_list.append(i)
+            i += 1
     if "xiong" in list(models.keys()):
         xiong_model_dict = models["xiong"]
         assert all(
@@ -723,7 +759,7 @@ def fit_heat_capacity(datasets, models, verbose=False):
     if "melt" in list(models.keys()):
         melt_dict = models["melt"]
         if "liquid_Cp" in melt_dict:
-            lattice_limit = 3 * R if "einstein" in models or "holzapfel" in models else 0
+            lattice_limit = 3 * R if lattice_models else 0
             melt_dict["a"] = [melt_dict["liquid_Cp"][0] - lattice_limit, "fix"]
         for param in ["T_melt", "a", "b", "c"]:
             if param not in list(melt_dict.keys()):

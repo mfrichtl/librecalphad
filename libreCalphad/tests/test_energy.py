@@ -6,6 +6,7 @@ import libreCalphad.models.heat_capacity as hc
 import numpy as np
 import pandas as pd
 from pycalphad import Model, variables as v
+import pytest
 import symengine as se
 
 
@@ -29,6 +30,13 @@ def test_create_espei_custom_refstate_stable_offset():
     assert np.isclose(
         float(gibbs.subs(se.Symbol("T"), 300)), 477.094 - 9.77906 * 300
     )
+
+
+def test_create_espei_custom_refstate_rejects_numerical_debye():
+    models = {"debye": {"theta": [300, "fix"]}}
+
+    with pytest.raises(NotImplementedError, match="Debye Gibbs.*not implemented"):
+        en.create_espei_custom_refstate_stable(models)
 
 
 def test_melt_reference_state_matches_fitted_capacity_and_is_smooth():

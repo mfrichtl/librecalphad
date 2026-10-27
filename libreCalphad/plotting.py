@@ -214,6 +214,7 @@ def plot_heat_capacity_from_models(
     """
     function_dict = {
         "bcm": hc._bent_cable_Cp,
+        "debye": hc._debye_Cp,
         "einstein": hc._einstein_Cp,
         "holzapfel": hc._holzapfel_debye_Cp,
         "linear": hc._linear_Cp,
@@ -274,7 +275,7 @@ def plot_heat_capacity_from_models(
         df_model = pd.concat([df_model, pd.DataFrame(cpm_dict)])
         if model != "melt":
             combined_Cp = combined_Cp + model_Cp
-            if model in ("einstein", "holzapfel", "xiong"):
+            if model in ("einstein", "holzapfel", "debye", "xiong"):
                 persistent_Cp = persistent_Cp + model_Cp
     if "melt" in model_dict:
         melt_params = model_dict["melt"]

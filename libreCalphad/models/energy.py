@@ -649,6 +649,12 @@ def create_espei_custom_refstate_stable(model_dict):
 
     TODO: Incorporate Holzapfel approximation into pycalphad.
     """
+    if "debye" in model_dict:
+        raise NotImplementedError(
+            "Numerical Debye models support Cp fitting and plotting, but Debye Gibbs "
+            "reference-state export is not implemented. Use an Einstein model for "
+            "the existing pycalphad export workflow."
+        )
     critical_temperatures = [0]
     if "bcm" in list(model_dict.keys()):
         bcm_dict = model_dict["bcm"]

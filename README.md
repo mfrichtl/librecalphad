@@ -10,6 +10,32 @@ The rest of the files don't really do much for now. More will be added to this a
 # Property Models
 A martensite-start temperature model for steels is currently available. It still needs much work, but is a good start for collaboration. See the README in it's folder or the notebook in the examples folder for more information.
 
+# Heat-capacity fitting
+
+Numerical Debye fitting is available through the standard Cp fitting interface:
+
+```python
+from libreCalphad.models.heat_capacity import fit_heat_capacity
+from libreCalphad.plotting import plot_heat_capacity_from_models
+
+models = {"debye": {"theta": [250, [200, 400], "fit"]}}
+fits, fitted_models = fit_heat_capacity(cpm_datasets, models)
+fig, ax = plot_heat_capacity_from_models(fitted_models, cpm_datasets)
+```
+
+Here `cpm_datasets` is a list of ESPEI CPM datasets. Fitting also accepts a DataFrame
+with `temperature`, `Cp`, and `reference` columns. Debye temperatures are in kelvin:
+use `[300, "fix"]` for a fixed value or `[250, "fit"]` for default bounds
+`(1e-6, 2500)`. Custom bounds must be positive, ordered, and contain the initial
+value. Select only one lattice model: `einstein`, `holzapfel`, or `debye`.
+
+Numerical Debye currently supports Cp fitting and plotting, **not Gibbs reference
+states or database export**; those export functions reject Debye models explicitly.
+For the existing pycalphad export workflow, fit an Einstein model separately rather
+than reusing a Debye temperature as an Einstein temperature. See the
+[Fe fitting workflow](libreCalphad/databases/LC-steels_validation/FE/README.md) for
+experimental-data selection and output review.
+
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.
 
