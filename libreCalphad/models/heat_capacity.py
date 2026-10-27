@@ -203,23 +203,25 @@ def _bent_cable_Cp(T_arr=0, beta_1=0, beta_2=0, tau=0, gamma=0, T_melt=0):
 
 
 def _einstein_Cp(T_arr=0, theta=0):
-    if isinstance(T_arr, (int, float)):
-        if T_arr == 0:
-            ret_arr = 0
+    """Calculate Einstein heat capacity for a scalar or sequence of temperatures."""
+
+    def _calc_einstein_Cp(temp):
+        if temp == 0:
+            return 0
+        return (
+            3
+            * R
+            * (theta / temp) ** 2
+            * np.exp(theta / temp)
+            / (np.exp(theta / temp) - 1) ** 2
+        )
+
+    if np.isscalar(T_arr):
+        ret_arr = _calc_einstein_Cp(T_arr)
     else:
         ret_arr = np.array([])
         for temp in T_arr:
-            if temp == 0:
-                Cp = 0
-            else:
-                Cp = (
-                    3
-                    * R
-                    * (theta / temp) ** 2
-                    * np.exp(theta / temp)
-                    / (np.exp(theta / temp) - 1) ** 2
-                )
-            ret_arr = np.append(ret_arr, Cp)
+            ret_arr = np.append(ret_arr, _calc_einstein_Cp(temp))
     ret_arr = np.nan_to_num(ret_arr)  # replace nan with 0
     return ret_arr
 

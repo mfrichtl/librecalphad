@@ -55,6 +55,52 @@ def test_calc_RSE_rejects_nonfinite_values(invalid_value, invalid_array, other_v
     assert hc._calc_RSE(predicted, observed, []) == np.inf
 
 
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize("temperature", [0, 50, 300, 1500])
+@pytest.mark.parametrize("scalar_type", [int, float, np.int64, np.float32, np.float64])
+def test_einstein_Cp_scalar_matches_array(temperature, scalar_type):
+    if temperature == 0:
+        expected = 0.0
+    else:
+        x = 300 / temperature
+        expected = 3 * hc.R * x**2 * np.exp(-x) / (1 - np.exp(-x)) ** 2
+
+    result = hc._einstein_Cp(scalar_type(temperature), theta=300)
+
+    assert np.isscalar(result)
+    assert result == pytest.approx(expected)
+    assert result == pytest.approx(hc._einstein_Cp([temperature], theta=300)[0])
+
+
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize(
+    "temperatures",
+    [
+        [],
+        [0, 50, 300, 1500],
+        (0, 50, 300, 1500),
+        np.array([0.0, 50.0, 300.0, 1500.0]),
+    ],
+)
+def test_einstein_Cp_sequence_preserves_values_and_shape(temperatures):
+    temperature_array = np.array(temperatures, dtype=float)
+    expected = np.zeros_like(temperature_array)
+    nonzero = temperature_array != 0
+    x = 300 / temperature_array[nonzero]
+    expected[nonzero] = 3 * hc.R * x**2 * np.exp(-x) / (1 - np.exp(-x)) ** 2
+
+    result = hc._einstein_Cp(temperatures, theta=300)
+
+    assert isinstance(result, np.ndarray)
+    assert result.shape == expected.shape
+    np.testing.assert_allclose(result, expected)
+
+
+@pytest.mark.filterwarnings("error")
+def test_einstein_Cp_defaults_to_zero_temperature():
+    assert hc._einstein_Cp() == 0
+
+
 def test_fit_einstein_Cp():
     data_file = (
         impresources.files("libreCalphad.tests.test_heat_capacity_files")
