@@ -19,3 +19,9 @@ To install the package and run its Python tests locally (Python 3.11–3.13):
 python -m pip install '.[test]'
 python -m pytest -q libreCalphad/tests
 ```
+
+NumPy is constrained to `<2.5` because pycalphad 0.11.2 assigns directly to array
+shapes, which emits deprecation warnings with NumPy 2.5. This keeps the plotting
+regression tests' warnings-as-errors checks intact until pycalphad supports the
+newer API. To apply this constraint to an existing environment, run
+`python -m pip install 'numpy<2.5'` before running the tests.
