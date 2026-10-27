@@ -29,12 +29,48 @@ use `[300, "fix"]` for a fixed value or `[250, "fit"]` for default bounds
 `(1e-6, 2500)`. Custom bounds must be positive, ordered, and contain the initial
 value. Select only one lattice model: `einstein`, `holzapfel`, or `debye`.
 
-Numerical Debye currently supports Cp fitting and plotting, **not Gibbs reference
-states or database export**; those export functions reject Debye models explicitly.
-For the existing pycalphad export workflow, fit an Einstein model separately rather
-than reusing a Debye temperature as an Einstein temperature. See the
+Numerical Debye supports Cp fitting and plotting, plus the exact energy functions
+below, but **not pycalphad Gibbs reference-state or database export**. Those export
+functions reject Debye models explicitly. For the existing pycalphad export
+workflow, fit an Einstein model separately rather than reusing a Debye temperature
+as an Einstein temperature. See the
 [Fe fitting workflow](libreCalphad/databases/LC-steels_validation/FE/README.md) for
 experimental-data selection and output review.
+
+## Debye Gibbs energy, enthalpy, and entropy
+
+For a constant Debye temperature, define $y=\theta_D/T$ and
+
+$$D_3(y)=\frac{3}{y^3}\int_0^y\frac{x^3}{e^x-1}\,dx.$$
+
+The corresponding molar lattice energies are
+
+$$G_D=\frac{9}{8}R\theta_D+RT\left[3\ln(1-e^{-y})-D_3(y)\right],$$
+$$H_D=\frac{9}{8}R\theta_D+3RTD_3(y),\qquad
+S_D=R\left[4D_3(y)-3\ln(1-e^{-y})\right].$$
+
+These satisfy $G_D=H_D-TS_D$ and $C_p=-T\,d^2G_D/dT^2$ for the same fixed-theta
+lattice model used by `_debye_Cp`. No thermal-expansion or separate $C_p-C_v$
+correction is included. The convention includes zero-point energy
+$H_D(0)=G_D(0)=9R\theta_D/8$ and $S_D(0)=0$; add $H_0-TS_0$ to Gibbs energy for
+other enthalpy/entropy reference offsets.
+
+```python
+from libreCalphad.models import energy
+
+gibbs = energy._debye_gibbs([0, 300, 1500], theta=300)  # J/mol
+enthalpy = energy._debye_enthalpy([0, 300, 1500], theta=300)  # J/mol
+entropy = energy._debye_entropy([0, 300, 1500], theta=300)  # J/mol/K
+gibbs_expression = energy._debye_gibbs(None, theta=300, ret_expr=True)
+```
+
+Numeric evaluation uses quadrature of the exact Debye integral. All three helpers
+accept scalars or temperature arrays (finite and nonnegative), with positive finite
+theta. `ret_expr=True` ignores the temperature argument and returns an exact SymPy
+expression in `T`, with the zero-temperature limit handled explicitly; symbolic
+positive theta is also supported. These integral expressions can be differentiated
+and evaluated in SymPy, but cannot be compiled by the current pycalphad/SymEngine
+LLVM backend. The export safeguards therefore remain in place.
 
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.

@@ -559,6 +559,110 @@ def _einstein_gibbs(temp, theta):
     return 3 / 2 * R * theta + 3 * R * temp * np.log(1 - np.exp(-theta / temp))
 
 
+def _debye_thermodynamics(T_arr, theta, ret_expr):
+    """Return Debye enthalpy, entropy, and Gibbs energy with zero-point energy."""
+    if ret_expr:
+        theta = sp.sympify(theta)
+        if theta.is_positive is False or theta.is_finite is False or (
+            theta.is_number and theta.is_positive is not True
+        ):
+            raise ValueError("Debye theta must be finite and positive.")
+        temperature = sp.Symbol("T")
+        x = sp.Dummy("x")
+        ratio = theta / temperature
+        debye_function = 3 / ratio**3 * sp.Integral(
+            x**3 / (sp.exp(x) - 1), (x, 0, ratio)
+        )
+        gas_constant = sp.Float(R)
+        zero_point = sp.Rational(9, 8) * gas_constant * theta
+        thermal_log = sp.log(1 - sp.exp(-ratio))
+        enthalpy = zero_point + 3 * gas_constant * temperature * debye_function
+        entropy = gas_constant * (4 * debye_function - 3 * thermal_log)
+        gibbs = zero_point + gas_constant * temperature * (
+            3 * thermal_log - debye_function
+        )
+        return tuple(
+            sp.Piecewise(
+                (zero_limit, sp.Eq(temperature, 0)),
+                (expression, temperature > 0),
+                (sp.nan, True),
+            )
+            for expression, zero_limit in (
+                (enthalpy, zero_point),
+                (entropy, 0),
+                (gibbs, zero_point),
+            )
+        )
+
+    theta = float(theta)
+    if not np.isfinite(theta) or theta <= 0:
+        raise ValueError("Debye theta must be finite and positive.")
+    temperatures = np.asarray(T_arr, dtype=float)
+    if not np.all(np.isfinite(temperatures)) or np.any(temperatures < 0):
+        raise ValueError("Debye temperatures must be finite and nonnegative.")
+    zero_point = 9 * R * theta / 8
+
+    def _integrand(x):
+        if x == 0:
+            return 0
+        return x**3 * np.exp(-x) / -np.expm1(-x)
+
+    def _calculate(temp):
+        if temp == 0:
+            return zero_point, 0.0, zero_point
+        ratio = theta / temp
+        # Resolve the populated part of the spectrum even when theta/T is large.
+        points = [point for point in (1, 10, 100) if point < ratio]
+        integral = quad(_integrand, 0, ratio, points=points)[0]
+        debye_function = 3 * (temp / theta) ** 3 * integral
+        thermal_log = np.log(-np.expm1(-ratio))
+        enthalpy = zero_point + 3 * R * temp * debye_function
+        entropy = R * (4 * debye_function - 3 * thermal_log)
+        gibbs = zero_point + R * temp * (3 * thermal_log - debye_function)
+        return enthalpy, entropy, gibbs
+
+    values = [_calculate(float(temp)) for temp in temperatures.flat]
+    result = tuple(
+        np.array([row[index] for row in values]).reshape(temperatures.shape)
+        for index in range(3)
+    )
+    if temperatures.ndim == 0:
+        return tuple(value.item() for value in result)
+    return result
+
+
+def _debye_enthalpy(T_arr, theta, ret_expr=False):
+    """Return molar Debye enthalpy (J/mol), including 9*R*theta/8 at zero K.
+
+    With ret_expr=True, return an exact SymPy expression in T instead of evaluating
+    T_arr. Numeric theta must be positive; symbolic theta is assumed positive.
+    """
+    return _debye_thermodynamics(T_arr, theta, ret_expr)[0]
+
+
+def _debye_entropy(T_arr, theta, ret_expr=False):
+    """Return molar Debye entropy (J/mol/K), with S(0)=0.
+
+    With ret_expr=True, return an exact SymPy expression in T instead of evaluating
+    T_arr. Numeric theta must be positive; symbolic theta is assumed positive.
+    """
+    return _debye_thermodynamics(T_arr, theta, ret_expr)[1]
+
+
+def _debye_gibbs(T_arr, theta, ret_expr=False):
+    """Return molar Debye Gibbs energy (J/mol), including zero-point energy.
+
+    For y=theta/T and D3(y)=3/y**3*Integral(x**3/(exp(x)-1), (x, 0, y)),
+    G=9*R*theta/8 + R*T*(3*log(1-exp(-y))-D3(y)). This uses the same fixed-theta
+    lattice model as _debye_Cp; no thermal-expansion or Cp-Cv correction is added.
+
+    With ret_expr=True, return an exact SymPy integral expression in T, ignoring
+    T_arr. It is not compilable by the current pycalphad/SymEngine LLVM backend.
+    Enthalpy/entropy reference constants may be added separately as H0-T*S0.
+    """
+    return _debye_thermodynamics(T_arr, theta, ret_expr)[2]
+
+
 def _xiong_enthalpy(T_arr, beta, p, Tc):
 
     return _xiong_gibbs(T_arr, beta, p, Tc) + T_arr * _xiong_entropy(T_arr, beta, p, Tc)
@@ -651,9 +755,9 @@ def create_espei_custom_refstate_stable(model_dict):
     """
     if "debye" in model_dict:
         raise NotImplementedError(
-            "Numerical Debye models support Cp fitting and plotting, but Debye Gibbs "
-            "reference-state export is not implemented. Use an Einstein model for "
-            "the existing pycalphad export workflow."
+            "Debye Gibbs reference-state export is not implemented for pycalphad. "
+            "Exact numerical and SymPy Debye energies are available, but their "
+            "integrals cannot be compiled by the current SymEngine LLVM backend."
         )
     critical_temperatures = [0]
     if "bcm" in list(model_dict.keys()):
