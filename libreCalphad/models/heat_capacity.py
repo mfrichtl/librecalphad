@@ -282,10 +282,22 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0, Tn=0):
 
 
 def _calc_RSE(model_array, Cp_array, x):
-    error = np.sqrt(
-        np.sum(np.square((np.nan_to_num((model_array - Cp_array) / Cp_array))))
-    )
-    return error
+    """Return the relative-residual norm, treating observed zeros as constraints."""
+    model_array = np.asarray(model_array)
+    Cp_array = np.asarray(Cp_array)
+    if not np.all(np.isfinite(model_array)) or not np.all(np.isfinite(Cp_array)):
+        return np.inf
+
+    zero_capacity = Cp_array == 0
+    if np.any(zero_capacity & (model_array != 0)):
+        return np.inf
+
+    # Matching zeros contribute nothing; never divide by an observed zero.
+    nonzero_capacity = ~zero_capacity
+    residuals = (
+        model_array[nonzero_capacity] - Cp_array[nonzero_capacity]
+    ) / Cp_array[nonzero_capacity]
+    return np.sqrt(np.sum(np.square(residuals)))
 
 
 def _fit_heat_capacity(x, arg_dict):

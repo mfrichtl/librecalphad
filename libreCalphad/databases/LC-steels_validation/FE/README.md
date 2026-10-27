@@ -11,6 +11,8 @@ python libreCalphad/databases/LC-steels_validation/FE/fit_cpm.py \
 
 Choose `BCC_A2`, `FCC_A1`, `LIQUID`, or `GAS`. The command reads the phase settings from `FE-params.json` (override with `--params`) and selects matching Fe CPM datasets. It writes a fitted-parameters JSON file and a comparison plot to the output directory. Review the fit before using its parameters in the ESPEI workflow; the command does not update the database or reference states.
 
+The fitting objective is the norm of the relative Cp residuals. An observed Cp of exactly zero is an exact constraint: a matching prediction contributes zero, while a nonzero prediction receives an infinite objective. Nonfinite observed or predicted values also receive an infinite objective rather than being ignored. No epsilon or weighting floor is added, so the relative residuals for nonzero observations are unchanged. Experimental values rounded to zero should not be treated as exact zero-Cp constraints.
+
 For a phase with a `melt` model, the Einstein (or Holzapfel) and magnetic contributions remain active above `T_melt`; the other solid contributions are replaced by the melt correction. When `liquid_Cp` is specified, the fit fixes the melt expression's `a` parameter to `liquid_Cp - 3R` when an Einstein or Holzapfel contribution is present, so the total heat capacity approaches `liquid_Cp`.
 
 The generated custom Gibbs reference state retains pycalphad's Einstein and Xiong solid contributions above `T_melt` and matches Gibbs energy and entropy at the boundary.

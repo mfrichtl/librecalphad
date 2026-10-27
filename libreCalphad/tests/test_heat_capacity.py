@@ -8,6 +8,53 @@ import pytest
 import symengine as se
 
 
+@pytest.mark.filterwarnings("error")
+def test_calc_RSE_preserves_nonzero_relative_residuals():
+    observed = np.array([10.0, 20.0, -30.0, 1e-20])
+    predicted = np.array([11.0, 18.0, -27.0, 1.2e-20])
+    expected = np.sqrt(np.sum(np.square((predicted - observed) / observed)))
+
+    assert hc._calc_RSE(predicted, observed, []) == expected
+
+
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize(
+    "predicted,observed,expected",
+    [
+        ([0.0, 0.0], [0.0, 0.0], 0.0),
+        ([0.0, 11.0, 18.0], [0.0, 10.0, 20.0], np.sqrt(0.02)),
+    ],
+)
+def test_calc_RSE_matching_zeros(predicted, observed, expected):
+    result = hc._calc_RSE(np.array(predicted), np.array(observed), [])
+
+    assert result == pytest.approx(expected)
+
+
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize("prediction", [1.0, -1.0, 1e-20])
+def test_calc_RSE_penalizes_nonzero_predictions_at_zero(prediction):
+    predicted = np.array([10.0, prediction])
+    observed = np.array([10.0, 0.0])
+
+    assert hc._calc_RSE(predicted, observed, []) == np.inf
+
+
+@pytest.mark.filterwarnings("error")
+@pytest.mark.parametrize("invalid_value", [np.nan, np.inf, -np.inf])
+@pytest.mark.parametrize("invalid_array", ["predicted", "observed", "both"])
+@pytest.mark.parametrize("other_value", [0.0, 10.0])
+def test_calc_RSE_rejects_nonfinite_values(invalid_value, invalid_array, other_value):
+    predicted = np.array([other_value, 20.0])
+    observed = np.array([other_value, 20.0])
+    if invalid_array in ("predicted", "both"):
+        predicted[0] = invalid_value
+    if invalid_array in ("observed", "both"):
+        observed[0] = invalid_value
+
+    assert hc._calc_RSE(predicted, observed, []) == np.inf
+
+
 def test_fit_einstein_Cp():
     data_file = (
         impresources.files("libreCalphad.tests.test_heat_capacity_files")
