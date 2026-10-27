@@ -13,6 +13,7 @@ authors=[
 dependencies = [
     "ESPEI",
     "pycalphad",
+    "pycalphad-xml",
     "pymatgen",
     "matplotlib",
     # pycalphad 0.11.2 assigns ndarray.shape, deprecated in NumPy 2.5.
