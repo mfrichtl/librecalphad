@@ -243,6 +243,7 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0, Tn=0):
         return 0.33471979 + 0.49649686 * (1 / p - 1)
 
     def _g(tau, p):
+        # Heat-capacity series from -T*d²G/dT², not the Gibbs-energy g(tau).
         if tau <= 0:
             return 0
         elif tau <= 1:
@@ -267,7 +268,7 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0, Tn=0):
         if T_arr == 0:
             return 0
         tau = T_arr / T_crit
-        return R * tau * _g(tau, p) * np.log(beta + 1)
+        return R * _g(tau, p) * np.log(beta + 1)
     else:
         ret_arr = np.array([])
         for temp in T_arr:
@@ -275,7 +276,7 @@ def _xiong_Cp(T_arr=0, beta=0, p=0, Tc=0, Tn=0):
                 Cp = 0
             else:
                 tau = temp / T_crit
-                Cp = R * tau * _g(tau, p) * np.log(beta + 1)
+                Cp = R * _g(tau, p) * np.log(beta + 1)
             ret_arr = np.append(ret_arr, Cp)
         return ret_arr
 

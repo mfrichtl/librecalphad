@@ -4,6 +4,7 @@ from copy import deepcopy
 import libreCalphad.models.heat_capacity as hc
 import numpy as np
 import pandas as pd
+import pytest
 import symengine as se
 
 
@@ -124,33 +125,95 @@ def test_melt_replaces_solid_and_approaches_liquid_capacity():
     assert models["melt"]["a"] == [20, "fit"]
 
 
-def test_fit_xiong_Cp():
-    data_file = (
-        impresources.files("libreCalphad.tests.test_heat_capacity_files")
-        / "test_xiong_data.json"
+def _xiong_gibbs_heat_capacity(temperatures, beta, p, critical_temperature):
+    # Xiong et al. (2012), equations (12)-(14), doi:10.1016/j.calphad.2012.07.002.
+    temperature = se.Symbol("T")
+    tau = temperature / critical_temperature
+    denominator = 0.33471979 + 0.49649686 * (1 / p - 1)
+    low_temperature_g = 1 - (
+        0.38438376 / (p * tau)
+        + 0.63570895
+        * (1 / p - 1)
+        * (tau**3 / 6 + tau**9 / 135 + tau**15 / 600 + tau**21 / 1617)
+    ) / denominator
+    high_temperature_g = -(
+        tau**-7 / 21 + tau**-21 / 630 + tau**-35 / 2975 + tau**-49 / 8232
+    ) / denominator
+    capacities = []
+    for g in (low_temperature_g, high_temperature_g):
+        gibbs = hc.R * temperature * se.log(beta + 1) * g
+        capacities.append(-temperature * gibbs.diff(temperature, 2))
+    return np.array(
+        [
+            0.0
+            if temp == 0
+            else float(
+                capacities[int(temp > critical_temperature)].subs(temperature, temp)
+            )
+            for temp in temperatures
+        ]
     )
-    with open(data_file, "r") as f:
-        test_data = [json.load(f)]
+
+
+@pytest.fixture
+def xiong_data():
+    temperatures = np.linspace(300, 1500, 200)
+    return pd.DataFrame(
+        {
+            "temperature": temperatures,
+            "Cp": _xiong_gibbs_heat_capacity(temperatures, 2, 0.25, 1000),
+            "reference": "Xiong2012",
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    "critical_temperature_key,beta,p,critical_temperature",
+    [
+        ("Tc", 2.22, 0.37, 1043),
+        ("Tn", 0.7, 0.25, 67),
+        ("Tc", 0, 0.37, 1043),
+        ("Tn", 0, 0.25, 67),
+    ],
+)
+def test_xiong_Cp_matches_gibbs_derivative(
+    critical_temperature_key, beta, p, critical_temperature
+):
+    temperatures = np.concatenate(
+        (
+            [0],
+            critical_temperature * np.geomspace(0.01, 10, 60),
+            critical_temperature * np.array([0.99999, 1, 1.00001]),
+        )
+    )
+    parameters = {"beta": beta, "p": p, critical_temperature_key: critical_temperature}
+    expected = _xiong_gibbs_heat_capacity(temperatures, beta, p, critical_temperature)
+    np.testing.assert_allclose(
+        hc._xiong_Cp(temperatures, **parameters), expected, rtol=1e-12, atol=1e-12
+    )
+    np.testing.assert_allclose(
+        [hc._xiong_Cp(float(temp), **parameters) for temp in temperatures],
+        expected,
+        rtol=1e-12,
+        atol=1e-12,
+    )
+
+
+def test_fit_xiong_Cp(xiong_data):
     model_dict = {
         "xiong": {"beta": [1.8, "fit"], "p": [0.20, "fit"], "Tc": [1300, "fit"]}
     }
-    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
+    fits, model_dict = hc.fit_heat_capacity(xiong_data, model_dict)
     assert np.isclose(model_dict["xiong"]["beta"][0], 2, rtol=0.05)
     assert np.isclose(model_dict["xiong"]["p"][0], 0.25, rtol=1e-2)
     assert np.isclose(model_dict["xiong"]["Tc"][0], 1000, rtol=1)
 
 
-def test_fix_xiong_Cp():
-    data_file = (
-        impresources.files("libreCalphad.tests.test_heat_capacity_files")
-        / "test_xiong_data.json"
-    )
-    with open(data_file, "r") as f:
-        test_data = [json.load(f)]
+def test_fix_xiong_Cp(xiong_data):
     model_dict = {
         "xiong": {"beta": [2, "fix"], "p": [0.25, "fix"], "Tc": [1000, "fix"]}
     }
-    fits, model_dict = hc.fit_heat_capacity(test_data, model_dict)
+    fits, model_dict = hc.fit_heat_capacity(xiong_data, model_dict)
     assert np.isclose(fits, 0)
 
 
