@@ -86,6 +86,48 @@ def test_einstein_entropy_rejects_invalid_temperatures(temperature):
         en._einstein_entropy([300, temperature], theta=300)
 
 
+@pytest.mark.parametrize(
+    "beta,p,Tc", [(2, 0.37, 1000), (0.7, 0.25, 67), (0, 0.37, 1000)]
+)
+@pytest.mark.parametrize("ratio", [0, 0.3, 1, 1.5])
+def test_xiong_gibbs_scalar_matches_symbolic(monkeypatch, beta, p, Tc, ratio):
+    # Isolate branch consistency from the existing differing gas constants.
+    monkeypatch.setattr(en, "R", float(v.R))
+    temperature = float(ratio * Tc)
+    expression = en._xiong_gibbs(temperature, beta, p, Tc, ret_expr=True)
+    expected = float(expression.subs({v.T: temperature}))
+
+    actual = en._xiong_gibbs(temperature, beta, p, Tc)
+
+    assert actual == pytest.approx(expected, rel=1e-12, abs=1e-12)
+
+
+@pytest.mark.parametrize("container", [list, np.array])
+def test_xiong_gibbs_array_matches_symbolic(monkeypatch, container):
+    monkeypatch.setattr(en, "R", float(v.R))
+    temperatures = [0, 300, 1000, 1500]
+    expected = [
+        float(en._xiong_gibbs(temp, 2, 0.37, 1000, ret_expr=True).subs({v.T: temp}))
+        for temp in temperatures
+    ]
+
+    actual = en._xiong_gibbs(container(temperatures), beta=2, p=0.37, Tc=1000)
+
+    assert isinstance(actual, np.ndarray)
+    np.testing.assert_allclose(actual, expected, rtol=1e-12, atol=1e-12)
+
+
+def test_xiong_gibbs_zero_temperature_includes_disordering_offset():
+    beta, p, Tc = 2, 0.37, 1000
+    denominator = 0.33471979 + 0.49649686 * (1 / p - 1)
+    expected = en.R * np.log(beta + 1) * 0.38438376 * Tc / (p * denominator)
+
+    assert en._xiong_gibbs(0, beta, p, Tc) == pytest.approx(expected, rel=1e-12)
+    np.testing.assert_allclose(
+        en._xiong_gibbs([0], beta, p, Tc), [expected], rtol=1e-12
+    )
+
+
 def test_symbolic_gibbs():
     T, a = se.symbols("T a")
     Cp_f = a * T

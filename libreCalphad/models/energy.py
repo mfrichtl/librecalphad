@@ -734,13 +734,17 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
         return -R * se.log(beta + 1) * (v.T - 0.38438376 * Tc / (p * _D(p)))
 
     if isinstance(T_arr, (int, float)) and not ret_expr:
-        ret_arr = -R * T_arr / _D(p) * np.log(beta + 1) * _g_int(T_arr, p, Tc)
-        +_gmdo(T_arr, beta, p, Tc)
+        ret_arr = (
+            -R * T_arr / _D(p) * np.log(beta + 1) * _g_int(T_arr, p, Tc)
+            + _gmdo(T_arr, beta, p, Tc)
+        )
     elif not ret_expr:
         ret_arr = np.array([])
         for temp in T_arr:
-            G_mag = -R * temp / _D(p) * np.log(beta + 1) * _g_int(temp, p, Tc)
-            +_gmdo(temp, beta, p, Tc)
+            G_mag = (
+                -R * temp / _D(p) * np.log(beta + 1) * _g_int(temp, p, Tc)
+                + _gmdo(temp, beta, p, Tc)
+            )
             ret_arr = np.append(ret_arr, G_mag)
     elif isinstance(T_arr, (int, float)) and ret_expr:
         ret_arr = -v.R * v.T / _D(p) * se.log(beta + 1) * _sympy_g_int(
