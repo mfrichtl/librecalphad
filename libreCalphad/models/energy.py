@@ -541,17 +541,28 @@ def _bent_cable_gibbs(
 
 
 def _einstein_entropy(temp, theta):
-    return (
-        3
-        * R
-        * (
-            theta
-            / (2 * temp)
-            * np.cosh(theta / (2 * temp))
-            / np.sinh(theta / (2 * temp))
-            - np.log(2 * np.sinh(theta / 2 * temp))
-        )
-    )
+    """Return molar Einstein entropy (J/mol/K), with S(0)=0.
+
+    Use decaying exponentials to avoid hyperbolic-function overflow at low T.
+    Temperatures may be a scalar or array; theta must be finite and positive.
+    """
+    theta = float(theta)
+    if not np.isfinite(theta) or theta <= 0:
+        raise ValueError("Einstein theta must be finite and positive.")
+    temperatures = np.asarray(temp, dtype=float)
+    if not np.all(np.isfinite(temperatures)) or np.any(temperatures < 0):
+        raise ValueError("Einstein temperatures must be finite and nonnegative.")
+    entropy = np.zeros_like(temperatures)
+    positive = temperatures > 0
+    ratio = theta / temperatures[positive]
+    decay = np.exp(-ratio)
+    denominator = -np.expm1(-ratio)
+    thermal_log = np.log(denominator)
+    # Preserve the exponentially small entropy when 1-exp(-ratio) rounds to 1.
+    cold = ratio > 1
+    thermal_log[cold] = np.log1p(-decay[cold])
+    entropy[positive] = 3 * R * (ratio * decay / denominator - thermal_log)
+    return entropy.item() if temperatures.ndim == 0 else entropy
 
 
 def _einstein_gibbs(temp, theta):
