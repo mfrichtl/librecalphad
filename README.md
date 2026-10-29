@@ -72,6 +72,30 @@ positive theta is also supported. These integral expressions can be differentiat
 and evaluated in SymPy, but cannot be compiled by the current pycalphad/SymEngine
 LLVM backend. The export safeguards therefore remain in place.
 
+## Magnetic energy reference
+
+The standalone `_xiong_gibbs`, `_xiong_entropy`, and `_xiong_enthalpy` helpers in
+`libreCalphad.models.energy` use the magnetic ground state as their reference:
+the magnetic contributions satisfy `G(0) = H(0) = S(0) = 0`. They convert the
+ordering energy in [Xiong et al. (2012), equations (12)–(14)](https://doi.org/10.1016/j.calphad.2012.07.002)
+using `G_ground(T) = G_Xiong(T) - G_Xiong(0) - T*G_Xiong'(0)`.
+
+With `F` denoting the appropriate `_g_int` series, Gibbs energy is
+`-R*T*log(beta+1)*F/D` below and at `Tc`. Only the branch above `Tc` adds the
+disordering term `-R*log(beta+1)*(T - 0.38438376*Tc/(p*D))`. Entropy is calculated
+from the full derivative `S = -dG/dT`, and enthalpy from `H = G + T*S`. Numerical
+and symbolic Gibbs evaluation use the same gas constant. For symbolic Gibbs,
+`ret_expr=True` returns the expression for the branch selected by `T_arr`, not
+a complete piecewise expression.
+
+This corrects the previous low-temperature Gibbs offset and constant entropy;
+it does not change the magnetic Cp expression or existing fitted parameters.
+Published rounded coefficients leave very small residual mismatches at `Tc`
+(about `1.1e-4` J/mol in G and `1.6e-9` J/mol/K in S for beta=2, p=0.37,
+Tc=1000 K). The standalone ground-state reference must not be added to pycalphad's
+built-in magnetic contribution without accounting for its different reference.
+No database or exported reference-state changes are made by these helpers.
+
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.
 

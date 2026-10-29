@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from pycalphad import Model, variables as v
 import pytest
+from scipy.integrate import quad
 import symengine as se
 
 
@@ -90,9 +91,7 @@ def test_einstein_entropy_rejects_invalid_temperatures(temperature):
     "beta,p,Tc", [(2, 0.37, 1000), (0.7, 0.25, 67), (0, 0.37, 1000)]
 )
 @pytest.mark.parametrize("ratio", [0, 0.3, 1, 1.5])
-def test_xiong_gibbs_scalar_matches_symbolic(monkeypatch, beta, p, Tc, ratio):
-    # Isolate branch consistency from the existing differing gas constants.
-    monkeypatch.setattr(en, "R", float(v.R))
+def test_xiong_gibbs_scalar_matches_symbolic(beta, p, Tc, ratio):
     temperature = float(ratio * Tc)
     expression = en._xiong_gibbs(temperature, beta, p, Tc, ret_expr=True)
     expected = float(expression.subs({v.T: temperature}))
@@ -103,8 +102,7 @@ def test_xiong_gibbs_scalar_matches_symbolic(monkeypatch, beta, p, Tc, ratio):
 
 
 @pytest.mark.parametrize("container", [list, np.array])
-def test_xiong_gibbs_array_matches_symbolic(monkeypatch, container):
-    monkeypatch.setattr(en, "R", float(v.R))
+def test_xiong_gibbs_array_matches_symbolic(container):
     temperatures = [0, 300, 1000, 1500]
     expected = [
         float(en._xiong_gibbs(temp, 2, 0.37, 1000, ret_expr=True).subs({v.T: temp}))
@@ -117,14 +115,147 @@ def test_xiong_gibbs_array_matches_symbolic(monkeypatch, container):
     np.testing.assert_allclose(actual, expected, rtol=1e-12, atol=1e-12)
 
 
-def test_xiong_gibbs_zero_temperature_includes_disordering_offset():
-    beta, p, Tc = 2, 0.37, 1000
-    denominator = 0.33471979 + 0.49649686 * (1 / p - 1)
-    expected = en.R * np.log(beta + 1) * 0.38438376 * Tc / (p * denominator)
+@pytest.mark.parametrize(
+    "function", [en._xiong_gibbs, en._xiong_entropy, en._xiong_enthalpy]
+)
+def test_xiong_magnetic_ground_state_zero_limits(function):
+    # The former nonzero Gibbs offset is not part of this ground-state reference.
+    assert function(0, beta=2, p=0.37, Tc=1000) == 0
+    np.testing.assert_array_equal(function(np.array([0.0]), 2, 0.37, 1000), [0])
 
-    assert en._xiong_gibbs(0, beta, p, Tc) == pytest.approx(expected, rel=1e-12)
-    np.testing.assert_allclose(
-        en._xiong_gibbs([0], beta, p, Tc), [expected], rtol=1e-12
+
+@pytest.mark.parametrize(
+    "beta,p,Tc", [(2, 0.37, 1000), (0.7, 0.25, 67), (0, 0.37, 1000)]
+)
+def test_xiong_energies_match_gibbs_derivatives(beta, p, Tc):
+    for ratio in (0.03, 0.3, 0.8, 1, 1.001, 1.5, 5):
+        temperature = float(ratio * Tc)
+        gibbs = en._xiong_gibbs(temperature, beta, p, Tc, ret_expr=True)
+        entropy = -gibbs.diff(v.T)
+        enthalpy = gibbs + v.T * entropy
+        capacity = -v.T * gibbs.diff(v.T, 2)
+        substitutions = {v.T: temperature}
+        assert en._xiong_entropy(temperature, beta, p, Tc) == pytest.approx(
+            float(entropy.subs(substitutions)), rel=1e-12, abs=1e-12
+        )
+        assert en._xiong_enthalpy(temperature, beta, p, Tc) == pytest.approx(
+            float(enthalpy.subs(substitutions)), rel=1e-12, abs=1e-12
+        )
+        expected_capacity = hc._xiong_Cp(temperature, beta=beta, p=p, Tc=Tc)
+        assert float(capacity.subs(substitutions)) == pytest.approx(
+            expected_capacity, rel=1e-12, abs=1e-12
+        )
+        assert float(enthalpy.diff(v.T).subs(substitutions)) == pytest.approx(
+            expected_capacity, rel=1e-12, abs=1e-12
+        )
+        if ratio != 1:
+            step = temperature * 1e-5
+            entropy_slope = (
+                en._xiong_entropy(temperature + step, beta, p, Tc)
+                - en._xiong_entropy(temperature - step, beta, p, Tc)
+            ) / (2 * step)
+            enthalpy_slope = (
+                en._xiong_enthalpy(temperature + step, beta, p, Tc)
+                - en._xiong_enthalpy(temperature - step, beta, p, Tc)
+            ) / (2 * step)
+            assert temperature * entropy_slope == pytest.approx(
+                expected_capacity, rel=1e-6, abs=1e-10
+            )
+            assert enthalpy_slope == pytest.approx(
+                expected_capacity, rel=1e-6, abs=1e-10
+            )
+
+
+@pytest.mark.parametrize(
+    "beta,p,Tc", [(2, 0.37, 1000), (0.7, 0.25, 67), (0, 0.37, 1000)]
+)
+def test_xiong_energies_match_integrated_heat_capacity(beta, p, Tc):
+    # Independent ground-state reference: H=int(Cp dT), S=int(Cp/T dT).
+    for ratio in (0.01, 0.3, 0.8, 1, 1.001, 1.5, 5, 10):
+        temperature = float(ratio * Tc)
+
+        def capacity(temp):
+            return hc._xiong_Cp(float(temp), beta=beta, p=p, Tc=Tc)
+
+        boundaries = [0, temperature] if ratio <= 1 else [0, Tc, temperature]
+        intervals = list(zip(boundaries[:-1], boundaries[1:]))
+        expected_enthalpy = sum(
+            quad(capacity, left, right, epsabs=1e-10, epsrel=1e-12)[0]
+            for left, right in intervals
+        )
+        expected_entropy = sum(
+            quad(
+                lambda temp: capacity(temp) / temp,
+                left,
+                right,
+                epsabs=1e-12,
+                epsrel=1e-12,
+            )[0]
+            for left, right in intervals
+        )
+        expected_gibbs = expected_enthalpy - temperature * expected_entropy
+        # The published eight-decimal coefficients leave tiny affine mismatches
+        # above Tc. Preserve those coefficients rather than refitting them.
+        assert en._xiong_entropy(temperature, beta, p, Tc) == pytest.approx(
+            expected_entropy, rel=0, abs=1e-8
+        )
+        assert en._xiong_enthalpy(temperature, beta, p, Tc) == pytest.approx(
+            expected_enthalpy, rel=0, abs=2e-4
+        )
+        assert en._xiong_gibbs(temperature, beta, p, Tc) == pytest.approx(
+            expected_gibbs, rel=0, abs=2e-4
+        )
+
+
+@pytest.mark.parametrize("p", [0.25, 0.37])
+def test_xiong_gibbs_and_entropy_are_continuous_to_coefficient_precision(p):
+    beta, Tc = 2, 1000
+    # Evaluate both branch expressions at exactly Tc, not across a finite step.
+    low = en._xiong_gibbs(Tc, beta, p, Tc, ret_expr=True)
+    high = en._xiong_gibbs(Tc + 1, beta, p, Tc, ret_expr=True)
+    assert float(low.subs({v.T: Tc})) == pytest.approx(
+        float(high.subs({v.T: Tc})), rel=0, abs=2e-4
+    )
+    assert float(-low.diff(v.T).subs({v.T: Tc})) == pytest.approx(
+        float(-high.diff(v.T).subs({v.T: Tc})), rel=0, abs=2e-8
+    )
+
+
+@pytest.mark.parametrize("container", [list, np.array])
+def test_xiong_entropy_and_enthalpy_array_identity(container):
+    temperatures = container([0.0, 300.0, 1000.0, 1500.0])
+    entropy = en._xiong_entropy(temperatures, 2, 0.37, 1000)
+    enthalpy = en._xiong_enthalpy(temperatures, 2, 0.37, 1000)
+    gibbs = en._xiong_gibbs(temperatures, 2, 0.37, 1000)
+
+    np.testing.assert_allclose(enthalpy, gibbs + np.asarray(temperatures) * entropy)
+    for index, temperature in enumerate(temperatures):
+        assert entropy[index] == pytest.approx(
+            en._xiong_entropy(float(temperature), 2, 0.37, 1000)
+        )
+        assert enthalpy[index] == pytest.approx(
+            en._xiong_enthalpy(float(temperature), 2, 0.37, 1000)
+        )
+
+
+@pytest.mark.parametrize("p", [0.25, 0.37])
+def test_xiong_entropy_low_and_high_temperature_limits(p):
+    beta, Tc = 2, 1000
+    amplitude = en.R * np.log(beta + 1)
+    denominator = 0.33471979 + 0.49649686 * (1 / p - 1)
+    ratio = 1e-4
+    expected_low = (
+        2 * amplitude * 0.63570895 * (1 / p - 1) / denominator * ratio**3 / 3
+    )
+    assert en._xiong_entropy(ratio * Tc, beta, p, Tc) == pytest.approx(
+        expected_low, rel=1e-12, abs=0
+    )
+    assert en._xiong_entropy(1e6 * Tc, beta, p, Tc) == pytest.approx(
+        amplitude, rel=1e-12
+    )
+    expected_high_enthalpy = amplitude * 0.38438376 * Tc / (p * denominator)
+    assert en._xiong_enthalpy(100 * Tc, beta, p, Tc) == pytest.approx(
+        expected_high_enthalpy, rel=1e-10
     )
 
 

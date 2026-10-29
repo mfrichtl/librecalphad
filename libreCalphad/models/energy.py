@@ -675,23 +675,46 @@ def _debye_gibbs(T_arr, theta, ret_expr=False):
 
 
 def _xiong_enthalpy(T_arr, beta, p, Tc):
-
+    """Return magnetic enthalpy (J/mol) relative to the magnetic ground state."""
     return _xiong_gibbs(T_arr, beta, p, Tc) + T_arr * _xiong_entropy(T_arr, beta, p, Tc)
 
 
 def _xiong_entropy(T_arr, beta, p, Tc):
-    if isinstance(T_arr, (int, float)):
-        return R * np.log(beta + 1)
-    else:
-        ret_arr = np.array([])
-        for temp in T_arr:
-            S_xiong = R * np.log(beta + 1)
-            ret_arr = np.append(ret_arr, S_xiong)
-        return ret_arr
+    """Return magnetic entropy (J/mol/K), with S(0)=0 and S=-dG/dT.
+
+    Differentiate the ground-state-referenced Gibbs branches at fixed beta, p,
+    and Tc. The constant R*log(beta+1) contributes only above Tc.
+    """
+    tau = np.asarray(T_arr, dtype=float) / Tc
+    denominator = 0.33471979 + 0.49649686 * (1 / p - 1)
+    amplitude = R * np.log(beta + 1)
+    entropy = np.empty_like(tau)
+    low = tau <= 1
+    x = tau[low]
+    coefficient = 0.63570895 * (1 / p - 1)
+    entropy[low] = 2 * amplitude * coefficient / denominator * (
+        x**3 / 3 + x**9 / 27 + x**15 / 75 + x**21 / 147
+    )
+    x = tau[~low]
+    entropy[~low] = amplitude * (
+        1
+        - 2 / denominator
+        * (x**-7 / 7 + x**-21 / 63 + x**-35 / 175 + x**-49 / 343)
+    )
+    return entropy.item() if tau.ndim == 0 else entropy
 
 
 def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
-    # From Hao2024
+    """Return magnetic Gibbs energy (J/mol) relative to the magnetic ground state.
+
+    Convert Xiong et al. (2012), doi:10.1016/j.calphad.2012.07.002, equations
+    (12)-(14), using G_ground=G_Xiong-G_Xiong(0)-T*G_Xiong'(0). The affine terms
+    cancel below Tc; only the high-temperature branch needs _gmdo. This gives
+    G(0)=H(0)=S(0)=0 without changing Cp. Published rounded coefficients leave
+    small residual branch mismatches at Tc.
+
+    With ret_expr=True, T_arr selects the branch of the expression in v.T.
+    """
     def _D(p):
         return 0.33471979 + 0.49649686 * (1 / p - 1)
 
@@ -728,9 +751,13 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
         return coef * np.sum([term1, term2, term3, term4])
 
     def _gmdo(temp, beta, p, Tc):
+        if temp <= Tc:
+            return 0
         return -R * np.log(beta + 1) * (temp - 0.38438376 * Tc / (p * _D(p)))
 
     def _sympy_gmdo(temp, beta, p, Tc):
+        if temp <= Tc:
+            return 0
         return -R * se.log(beta + 1) * (v.T - 0.38438376 * Tc / (p * _D(p)))
 
     if isinstance(T_arr, (int, float)) and not ret_expr:
@@ -747,7 +774,7 @@ def _xiong_gibbs(T_arr, beta, p, Tc, ret_expr=False):
             )
             ret_arr = np.append(ret_arr, G_mag)
     elif isinstance(T_arr, (int, float)) and ret_expr:
-        ret_arr = -v.R * v.T / _D(p) * se.log(beta + 1) * _sympy_g_int(
+        ret_arr = -R * v.T / _D(p) * se.log(beta + 1) * _sympy_g_int(
             T_arr, p, Tc
         ) + _sympy_gmdo(T_arr, beta, p, Tc)
     return ret_arr
