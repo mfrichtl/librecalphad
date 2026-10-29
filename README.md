@@ -96,7 +96,7 @@ Tc=1000 K). The standalone ground-state reference must not be added to pycalphad
 built-in magnetic contribution without accounting for its different reference.
 No database or exported reference-state changes are made by these helpers.
 
-## Two-state heat capacity
+## Two-state heat capacity and Gibbs energy
 
 The `two-state` Cp model treats its `expression` as the Gibbs difference
 `delta_G(T)` between states of equal degeneracy. The excited-state fraction is
@@ -109,6 +109,28 @@ This affects Cp when `delta_G - T*d(delta_G)/dT` is temperature-dependent, inclu
 expressions with `T*log(T)` terms. Fits made with that implementation should be
 repeated against experimental CPM data and reviewed before downstream use.
 Existing fitted parameters and thermodynamic databases are not updated automatically.
+
+The corresponding `libreCalphad.models.energy._twostate_gibbs` helper accepts a
+Gibbs-difference expression as a string or symbolic expression. Numerical evaluation
+accepts scalar or array temperatures. Set `ret_expr=True` to return a symbolic
+expression regardless of the temperature argument; both paths use the same gas
+constant. With `symbols=None` (the default), no parameter substitutions are made.
+For a parameterized expression, list the names in `symbols` and supply parameter
+sequences in the same format used by the Cp helper:
+
+```python
+from libreCalphad.models import energy
+
+gibbs_expression = energy._twostate_gibbs(
+    None, expression="a + b*T + c*T*log(T)",
+    symbols=["a", "b", "c"], ret_expr=True,
+    a=[15000, "fix"], b=[-5, "fix"], c=[-1, "fix"],
+)
+```
+
+Missing requested parameters and empty parameter sequences raise `ValueError`.
+Unsubstituted parameters may remain in symbolic results, but numerical evaluation
+requires all parameters except temperature to be resolved.
 
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.

@@ -150,31 +150,53 @@ def _symbolic_gibbs(T_arr, variable_values, Cp_expression, temp_bounds, ret_expr
     return ret_arr
 
 
-def _twostate_gibbs(T_arr, expression=None, symbols=None, ret_expr=False):
+def _twostate_gibbs(T_arr, expression=None, symbols=None, ret_expr=False, **kwargs):
+    """Return two-state Gibbs energy (J/mol) for states of equal degeneracy.
+
+    Supply delta_G(T) as expression. Parameters named in symbols are substituted
+    from keyword sequences such as a=[15000, "fix"], matching _twostate_Cp.
+    With symbols=None, no substitutions are made. ret_expr=True ignores T_arr
+    and returns the symbolic expression; otherwise evaluate a scalar or array.
+    """
+    if expression is None:
+        raise ValueError(
+            "Two-state Gibbs energy requires a Gibbs-difference expression."
+        )
+    expression = se.sympify(expression)
     symbol_dict = {}
-    for symbol in symbols:
-        symbol_dict[symbol] = kwargs[symbol][0]
+    for symbol in (() if symbols is None else symbols):
+        name = str(symbol)
+        if name not in kwargs:
+            raise ValueError(
+                f"Missing two-state parameter '{name}'; supply {name}=[value]."
+            )
+        values = kwargs[name]
+        if (
+            not isinstance(values, (list, tuple, np.ndarray))
+            or (isinstance(values, np.ndarray) and values.ndim == 0)
+            or len(values) == 0
+        ):
+            raise ValueError(
+                f"Two-state parameter '{name}' must be a nonempty sequence, "
+                f"such as {name}=[value]."
+            )
+        symbol_dict[symbol] = values[0]
     expression = expression.subs(symbol_dict)
-    # if isinstance(dE, list):
-    #     dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
-
-    def _calc_twostate_gibbs(temp, dE):
-        return np.float64((-R * T * se.log(1 + se.exp(-dE / (R * T)))).subs(T, temp))
-
-    def _sympy_twostate_gibbs(temp, dE):
-        if isinstance(dE, list):
-            dE = np.sum([dE[i] * v.T**i for i in range(len(dE))])
-        return -v.R * v.T * se.log(1 + se.exp(-dE / (v.R * v.T)))
-
-    if isinstance(T_arr, (int, float)):
-        ret_arr = _calc_twostate_gibbs(T_arr, expression)
-    elif ret_expr:
-        ret_arr = _sympy_twostate_gibbs(None, expression)
-    else:
-        ret_arr = np.array([])
-        for temp in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_gibbs(temp, expression))
-    return ret_arr
+    gibbs = -R * T * se.log(1 + se.exp(-expression / (R * T)))
+    if ret_expr:
+        return gibbs
+    unresolved = gibbs.free_symbols - {T}
+    if unresolved:
+        names = ", ".join(sorted(str(symbol) for symbol in unresolved))
+        raise ValueError(
+            f"Unresolved two-state parameters: {names}. Supply symbols and parameter "
+            "values, or use ret_expr=True for symbolic evaluation."
+        )
+    temperatures = np.asarray(T_arr, dtype=float)
+    result = np.array(
+        [float(gibbs.subs(T, float(temp))) for temp in temperatures.flat]
+    ).reshape(temperatures.shape)
+    return result.item() if temperatures.ndim == 0 else result
 
 
 def _twostate_entropy(T_arr, dE, coef_list, ret_expr=False):
