@@ -96,6 +96,20 @@ Tc=1000 K). The standalone ground-state reference must not be added to pycalphad
 built-in magnetic contribution without accounting for its different reference.
 No database or exported reference-state changes are made by these helpers.
 
+## Two-state heat capacity
+
+The `two-state` Cp model treats its `expression` as the Gibbs difference
+`delta_G(T)` between states of equal degeneracy. The excited-state fraction is
+`chi = exp(-delta_G/(R*T)) / (1 + exp(-delta_G/(R*T)))`; the same dimensionless
+argument is used in both exponentials. The resulting Cp is consistent with
+`-T*d²G/dT²` for `G = -R*T*log(1 + exp(-delta_G/(R*T)))`.
+
+Earlier versions incorrectly used `-delta_G*T/R` in the population denominator.
+This affects Cp when `delta_G - T*d(delta_G)/dT` is temperature-dependent, including
+expressions with `T*log(T)` terms. Fits made with that implementation should be
+repeated against experimental CPM data and reviewed before downstream use.
+Existing fitted parameters and thermodynamic databases are not updated automatically.
+
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.
 

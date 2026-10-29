@@ -79,6 +79,11 @@ def _symbolic_Cp(T_arr=0, variable_values=[], expression="", temp_bounds=()):
 
 
 def _twostate_Cp(T_arr=0, expression=None, symbols=None, **kwargs):
+    """Return two-state Cp from a Gibbs difference supplied as expression.
+
+    The excited-state fraction is exp(-delta_G/(R*T))/(1+exp(-delta_G/(R*T))).
+    This follows from G=-R*T*log(1+exp(-delta_G/(R*T))) for equal degeneracies.
+    """
     # Following the approach from Becker2013
     g0 = 1
     g1 = 1
@@ -90,7 +95,7 @@ def _twostate_Cp(T_arr=0, expression=None, symbols=None, **kwargs):
 
     def _calc_twostate_Cp(temp, dE):
         dH = -(T**2) * (dE / T).diff(T)
-        chi = se.exp(-dE / (R * T)) / (1 + se.exp(-dE / R * T))
+        chi = se.exp(-dE / (R * T)) / (1 + se.exp(-dE / (R * T)))
         twostate_Cp = (
             chi * dH.diff(T)
             + R

@@ -579,6 +579,86 @@ def test_print_all_fixed_params():
     fits, model_dict = hc.fit_heat_capacity(test_data, model_dict, verbose=True)
 
 
+def _twostate_gibbs_heat_capacity(temperatures, expression):
+    # Independent reference: differentiate G=-R*T*log(1+exp(-delta_G/(R*T))).
+    temperature = se.Symbol("T")
+    gibbs = -hc.R * temperature * se.log(
+        1 + se.exp(-expression / (hc.R * temperature))
+    )
+    capacity = -temperature * gibbs.diff(temperature, 2)
+    return np.array(
+        [
+            0.0 if temp == 0 else float(capacity.subs({temperature: float(temp)}))
+            for temp in temperatures
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "15000",
+        "15000 - 5*T",
+        "15000 - 5*T - T*log(T)",
+        "-15000 + 5*T + T*log(T)",
+        "15000 + 0.01*T**2",
+        "0",
+    ],
+)
+def test_twostate_Cp_matches_gibbs_derivative(expression):
+    expression = se.sympify(expression)
+    temperatures = np.array([300.0, 1000.0, 1500.0])
+    expected = _twostate_gibbs_heat_capacity(temperatures, expression)
+
+    actual = hc._twostate_Cp(temperatures, expression=expression, symbols=[])
+    scalar = [
+        hc._twostate_Cp(float(temp), expression=expression, symbols=[])
+        for temp in temperatures
+    ]
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-12, atol=1e-12)
+    np.testing.assert_allclose(scalar, expected, rtol=1e-12, atol=1e-12)
+
+
+def test_twostate_Cp_parameter_substitution_matches_gibbs_derivative():
+    T, a, b, c = se.symbols("T a b c")
+    temperatures = [300, 1000, 1500]
+    expression = a + b * T + c * T * se.log(T)
+    expected = _twostate_gibbs_heat_capacity(
+        temperatures, 15000 - 5 * T - T * se.log(T)
+    )
+
+    actual = hc._twostate_Cp(
+        temperatures,
+        expression=expression,
+        symbols=["a", "b", "c"],
+        a=[15000],
+        b=[-5],
+        c=[-1],
+    )
+
+    np.testing.assert_allclose(actual, expected, rtol=1e-12, atol=1e-12)
+
+
+def test_twostate_fixture_matches_gibbs_derivative():
+    # Synthetic fixture: delta_G=15000-5*T-T*log(T), R=8.314472 J/mol/K.
+    # Values are -T*d2G/dT2 at the stored temperatures, not output from _twostate_Cp.
+    data_file = (
+        impresources.files("libreCalphad.tests.test_heat_capacity_files")
+        / "test_twostate_data.json"
+    )
+    with open(data_file, "r") as stream:
+        dataset = json.load(stream)
+    T = se.Symbol("T")
+    expected = _twostate_gibbs_heat_capacity(
+        dataset["conditions"]["T"], 15000 - 5 * T - T * se.log(T)
+    )
+
+    np.testing.assert_allclose(
+        np.asarray(dataset["values"]).flatten(), expected, rtol=1e-12, atol=0
+    )
+
+
 def test_fix_twostate_Cp():
     T = se.symbols("T")
     data_file = (
