@@ -183,9 +183,14 @@ def _twostate_gibbs(T_arr, expression=None, symbols=None, ret_expr=False, **kwar
         symbol_dict[symbol] = values[0]
     expression = expression.subs(symbol_dict)
     gibbs = -R * T * se.log(1 + se.exp(-expression / (R * T)))
+    return _evaluate_twostate_energy(T_arr, gibbs, ret_expr)
+
+
+def _evaluate_twostate_energy(T_arr, expression, ret_expr):
+    """Share symbolic dispatch and shape-preserving evaluation across G, S, and H."""
     if ret_expr:
-        return gibbs
-    unresolved = gibbs.free_symbols - {T}
+        return expression
+    unresolved = expression.free_symbols - {T}
     if unresolved:
         names = ", ".join(sorted(str(symbol) for symbol in unresolved))
         raise ValueError(
@@ -194,52 +199,42 @@ def _twostate_gibbs(T_arr, expression=None, symbols=None, ret_expr=False, **kwar
         )
     temperatures = np.asarray(T_arr, dtype=float)
     result = np.array(
-        [float(gibbs.subs(T, float(temp))) for temp in temperatures.flat]
+        [float(expression.subs(T, float(temp))) for temp in temperatures.flat]
     ).reshape(temperatures.shape)
     return result.item() if temperatures.ndim == 0 else result
 
 
+def _twostate_gibbs_from_terms(dE, coef_list):
+    """Convert the legacy weighted-term input into one Gibbs-difference expression."""
+    if isinstance(dE, list):
+        if (
+            not isinstance(coef_list, (list, tuple, np.ndarray))
+            or (isinstance(coef_list, np.ndarray) and coef_list.ndim != 1)
+            or len(dE) != len(coef_list)
+        ):
+            raise ValueError("coef_list must contain one coefficient per term in dE.")
+        dE = sum(
+            se.sympify(term) * se.sympify(coefficient)
+            for term, coefficient in zip(dE, coef_list)
+        )
+    return _twostate_gibbs(None, expression=dE, ret_expr=True)
+
+
 def _twostate_entropy(T_arr, dE, coef_list, ret_expr=False):
-    # From Miodownik1970
-    g0 = 1
-    g1 = 1
+    """Return S=-dG/dT (J/mol/K) for a two-state Gibbs difference dE(T).
 
-    def _calc_twostate_entropy(T, dE):
-        if isinstance(dE, list):
-            dE = np.sum([dE[i] * coef_list[i] for i in range(len(dE))])
-        alpha = g1 / g0 * np.exp(-dE / (R * T))
-        return R * (np.log(1 + alpha) - alpha / (1 + alpha) * dE / (R * T))
-
-    def _sympy_twostate_entropy(T, dE):
-        if isinstance(dE, list):
-            dE = np.sum([dE[i] * v.T**i for i in range(len(dE))])
-        alpha = g1 / g0 * se.exp(-dE / (v.R * v.T))
-        return v.R * (se.log(1 + alpha) - alpha / (1 + alpha) * dE / (v.R * v.T))
-
-    if isinstance(T_arr, (int, float)):
-        ret_arr = _calc_twostate_entropy(T_arr, dE)
-    elif ret_expr:
-        ret_arr = _sympy_twostate_entropy(None, dE)
-    else:
-        ret_arr = np.array([])
-        for temp in T_arr:
-            ret_arr = np.append(ret_arr, _calc_twostate_entropy(temp, dE))
-    return ret_arr
+    dE may be a string, symbolic expression, or number. A list instead means
+    sum(dE[i]*coef_list[i]); include T explicitly for temperature-dependent terms.
+    Otherwise coef_list is unused. ret_expr=True ignores T_arr.
+    """
+    gibbs = _twostate_gibbs_from_terms(dE, coef_list)
+    return _evaluate_twostate_energy(T_arr, -gibbs.diff(T), ret_expr)
 
 
 def _twostate_enthalpy(T_arr, dE, coef_list, ret_expr=False):
-    if ret_expr:
-        ret_arr = v.T * _twostate_entropy(T_arr, dE, ret_expr)
-    else:
-        if isinstance(T_arr, (int, float)):
-            ret_arr = T_arr * _twostate_entropy(T_arr, dE, ret_expr)
-        else:
-            ret_arr = np.array([])
-            for temp in T_arr:
-                ret_arr = np.append(
-                    ret_arr, temp * _calc_twostate_entropy(temp, dE, ret_expr)
-                )
-    return ret_arr
+    """Return H=G-T*dG/dT (J/mol), using the same inputs as _twostate_entropy."""
+    gibbs = _twostate_gibbs_from_terms(dE, coef_list)
+    return _evaluate_twostate_energy(T_arr, gibbs - T * gibbs.diff(T), ret_expr)
 
 
 def _holzapfel_enthalpy(T_arr, thetaD, ret_expr=False):

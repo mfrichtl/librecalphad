@@ -96,7 +96,7 @@ Tc=1000 K). The standalone ground-state reference must not be added to pycalphad
 built-in magnetic contribution without accounting for its different reference.
 No database or exported reference-state changes are made by these helpers.
 
-## Two-state heat capacity and Gibbs energy
+## Two-state heat capacity and energies
 
 The `two-state` Cp model treats its `expression` as the Gibbs difference
 `delta_G(T)` between states of equal degeneracy. The excited-state fraction is
@@ -131,6 +131,33 @@ gibbs_expression = energy._twostate_gibbs(
 Missing requested parameters and empty parameter sequences raise `ValueError`.
 Unsubstituted parameters may remain in symbolic results, but numerical evaluation
 requires all parameters except temperature to be resolved.
+
+The `_twostate_entropy(T_arr, dE, coef_list, ret_expr=False)` and
+`_twostate_enthalpy(T_arr, dE, coef_list, ret_expr=False)` helpers derive
+`S = -dG/dT` and `H = G + T*S` from that same Gibbs expression. Here `dE` means
+the Gibbs difference `delta_G(T)`, not a temperature-independent enthalpy gap.
+For `delta_H = delta_G - T*d(delta_G)/dT`, the results are
+`H = chi*delta_H` and `S = R*log(1 + exp(-delta_G/(R*T))) + chi*delta_H/T`.
+This includes derivatives of temperature-dependent gaps.
+
+These helpers retain their positional arguments. For a number, string, or symbolic
+`dE`, pass `coef_list=[]`. A list of terms instead means
+`delta_G = sum(dE[i]*coef_list[i])`, with one coefficient per term in both numerical
+and symbolic modes. Include temperature explicitly in those terms or coefficients;
+the symbolic path no longer silently replaces coefficients with powers of `T`.
+Numerical evaluation accepts positive scalar or array temperatures and preserves
+array shape; `ret_expr=True` ignores the temperature argument.
+
+```python
+entropy = energy._twostate_entropy(1000, "15000 - 5*T - T*log(T)", [])
+enthalpy_expression = energy._twostate_enthalpy(
+    None, "15000 - 5*T - T*log(T)", [], ret_expr=True,
+)
+```
+
+This corrects the previous entropy population-term sign and the enthalpy helper's
+omission of `G` from `H = G + T*S`, as well as its broken array evaluation. No
+fitted parameters or database reference states are changed.
 
 # Contributing
 Do you want to help improve this software? Great! Unsolicited pull requests are gladly appreciated! If you find an issue with a system, but do not know how to help fix it, open an issue and provide as much information as you can. Images of current behavior and references to expected behavior will help tremendously. Please check that this particular issue isn't documented elsewhere.
