@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+from pathlib import Path
 from pycalphad import calculate, Database, variables as v
 from scipy.optimize import minimize
 import seaborn as sns
@@ -28,6 +29,8 @@ from skopt import gp_minimize
 import symengine as se
 from tinydb import where
 import yaml
+
+FE_DIR = Path(__file__).resolve().parent
 
 param_gen_file = impresources.files("libreCalphad.databases") / "run_param_gen.yaml"
 with open(param_gen_file, "r") as f:
@@ -42,7 +45,7 @@ query = (
 )
 search_results = datasets.search(query)
 
-param_input_file = "FE-params.json"
+param_input_file = FE_DIR / "FE-params.json"
 
 with open(param_input_file, "r") as f:
     model_dict_input = json.load(f)
@@ -51,19 +54,63 @@ min_fits, model_dict = fit_heat_capacity(
 )
 T_melt = model_dict["melt"]["T_melt"][0]
 
-fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
-fig.savefig("FE-BCC-CPM_fits.png")
-plt.close()
-
-if os.path.exists("./_fitted_params.json"):
-    with open("./_fitted_params.json", "r") as f:
+fitted_params_file = FE_DIR / "_fitted_params.json"
+if fitted_params_file.exists():
+    with fitted_params_file.open("r") as f:
         params_json = json.load(f)
 else:
     params_json = {"FE": {}}
-params_json["FE"].update({phase[0]: model_dict})
-write_json_atomic("./_fitted_params.json", params_json, indent=4)
+params_json.setdefault("FE", {})[phase[0]] = model_dict
+write_json_atomic(fitted_params_file, params_json, indent=4)
+
+# TODO: Define acceptance criteria and an approval step before promoting a fit
+# to assessment inputs/databases. For now, retain results even if not converged.
+if np.isscalar(min_fits):
+    fit_diagnostics = {
+        "success": bool(np.isfinite(min_fits)),
+        "status": 0 if np.isfinite(min_fits) else 1,
+        "message": "All parameters fixed; no optimization performed.",
+        "iterations": 0,
+        "evaluations": 1,
+        "parameters": [],
+        "objective": float(min_fits),
+    }
+else:
+    fit_diagnostics = {
+        "success": bool(min_fits.success),
+        "status": int(min_fits.status),
+        "message": str(min_fits.message),
+        "iterations": int(min_fits.nit),
+        "evaluations": int(min_fits.nfev),
+        "parameters": np.asarray(min_fits.x).tolist(),
+        "objective": float(min_fits.fun),
+    }
+fit_diagnostics.update(
+    {
+        "objective_name": "relative_residual_norm",
+        "objective_units": "dimensionless",
+        "dataset_count": len(search_results),
+        "references": sorted({dataset["reference"] for dataset in search_results}),
+    }
+)
+diagnostics_file = FE_DIR / "_fit_diagnostics.json"
+if diagnostics_file.exists():
+    with diagnostics_file.open("r") as f:
+        diagnostics_json = json.load(f)
+else:
+    diagnostics_json = {"FE": {}}
+diagnostics_json.setdefault("FE", {})[phase[0]] = fit_diagnostics
+write_json_atomic(diagnostics_file, diagnostics_json, indent=4)
+
+fig, ax = plot_heat_capacity_from_models(model_dict, datasets, phase, components)
+try:
+    fig.savefig(FE_DIR / "FE-BCC-CPM_fits.png")
+finally:
+    plt.close(fig)
 
 
+# TODO: Separate Cp fitting/persistence from reference-state updates, database
+# generation, property validation, and multi-phase energy-offset fitting below.
 # Need to add the lattice stability for FE also, can directly write it to the json
 refstate_file = impresources.files("refstate") / "LCRefstates.json"
 with open(refstate_file, "r") as f:
@@ -175,7 +222,7 @@ fig, ax = plt.subplots(figsize=(8, 6))
 plot_calculated_heat_capacity(
     dbf, components, phases, {v.T: (0, 2500, 2), v.P: 101325, v.N: 1}, fig=fig, ax=ax
 )
-fig.savefig("CPM-CALC-all_phases.png")
+fig.savefig(FE_DIR / "CPM-CALC-all_phases.png")
 plt.close()
 
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -188,7 +235,7 @@ plot_calculated_heat_capacity(
     fig=fig,
     ax=ax,
 )
-plt.savefig(f"./CPM-CALC-FE-{phase[0]}.png")
+plt.savefig(FE_DIR / f"CPM-CALC-FE-{phase[0]}.png")
 plt.close()
 
 # Enthalpy plotting
@@ -276,7 +323,7 @@ ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Enthalpy (J/mol-formula)")
 ax.legend()
 fig.tight_layout()
-plt.savefig(f"./HM-CALC-FE-{phase[0]}.png")
+plt.savefig(FE_DIR / f"HM-CALC-FE-{phase[0]}.png")
 plt.close()
 
 parity_array = np.linspace(
@@ -289,7 +336,7 @@ ax.set_xlabel("Measured Enthalpy (J/mol-formula)")
 ax.set_ylabel("Calculated Enthalpy (J/mol-formula)")
 ax.legend()
 fig.tight_layout()
-plt.savefig(f"./HM-parity_plot-FE-{phase[0]}.png")
+plt.savefig(FE_DIR / f"HM-parity_plot-FE-{phase[0]}.png")
 plt.close()
 
 fig, ax = plt.subplots()
@@ -298,7 +345,7 @@ ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Enthalpy Error (J/mol-formula)")
 ax.legend()
 fig.tight_layout()
-plt.savefig(f"./HM-error_plot-FE-{phase[0]}.png")
+plt.savefig(FE_DIR / f"HM-error_plot-FE-{phase[0]}.png")
 plt.close()
 
 # Entropy plotting
@@ -373,7 +420,7 @@ ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Entropy (J/mol-formula-K)")
 ax.legend()
 fig.tight_layout()
-plt.savefig(f"./SM-CALC-FE-{phase[0]}.png")
+plt.savefig(FE_DIR / f"SM-CALC-FE-{phase[0]}.png")
 
 fig, ax = plt.subplots()
 sns.scatterplot(entropy_df, x="T", y="SM_error", hue="reference", ax=ax)
@@ -381,7 +428,7 @@ ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Enthalpy Error (J/mol-K-formula)")
 ax.legend()
 fig.tight_layout()
-plt.savefig(f"./SM-error_plot-FE-{phase[0]}.png")
+plt.savefig(FE_DIR / f"SM-error_plot-FE-{phase[0]}.png")
 plt.close()
 
 # Gibbs plotting
@@ -407,14 +454,14 @@ ax.set_xlabel("Temperature (K)")
 ax.set_ylabel("Gibbs energy (J/mol-formula)")
 ax.legend()
 fig.tight_layout()
-fig.savefig(f"./GM-CALC-{phase[0]}.png")
+fig.savefig(FE_DIR / f"GM-CALC-{phase[0]}.png")
 
 fig, ax = plt.subplots(figsize=(6, 4))
 conditions = {v.T: (0.5, 4000, 5), v.P: 101325, v.N: 1}
 plot_calculated_gibbs_energies(
     dbf, ["FE", "VA"], phases, conditions, print_transition_temps=True, fig=fig, ax=ax
 )
-fig.savefig("GM-CALC-all_phases.png")
+fig.savefig(FE_DIR / "GM-CALC-all_phases.png")
 plt.close()
 
 # BCC_A2 - FCC_A1
@@ -425,7 +472,7 @@ fig, ax = plt.subplots()
 plot_delta_energies(
     dbf, components, dg_phases, dg_conditions, datasets, output="GM", fig=fig, ax=ax
 )
-plt.savefig(f"./DG-BCC_A2-FCC_A1.png")
+plt.savefig(FE_DIR / "DG-BCC_A2-FCC_A1.png")
 plt.close()
 
 # DH data
@@ -433,7 +480,7 @@ fig, ax = plt.subplots()
 plot_delta_energies(
     dbf, components, dg_phases, conditions, datasets, output="HM", fig=fig, ax=ax
 )
-plt.savefig(f"./DH-BCC_A2-FCC_A1.png")
+plt.savefig(FE_DIR / "DH-BCC_A2-FCC_A1.png")
 plt.close()
 
 # error_df = pd.DataFrame(error_dict)
@@ -456,7 +503,7 @@ plot_delta_energies(
     fig=fig,
     ax=ax,
 )
-plt.savefig(f"./DH-error-BCC_A2-FCC_A1.png")
+plt.savefig(FE_DIR / "DH-error-BCC_A2-FCC_A1.png")
 plt.close()
 
 # melting point
