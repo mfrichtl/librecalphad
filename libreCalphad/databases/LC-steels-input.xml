@@ -2,7 +2,7 @@
 <?xml-model href="database.rng" schematypens="http://relaxng.org/ns/structure/1.0" type="application/xml"?>
 <Database version="0">
   <metadata>
-    <writer>pycalphad 0.11.1</writer>
+    <writer>pycalphad 0.11.2</writer>
   </metadata>
   <ChemicalElement id="FE" mass="55.847" reference_phase="BCC_A2" H298="3734.3729233192507" S298="13.886708522020232"/>
   <ChemicalElement id="VA" mass="0.0" reference_phase="VACUUM" H298="0.0" S298="0.0"/>
@@ -28,7 +28,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">2.79982477180367</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">2.57531051532679</Interval>
     </Parameter>
     <Parameter type="TC">
       <Order>0</Order>
@@ -40,7 +40,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">1045.64468657902</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">1045.35253953725</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
@@ -52,7 +52,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">5.68029852211981</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">5.68205827952035</Interval>
     </Parameter>
   </Phase>
   <Phase id="FCC_A1">
@@ -89,7 +89,7 @@
           <Constituent refid="VA"/>
         </Site>
       </ConstituentArray>
-      <Interval in="T" lower="0.0" upper="10000.0">67</Interval>
+      <Interval in="T" lower="0.0" upper="10000.0">67.0</Interval>
     </Parameter>
     <Parameter type="THETA">
       <Order>0</Order>
