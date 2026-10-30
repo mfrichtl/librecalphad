@@ -18,6 +18,18 @@
 - Ask for clarification when requirements are ambiguous or when a change could alter public behavior.
 - Avoid exposing secrets, credentials, private paths, or other sensitive data in code, logs, tests, or documentation.
 
+## Unary reference-state export
+
+- Use the companion `librecalphad-refstates` repository (normally a sibling checkout) and its ESPEI `LCRefState` plugin for fitted unary Gibbs reference states. Follow `docs/unary-reference-state-export.md`; do not replace this architecture with direct unary `G` writes without explicit approval.
+- Export is coordinated across two destinations: `LCRefstates.json` for the Gibbs terms assembled by `create_espei_custom_refstate_stable`, and the database for native `THETA`, `BMAGN`, `TC`/`NT`, and `GD` parameters via `upsert_db_param_from_models`. Neither destination alone is a complete export.
+- Map the stable element model to the bare element key (for example `FE`), its stable-phase alias to `FE-BCC_A2: "GHSERFE"`, and other unary phase models to `ELEMENT-PHASE` keys. Do not copy the nested `_fitted_params.json` wholesale into the plugin registry or add the stable Gibbs expression twice.
+- Treat `LCSERparams.json` as separate reference metadata (`phase`, `mass`, `H298`, `S298`), not as fit parameters or automatic offset corrections. Establish the energy/entropy reference convention before updating it.
+- Review optimizer diagnostics before promoting results. Preserve fitting metadata for provenance, but use named thermodynamic coefficients rather than optimizer indices or cached `variable_values` to define exported expressions.
+- After approved registry changes, generate in a fresh Python process. `reload(espei)` is insufficient. Also inspect the seed database: ESPEI preserves existing `GHSER` symbols, unary `G` parameters, phase definitions, and SER entries, which can prevent new reference data from taking effect.
+- Do not assume native magnetic and two-state contributions match the fitter. Check fitted `p`, the installed magnetic formula, gas constants, melt masks, site-ratio normalization, and double counting. Phase-wide magnetic hints affect other endmembers; do not change them globally to accommodate one unary fit without approval.
+- Validate fitted Cp against pycalphad Cp before and after XML round-trip, including branch boundaries, then validate H/S reference conventions separately. Keep Debye export safeguards; do not silently drop unsupported contributions.
+- Treat companion registry edits and database outputs as separate, explicitly authorized assessment changes. Preserve pre-existing work in both repositories and commit only requested source/documentation changes in each repository.
+
 ## Python Guidelines
 
 - Use idiomatic Python and keep compatibility with the project's configured Python version.

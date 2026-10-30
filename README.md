@@ -37,6 +37,16 @@ as an Einstein temperature. See the
 [Fe fitting workflow](libreCalphad/databases/LC-steels_validation/FE/README.md) for
 experimental-data selection and output review.
 
+## Unary reference-state export
+
+Fitted unary endmembers are exported through the companion
+[librecalphad-refstates](https://github.com/mfrichtl/librecalphad-refstates) ESPEI
+plugin, together with native pycalphad parameters in the input database. See the
+[unary export guide](docs/unary-reference-state-export.md) for registry key
+mapping, parameter ownership, SER conventions, import/seed refresh requirements,
+and the current Cp-export limitations. A saved fit or a loaded plugin alone is
+not a validated database export.
+
 ## Debye Gibbs energy, enthalpy, and entropy
 
 For a constant Debye temperature, define $y=\theta_D/T$ and

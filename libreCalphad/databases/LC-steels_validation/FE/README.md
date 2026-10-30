@@ -39,6 +39,20 @@ TODOs:
 
 ## Models and fitting conventions
 
+### Export through the reference-state plugin
+
+Use the companion `librecalphad-refstates` ESPEI plugin for unary Gibbs reference
+states, coordinated with native parameters in the seed database. For Fe, map the
+reviewed BCC model to `FE`, keep `FE-BCC_A2: "GHSERFE"`, and map other reviewed
+phase models to `FE-PHASE` entries in `LCRefstates.json`. The fit file's outer
+`FE -> phase -> model` nesting is not the plugin registry format.
+
+Follow the [unary export guide](../../../../docs/unary-reference-state-export.md)
+before updating the registry or SER metadata. In particular, generate in a fresh
+process and check for stale symbols/unary parameters in the seed database.
+Current magnetic-parameter/formula and melt/two-state mismatches mean the existing
+combined scripts must not be treated as a verified, complete export workflow.
+
 To use numerical Debye fitting, supply a separate `--params` file with the phase's lattice entry replaced by `"debye": {"theta": [250, [200, 400], "fit"]}`. Use `[300, "fix"]` to hold theta fixed, or omit the bounds to use `(1e-6, 2500)` K. Select only one of `einstein`, `holzapfel`, and `debye`; theta and any custom lower bound must be positive. Debye fits can be plotted and saved as fitted-parameter JSON, but Gibbs reference-state generation and database parameter export are not implemented and explicitly reject these models. A Debye theta must not be substituted directly for pycalphad's Einstein theta.
 
 Exact Debye Gibbs energy, enthalpy, and entropy are available numerically and as SymPy expressions through `libreCalphad.models.energy._debye_gibbs`, `_debye_enthalpy`, and `_debye_entropy`. These include zero-point energy `9R*theta/8` and use `S(0)=0`; enthalpy/entropy reference offsets must be added separately. Their integral expressions cannot be compiled by the current pycalphad/SymEngine backend, so these helpers do not enable database export. See the [energy expressions and usage](../../../../README.md#debye-gibbs-energy-enthalpy-and-entropy).
