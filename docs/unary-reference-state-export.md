@@ -20,6 +20,11 @@ This document describes the implemented data flow and recommended review process
 It does **not** imply that the currently known Cp export mismatches have been fixed
 or that existing assessment outputs have been accepted.
 
+The [endmember audit report API](endmember-export-audit.md) is the reusable
+reporting foundation for this workflow. It supports compound as well as unary
+endmember identities, but currently assembles supplied findings only; it does not
+yet perform the registry, database, or thermodynamic comparisons described here.
+
 ## Plugin contract and key mapping
 
 `setup.py` registers the entry point `LCRefState = refstate` in the

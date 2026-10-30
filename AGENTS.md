@@ -30,6 +30,13 @@
 - Validate fitted Cp against pycalphad Cp before and after XML round-trip, including branch boundaries, then validate H/S reference conventions separately. Keep Debye export safeguards; do not silently drop unsupported contributions.
 - Treat companion registry edits and database outputs as separate, explicitly authorized assessment changes. Preserve pre-existing work in both repositories and commit only requested source/documentation changes in each repository.
 
+## Endmember audit reports
+
+- Use `libreCalphad.databases.endmember_audit.audit_endmember_export` for reusable report assembly; see `docs/endmember-export-audit.md`. The current function assembles supplied findings, not model/registry/database comparisons. Do not claim it has validated an export by itself.
+- Identify targets by phase and ordered sublattice constituent array, not by a unary element name. Support compound endmembers and preserve vacancy/species labels; do not infer reference phases, site ratios, or normalization from Fe conventions.
+- Declare check scope explicitly. Missing results must remain `not_checked`; empty or unsupported scopes must not become passes. Status, completeness, severity, and assessment approval are distinct concepts.
+- Keep comparison logic and I/O outside the report builder. Findings/provenance must serialize as strict finite JSON snapshots; convert scientific objects explicitly. Test future adapters using isolated unary and multi-component fixtures before applying them to live assessments.
+
 ## Python Guidelines
 
 - Use idiomatic Python and keep compatibility with the project's configured Python version.

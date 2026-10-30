@@ -47,6 +47,15 @@ mapping, parameter ownership, SER conventions, import/seed refresh requirements,
 and the current Cp-export limitations. A saved fit or a loaded plugin alone is
 not a validated database export.
 
+## Endmember export audit reports
+
+The reusable `audit_endmember_export` API represents unary and compound
+endmembers by phase and sublattice configuration. Its first implementation
+assembles structured reports from an explicit check plan and supplied findings;
+it does not yet compare or modify models, registries, or databases. See the
+[audit report architecture](docs/endmember-export-audit.md) for the API, status
+semantics, strict JSON output, and planned comparison adapters.
+
 ## Debye Gibbs energy, enthalpy, and entropy
 
 For a constant Debye temperature, define $y=\theta_D/T$ and
